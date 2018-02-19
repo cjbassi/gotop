@@ -16,6 +16,8 @@ Either manually download the latest release for your OS from the releases tab an
 
 If you install this way, starting gotop with the `-u` flag or pressing `u` in gotop will check to see if there is a newer version available and automatically update if so.
 
+Windows is currently untested/unsupported but PR's for fixing that are welcome.
+
 
 ### Arch Linux
 
@@ -63,6 +65,8 @@ Feel free to add a new one. You can use 256 colors for them, including bold, und
 * Disk Usage
     - color percentage
     - change bar color to white
+* CPU Usage
+    - Support colors for more CPU cores
 * general
     - option to set polling interval for CPU and mem
     - more themes
@@ -89,6 +93,3 @@ Feel free to add a new one. You can use 256 colors for them, including bold, und
 ## License
 
 AGPLv3
-
-Windows is untested
-Support colors for more CPU cores
