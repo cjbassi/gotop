@@ -57,8 +57,8 @@ Alternatively, if you're on Arch Linux you can install the `gotop` package from 
 
 ## Colorschemes
 
-A different Colorscheme can be set with the `-c` startup flag followed its name, all of which can be found in the `colorschemes` folder.
-Feel free to add a new one. You can use 256 colors for them, including bold, underline, and reverse. More info [here](https://godoc.org/github.com/nsf/termbox-go#Attribute) and [here](https://godoc.org/github.com/nsf/termbox-go#OutputMode) under 'Output256'.
+A different Colorscheme can be set with the `-c` flag followed its name. You can find them in the `colorschemes` folder.
+Feel free to add a new one. You can use 256 colors, bold, underline, and reverse. More info [here](https://godoc.org/github.com/nsf/termbox-go#Attribute) and [here](https://godoc.org/github.com/nsf/termbox-go#OutputMode) under 'Output256'.
 
 
 ## TODO
