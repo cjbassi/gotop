@@ -19,7 +19,7 @@ If you install this way, starting gotop with the `-u` flag or pressing `u` in go
 
 ### Arch Linux
 
-Alternatively, if you're on Arch Linux, you can install the `gotop` package from the AUR.
+Alternatively, if you're on Arch Linux you can install the `gotop` package from the AUR.
 
 
 ## Keybinds
@@ -57,15 +57,12 @@ Feel free to add a new one. You can use 256 colors for them, including bold, und
 
 * Network Usage
     - increase height of sparkline depending on widget size
-
 * Process List
     - memory total goes above 100%
     - extract out column position logic into a function
-
 * Disk Usage
     - color percentage
     - change bar color to white
-
 * general
     - option to set polling interval for CPU and mem
     - more themes
@@ -75,7 +72,6 @@ Feel free to add a new one. You can use 256 colors for them, including bold, und
     - gif of gotop
     - more packages
     - add license
-
 * cleaning up code
     - termui Blocks should ignore writing to the outside area
         - Ignore writes to outside of inner area, or give error?
