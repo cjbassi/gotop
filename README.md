@@ -10,7 +10,7 @@ Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https:/
 
 Go code compiles to a single executable so you just need to somehow get that into your $PATH.
 
-Either manually download the latest release for your OS from the releases tab and move it into `/bin`, or run this command to do it for you:
+Either manually download the latest release for your OS from the releases tab and move it into `/usr/bin`, or run this command to do it for you:
 
 ```
 curl https://raw.githubusercontent.com/cjbassi/gotop/master/install.sh | sudo sh
