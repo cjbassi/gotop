@@ -10,7 +10,7 @@ Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https:/
 
 Go compiles to a single executable so you just need to get that into your $PATH.
 
-To download the latest binary for your OS into `/usr/bin`, you can run the [install.sh](https://github.com/cjbassi/gotop/blob/master/install.sh) script like so:
+To download the latest binary for your OS into `/usr/bin`, you can run the [install](https://github.com/cjbassi/gotop/blob/master/install.sh) script like so:
 
 ```
 curl https://raw.githubusercontent.com/cjbassi/gotop/master/install.sh | sudo bash
