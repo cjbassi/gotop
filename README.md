@@ -12,7 +12,9 @@ Go code compiles to a single executable so you just need to somehow get that int
 
 Either manually download the latest release for your OS from the releases tab and move it into `/bin`, or run this command to do it for you:
 
-    sudo ...
+```
+sudo curl -L ...
+```
 
 If you install this way, starting gotop with the `-u` flag or pressing `u` in gotop will check to see if there is a newer version available and automatically update if so.
 
