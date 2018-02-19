@@ -75,7 +75,6 @@ Feel free to add a new one. You can use 256 colors for them, including bold, und
     - option to only show processes, CPU, and mem
     - gif of gotop
     - more packages
-    - add license
 * cleaning up code
     - termui Blocks should ignore writing to the outside area
         - Ignore writes to outside of inner area, or give error?
