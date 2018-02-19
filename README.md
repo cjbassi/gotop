@@ -21,7 +21,7 @@ If you install this way, starting gotop with the `-u` flag or pressing `u` in go
 To uninstall, run:
 
 ```
-curl https://raw.githubusercontent.com/cjbassi/gotop/master/uninstall.sh | sudo bash
+sudo rm /usr/bin/gotop
 ```
 
 
