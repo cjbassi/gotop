@@ -1,6 +1,8 @@
 package termui
 
-import "image"
+import (
+	"image"
+)
 
 // Cell is a rune with assigned Fg and Bg
 type Cell struct {

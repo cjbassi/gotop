@@ -1,6 +1,8 @@
 package termui
 
-import "math"
+import (
+	"math"
+)
 
 const DOTS = '…'
 
