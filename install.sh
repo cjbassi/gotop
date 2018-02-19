@@ -7,6 +7,23 @@ download() {
     chmod +x /usr/bin/gotop
 }
 
+uninstall() {
+    rm /usr/bin/gotop
+}
+
+for opt in "$@"; do
+  case $opt in
+    --uninstall)
+      uninstall
+      exit 0
+      ;;
+    *)
+      echo "unknown option: $opt"
+      exit 1
+      ;;
+  esac
+done
+
 arch=$(uname -sm)
 case "$arch" in
   Linux\ *64)   download gotop-linux_amd64  ;;
