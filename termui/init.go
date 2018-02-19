@@ -1,6 +1,8 @@
 package termui
 
-import tb "github.com/nsf/termbox-go"
+import (
+	tb "github.com/nsf/termbox-go"
+)
 
 // Init initializes termui library. This function should be called before any others.
 // After initialization, the library must be finalized by 'Close' function.

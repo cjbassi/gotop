@@ -1,6 +1,8 @@
 package termui
 
-import "strconv"
+import (
+	"strconv"
+)
 
 // Gauge is a progress bar like widget.
 type Gauge struct {

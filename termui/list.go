@@ -1,6 +1,8 @@
 package termui
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // BarChart creates multiple bars in a widget:
 type List struct {

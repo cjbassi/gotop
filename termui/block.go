@@ -1,6 +1,8 @@
 package termui
 
-import "image"
+import (
+	"image"
+)
 
 // Block is a base struct for all other upper level widgets,
 // consider it as css: display:block.
