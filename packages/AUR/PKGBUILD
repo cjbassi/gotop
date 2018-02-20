@@ -18,7 +18,7 @@ case "$CARCH" in
         ;;
 esac
 
-source=("https://github.com/cjbassi/gotop/releases/download/$pkgver/gotop-linux_$_arch.tgz")
+source=("https://github.com/cjbassi/gotop/releases/download/$pkgver/gotop-$pkgver-linux_$_arch.tgz")
 md5sums=("SKIP")
 
 package() {

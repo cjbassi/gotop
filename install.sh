@@ -10,7 +10,7 @@ print_error() {
 }
 
 install() {
-    curl -L https://github.com/cjbassi/gotop/releases/download/$VERSION/gotop-${1}.tgz > /tmp/gotop.tgz
+    curl -L https://github.com/cjbassi/gotop/releases/download/$VERSION/gotop-$VERSION-${1}.tgz > /tmp/gotop.tgz
     tar xf /tmp/gotop.tgz -C /usr/bin
     rm /tmp/gotop.tgz
 }
