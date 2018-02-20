@@ -13,7 +13,7 @@ import (
 	"github.com/docopt/docopt-go"
 )
 
-const VERSION = "1.0.0"
+const VERSION = "1.0.1"
 
 var (
 	resized = make(chan bool, 1)

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION=1.0.0
+VERSION=1.0.1
 
 print_error() {
     echo "No binary found for your architecture. If your architecture is compatible with a binary"
@@ -27,7 +27,8 @@ update() {
 
 arch=$(uname -sm)
 case "$arch" in
-    Linux\ x86_64)  install linux_amd64 ;;
+    Linux\ *64)  install linux_amd64 ;;
+    Linux\ *86)  install linux_386 ;;
     *)
         print_error
         exit 1
