@@ -93,8 +93,8 @@ func keyBinds() {
 }
 
 func updateGotop() {
-	cmd := exec.Command("sleep", "1")
-	cmd.Run()
+	// cmd := exec.Command("sleep", "1")
+	// cmd.Run()
 	return
 }
 

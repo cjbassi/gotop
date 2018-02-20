@@ -16,7 +16,7 @@ To download the latest binary for your OS into `/usr/bin`, you can run the [inst
 curl https://raw.githubusercontent.com/cjbassi/gotop/master/install.sh | sudo bash
 ```
 
-If you install this way, starting gotop with the `-u` flag or pressing `u` in gotop will update if there's a newer version.
+If you install this way, starting gotop with the `-u` flag will update if there's a newer version.
 
 To uninstall:
 
@@ -24,7 +24,7 @@ To uninstall:
 sudo rm /usr/bin/gotop
 ```
 
-Currently only tested on Arch Linux x86_64, so create an issue if the binary for you OS doesn't work or if there isn't one.
+Currently only tested on Arch Linux x86_64, so create an issue if the binary for your OS doesn't work or if there isn't one.
 
 
 ### Arch Linux
@@ -69,26 +69,26 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
     - increase height of sparkline depending on widget size
 * Process List
     - memory total goes above 100%
-    - extract out column position logic into a function
 * Disk Usage
-    - color percentage
+    - color percentage based on usage
     - change bar color to white
 * CPU Usage
-    - Support colors for more CPU cores
+    - support colors for more CPU cores
 * general
-    - option to set polling interval for CPU and mem
-    - more themes
     - add support for themes
+    - copy over vtop themes
+    - command line option to set polling interval for CPU and mem
+    - command line updating
+    - command line option to only show processes, CPU, and mem
     - zooming in and out of graphs
-    - updating
-    - option to only show processes, CPU, and mem
-    - gif of gotop
-    - more packages
+    - add gif
+    - create a mac binary
 * cleaning up code
     - termui Blocks should ignore writing to the outside area
         - Ignore writes to outside of inner area, or give error?
     - termui Blocks should be indexed at 0, and maybe change X and Y variables too
     - remove gotop unique logic from list and table
+        - turn column width logic into a function
     - try to get drawille fork merged upstream
     - more documentation
     - Draw borders and label after other stuff
