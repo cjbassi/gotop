@@ -10,15 +10,15 @@ Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https:/
 
 Go compiles to a single executable so you just need to get that into your $PATH.
 
-To download the latest binary for your OS into `/usr/bin`, you can run the [install](https://github.com/cjbassi/gotop/blob/master/install.sh) script like so:
+To download the latest binary for your OS into `/usr/bin`, you can run the [install](https://github.com/cjbassi/gotop/blob/master/install.sh) script:
 
 ```
 curl https://raw.githubusercontent.com/cjbassi/gotop/master/install.sh | sudo bash
 ```
 
-If you install this way, starting gotop with the `-u` flag or pressing `u` in gotop will check to see if there is a newer version available and automatically update if so.
+If you install this way, starting gotop with the `-u` flag or pressing `u` in gotop will update if there's a newer version.
 
-To uninstall, run:
+To uninstall:
 
 ```
 sudo rm /usr/bin/gotop
