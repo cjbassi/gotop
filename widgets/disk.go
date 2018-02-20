@@ -33,5 +33,5 @@ func NewDisk() *Disk {
 func (d *Disk) update() {
 	disk, _ := ps.Usage(d.fs)
 	d.Percent = int(disk.UsedPercent)
-	d.Description = fmt.Sprintf(" (%dGB free)", utils.BytesToGB(int(disk.Free)))
+	d.Description = fmt.Sprintf(" (%dGB free)", utils.BytesToGB(disk.Free))
 }

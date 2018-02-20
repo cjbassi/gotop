@@ -24,6 +24,8 @@ To uninstall:
 sudo rm /usr/bin/gotop
 ```
 
+Currently only tested on Arch Linux x86_64, so create an issue if the binary for you OS doesn't work or if there isn't one.
+
 
 ### Arch Linux
 

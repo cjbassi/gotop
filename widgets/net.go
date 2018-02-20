@@ -12,8 +12,8 @@ import (
 type Net struct {
 	*ui.Sparklines
 	interval  time.Duration
-	recvTotal int
-	sentTotal int
+	recvTotal uint64
+	sentTotal uint64
 }
 
 func NewNet() *Net {
@@ -40,15 +40,15 @@ func NewNet() *Net {
 
 func (n *Net) update() {
 	interfaces, _ := ps.IOCounters(false)
-	recv := int(interfaces[0].BytesRecv)
-	sent := int(interfaces[0].BytesSent)
+	recv := interfaces[0].BytesRecv
+	sent := interfaces[0].BytesSent
 
 	if n.recvTotal != 0 { // if this isn't the first update
 		curRecv := recv - n.recvTotal
 		curSent := sent - n.sentTotal
 
-		n.Lines[0].Data = append(n.Lines[0].Data, curRecv)
-		n.Lines[1].Data = append(n.Lines[1].Data, curSent)
+		n.Lines[0].Data = append(n.Lines[0].Data, int(curRecv))
+		n.Lines[1].Data = append(n.Lines[1].Data, int(curSent))
 	}
 
 	n.recvTotal = recv
@@ -56,7 +56,7 @@ func (n *Net) update() {
 
 	for i := 0; i < 2; i++ {
 		var method string
-		var total int
+		var total uint64
 		cur := n.Lines[i].Data[len(n.Lines[i].Data)-1]
 		totalUnit := "B"
 		curUnit := "B"
@@ -70,18 +70,18 @@ func (n *Net) update() {
 		}
 
 		if cur >= 1000000 {
-			cur = int(utils.BytesToMB(cur))
+			cur = int(utils.BytesToMB(uint64(cur)))
 			curUnit = "MB"
 		} else if cur >= 1000 {
-			cur = int(utils.BytesToKB(cur))
+			cur = int(utils.BytesToKB(uint64(cur)))
 			curUnit = "kB"
 		}
 
 		if total >= 1000000000 {
-			total = int(utils.BytesToGB(total))
+			total = utils.BytesToGB(total)
 			totalUnit = "GB"
 		} else if total >= 1000000 {
-			total = int(utils.BytesToMB(total))
+			total = utils.BytesToMB(total)
 			totalUnit = "MB"
 		}
 
