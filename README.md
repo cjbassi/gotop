@@ -51,8 +51,8 @@ Alternatively, if you're on Arch Linux you can install the `gotop` package from 
 
 ## Mouse Control
 
-* mouse wheel to scroll Process List
 * click to select process
+* mouse wheel to scroll Process List
 
 
 ## Colorschemes
@@ -76,6 +76,7 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
 * general
     - option to set polling interval for CPU and mem
     - more themes
+    - add support for themes
     - zooming in and out of graphs
     - updating
     - option to only show processes, CPU, and mem
@@ -85,7 +86,7 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
     - termui Blocks should ignore writing to the outside area
         - Ignore writes to outside of inner area, or give error?
     - termui Blocks should be indexed at 0, and maybe change X and Y variables too
-    - remove gotop unique logic from termui widgets
+    - remove gotop unique logic from list and table
     - try to get drawille fork merged upstream
     - more documentation
     - Draw borders and label after other stuff
