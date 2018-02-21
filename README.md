@@ -61,7 +61,7 @@ Alternatively, if you're on Arch Linux you can install the `gotop` package from 
 ## Colorschemes
 
 A different Colorscheme can be set with the `-c` flag followed its name. You can find them in the `colorschemes` folder.
-Feel free to add a new one. You can use 256 colors, bold, underline, and reverse. You can see the template and get more info [here]() and see the default colorscheme as an example [here]().
+Feel free to add a new one. You can use 256 colors, bold, underline, and reverse. You can see the template and get more info [here](https://github.com/cjbassi/gotop/blob/master/colorschemes/template.go) and see the default colorscheme as an example [here](https://github.com/cjbassi/gotop/blob/master/colorschemes/default.go).
 
 
 ## TODO
