@@ -8,29 +8,27 @@ Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https:/
 
 ## Installation
 
-Go compiles to a single binary so you just need to get that into your $PATH.  
+### Binaries
+
 Binaries are currently available for 32bit and 64bit Linux and OSX.
 
 To download the latest binary for your OS into `/usr/bin`, you can run the [install](https://github.com/cjbassi/gotop/blob/master/install.sh) script:
 
-```
-curl https://raw.githubusercontent.com/cjbassi/gotop/master/install.sh | sudo bash
-```
+    curl https://raw.githubusercontent.com/cjbassi/gotop/master/install.sh | sudo bash
 
 If you install this way, starting gotop with the `-u` flag will update if there's a newer version.
 
 To uninstall:
 
-```
-sudo rm /usr/bin/gotop
-```
-
-Currently only tested on Arch Linux x86_64, so create an issue if your binary doesn't work.
-
+    sudo rm /usr/bin/gotop
 
 ### Arch Linux
 
 Alternatively, if you're on Arch Linux you can install the `gotop` package from the AUR.
+
+### Source
+
+    github.com/cjbassi/gotop
 
 
 ## Usage
