@@ -10,9 +10,9 @@ type Table struct {
 	*Block
 	Header    []string
 	Rows      [][]string
-	Fg        Attribute
-	Bg        Attribute
-	Cursor    Attribute
+	Fg        Color
+	Bg        Color
+	Cursor    Color
 	UniqueCol int
 	pid       string
 	selected  int

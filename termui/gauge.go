@@ -8,8 +8,8 @@ import (
 type Gauge struct {
 	*Block
 	Percent      int
-	BarColor     Attribute
-	PercentColor Attribute
+	BarColor     Color
+	PercentColor Color
 	Description  string
 }
 

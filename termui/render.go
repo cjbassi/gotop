@@ -29,7 +29,7 @@ func Render(bs ...Bufferer) {
 			// set cells in buf
 			for p, c := range buf.CellMap {
 				if p.In(buf.Area) {
-					tb.SetCell(p.X+b.GetXOffset(), p.Y+b.GetYOffset(), c.Ch, tb.Attribute(c.Fg), tb.Attribute(c.Bg))
+					tb.SetCell(p.X+b.GetXOffset(), p.Y+b.GetYOffset(), c.Ch, tb.Attribute(c.Fg)+1, tb.Attribute(c.Bg)+1)
 				}
 			}
 		}(b)

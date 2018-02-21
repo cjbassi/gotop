@@ -17,8 +17,8 @@ func NewMem() *Mem {
 	m.Label = "Memory Usage"
 	m.Data["Main"] = []float64{0} // Sets initial data to 0
 	m.Data["Swap"] = []float64{0}
-	m.LineColor["Main"] = ui.ColorMagenta
-	m.LineColor["Swap"] = ui.ColorYellow
+	m.LineColor["Main"] = ui.Color(5)
+	m.LineColor["Swap"] = ui.Color(11)
 
 	go m.update()
 	ticker := time.NewTicker(m.interval)

@@ -7,9 +7,9 @@ type Sparkline struct {
 	Data       []int
 	Title1     string
 	Title2     string
-	TitleColor Attribute
+	TitleColor Color
 	Total      int
-	LineColor  Attribute
+	LineColor  Color
 }
 
 // Sparklines is a renderable widget which groups together the given sparklines.

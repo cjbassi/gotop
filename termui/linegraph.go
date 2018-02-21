@@ -11,9 +11,9 @@ import (
 type LineGraph struct {
 	*Block
 	Data      map[string][]float64
-	LineColor map[string]Attribute
+	LineColor map[string]Color
 
-	DefaultLineColor Attribute
+	DefaultLineColor Color
 }
 
 // NewLineGraph returns a new LineGraph with current theme.
@@ -21,7 +21,7 @@ func NewLineGraph() *LineGraph {
 	return &LineGraph{
 		Block:     NewBlock(),
 		Data:      make(map[string][]float64),
-		LineColor: make(map[string]Attribute),
+		LineColor: make(map[string]Color),
 
 		DefaultLineColor: Theme.LineGraph,
 	}
@@ -31,9 +31,9 @@ func NewLineGraph() *LineGraph {
 func (lc *LineGraph) Buffer() *Buffer {
 	buf := lc.Block.Buffer()
 	c := drawille.NewCanvas()
-	colors := make([][]Attribute, lc.X+2)
+	colors := make([][]Color, lc.X+2)
 	for i := range colors {
-		colors[i] = make([]Attribute, lc.Y+2)
+		colors[i] = make([]Color, lc.Y+2)
 	}
 
 	// Sort the series so that overlapping data will overlap the same way each time

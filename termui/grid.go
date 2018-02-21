@@ -15,7 +15,7 @@ type Grid struct {
 	Height  int
 	Cols    int
 	Rows    int
-	BgColor Attribute
+	BgColor Color
 }
 
 func NewGrid() *Grid {

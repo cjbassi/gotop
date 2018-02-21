@@ -7,7 +7,7 @@ import (
 // BarChart creates multiple bars in a widget:
 type List struct {
 	*Block
-	TextColor  Attribute
+	TextColor  Color
 	Data       []int
 	DataLabels []string
 	Threshold  int
@@ -29,12 +29,12 @@ func (bc *List) Buffer() *Buffer {
 		if y+1 > bc.Y {
 			break
 		}
-		bg := ColorGreen
+		bg := Color(2)
 		if bc.Data[y] >= bc.Threshold {
-			bg = ColorRed
+			bg = Color(1)
 		}
 		r := MaxString(text, (bc.X - 4))
-		buf.SetString(1, y+1, r, ColorWhite, ColorDefault)
+		buf.SetString(1, y+1, r, Color(7), ColorDefault)
 		buf.SetString(bc.X-2, y+1, fmt.Sprintf("%dC", bc.Data[y]), bg, ColorDefault)
 	}
 

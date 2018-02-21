@@ -7,8 +7,8 @@ import (
 // Cell is a rune with assigned Fg and Bg
 type Cell struct {
 	Ch rune
-	Fg Attribute
-	Bg Attribute
+	Fg Color
+	Bg Color
 }
 
 // Buffer is a renderable rectangle cell data container.
@@ -17,7 +17,7 @@ type Buffer struct {
 	CellMap map[image.Point]Cell
 }
 
-func NewCell(ch rune, Fg, Bg Attribute) Cell {
+func NewCell(ch rune, Fg, Bg Color) Cell {
 	return Cell{ch, Fg, Bg}
 }
 
@@ -47,7 +47,7 @@ func (b *Buffer) SetCell(x, y int, c Cell) {
 	b.CellMap[image.Pt(x, y)] = c
 }
 
-func (b *Buffer) SetString(x, y int, s string, fg, bg Attribute) {
+func (b *Buffer) SetString(x, y int, s string, fg, bg Color) {
 	for i, char := range s {
 		b.SetCell(x+i, y, Cell{char, fg, bg})
 	}

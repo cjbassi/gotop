@@ -21,7 +21,7 @@ func NewCPU() *CPU {
 	for i := 0; i < c.count; i++ {
 		key := "CPU" + strconv.Itoa(i+1)
 		c.Data[key] = []float64{0}
-		c.LineColor[key] = ui.Attribute(int(ui.ColorRed) + i)
+		c.LineColor[key] = ui.Color(1 + i)
 	}
 
 	go c.update()

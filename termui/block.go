@@ -14,12 +14,12 @@ type Block struct {
 	XOffset  int
 	YOffset  int
 	Label    string
-	BorderFg Attribute
-	BorderBg Attribute
-	LabelFg  Attribute
-	LabelBg  Attribute
-	Bg       Attribute
-	Fg       Attribute
+	BorderFg Color
+	BorderBg Color
+	LabelFg  Color
+	LabelBg  Color
+	Bg       Color
+	Fg       Color
 }
 
 // NewBlock returns a *Block which inherits styles from current theme.
