@@ -18,7 +18,7 @@ func NewGauge() *Gauge {
 	return &Gauge{
 		Block:        NewBlock(),
 		PercentColor: Theme.Fg,
-		BarColor:     Theme.Bg,
+		BarColor:     Theme.BarColor,
 	}
 }
 
@@ -30,11 +30,7 @@ func (g *Gauge) Buffer() *Buffer {
 	width := g.Percent * g.X / 100
 	for y := 1; y <= g.Y; y++ {
 		for x := 1; x <= width; x++ {
-			bg := g.BarColor
-			if bg == ColorDefault {
-				bg |= AttrReverse
-			}
-			buf.SetCell(x, y, Cell{' ', ColorDefault, bg})
+			buf.SetCell(x, y, Cell{' ', g.BarColor, g.BarColor})
 		}
 	}
 
@@ -46,10 +42,12 @@ func (g *Gauge) Buffer() *Buffer {
 
 	for i, char := range s {
 		bg := g.Bg
+		fg := g.Fg
 		if x+i < width {
+			fg = g.BarColor
 			bg = AttrReverse
 		}
-		buf.SetCell(1+x+i, y, Cell{char, g.PercentColor, bg})
+		buf.SetCell(1+x+i, y, Cell{char, fg, bg})
 	}
 
 	return buf

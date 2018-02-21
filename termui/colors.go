@@ -21,9 +21,12 @@ var DefaultTheme = Colorscheme{
 	BorderFg: 6,
 	BorderBg: -1,
 
-	SparkLine:   4,
+	Sparkline:   4,
 	LineGraph:   -1,
 	TableCursor: 4,
+	BarColor:    7,
+	TempLow:     2,
+	TempHigh:    1,
 }
 
 // A ColorScheme represents the current look-and-feel of the dashboard.
@@ -36,7 +39,10 @@ type Colorscheme struct {
 	BorderFg Color
 	BorderBg Color
 
-	SparkLine   Color
+	Sparkline   Color
 	LineGraph   Color
 	TableCursor Color
+	BarColor    Color
+	TempLow     Color
+	TempHigh    Color
 }

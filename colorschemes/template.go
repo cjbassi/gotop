@@ -22,25 +22,20 @@ type Colorscheme struct {
 
 	Bg int
 
-	Border struct {
-		Labels int
-		Line   int
-	}
+	BorderLabel int
+	BorderLine  int
 
-	CPU struct {
-		Lines []int
-	}
+	CPULines []int
 
-	Mem struct {
-		Main int
-		Swap int
-	}
+	MainMem int
+	SwapMem int
 
-	Proc struct {
-		Cursor int
-	}
+	ProcCursor int
 
-	Sparkline struct {
-		Graph int
-	}
+	Sparkline int
+
+	DiskBar int
+
+	TempLow  int
+	TempHigh int
 }

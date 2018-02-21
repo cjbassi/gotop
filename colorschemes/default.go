@@ -6,25 +6,20 @@ var DefaultCS = Colorscheme{
 
 	Bg: -1,
 
-	Border{
-		Labels: 0,
-		Line:   0,
-	},
+	BorderLabel: 7,
+	BorderLine:  6,
 
-	CPU{
-		Lines: []int{0, 0, 0, 0},
-	},
+	CPULines: []int{1, 2, 3, 4, 5, 6, 7, 8},
 
-	Mem{
-		Main: 0,
-		Swap: 0,
-	},
+	MainMem: 5,
+	SwapMem: 11,
 
-	Proc{
-		Cursor: 5,
-	},
+	ProcCursor: 4,
 
-	Sparkline{
-		Graph: 10,
-	},
+	Sparkline: 4,
+
+	DiskBar: 7,
+
+	TempLow:  2,
+	TempHigh: 1,
 }

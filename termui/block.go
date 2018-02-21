@@ -18,8 +18,8 @@ type Block struct {
 	BorderBg Color
 	LabelFg  Color
 	LabelBg  Color
-	Bg       Color
 	Fg       Color
+	Bg       Color
 }
 
 // NewBlock returns a *Block which inherits styles from current theme.

@@ -84,6 +84,7 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
     - zooming in and out of graphs
     - add gif
     - create a mac binary
+    - grid should create a filled buffer so that bg is written everywhere
 * cleaning up code
     - termui Blocks should ignore writing to the outside area
         - Ignore writes to outside of inner area, or give error?

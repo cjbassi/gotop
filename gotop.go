@@ -1,13 +1,14 @@
 package main
 
 import (
-	// "fmt"
+	"fmt"
 	"os"
 	// "os/exec"
 	"os/signal"
 	"syscall"
 	"time"
 
+	"github.com/cjbassi/gotop/colorschemes"
 	ui "github.com/cjbassi/gotop/termui"
 	w "github.com/cjbassi/gotop/widgets"
 	"github.com/docopt/docopt-go"
@@ -24,37 +25,61 @@ var (
 	procLoaded = make(chan bool, 1)
 	keyPressed = make(chan bool, 1)
 
-	cpu  = w.NewCPU()
-	mem  = w.NewMem()
-	proc = w.NewProc(procLoaded, keyPressed)
-	net  = w.NewNet()
-	disk = w.NewDisk()
-	temp = w.NewTemp()
+	colorscheme = colorschemes.DefaultCS
 
-	help = w.NewHelpMenu()
+	cpu  *w.CPU
+	mem  *w.Mem
+	proc *w.Proc
+	net  *w.Net
+	disk *w.Disk
+	temp *w.Temp
+
+	help *w.HelpMenu
 )
 
 // Sets up docopt which is a command line argument parser
-func docoptInit() {
+func arguments() {
 	usage := `
 Usage: gotop [options]
 
 Options:
-  -c, --color       Set a colorscheme.
-  -h, --help        Show this screen.
-  -u, --upgrade     Updates gotop if needed.
-  -v, --version     Show version.
+  -c, --color <name>    Set a colorscheme.
+  -h, --help		    Show this screen.
+  -u, --upgrade         Updates gotop if needed.
+  -v, --version         Show version.
 
 Colorschemes:
   default
+  solarized
 `
 
 	args, _ := docopt.ParseArgs(usage, os.Args[1:], VERSION)
+
 	if val, _ := args["--upgrade"]; val.(bool) {
 		updateGotop()
 		os.Exit(0)
 	}
-	if val, _ := args["--color"]; val.(bool) {
+
+	if val, _ := args["--color"]; val != nil {
+		handleColorscheme(val.(string))
+	}
+}
+
+func updateGotop() {
+	// cmd := exec.Command("sleep", "1")
+	// cmd.Run()
+	return
+}
+
+func handleColorscheme(cs string) {
+	switch cs {
+	case "solarized":
+		colorscheme = colorschemes.SolarizedCS
+	case "default":
+		colorscheme = colorschemes.DefaultCS
+	default:
+		fmt.Fprintf(os.Stderr, "error: colorscheme not recognized\n")
+		os.Exit(1)
 	}
 }
 
@@ -92,16 +117,47 @@ func keyBinds() {
 	})
 }
 
-func updateGotop() {
-	// cmd := exec.Command("sleep", "1")
-	// cmd.Run()
-	return
+func termuiColors() {
+	ui.Theme.Fg = ui.Color(7)
+	ui.Theme.Bg = ui.Color(colorscheme.Bg)
+	ui.Theme.BorderBg = ui.Color(colorscheme.Bg)
+	ui.Theme.LabelBg = ui.Color(colorscheme.Bg)
+
+	ui.Theme.TableCursor = ui.Color(colorscheme.ProcCursor)
+	ui.Theme.Sparkline = ui.Color(colorscheme.Sparkline)
+	ui.Theme.BarColor = ui.Color(colorscheme.DiskBar)
+	ui.Theme.TempLow = ui.Color(colorscheme.TempLow)
+	ui.Theme.TempHigh = ui.Color(colorscheme.TempHigh)
+}
+
+func widgetColors() {
+	mem.LineColor["Main"] = ui.Color(colorscheme.MainMem)
+	mem.LineColor["Swap"] = ui.Color(colorscheme.SwapMem)
+
+	LineColor := make(map[string]ui.Color)
+	for i := 0; i < len(cpu.Data); i++ {
+		LineColor[fmt.Sprintf("CPU%d", i+1)] = ui.Color(colorscheme.CPULines[i])
+	}
+	cpu.LineColor = LineColor
 }
 
 func main() {
-	docoptInit()
+	arguments()
+
+	termuiColors()
 
 	keyBinds()
+
+	cpu = w.NewCPU()
+	mem = w.NewMem()
+	proc = w.NewProc(procLoaded, keyPressed)
+	net = w.NewNet()
+	disk = w.NewDisk()
+	temp = w.NewTemp()
+
+	help = w.NewHelpMenu()
+
+	widgetColors()
 
 	<-procLoaded
 

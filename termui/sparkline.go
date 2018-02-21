@@ -27,7 +27,7 @@ func (s *Sparklines) Add(sl Sparkline) {
 func NewSparkline() *Sparkline {
 	return &Sparkline{
 		TitleColor: Theme.Fg,
-		LineColor:  Theme.SparkLine,
+		LineColor:  Theme.Sparkline,
 	}
 }
 
