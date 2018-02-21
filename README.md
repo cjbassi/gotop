@@ -28,7 +28,7 @@ Alternatively, if you're on Arch Linux you can install the `gotop` package from 
 
 ### Source
 
-    github.com/cjbassi/gotop
+    go get github.com/cjbassi/gotop
 
 
 ## Usage
