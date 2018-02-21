@@ -4,22 +4,23 @@ var SolarizedCS = Colorscheme{
 	Name:   "Default",
 	Author: "Caleb Bassi",
 
+	Fg: 250,
 	Bg: -1,
 
-	BorderLabel: 7,
-	BorderLine:  6,
+	BorderLabel: 250,
+	BorderLine:  37,
 
-	CPULines: []int{1, 2, 3, 4, 5, 6, 7, 8},
+	CPULines: []int{64, 37, 33, 61, 125, 160, 166, 136},
 
-	MainMem: 5,
-	SwapMem: 11,
+	MainMem: 125,
+	SwapMem: 166,
 
-	ProcCursor: 4,
+	ProcCursor: 136,
 
-	Sparkline: 4,
+	Sparkline: 33,
 
-	DiskBar: 7,
+	DiskBar: 245,
 
-	TempLow:  2,
-	TempHigh: 1,
+	TempLow:  64,
+	TempHigh: 160,
 }
