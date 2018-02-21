@@ -76,7 +76,6 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
     - command line updating
     - command line option to only show processes, CPU, and mem
     - zooming in and out of graphs
-    - add gif
     - gopsutil issue for darwin i386
 * cleaning up code
     - termui Blocks should ignore writing to the outside area
