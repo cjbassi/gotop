@@ -10,7 +10,7 @@ Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https:/
 
 ### Binaries
 
-Binaries are currently available for 32bit and 64bit Linux and OSX.
+Binaries are currently available for 32/64bit Linux and 64bit OSX.
 
 To download the latest binary for your OS into `/usr/bin`, you can run the [install](https://github.com/cjbassi/gotop/blob/master/install.sh) script:
 

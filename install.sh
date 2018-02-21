@@ -27,8 +27,9 @@ update() {
 
 arch=$(uname -sm)
 case "$arch" in
-    Linux\ *64)  install linux_amd64 ;;
-    Linux\ *86)  install linux_386 ;;
+    Linux\ *64)  install linux_amd64    ;;
+    Linux\ *86)  install linux_386      ;;
+    Darwin\ *64) install darwin_amd64   ;;
     *)
         print_error
         exit 1
