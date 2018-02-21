@@ -46,7 +46,7 @@ func (hm *HelpMenu) Buffer() *ui.Buffer {
 
 	for y, line := range strings.Split(KEYBINDS, "\n") {
 		for x, char := range line {
-			buf.SetCell(x+1, y, ui.NewCell(char, ui.Color(7), ui.ColorDefault))
+			buf.SetCell(x+1, y, ui.NewCell(char, ui.Color(7), hm.Bg))
 		}
 	}
 
