@@ -30,19 +30,3 @@ type ColorScheme struct {
 	LineGraph   Attribute
 	TableCursor Attribute
 }
-
-// 0 <= r,g,b <= 5
-func ColorRGB(r, g, b int) Attribute {
-	within := func(n int) int {
-		if n < 0 {
-			return 0
-		}
-		if n > 5 {
-			return 5
-		}
-		return n
-	}
-
-	r, b, g = within(r), within(b), within(g)
-	return Attribute(0x0f + 36*r + 6*g + b)
-}
