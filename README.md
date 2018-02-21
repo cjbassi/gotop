@@ -2,13 +2,14 @@
 
 ![image](demo.gif)
 
-Another TUI graphical activity monitor, inspired by [vtop](https://github.com/MrRio/vtop) and [gtop](https://github.com/aksakalli/gtop), this time written in [Go](https://golang.org/)!  
-Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https://github.com/exrook/drawille-go), and a heavily modified version of [termui](https://github.com/gizak/termui) which uses [termbox-go](https://github.com/nsf/termbox-go).
+Another TUI graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!  
+Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https://github.com/exrook/drawille-go), and a modified version of [termui](https://github.com/gizak/termui).
 
 
 ## Installation
 
-Go compiles to a single executable so you just need to get that into your $PATH.
+Go compiles to a single binary so you just need to get that into your $PATH.  
+Binaries are currently available for 32bit and 64bit Linux and OSX.
 
 To download the latest binary for your OS into `/usr/bin`, you can run the [install](https://github.com/cjbassi/gotop/blob/master/install.sh) script:
 
@@ -24,7 +25,7 @@ To uninstall:
 sudo rm /usr/bin/gotop
 ```
 
-Currently only tested on Arch Linux x86_64, so create an issue if the binary for your OS doesn't work or if there isn't one.
+Currently only tested on Arch Linux x86_64, so create an issue if your binary doesn't work.
 
 
 ### Arch Linux
@@ -32,7 +33,9 @@ Currently only tested on Arch Linux x86_64, so create an issue if the binary for
 Alternatively, if you're on Arch Linux you can install the `gotop` package from the AUR.
 
 
-## Keybinds
+## Usage
+
+### Keybinds
 
 * Quit: `q` or `Ctrl-c`
 * Navigation:
@@ -51,7 +54,7 @@ Alternatively, if you're on Arch Linux you can install the `gotop` package from 
 * `u`: update gotop
 
 
-## Mouse Control
+### Mouse Control
 
 * click to select process
 * mouse wheel to scroll Process List
@@ -96,8 +99,3 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
     - Merge should include offset
     - Remove merge from grid buffer function, just render
     - Remove merge altogether
-
-
-## License
-
-AGPLv3
