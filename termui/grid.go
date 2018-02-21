@@ -44,7 +44,7 @@ func (g *Grid) Resize() {
 
 // Buffer implements Bufferer interface.
 func (g *Grid) Buffer() *Buffer {
-	buf := NewBuffer()
+	buf := NewFilledBuffer(0, 0, g.Width, g.Height, Cell{' ', ColorDefault, Theme.Bg})
 	for _, w := range g.Widgets {
 		buf.MergeWithOffset(w.Buffer(), w.GetXOffset(), w.GetYOffset())
 	}
