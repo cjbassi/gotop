@@ -70,14 +70,13 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
     - increase height of sparkline depending on widget size
 * Process List
     - memory total goes above 100%
-* Disk Usage
-    - color percentage based on usage
-    - change bar color to white
 * CPU Usage
     - support colors for more CPU cores
-* general
+* themes
     - solarized picture and theme
     - copy over vtop themes
+* general
+    - center the help menu
     - command line option to set polling interval for CPU and mem
     - command line updating
     - command line option to only show processes, CPU, and mem
