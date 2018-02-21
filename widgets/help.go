@@ -34,6 +34,10 @@ func NewHelpMenu() *HelpMenu {
 	block := *ui.NewBlock()
 	block.X = 48
 	block.Y = 17
+	block.XOffset = (ui.Body.Width - block.X) / 2
+	block.YOffset = (ui.Body.Height - block.Y) / 2
+	// block.XOffset = ui.Body.Width - 50
+	// block.YOffset = ui.Body.Height - 50
 	return &HelpMenu{block}
 }
 
@@ -46,7 +50,7 @@ func (hm *HelpMenu) Buffer() *ui.Buffer {
 		}
 	}
 
-	buf.SetAreaXY(100, 100)
+	buf.SetAreaXY(hm.X+2, hm.Y+2)
 
 	return buf
 }

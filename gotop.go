@@ -155,8 +155,6 @@ func main() {
 	disk = w.NewDisk()
 	temp = w.NewTemp()
 
-	help = w.NewHelpMenu()
-
 	widgetColors()
 
 	<-procLoaded
@@ -169,9 +167,15 @@ func main() {
 
 	setupGrid()
 
+	help = w.NewHelpMenu()
+
 	ui.On("resize", func(e ui.Event) {
 		ui.Body.Width, ui.Body.Height = e.Width, e.Height
 		ui.Body.Resize()
+
+		help.XOffset = (ui.Body.Width - help.X) / 2
+		help.YOffset = (ui.Body.Height - help.Y) / 2
+
 		resized <- true
 	})
 

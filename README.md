@@ -76,7 +76,6 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
     - solarized picture and theme
     - copy over vtop themes
 * general
-    - center the help menu
     - command line option to set polling interval for CPU and mem
     - command line updating
     - command line option to only show processes, CPU, and mem
