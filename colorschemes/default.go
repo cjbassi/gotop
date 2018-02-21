@@ -4,6 +4,7 @@ var DefaultCS = Colorscheme{
 	Name:   "Default",
 	Author: "Caleb Bassi",
 
+	Fg: 7,
 	Bg: -1,
 
 	BorderLabel: 7,

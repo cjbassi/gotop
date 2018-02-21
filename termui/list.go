@@ -29,13 +29,13 @@ func (bc *List) Buffer() *Buffer {
 		if y+1 > bc.Y {
 			break
 		}
-		bg := Theme.TempLow
+		fg := Theme.TempLow
 		if bc.Data[y] >= bc.Threshold {
-			bg = Theme.TempHigh
+			fg = Theme.TempHigh
 		}
 		r := MaxString(text, (bc.X - 4))
-		buf.SetString(1, y+1, r, Color(7), bc.Bg)
-		buf.SetString(bc.X-2, y+1, fmt.Sprintf("%dC", bc.Data[y]), bg, bc.Bg)
+		buf.SetString(1, y+1, r, Theme.Fg, bc.Bg)
+		buf.SetString(bc.X-2, y+1, fmt.Sprintf("%dC", bc.Data[y]), fg, bc.Bg)
 	}
 
 	return buf

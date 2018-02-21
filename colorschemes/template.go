@@ -20,6 +20,7 @@ type Colorscheme struct {
 	Name   string
 	Author string
 
+	Fg int
 	Bg int
 
 	BorderLabel int
@@ -36,6 +37,7 @@ type Colorscheme struct {
 
 	DiskBar int
 
+	// Temperature colors depending on if it's over a certain threshold
 	TempLow  int
 	TempHigh int
 }

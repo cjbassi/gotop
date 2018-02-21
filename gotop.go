@@ -118,10 +118,12 @@ func keyBinds() {
 }
 
 func termuiColors() {
-	ui.Theme.Fg = ui.Color(7)
+	ui.Theme.Fg = ui.Color(colorscheme.Fg)
 	ui.Theme.Bg = ui.Color(colorscheme.Bg)
-	ui.Theme.BorderBg = ui.Color(colorscheme.Bg)
+	ui.Theme.LabelFg = ui.Color(colorscheme.BorderLabel)
 	ui.Theme.LabelBg = ui.Color(colorscheme.Bg)
+	ui.Theme.BorderFg = ui.Color(colorscheme.BorderLine)
+	ui.Theme.BorderBg = ui.Color(colorscheme.Bg)
 
 	ui.Theme.TableCursor = ui.Color(colorscheme.ProcCursor)
 	ui.Theme.Sparkline = ui.Color(colorscheme.Sparkline)

@@ -73,7 +73,7 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
 * CPU Usage
     - support colors for more CPU cores
 * themes
-    - solarized picture and theme
+    - solarized picture
     - copy over vtop themes
 * general
     - command line option to set polling interval for CPU and mem
