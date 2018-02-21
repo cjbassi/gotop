@@ -43,5 +43,5 @@ func Render(bs ...Bufferer) {
 }
 
 func Clear() {
-	tb.Clear(tb.ColorDefault, tb.Attribute(Theme.Bg))
+	tb.Clear(tb.ColorDefault+1, tb.Attribute(Theme.Bg)+1)
 }
