@@ -54,7 +54,7 @@ Alternatively, if you're on Arch Linux you can install the `gotop` package from 
 * `u`: update gotop
 
 
-### Mouse Control
+### Mouse
 
 * click to select process
 * mouse wheel to scroll Process List
