@@ -1,6 +1,6 @@
 # gotop
 
-![image](demo.gif)
+![image](https://github.com/cjbassi/gotop/blob/master/demo.gif)
 
 Another TUI graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!  
 Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https://github.com/exrook/drawille-go), and a modified version of [termui](https://github.com/gizak/termui).
@@ -70,12 +70,8 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
     - increase height of sparkline depending on widget size
 * Process List
     - memory total goes above 100%
-* CPU Usage
-    - support colors for more CPU cores
-* themes
-    - solarized picture
-    - copy over vtop themes
 * general
+    - copy over vtop themes
     - command line option to set polling interval for CPU and mem
     - command line updating
     - command line option to only show processes, CPU, and mem

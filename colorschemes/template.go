@@ -26,6 +26,7 @@ type Colorscheme struct {
 	BorderLabel int
 	BorderLine  int
 
+	// Try to add at least 8
 	CPULines []int
 
 	MainMem int
