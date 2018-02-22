@@ -71,7 +71,7 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
 * Process List
     - memory total goes above 100%
 * general
-    - copy over vtop themes
+    - more themes
     - command line option to set polling interval for CPU and mem
     - command line updating
     - command line option to only show processes, CPU, and mem

@@ -1,9 +1,6 @@
 package colorschemes
 
-var SolarizedCS = Colorscheme{
-	Name:   "Default",
-	Author: "Caleb Bassi",
-
+var Solarized = Colorscheme{
 	Fg: 250,
 	Bg: -1,
 

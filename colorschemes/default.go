@@ -1,9 +1,6 @@
 package colorschemes
 
-var DefaultCS = Colorscheme{
-	Name:   "Default",
-	Author: "Caleb Bassi",
-
+var Default = Colorscheme{
 	Fg: 7,
 	Bg: -1,
 

@@ -25,7 +25,7 @@ var (
 	procLoaded = make(chan bool, 1)
 	keyPressed = make(chan bool, 1)
 
-	colorscheme = colorschemes.DefaultCS
+	colorscheme = colorschemes.Default
 
 	cpu  *w.CPU
 	mem  *w.Mem
@@ -74,9 +74,9 @@ func updateGotop() {
 func handleColorscheme(cs string) {
 	switch cs {
 	case "solarized":
-		colorscheme = colorschemes.SolarizedCS
+		colorscheme = colorschemes.Solarized
 	case "default":
-		colorscheme = colorschemes.DefaultCS
+		colorscheme = colorschemes.Default
 	default:
 		fmt.Fprintf(os.Stderr, "error: colorscheme not recognized\n")
 		os.Exit(1)
