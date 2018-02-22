@@ -48,7 +48,6 @@ go get github.com/cjbassi/gotop
     * `p`: PID
 * `<tab>`: toggle process grouping
 * `dd`: kill the selected process or process group
-* `<left>`/`<right>` and `h`/`l`: zoom in and out of graphs
 * `?`: toggles keybind help menu
 
 

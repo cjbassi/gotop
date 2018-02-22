@@ -22,8 +22,6 @@ Process Sorting:
 
 '<tab>': toggle process grouping
 'dd': kill the selected process or process group
-'<left>'/'<right>' and 'h'/'l': ...
-'u': update gotop
 `
 
 type HelpMenu struct {
@@ -33,7 +31,7 @@ type HelpMenu struct {
 func NewHelpMenu() *HelpMenu {
 	block := *ui.NewBlock()
 	block.X = 48
-	block.Y = 17
+	block.Y = 15
 	block.XOffset = (ui.Body.Width - block.X) / 2
 	block.YOffset = (ui.Body.Height - block.Y) / 2
 	// block.XOffset = ui.Body.Width - 50
