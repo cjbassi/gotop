@@ -12,15 +12,14 @@ Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https:/
 
 Binaries are currently available for 32/64bit Linux and 64bit OSX.
 
-To download the latest binary for your OS into `/usr/bin`, you can run the [install](https://github.com/cjbassi/gotop/blob/master/install.sh) script:
+To download the latest binary for your system from GitHub, you can run the [install](https://github.com/cjbassi/gotop/blob/master/install.sh) script:
 
-    curl https://raw.githubusercontent.com/cjbassi/gotop/master/install.sh | sudo bash
+```
+curl https://raw.githubusercontent.com/cjbassi/gotop/master/install.sh | bash
+```
 
-If you install this way, starting gotop with the `-u` flag will update if there's a newer version.
+Then move `gotop` somewhere into your $PATH.
 
-To uninstall:
-
-    sudo rm /usr/bin/gotop
 
 ### Arch Linux
 
@@ -28,7 +27,9 @@ Alternatively, if you're on Arch Linux you can install the `gotop` package from 
 
 ### Source
 
-    go get github.com/cjbassi/gotop
+```
+go get github.com/cjbassi/gotop
+```
 
 
 ## Usage
@@ -49,7 +50,6 @@ Alternatively, if you're on Arch Linux you can install the `gotop` package from 
 * `dd`: kill the selected process or process group
 * `<left>`/`<right>` and `h`/`l`: zoom in and out of graphs
 * `?`: toggles keybind help menu
-* `u`: update gotop
 
 
 ### Mouse
@@ -71,9 +71,7 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
 * Process List
     - memory total goes above 100%
 * general
-    - more themes
     - command line option to set polling interval for CPU and mem
-    - command line updating
     - command line option to only show processes, CPU, and mem
     - zooming in and out of graphs
     - gopsutil issue for darwin i386

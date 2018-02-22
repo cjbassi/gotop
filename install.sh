@@ -2,27 +2,10 @@
 
 VERSION=1.0.1
 
-print_error() {
-    echo "No binary found for your architecture. If your architecture is compatible with a binary"
-    echo "that's already on GitHub, you can manually download and install it and open an issue"
-    echo "saying so. Otherwise, create an issue requesting binaries to be build for your"
-    echo "architecture and you can build from source in the meantime if you like."
-}
-
 install() {
-    curl -L https://github.com/cjbassi/gotop/releases/download/$VERSION/gotop-$VERSION-${1}.tgz > /tmp/gotop.tgz
-    tar xf /tmp/gotop.tgz -C /usr/bin
-    rm /tmp/gotop.tgz
-}
-
-update() {
-    cur_version=$(gotop -v 2>/dev/null)
-    if [[ $? != 0 ]]; then
-        download
-    fi
-    if (( "${cur_version//.}" < "${VERSION//.}" )); then
-        download
-    fi
+    curl -L https://github.com/cjbassi/gotop/releases/download/$VERSION/gotop-$VERSION-${1}.tgz > gotop.tgz
+    tar xf gotop.tgz
+    rm gotop.tgz
 }
 
 arch=$(uname -sm)
@@ -31,7 +14,7 @@ case "$arch" in
     Linux\ *86)  install linux_386      ;;
     Darwin\ *64) install darwin_amd64   ;;
     *)
-        print_error
+        echo "No binary found for your system"
         exit 1
         ;;
 esac
