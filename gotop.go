@@ -51,6 +51,7 @@ Options:
 Colorschemes:
   default
   solarized
+  monokai
 `
 
 	args, _ := docopt.ParseArgs(usage, os.Args[1:], VERSION)
@@ -73,6 +74,8 @@ func updateGotop() {
 
 func handleColorscheme(cs string) {
 	switch cs {
+	case "monokai":
+		colorscheme = colorschemes.Monokai
 	case "solarized":
 		colorscheme = colorschemes.Solarized
 	case "default":
