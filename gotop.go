@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	// "os/exec"
 	"os/signal"
 	"syscall"
 	"time"
@@ -45,7 +44,6 @@ Usage: gotop [options]
 Options:
   -c, --color <name>    Set a colorscheme.
   -h, --help		    Show this screen.
-  -u, --upgrade         Updates gotop if needed.
   -v, --version         Show version.
 
 Colorschemes:
@@ -56,20 +54,9 @@ Colorschemes:
 
 	args, _ := docopt.ParseArgs(usage, os.Args[1:], VERSION)
 
-	if val, _ := args["--upgrade"]; val.(bool) {
-		updateGotop()
-		os.Exit(0)
-	}
-
 	if val, _ := args["--color"]; val != nil {
 		handleColorscheme(val.(string))
 	}
-}
-
-func updateGotop() {
-	// cmd := exec.Command("sleep", "1")
-	// cmd.Run()
-	return
 }
 
 func handleColorscheme(cs string) {
