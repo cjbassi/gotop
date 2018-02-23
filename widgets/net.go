@@ -77,15 +77,16 @@ func (n *Net) update() {
 			curUnit = "kB"
 		}
 
+		var totalCvrt float64
 		if total >= 1000000000 {
-			total = utils.BytesToGB(total)
+			totalCvrt = utils.BytesToGB(total)
 			totalUnit = "GB"
 		} else if total >= 1000000 {
-			total = utils.BytesToMB(total)
+			totalCvrt = utils.BytesToMB(total)
 			totalUnit = "MB"
 		}
 
-		n.Lines[i].Title1 = fmt.Sprintf(" Total %s: %3d %s", method, total, totalUnit)
-		n.Lines[i].Title2 = fmt.Sprintf(" %s/s: %7d %2s/s", method, cur, curUnit)
+		n.Lines[i].Title1 = fmt.Sprintf(" Total %s: %5.1f %s", method, totalCvrt, totalUnit)
+		n.Lines[i].Title2 = fmt.Sprintf(" %s/s: %9d %2s/s", method, cur, curUnit)
 	}
 }
