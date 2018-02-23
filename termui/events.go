@@ -15,11 +15,12 @@ var eventStream = EventStream{
 
 type EventStream struct {
 	eventHandlers map[string]func(Event)
-	prevKey       string
+	prevKey       string // previous keypress
 	stopLoop      chan bool
-	eventQueue    chan tb.Event
+	eventQueue    chan tb.Event // list of events from termbox
 }
 
+// Event includes only the termbox.Event attributes we need.
 type Event struct {
 	Key    string
 	Width  int
@@ -137,7 +138,6 @@ func convertTermboxKeyValue(e tb.Event) string {
 	return pre + mod + k
 }
 
-// convertTermboxMouseValue turns termbox mouse events into strings
 func convertTermboxMouseValue(e tb.Event) string {
 	switch e.Key {
 	case tb.MouseLeft:

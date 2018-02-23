@@ -1,15 +1,19 @@
 package termui
 
+// Color is an integer in the range -1 to 255
 type Color int
 
+// ColorDefault = clear
 const ColorDefault = -1
 
+// Copied from termbox
 const (
 	AttrBold Color = 1 << (iota + 9)
 	AttrUnderline
 	AttrReverse
 )
 
+// Theme is assigned to the current theme
 var Theme = DefaultTheme
 
 var DefaultTheme = Colorscheme{
@@ -29,7 +33,7 @@ var DefaultTheme = Colorscheme{
 	TempHigh:    1,
 }
 
-// A ColorScheme represents the current look-and-feel of the dashboard.
+// A Colorscheme represents the current look-and-feel of the dashboard.
 type Colorscheme struct {
 	Fg Color
 	Bg Color

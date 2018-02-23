@@ -6,12 +6,13 @@ import (
 
 	ui "github.com/cjbassi/gotop/termui"
 	"github.com/cjbassi/gotop/utils"
-	ps "github.com/shirou/gopsutil/net"
+	net "github.com/shirou/gopsutil/net"
 )
 
 type Net struct {
 	*ui.Sparklines
-	interval  time.Duration
+	interval time.Duration
+	// used to calculate recent network activity
 	recvTotal uint64
 	sentTotal uint64
 }
@@ -39,7 +40,8 @@ func NewNet() *Net {
 }
 
 func (n *Net) update() {
-	interfaces, _ := ps.IOCounters(false)
+	// `false` causes psutil to group all network activity
+	interfaces, _ := net.IOCounters(false)
 	recv := interfaces[0].BytesRecv
 	sent := interfaces[0].BytesSent
 
@@ -51,6 +53,7 @@ func (n *Net) update() {
 		n.Lines[1].Data = append(n.Lines[1].Data, int(curSent))
 	}
 
+	// used for later calls to update
 	n.recvTotal = recv
 	n.sentTotal = sent
 
@@ -62,10 +65,10 @@ func (n *Net) update() {
 		curUnit := "B"
 
 		if i == 0 {
-			total = n.recvTotal
+			total = recv
 			method = "Rx"
 		} else {
-			total = n.sentTotal
+			total = sent
 			method = "Tx"
 		}
 

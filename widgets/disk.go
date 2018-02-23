@@ -6,7 +6,7 @@ import (
 
 	ui "github.com/cjbassi/gotop/termui"
 	"github.com/cjbassi/gotop/utils"
-	ps "github.com/shirou/gopsutil/disk"
+	disk "github.com/shirou/gopsutil/disk"
 )
 
 type Disk struct {
@@ -16,6 +16,7 @@ type Disk struct {
 }
 
 func NewDisk() *Disk {
+	// get root filesystem usage
 	d := &Disk{ui.NewGauge(), "/", time.Second * 5}
 	d.Label = "Disk Usage"
 
@@ -31,7 +32,7 @@ func NewDisk() *Disk {
 }
 
 func (d *Disk) update() {
-	disk, _ := ps.Usage(d.fs)
+	disk, _ := disk.Usage(d.fs)
 	d.Percent = int(disk.UsedPercent)
 	d.Description = fmt.Sprintf(" (%dGB free)", int(utils.BytesToGB(disk.Free)))
 }

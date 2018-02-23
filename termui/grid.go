@@ -9,19 +9,21 @@ type GridBufferer interface {
 	SetGrid(int, int, int, int)
 }
 
+// Grid holds widgets and information about terminal dimensions.
+// Widgets are adjusted and rendered through the grid.
 type Grid struct {
 	Widgets []GridBufferer
 	Width   int
 	Height  int
 	Cols    int
 	Rows    int
-	BgColor Color
 }
 
 func NewGrid() *Grid {
 	return &Grid{}
 }
 
+// Set takes a widget along with it's grid dimensions to be controlled by the grid.
 func (g *Grid) Set(x0, y0, x1, y1 int, widget GridBufferer) {
 	if widget == nil {
 		return
@@ -36,13 +38,14 @@ func (g *Grid) Set(x0, y0, x1, y1 int, widget GridBufferer) {
 	g.Widgets = append(g.Widgets, widget)
 }
 
+// Resize resizes each widget in the grid's control.
 func (g *Grid) Resize() {
 	for _, w := range g.Widgets {
 		w.Resize(g.Width, g.Height, g.Cols, g.Rows)
 	}
 }
 
-// Buffer implements Bufferer interface.
+// Buffer implements Bufferer interface and merges each widget into one buffer.
 func (g *Grid) Buffer() *Buffer {
 	buf := NewFilledBuffer(0, 0, g.Width, g.Height, Cell{' ', ColorDefault, Theme.Bg})
 	for _, w := range g.Widgets {

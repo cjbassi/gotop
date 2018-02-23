@@ -30,12 +30,10 @@ type HelpMenu struct {
 
 func NewHelpMenu() *HelpMenu {
 	block := *ui.NewBlock()
-	block.X = 48
-	block.Y = 15
-	block.XOffset = (ui.Body.Width - block.X) / 2
-	block.YOffset = (ui.Body.Height - block.Y) / 2
-	// block.XOffset = ui.Body.Width - 50
-	// block.YOffset = ui.Body.Height - 50
+	block.X = 48                                   // width
+	block.Y = 15                                   // height
+	block.XOffset = (ui.Body.Width - block.X) / 2  // X coordinate
+	block.YOffset = (ui.Body.Height - block.Y) / 2 // Y coordinate
 	return &HelpMenu{block}
 }
 
@@ -47,8 +45,6 @@ func (hm *HelpMenu) Buffer() *ui.Buffer {
 			buf.SetCell(x+1, y, ui.NewCell(char, ui.Color(7), hm.Bg))
 		}
 	}
-
-	buf.SetAreaXY(hm.X+2, hm.Y+2)
 
 	return buf
 }

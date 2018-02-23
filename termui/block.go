@@ -4,15 +4,13 @@ import (
 	"image"
 )
 
-// Block is a base struct for all other upper level widgets,
-// consider it as css: display:block.
-// Normally you do not need to create it manually.
+// Block is a base struct for all other upper level widgets.
 type Block struct {
 	Grid     image.Rectangle
-	X        int
-	Y        int
-	XOffset  int
-	YOffset  int
+	X        int // largest X value in the inner square
+	Y        int // largest Y value in the inner square
+	XOffset  int // the X position of the widget on the terminal
+	YOffset  int // the Y position of the widget on the terminal
 	Label    string
 	BorderFg Color
 	BorderBg Color
@@ -22,7 +20,7 @@ type Block struct {
 	Bg       Color
 }
 
-// NewBlock returns a *Block which inherits styles from current theme.
+// NewBlock returns a *Block which inherits styles from the current theme.
 func NewBlock() *Block {
 	return &Block{
 		Fg:       Theme.Fg,
@@ -34,7 +32,6 @@ func NewBlock() *Block {
 	}
 }
 
-// Buffer draws a box border.
 func (b *Block) drawBorder(buf *Buffer) {
 	x := b.X + 1
 	y := b.Y + 1
@@ -67,7 +64,7 @@ func (b *Block) drawLabel(buf *Buffer) {
 	}
 }
 
-// Resize computes Height, Width, XOffset, and YOffset
+// Resize computes Height, Width, XOffset, and YOffset given terminal dimensions.
 func (b *Block) Resize(termWidth, termHeight, termCols, termRows int) {
 	b.X = int((float64(b.Grid.Dx())/float64(termCols))*float64(termWidth)) - 2
 	b.Y = int((float64(b.Grid.Dy())/float64(termRows))*float64(termHeight)) - 2
@@ -75,6 +72,7 @@ func (b *Block) Resize(termWidth, termHeight, termCols, termRows int) {
 	b.YOffset = int(((float64(b.Grid.Min.Y) / float64(termRows)) * float64(termHeight)))
 }
 
+// SetGrid create a rectangle representing the block's dimensions in the grid.
 func (b *Block) SetGrid(c0, r0, c1, r1 int) {
 	b.Grid = image.Rect(c0, r0, c1, r1)
 }
@@ -87,7 +85,7 @@ func (b *Block) GetYOffset() int {
 	return b.YOffset
 }
 
-// Buffer implements Bufferer interface and draws background and border
+// Buffer implements Bufferer interface and draws background, border, and borderlabel.
 func (b *Block) Buffer() *Buffer {
 	buf := NewBuffer()
 	buf.SetAreaXY(b.X+2, b.Y+2)

@@ -6,7 +6,7 @@ import (
 
 const DOTS = '…'
 
-// MaxString trims a string and adds dots if its length is greater than l
+// MaxString trims a string and adds dots if the string is longer than a give length.
 func MaxString(s string, l int) string {
 	if l <= 0 {
 		return ""

@@ -4,7 +4,7 @@ import (
 	"image"
 )
 
-// Cell is a rune with assigned Fg and Bg
+// Cell is a rune with assigned Fg and Bg.
 type Cell struct {
 	Ch rune
 	Fg Color
@@ -21,14 +21,13 @@ func NewCell(ch rune, Fg, Bg Color) Cell {
 	return Cell{ch, Fg, Bg}
 }
 
-// NewBuffer returns a new Buffer
 func NewBuffer() *Buffer {
 	return &Buffer{
 		CellMap: make(map[image.Point]Cell),
 		Area:    image.Rectangle{}}
 }
 
-// NewFilledBuffer returns a new Buffer filled with ch, fb and bg.
+// NewFilledBuffer returns a new Buffer filled with the given Cell.
 func NewFilledBuffer(x0, y0, x1, y1 int, c Cell) *Buffer {
 	buf := NewBuffer()
 	buf.Area.Min = image.Pt(x0, y0)
@@ -42,11 +41,12 @@ func NewFilledBuffer(x0, y0, x1, y1 int, c Cell) *Buffer {
 	return buf
 }
 
-// Set assigns a char to (x,y)
+// Set assigns a Cell to (x,y).
 func (b *Buffer) SetCell(x, y int, c Cell) {
 	b.CellMap[image.Pt(x, y)] = c
 }
 
+// SetString assigns a string to a Buffer starting at (x,y).
 func (b *Buffer) SetString(x, y int, s string, fg, bg Color) {
 	for i, char := range s {
 		b.SetCell(x+i, y, Cell{char, fg, bg})
@@ -58,32 +58,13 @@ func (b *Buffer) At(x, y int) Cell {
 	return b.CellMap[image.Pt(x, y)]
 }
 
-// Bounds returns the domain for which At can return non-zero color.
-func (b *Buffer) Bounds() image.Rectangle {
-	x0, y0, x1, y1 := 0, 0, 0, 0
-	for p := range b.CellMap {
-		if p.X > x1 {
-			x1 = p.X
-		}
-		if p.X < x0 {
-			x0 = p.X
-		}
-		if p.Y > y1 {
-			y1 = p.Y
-		}
-		if p.Y < y0 {
-			y0 = p.Y
-		}
-	}
-	return image.Rect(x0, y0, x1+1, y1+1)
-}
-
 // SetArea assigns a new rect area to Buffer b.
 func (b *Buffer) SetArea(r image.Rectangle) {
 	b.Area.Max = r.Max
 	b.Area.Min = r.Min
 }
 
+// SetAreaXY sets the Buffer bounds from (0,0) to (x,y).
 func (b *Buffer) SetAreaXY(x, y int) {
 	b.Area.Min.Y = 0
 	b.Area.Min.X = 0
@@ -91,12 +72,7 @@ func (b *Buffer) SetAreaXY(x, y int) {
 	b.Area.Max.X = x
 }
 
-// Sync sets drawing area to the buffer's bound
-func (b *Buffer) Sync() {
-	b.SetArea(b.Bounds())
-}
-
-// Merge merges bs Buffers onto b
+// Merge merges the given buffers onto the current Buffer.
 func (b *Buffer) Merge(bs ...*Buffer) {
 	for _, buf := range bs {
 		for p, c := range buf.CellMap {
@@ -106,6 +82,7 @@ func (b *Buffer) Merge(bs ...*Buffer) {
 	}
 }
 
+// MergeWithOffset merges the given buffer at a certain position on the given buffer.
 func (b *Buffer) MergeWithOffset(buf *Buffer, xOffset, yOffset int) {
 	for p, c := range buf.CellMap {
 		b.SetCell(p.X+xOffset, p.Y+yOffset, c)
@@ -114,7 +91,7 @@ func (b *Buffer) MergeWithOffset(buf *Buffer, xOffset, yOffset int) {
 	b.SetArea(b.Area.Union(rect))
 }
 
-// Fill fills the Buffer b with ch,fg and bg.
+// Fill fills the Buffer with a Cell.
 func (b *Buffer) Fill(c Cell) {
 	for x := b.Area.Min.X; x < b.Area.Max.X; x++ {
 		for y := b.Area.Min.Y; y < b.Area.Max.Y; y++ {

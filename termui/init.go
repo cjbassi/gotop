@@ -14,17 +14,13 @@ func Init() error {
 	tb.SetOutputMode(tb.Output256)
 
 	Body = NewGrid()
-	Body.BgColor = Theme.Bg
-
-	// renderLock.Lock()
 	Body.Width, Body.Height = tb.Size()
-	// renderLock.Unlock()
 
 	return nil
 }
 
-// Close finalizes termui library,
-// should be called after successful initialization when termui's functionality isn't required anymore.
+// Close finalizes termui library.
+// It should be called after successful initialization when termui's functionality isn't required anymore.
 func Close() {
 	tb.Close()
 }

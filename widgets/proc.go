@@ -7,7 +7,7 @@ import (
 
 	ui "github.com/cjbassi/gotop/termui"
 	cpu "github.com/shirou/gopsutil/cpu"
-	ps "github.com/shirou/gopsutil/process"
+	proc "github.com/shirou/gopsutil/process"
 )
 
 const (
@@ -71,7 +71,7 @@ func NewProc(loaded, keyPressed chan bool) *Proc {
 }
 
 func (p *Proc) update() {
-	psProcs, _ := ps.Processes()
+	psProcs, _ := proc.Processes()
 	processes := make([]Process, len(psProcs))
 	for i, pr := range psProcs {
 		pid := pr.Pid
