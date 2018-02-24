@@ -25,11 +25,11 @@ Process Sorting:
 `
 
 type HelpMenu struct {
-	ui.Block
+	*ui.Block
 }
 
 func NewHelpMenu() *HelpMenu {
-	block := *ui.NewBlock()
+	block := ui.NewBlock()
 	block.X = 48                                   // width
 	block.Y = 15                                   // height
 	block.XOffset = (ui.Body.Width - block.X) / 2  // X coordinate

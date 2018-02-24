@@ -16,12 +16,17 @@ import (
 const VERSION = "1.0.1"
 
 var (
+	// for when terminal is resized
 	resized = make(chan bool, 1)
 
+	// for when help menu is toggled
 	helpToggled = make(chan bool, 1)
-	helpStatus  = false
+	// whether help menu is toggled
+	helpStatus = false
 
+	// proc widget takes longer to load, wait to render until it loads data
 	procLoaded = make(chan bool, 1)
+	// used to render the proc widget whenever a key is pressed for it
 	keyPressed = make(chan bool, 1)
 
 	colorscheme = colorschemes.Default
@@ -37,7 +42,7 @@ var (
 )
 
 // Sets up docopt which is a command line argument parser
-func arguments() {
+func cliArguments() {
 	usage := `
 Usage: gotop [options]
 
@@ -123,9 +128,11 @@ func termuiColors() {
 }
 
 func widgetColors() {
+	// memory widget colors
 	mem.LineColor["Main"] = ui.Color(colorscheme.MainMem)
 	mem.LineColor["Swap"] = ui.Color(colorscheme.SwapMem)
 
+	// cpu widget colors
 	LineColor := make(map[string]ui.Color)
 	for i := 0; i < len(cpu.Data); i++ {
 		LineColor[fmt.Sprintf("CPU%d", i+1)] = ui.Color(colorscheme.CPULines[i])
@@ -134,11 +141,12 @@ func widgetColors() {
 }
 
 func main() {
-	arguments()
-
-	termuiColors()
+	cliArguments()
 
 	keyBinds()
+
+	// need to do this before initializing widgets so that they can inherit the colors
+	termuiColors()
 
 	cpu = w.NewCPU()
 	mem = w.NewMem()
@@ -149,8 +157,10 @@ func main() {
 
 	widgetColors()
 
+	// blocks till loaded
 	<-procLoaded
 
+	// inits termui
 	err := ui.Init()
 	if err != nil {
 		panic(err)
@@ -159,6 +169,7 @@ func main() {
 
 	setupGrid()
 
+	// load help widget after init termui/termbox so that it has access to terminal size
 	help = w.NewHelpMenu()
 
 	ui.On("resize", func(e ui.Event) {

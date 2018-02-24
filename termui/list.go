@@ -29,12 +29,14 @@ func (bc *List) Buffer() *Buffer {
 		if y+1 > bc.Y {
 			break
 		}
+
 		fg := Theme.TempLow
 		if bc.Data[y] >= bc.Threshold {
 			fg = Theme.TempHigh
 		}
-		r := MaxString(text, (bc.X - 4))
-		buf.SetString(1, y+1, r, Theme.Fg, bc.Bg)
+
+		s := MaxString(text, (bc.X - 4))
+		buf.SetString(1, y+1, s, Theme.Fg, bc.Bg)
 		buf.SetString(bc.X-2, y+1, fmt.Sprintf("%dC", bc.Data[y]), fg, bc.Bg)
 	}
 

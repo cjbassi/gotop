@@ -15,7 +15,7 @@ const (
 	UP   = "▲"
 )
 
-// Process represents each process
+// Process represents each process.
 type Process struct {
 	PID     int32
 	Command string
@@ -23,7 +23,7 @@ type Process struct {
 	Mem     float32
 }
 
-// Proc is the widget
+// Proc widget.
 type Proc struct {
 	*ui.Table
 	cpuCount       int
@@ -35,7 +35,7 @@ type Proc struct {
 	KeyPressed     chan bool
 }
 
-// Creates a new Proc widget
+// NewProc creates a new Proc widget.
 func NewProc(loaded, keyPressed chan bool) *Proc {
 	cpuCount, _ := cpu.Counts(false)
 	p := &Proc{
@@ -70,6 +70,7 @@ func NewProc(loaded, keyPressed chan bool) *Proc {
 	return p
 }
 
+// update updates proc widget.
 func (p *Proc) update() {
 	psProcs, _ := proc.Processes()
 	processes := make([]Process, len(psProcs))
@@ -92,7 +93,8 @@ func (p *Proc) update() {
 	p.Sort()
 }
 
-// Sort sorts either the grouped or ungrouped []Process based on the sortMethod
+// Sort sorts either the grouped or ungrouped []Process based on the sortMethod.
+// Called with every update, when the sort method is changed, and when processes are grouped and ungrouped.
 func (p *Proc) Sort() {
 	p.Header = []string{"Count", "Command", "CPU%", "Mem%"}
 

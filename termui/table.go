@@ -8,15 +8,17 @@ import (
 // Table tracks all the attributes of a Table instance
 type Table struct {
 	*Block
-	Header    []string
-	Rows      [][]string
-	Fg        Color
-	Bg        Color
-	Cursor    Color
+	Header []string
+	Rows   [][]string
+	Fg     Color
+	Bg     Color
+	Cursor Color
+	// the unique column used to keep track of which process we're one
+	// either the PID column or Command column depending on if processes are grouped
 	UniqueCol int
-	pid       string
-	selected  int
-	topRow    int
+	pid       string // used to keep the cursor on the correct process after each update
+	selected  int    // selected row
+	topRow    int    // top process in current view
 }
 
 // NewTable returns a new Table instance
@@ -32,7 +34,7 @@ func NewTable() *Table {
 	}
 }
 
-// Buffer ...
+// Buffer implements the Bufferer interface.
 func (t *Table) Buffer() *Buffer {
 	buf := t.Block.Buffer()
 
@@ -58,9 +60,9 @@ func (t *Table) Buffer() *Buffer {
 
 	// total width requires by all 4 columns
 	contentWidth := gap + cw[0] + gap + cw[1] + gap + cw[2] + gap + cw[3] + gap
-	render := 4 // number of columns to iterate through
+	render := 4 // number of columns to render based on the terminal width
 
-	// removes CPU and MEM if there isn't enough room
+	// removes CPU and MEM columns if there isn't enough room
 	if t.X < (contentWidth - gap - cw[3]) {
 		render = 2
 	} else if t.X < contentWidth {
@@ -75,8 +77,6 @@ func (t *Table) Buffer() *Buffer {
 	}
 
 	// prints each row
-	// for y, row := range t.Rows {
-	// for y := t.topRow; y <= t.topRow+t.Y; y++ {
 	for rowNum := t.topRow; rowNum < t.topRow+t.Y-1 && rowNum < len(t.Rows); rowNum++ {
 		row := t.Rows[rowNum]
 		y := (rowNum + 2) - t.topRow
@@ -92,7 +92,7 @@ func (t *Table) Buffer() *Buffer {
 			t.selected = rowNum
 		}
 
-		// prints each string
+		// prints each col of the row
 		for i := 0; i < render; i++ {
 			r := MaxString(row[i], t.X-6)
 			buf.SetString(cp[i], y, r, t.Fg, bg)
@@ -104,6 +104,7 @@ func (t *Table) Buffer() *Buffer {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// calcPos is used to calculate the cursor position and where in the process list we are located.
 func (t *Table) calcPos() {
 	t.pid = ""
 
@@ -171,6 +172,7 @@ func (t *Table) Click(x, y int) {
 	}
 }
 
+// Kill kills process or group of processes.
 func (t *Table) Kill() {
 	t.pid = ""
 	command := "kill"

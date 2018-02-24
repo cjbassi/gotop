@@ -57,8 +57,9 @@ func (n *Net) update() {
 	n.recvTotal = recv
 	n.sentTotal = sent
 
+	// renders net widget titles
 	for i := 0; i < 2; i++ {
-		var method string
+		var method string // either 'Rx' or 'Tx'
 		var total uint64
 		cur := n.Lines[i].Data[len(n.Lines[i].Data)-1]
 		totalUnit := "B"

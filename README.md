@@ -75,15 +75,12 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
     - zooming in and out of graphs
     - gopsutil issue for darwin i386
 * cleaning up code
-    - termui Blocks should ignore writing to the outside area
-        - Ignore writes to outside of inner area, or give error?
-    - termui Blocks should be indexed at 0, and maybe change X and Y variables too
+    - termui buffers should ignore setting characters outside the widget area
+        - ignore writes or give an error?
+    - termui Blocks should be indexed at 0, and maybe change their X and Y variables too
     - remove gotop unique logic from list and table
         - turn column width logic into a function
     - try to get drawille fork merged upstream
     - more documentation
     - Draw borders and label after other stuff
-    - Only merge stuff in the range
-    - Merge should include offset
-    - Remove merge from grid buffer function, just render
-    - Remove merge altogether
+    - Only merge stuff in the buffer's area?

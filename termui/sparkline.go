@@ -56,9 +56,9 @@ func (sl *Sparklines) Buffer() *Buffer {
 		buf.SetString(1, title1Y, title1, line.TitleColor|AttrBold, sl.Bg)
 		buf.SetString(1, title2Y, title2, line.TitleColor|AttrBold, sl.Bg)
 
-		// sparkline
 		sparkY := (sl.Y / lc) * (i + 1)
-		// finds max used for relative heights
+
+		// finds max data in current view used for relative heights
 		max := 1
 		for i := len(line.Data) - 1; i >= 0 && sl.X-((len(line.Data)-1)-i) >= 1; i-- {
 			if line.Data[i] > max {
