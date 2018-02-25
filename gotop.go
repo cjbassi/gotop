@@ -122,9 +122,7 @@ func termuiColors() {
 
 	ui.Theme.TableCursor = ui.Color(colorscheme.ProcCursor)
 	ui.Theme.Sparkline = ui.Color(colorscheme.Sparkline)
-	ui.Theme.BarColor = ui.Color(colorscheme.DiskBar)
-	ui.Theme.TempLow = ui.Color(colorscheme.TempLow)
-	ui.Theme.TempHigh = ui.Color(colorscheme.TempHigh)
+	ui.Theme.GaugeColor = ui.Color(colorscheme.DiskBar)
 }
 
 func widgetColors() {
@@ -138,6 +136,9 @@ func widgetColors() {
 		LineColor[fmt.Sprintf("CPU%d", i+1)] = ui.Color(colorscheme.CPULines[i])
 	}
 	cpu.LineColor = LineColor
+
+	temp.TempLow = ui.Color(colorscheme.TempLow)
+	temp.TempHigh = ui.Color(colorscheme.TempHigh)
 }
 
 func main() {

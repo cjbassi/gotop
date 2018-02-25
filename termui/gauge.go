@@ -7,18 +7,16 @@ import (
 // Gauge is a progress bar like widget.
 type Gauge struct {
 	*Block
-	Percent      int
-	BarColor     Color
-	PercentColor Color
-	Description  string
+	Percent     int
+	GaugeColor  Color
+	Description string
 }
 
 // NewGauge return a new gauge with current theme.
 func NewGauge() *Gauge {
 	return &Gauge{
-		Block:        NewBlock(),
-		PercentColor: Theme.Fg,
-		BarColor:     Theme.BarColor,
+		Block:      NewBlock(),
+		GaugeColor: Theme.GaugeColor,
 	}
 }
 
@@ -30,7 +28,7 @@ func (g *Gauge) Buffer() *Buffer {
 	width := g.Percent * g.X / 100
 	for y := 1; y <= g.Y; y++ {
 		for x := 1; x <= width; x++ {
-			buf.SetCell(x, y, Cell{' ', g.BarColor, g.BarColor})
+			buf.SetCell(x, y, Cell{' ', g.GaugeColor, g.GaugeColor})
 		}
 	}
 
@@ -45,7 +43,7 @@ func (g *Gauge) Buffer() *Buffer {
 		bg := g.Bg
 		fg := g.Fg
 		if x+i < width {
-			fg = g.BarColor
+			fg = g.GaugeColor
 			bg = AttrReverse
 		}
 		buf.SetCell(1+x+i, y, Cell{char, fg, bg})

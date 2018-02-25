@@ -8,7 +8,6 @@ type Sparkline struct {
 	Title1     string
 	Title2     string
 	TitleColor Color
-	Total      int
 	LineColor  Color
 }
 

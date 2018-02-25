@@ -1,6 +1,7 @@
 package widgets
 
 import (
+	"os/exec"
 	"sort"
 	"strconv"
 	"time"
@@ -46,7 +47,9 @@ func NewProc(loaded, keyPressed chan bool) *Proc {
 		group:      true,
 		KeyPressed: keyPressed,
 	}
+	p.ColResizer = p.ColResize
 	p.Label = "Process List"
+	p.ColWidths = []int{5, 10, 4, 4}
 
 	p.UniqueCol = 0
 	if p.group {
@@ -124,6 +127,35 @@ func (p *Proc) Sort() {
 	}
 
 	p.Rows = FieldsToStrings(*processes)
+}
+
+// ColResize overrides the default ColResize in the termui table.
+func (p *Proc) ColResize() {
+	// calculate gap size based on total width
+	p.Gap = 3
+	if p.X < 50 {
+		p.Gap = 1
+	} else if p.X < 75 {
+		p.Gap = 2
+	}
+
+	p.Cp = []int{
+		p.Gap,
+		p.Gap + p.ColWidths[0] + p.Gap,
+		p.X - p.Gap - p.ColWidths[3] - p.Gap - p.ColWidths[2],
+		p.X - p.Gap - p.ColWidths[3],
+	}
+
+	contentWidth := p.Gap + p.ColWidths[0] + p.Gap + p.ColWidths[1] + p.Gap + p.ColWidths[2] + p.Gap + p.ColWidths[3] + p.Gap
+
+	// only renders a column if it fits
+	if p.X < (contentWidth - p.Gap - p.ColWidths[3]) {
+		p.ColWidths[2] = 0
+		p.ColWidths[3] = 0
+	} else if p.X < contentWidth {
+		p.Cp[2] = p.Cp[3]
+		p.ColWidths[3] = 0
+	}
 }
 
 func (p *Proc) keyBinds() {
@@ -247,6 +279,17 @@ func FieldsToStrings(P []Process) [][]string {
 		strings[i][3] = strconv.FormatFloat(float64(p.Mem), 'f', 1, 32)
 	}
 	return strings
+}
+
+// Kill kills process or group of processes.
+func (p *Proc) Kill() {
+	p.SelectedItem = ""
+	command := "kill"
+	if p.UniqueCol == 1 {
+		command = "pkill"
+	}
+	cmd := exec.Command(command, p.Rows[p.SelectedRow][p.UniqueCol])
+	cmd.Start()
 }
 
 ////////////////////////////////////////////////////////////////////////////////

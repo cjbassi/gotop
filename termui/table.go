@@ -1,36 +1,53 @@
 package termui
 
 import (
-	"os/exec"
 	"strings"
 )
 
 // Table tracks all the attributes of a Table instance
 type Table struct {
 	*Block
-	Header []string
-	Rows   [][]string
-	Fg     Color
-	Bg     Color
-	Cursor Color
-	// the unique column used to keep track of which process we're one
-	// either the PID column or Command column depending on if processes are grouped
-	UniqueCol int
-	pid       string // used to keep the cursor on the correct process after each update
-	selected  int    // selected row
-	topRow    int    // top process in current view
+	Header       []string
+	Rows         [][]string
+	ColWidths    []int
+	Cp           []int // column position
+	Gap          int   // gap between columns
+	Cursor       Color
+	UniqueCol    int    // the column used to identify the selected item
+	SelectedItem string // used to keep the cursor on the correct item if the data changes
+	SelectedRow  int
+	TopRow       int // used to indicate where in the table we are scrolled at
+	ColResizer   func()
 }
 
 // NewTable returns a new Table instance
 func NewTable() *Table {
-	return &Table{
-		Block:     NewBlock(),
-		Fg:        Theme.Fg,
-		Bg:        Theme.Bg,
-		Cursor:    Theme.TableCursor,
-		selected:  0,
-		topRow:    0,
-		UniqueCol: 0,
+	t := &Table{
+		Block:       NewBlock(),
+		Cursor:      Theme.TableCursor,
+		SelectedRow: 0,
+		TopRow:      0,
+		UniqueCol:   0,
+	}
+	t.ColResizer = t.ColResize
+	return t
+}
+
+// ColResize is the default column resizer, but can be overriden.
+func (t *Table) ColResize() {
+	// calculate gap size based on total width
+	t.Gap = 3
+	if t.X < 50 {
+		t.Gap = 1
+	} else if t.X < 75 {
+		t.Gap = 2
+	}
+
+	cur := 0
+	for _, w := range t.ColWidths {
+		cur += t.Gap
+		t.Cp = append(t.Cp, cur)
+		cur += w
 	}
 }
 
@@ -38,64 +55,49 @@ func NewTable() *Table {
 func (t *Table) Buffer() *Buffer {
 	buf := t.Block.Buffer()
 
-	if t.topRow > len(t.Rows)-(t.Y-1) {
-		t.topRow = len(t.Rows) - (t.Y - 1)
+	// makes sure there isn't a gap at the bottom of the table view
+	if t.TopRow > len(t.Rows)-(t.Y-1) {
+		t.TopRow = len(t.Rows) - (t.Y - 1)
 	}
 
-	// calculate gap size based on total width
-	gap := 3
-	if t.X < 50 {
-		gap = 1
-	} else if t.X < 75 {
-		gap = 2
-	}
-
-	cw := []int{5, 10, 4, 4} // cellWidth
-	cp := []int{             // cellPosition
-		gap,
-		gap + cw[0] + gap,
-		t.X - gap - cw[3] - gap - cw[2],
-		t.X - gap - cw[3],
-	}
-
-	// total width requires by all 4 columns
-	contentWidth := gap + cw[0] + gap + cw[1] + gap + cw[2] + gap + cw[3] + gap
-	render := 4 // number of columns to render based on the terminal width
-
-	// removes CPU and MEM columns if there isn't enough room
-	if t.X < (contentWidth - gap - cw[3]) {
-		render = 2
-	} else if t.X < contentWidth {
-		cp[2] = cp[3]
-		render = 3
-	}
+	t.ColResizer()
 
 	// print header
-	for i := 0; i < render; i++ {
+	// for i := 0; i < render; i++ {
+	for i, width := range t.ColWidths {
+		if width == 0 {
+			break
+		}
 		r := MaxString(t.Header[i], t.X-6)
-		buf.SetString(cp[i], 1, r, t.Fg|AttrBold, t.Bg)
+		buf.SetString(t.Cp[i], 1, r, t.Fg|AttrBold, t.Bg)
 	}
 
 	// prints each row
-	for rowNum := t.topRow; rowNum < t.topRow+t.Y-1 && rowNum < len(t.Rows); rowNum++ {
+	for rowNum := t.TopRow; rowNum < t.TopRow+t.Y-1 && rowNum < len(t.Rows); rowNum++ {
 		row := t.Rows[rowNum]
-		y := (rowNum + 2) - t.topRow
+		y := (rowNum + 2) - t.TopRow
 
 		// cursor
 		bg := t.Bg
-		if (t.pid == "" && rowNum == t.selected) || (t.pid != "" && t.pid == row[t.UniqueCol]) {
+		if (t.SelectedItem == "" && rowNum == t.SelectedRow) || (t.SelectedItem != "" && t.SelectedItem == row[t.UniqueCol]) {
 			bg = t.Cursor
-			for i := 0; i < render; i++ {
+			for _, width := range t.ColWidths {
+				if width == 0 {
+					break
+				}
 				buf.SetString(1, y, strings.Repeat(" ", t.X), t.Fg, bg)
 			}
-			t.pid = row[t.UniqueCol]
-			t.selected = rowNum
+			t.SelectedItem = row[t.UniqueCol]
+			t.SelectedRow = rowNum
 		}
 
 		// prints each col of the row
-		for i := 0; i < render; i++ {
+		for i, width := range t.ColWidths {
+			if width == 0 {
+				break
+			}
 			r := MaxString(row[i], t.X-6)
-			buf.SetString(cp[i], y, r, t.Fg, bg)
+			buf.SetString(t.Cp[i], y, r, t.Fg, bg)
 		}
 	}
 
@@ -103,63 +105,64 @@ func (t *Table) Buffer() *Buffer {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Cursor movement
 
 // calcPos is used to calculate the cursor position and where in the process list we are located.
 func (t *Table) calcPos() {
-	t.pid = ""
+	t.SelectedItem = ""
 
-	if t.selected < 0 {
-		t.selected = 0
+	if t.SelectedRow < 0 {
+		t.SelectedRow = 0
 	}
-	if t.selected < t.topRow {
-		t.topRow = t.selected
+	if t.SelectedRow < t.TopRow {
+		t.TopRow = t.SelectedRow
 	}
 
-	if t.selected > len(t.Rows)-1 {
-		t.selected = len(t.Rows) - 1
+	if t.SelectedRow > len(t.Rows)-1 {
+		t.SelectedRow = len(t.Rows) - 1
 	}
-	if t.selected > t.topRow+(t.Y-2) {
-		t.topRow = t.selected - (t.Y - 2)
+	if t.SelectedRow > t.TopRow+(t.Y-2) {
+		t.TopRow = t.SelectedRow - (t.Y - 2)
 	}
 }
 
 func (t *Table) Up() {
-	t.selected -= 1
+	t.SelectedRow -= 1
 	t.calcPos()
 }
 
 func (t *Table) Down() {
-	t.selected += 1
+	t.SelectedRow += 1
 	t.calcPos()
 }
 
 func (t *Table) Top() {
-	t.selected = 0
+	t.SelectedRow = 0
 	t.calcPos()
 }
 
 func (t *Table) Bottom() {
-	t.selected = len(t.Rows) - 1
+	t.SelectedRow = len(t.Rows) - 1
 	t.calcPos()
 }
 
 func (t *Table) HalfPageUp() {
-	t.selected = t.selected - (t.Y-2)/2
+	t.SelectedRow = t.SelectedRow - (t.Y-2)/2
 	t.calcPos()
 }
 
 func (t *Table) HalfPageDown() {
-	t.selected = t.selected + (t.Y-2)/2
+	t.SelectedRow = t.SelectedRow + (t.Y-2)/2
 	t.calcPos()
 }
 
 func (t *Table) PageUp() {
-	t.selected -= (t.Y - 2)
+	t.SelectedRow -= (t.Y - 2)
 	t.calcPos()
 }
 
 func (t *Table) PageDown() {
-	t.selected += (t.Y - 2)
+	t.SelectedRow += (t.Y - 2)
 	t.calcPos()
 }
 
@@ -167,18 +170,7 @@ func (t *Table) Click(x, y int) {
 	x = x - t.XOffset
 	y = y - t.YOffset
 	if (x > 0 && x <= t.X) && (y > 0 && y <= t.Y) {
-		t.selected = (t.topRow + y) - 2
+		t.SelectedRow = (t.TopRow + y) - 2
 		t.calcPos()
 	}
-}
-
-// Kill kills process or group of processes.
-func (t *Table) Kill() {
-	t.pid = ""
-	command := "kill"
-	if t.UniqueCol == 1 {
-		command = "pkill"
-	}
-	cmd := exec.Command(command, t.Rows[t.selected][t.UniqueCol])
-	cmd.Start()
 }

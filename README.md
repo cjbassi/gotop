@@ -78,8 +78,6 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
     - termui buffers should ignore setting characters outside the widget area
         - ignore writes or give an error?
     - termui Blocks should be indexed at 0, and maybe change their X and Y variables too
-    - remove gotop unique logic from list and table
-        - turn column width logic into a function
     - try to get drawille fork merged upstream
     - more documentation
     - Draw borders and label after other stuff

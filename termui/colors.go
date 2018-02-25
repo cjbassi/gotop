@@ -28,9 +28,7 @@ var DefaultTheme = Colorscheme{
 	Sparkline:   4,
 	LineGraph:   -1,
 	TableCursor: 4,
-	BarColor:    7,
-	TempLow:     2,
-	TempHigh:    1,
+	GaugeColor:  7,
 }
 
 // A Colorscheme represents the current look-and-feel of the dashboard.
@@ -46,7 +44,5 @@ type Colorscheme struct {
 	Sparkline   Color
 	LineGraph   Color
 	TableCursor Color
-	BarColor    Color
-	TempLow     Color
-	TempHigh    Color
+	GaugeColor  Color
 }

@@ -1,6 +1,10 @@
 package widgets
 
+// Temp is too customized to inherit from a generic widget so we create a customized one here.
+// Temp defines its own Buffer method directly.
+
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -9,14 +13,22 @@ import (
 )
 
 type Temp struct {
-	*ui.List
-	interval time.Duration
+	*ui.Block
+	interval   time.Duration
+	Data       []int
+	DataLabels []string
+	Threshold  int
+	TempLow    ui.Color
+	TempHigh   ui.Color
 }
 
 func NewTemp() *Temp {
-	t := &Temp{ui.NewList(), time.Second * 5}
+	t := &Temp{
+		Block:     ui.NewBlock(),
+		interval:  time.Second * 5,
+		Threshold: 80, // temp at which color should change to red
+	}
 	t.Label = "Temperatures"
-	t.Threshold = 80 // temp at which color should change to red
 
 	go t.update()
 	ticker := time.NewTicker(t.interval)
@@ -43,4 +55,26 @@ func (t *Temp) update() {
 	}
 	t.Data = temps
 	t.DataLabels = labels
+}
+
+// Buffer implements ui.Bufferer interface.
+func (t *Temp) Buffer() *ui.Buffer {
+	buf := t.Block.Buffer()
+
+	for y, text := range t.DataLabels {
+		if y+1 > t.Y {
+			break
+		}
+
+		fg := t.TempLow
+		if t.Data[y] >= t.Threshold {
+			fg = t.TempHigh
+		}
+
+		s := ui.MaxString(text, (t.X - 4))
+		buf.SetString(1, y+1, s, t.Fg, t.Bg)
+		buf.SetString(t.X-2, y+1, fmt.Sprintf("%dC", t.Data[y]), fg, t.Bg)
+	}
+
+	return buf
 }
