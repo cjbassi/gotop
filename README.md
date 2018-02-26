@@ -23,7 +23,7 @@ Then move `gotop` into your $PATH somewhere.
 
 ### Arch Linux
 
-If you're running Arch Linux, you can install the `gotop` package from the AUR.
+Alternatively, if you're on Arch Linux, you can install the `gotop` package from the AUR.
 
 ### Source
 
@@ -73,12 +73,12 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
     - command line option to set polling interval for CPU and mem
     - command line option to only show processes, CPU, and mem
     - zooming in and out of graphs
-    - gopsutil cross-compiling issue on Linux amd64 for darwin i386
+    - gopsutil cross-compiling issue on linux_amd64 for darwin_i386
 * code cleanup
-    - termui buffers should ignore setting characters outside the widget area
+    - more comments
+    - termui buffers should ignore characters set outside the widget area
         - ignore writes or give an error?
     - termui Blocks should be indexed at 0, and maybe change their X and Y variables too
-    - try to get drawille fork merged upstream
-    - more documentation
-    - Draw borders and label after other stuff
-    - Only merge stuff in the buffer's area?
+    - try to get the drawille fork merged upstream
+    - draw borders and label after widget contents
+    - only merge buffers that are within the original's area
