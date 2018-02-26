@@ -15,7 +15,7 @@ Binaries are currently available for 32/64bit Linux and 64bit OSX.
 To download the latest binary for your system from GitHub, you can run the [download](https://github.com/cjbassi/gotop/blob/master/download.sh) script:
 
 ```
-curl https://raw.githubusercontent.com/cjbassi/gotop/master/download.sh | bash
+sh -c "$(curl https://raw.githubusercontent.com/cjbassi/gotop/master/download.sh)"
 ```
 
 Then move `gotop` into your $PATH somewhere.
