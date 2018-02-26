@@ -26,7 +26,7 @@ var DefaultTheme = Colorscheme{
 	BorderBg: -1,
 
 	Sparkline:   4,
-	LineGraph:   -1,
+	LineGraph:   0,
 	TableCursor: 4,
 	GaugeColor:  7,
 }

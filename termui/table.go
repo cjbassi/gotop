@@ -16,8 +16,8 @@ type Table struct {
 	UniqueCol    int    // the column used to identify the selected item
 	SelectedItem string // used to keep the cursor on the correct item if the data changes
 	SelectedRow  int
-	TopRow       int // used to indicate where in the table we are scrolled at
-	ColResizer   func()
+	TopRow       int    // used to indicate where in the table we are scrolled at
+	ColResizer   func() // for widgets that inherit a Table and want to overload the ColResize method
 }
 
 // NewTable returns a new Table instance
@@ -104,8 +104,9 @@ func (t *Table) Buffer() *Buffer {
 	return buf
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Cursor movement
+/////////////////////////////////////////////////////////////////////////////////
+//                               Cursor Movement                               //
+/////////////////////////////////////////////////////////////////////////////////
 
 // calcPos is used to calculate the cursor position and where in the process list we are located.
 func (t *Table) calcPos() {

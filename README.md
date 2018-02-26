@@ -12,18 +12,18 @@ Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https:/
 
 Binaries are currently available for 32/64bit Linux and 64bit OSX.
 
-To download the latest binary for your system from GitHub, you can run the [install](https://github.com/cjbassi/gotop/blob/master/install.sh) script:
+To download the latest binary for your system from GitHub, you can run the [download](https://github.com/cjbassi/gotop/blob/master/download.sh) script:
 
 ```
-curl https://raw.githubusercontent.com/cjbassi/gotop/master/install.sh | bash
+curl https://raw.githubusercontent.com/cjbassi/gotop/master/download.sh | bash
 ```
 
-Then move `gotop` somewhere into your $PATH.
+Then move `gotop` into your $PATH somewhere.
 
 
 ### Arch Linux
 
-Alternatively, if you're on Arch Linux you can install the `gotop` package from the AUR.
+If you're running Arch Linux, you can install the `gotop` package from the AUR.
 
 ### Source
 
@@ -54,7 +54,7 @@ go get github.com/cjbassi/gotop
 ### Mouse
 
 * click to select process
-* mouse wheel to scroll Process List
+* mouse wheel to scroll through processes
 
 
 ## Colorschemes
@@ -73,8 +73,8 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
     - command line option to set polling interval for CPU and mem
     - command line option to only show processes, CPU, and mem
     - zooming in and out of graphs
-    - gopsutil issue for darwin i386
-* cleaning up code
+    - gopsutil cross-compiling issue on Linux amd64 for darwin i386
+* code cleanup
     - termui buffers should ignore setting characters outside the widget area
         - ignore writes or give an error?
     - termui Blocks should be indexed at 0, and maybe change their X and Y variables too
