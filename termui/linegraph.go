@@ -46,7 +46,7 @@ func (lc *LineGraph) Buffer() *Buffer {
 	}
 	sort.Strings(seriesList)
 
-	for j, seriesName := range seriesList {
+	for _, seriesName := range seriesList {
 		seriesData := lc.Data[seriesName]
 		seriesLineColor, ok := lc.LineColor[seriesName]
 		if !ok {
@@ -86,6 +86,14 @@ func (lc *LineGraph) Buffer() *Buffer {
 					buf.SetCell(x, y, Cell{char, colors[x][y], lc.Bg})
 				}
 			}
+		}
+	}
+
+	for j, seriesName := range seriesList {
+		seriesData := lc.Data[seriesName]
+		seriesLineColor, ok := lc.LineColor[seriesName]
+		if !ok {
+			seriesLineColor = lc.DefaultLineColor
 		}
 
 		// Render key ontop, but let braille be drawn between words
