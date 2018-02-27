@@ -46,7 +46,9 @@ func (lc *LineGraph) Buffer() *Buffer {
 	}
 	sort.Strings(seriesList)
 
-	for _, seriesName := range seriesList {
+	// draw lines in reverse order so the first one is on top
+	for i := len(seriesList) - 1; i >= 0; i-- {
+		seriesName := seriesList[i]
 		seriesData := lc.Data[seriesName]
 		seriesLineColor, ok := lc.LineColor[seriesName]
 		if !ok {
