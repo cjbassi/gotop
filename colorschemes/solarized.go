@@ -7,7 +7,7 @@ var Solarized = Colorscheme{
 	BorderLabel: 250,
 	BorderLine:  37,
 
-	CPULines: []int{64, 37, 33, 61, 125, 160, 166, 136},
+	CPULines: []int{61, 33, 37, 64, 125, 160, 166, 136},
 
 	MainMem: 125,
 	SwapMem: 166,

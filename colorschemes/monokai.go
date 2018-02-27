@@ -7,7 +7,7 @@ var Monokai = Colorscheme{
 	BorderLabel: 249,
 	BorderLine:  239,
 
-	CPULines: []int{197, 208, 70, 81, 249, 141, 221, 186},
+	CPULines: []int{81, 70, 208, 197, 249, 141, 221, 186},
 
 	MainMem: 208,
 	SwapMem: 186,

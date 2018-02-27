@@ -1,12 +1,15 @@
 package colorschemes
 
 /*
-	the standard 256 terminal colors are supported
+	The standard 256 terminal colors are supported.
 
 	-1 = clear
 
-	You can combine a color with Bold, Underline, or Reverse by using bitwise OR ('|').
-	For example, to get Bold red Labels, you would do 'Labels: 2 | Bold'
+	You can combine a color with 'Bold', 'Underline', or 'Reverse' by using bitwise OR ('|').
+	For example, to get Bold red Labels, you would do 'Labels: 2 | Bold'.
+
+	Once you've created a colorscheme, add an entry for it in the `handleColorscheme` function
+	in `gotop.go`.
 */
 
 // Ignore this
