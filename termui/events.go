@@ -20,7 +20,7 @@ type EventStream struct {
 	eventQueue    chan tb.Event // list of events from termbox
 }
 
-// Event includes only the termbox.Event attributes we need.
+// Event is a copy of termbox.Event that only contains the fields we need.
 type Event struct {
 	Key    string
 	Width  int
@@ -76,7 +76,7 @@ func Loop() {
 	}
 }
 
-// StopLoop stops the events Loop
+// StopLoop stops the event loop.
 func StopLoop() {
 	eventStream.stopLoop <- true
 }
@@ -156,21 +156,27 @@ func convertTermboxMouseValue(e tb.Event) string {
 	return ""
 }
 
-// convertTermboxEvent turns a termbox event into a termui event
+// convertTermboxEvent turns a termbox event into a termui event.
 func convertTermboxEvent(e tb.Event) Event {
-	ne := Event{} // new event
+	var ne Event
 
 	switch e.Type {
 	case tb.EventKey:
-		ne.Key = convertTermboxKeyValue(e)
+		ne = Event{
+			Key: convertTermboxKeyValue(e),
+		}
 	case tb.EventMouse:
-		ne.Key = convertTermboxMouseValue(e)
-		ne.MouseX = e.MouseX
-		ne.MouseY = e.MouseY
+		ne = Event{
+			Key:    convertTermboxMouseValue(e),
+			MouseX: e.MouseX,
+			MouseY: e.MouseY,
+		}
 	case tb.EventResize:
-		ne.Key = "resize"
-		ne.Width = e.Width
-		ne.Height = e.Height
+		ne = Event{
+			Key:    "resize",
+			Width:  e.Width,
+			Height: e.Height,
+		}
 	}
 
 	return ne

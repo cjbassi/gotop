@@ -69,16 +69,16 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
     - increase height of sparkline depending on widget size
 * Process List
     - memory total goes above 100%
-* general
-    - command line option to set polling interval for CPU and mem
-    - command line option to only show processes, CPU, and mem
+* Graphs
     - zooming in and out of graphs
+    - command line option to set polling interval for CPU and mem
+* general
+    - command line option to only show processes, CPU, and mem
     - gopsutil cross-compiling issue on linux_amd64 for darwin_i386
-* code cleanup
-    - more comments
+* try to get the drawille fork merged upstream
+* termui code cleanup
     - termui buffers should ignore characters set outside the widget area
         - ignore writes or give an error?
     - termui Blocks should be indexed at 0, and maybe change their X and Y variables too
-    - try to get the drawille fork merged upstream
     - draw borders and label after widget contents
     - only merge buffers that are within the original's area

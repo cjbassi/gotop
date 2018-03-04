@@ -5,7 +5,7 @@ import (
 	"time"
 
 	ui "github.com/cjbassi/gotop/termui"
-	cpu "github.com/shirou/gopsutil/cpu"
+	psCPU "github.com/shirou/gopsutil/cpu"
 )
 
 type CPU struct {
@@ -15,8 +15,12 @@ type CPU struct {
 }
 
 func NewCPU() *CPU {
-	count, _ := cpu.Counts(false)
-	c := &CPU{ui.NewLineGraph(), count, time.Second}
+	count, _ := psCPU.Counts(false)
+	c := &CPU{
+		LineGraph: ui.NewLineGraph(),
+		count:     count,
+		interval:  time.Second,
+	}
 	c.Label = "CPU Usage"
 	for i := 0; i < c.count; i++ {
 		key := "CPU" + strconv.Itoa(i+1)
@@ -37,7 +41,7 @@ func NewCPU() *CPU {
 func (c *CPU) update() {
 	// psutil calculates the CPU usage over a 1 second interval, therefore it blocks for 1 second
 	// `true` makes it so psutil doesn't group CPU usage percentages
-	percent, _ := cpu.Percent(time.Second, true)
+	percent, _ := psCPU.Percent(time.Second, true)
 	for i := 0; i < c.count; i++ {
 		key := "CPU" + strconv.Itoa(i+1)
 		c.Data[key] = append(c.Data[key], percent[i])

@@ -5,7 +5,7 @@ package colorschemes
 
 	-1 = clear
 
-	You can combine a color with 'Bold', 'Underline', or 'Reverse' by using bitwise OR ('|').
+	You can combine a color with 'Bold', 'Underline', or 'Reverse' by using bitwise OR ('|') and the name of the attribute.
 	For example, to get Bold red Labels, you would do 'Labels: 2 | Bold'.
 
 	Once you've created a colorscheme, add an entry for it in the `handleColorscheme` function
@@ -29,7 +29,7 @@ type Colorscheme struct {
 	BorderLabel int
 	BorderLine  int
 
-	// Try to add at least 8
+	// should add at least 8 here
 	CPULines []int
 
 	MainMem int
@@ -41,7 +41,7 @@ type Colorscheme struct {
 
 	DiskBar int
 
-	// Temperature colors depending on if it's over a certain threshold
+	// colors the temperature number a different color if it's over a certain threshold
 	TempLow  int
 	TempHigh int
 }

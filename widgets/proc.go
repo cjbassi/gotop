@@ -7,13 +7,13 @@ import (
 	"time"
 
 	ui "github.com/cjbassi/gotop/termui"
-	cpu "github.com/shirou/gopsutil/cpu"
-	proc "github.com/shirou/gopsutil/process"
+	psCPU "github.com/shirou/gopsutil/cpu"
+	psProc "github.com/shirou/gopsutil/process"
 )
 
 const (
-	DOWN = "▼"
 	UP   = "▲"
+	DOWN = "▼"
 )
 
 // Process represents each process.
@@ -24,7 +24,6 @@ type Process struct {
 	Mem     float32
 }
 
-// Proc widget.
 type Proc struct {
 	*ui.Table
 	cpuCount       int
@@ -36,9 +35,8 @@ type Proc struct {
 	KeyPressed     chan bool
 }
 
-// NewProc creates a new Proc widget.
 func NewProc(loaded, keyPressed chan bool) *Proc {
-	cpuCount, _ := cpu.Counts(false)
+	cpuCount, _ := psCPU.Counts(false)
 	p := &Proc{
 		Table:      ui.NewTable(),
 		interval:   time.Second,
@@ -73,15 +71,14 @@ func NewProc(loaded, keyPressed chan bool) *Proc {
 	return p
 }
 
-// update updates proc widget.
 func (p *Proc) update() {
-	psProcs, _ := proc.Processes()
-	processes := make([]Process, len(psProcs))
-	for i, pr := range psProcs {
-		pid := pr.Pid
-		command, _ := pr.Name()
-		cpu, _ := pr.CPUPercent()
-		mem, _ := pr.MemoryPercent()
+	psProcesses, _ := psProc.Processes()
+	processes := make([]Process, len(psProcesses))
+	for i, psProcess := range psProcesses {
+		pid := psProcess.Pid
+		command, _ := psProcess.Name()
+		cpu, _ := psProcess.CPUPercent()
+		mem, _ := psProcess.MemoryPercent()
 
 		processes[i] = Process{
 			pid,
@@ -139,21 +136,21 @@ func (p *Proc) ColResize() {
 		p.Gap = 2
 	}
 
-	p.Cp = []int{
+	p.CellXPos = []int{
 		p.Gap,
 		p.Gap + p.ColWidths[0] + p.Gap,
 		p.X - p.Gap - p.ColWidths[3] - p.Gap - p.ColWidths[2],
 		p.X - p.Gap - p.ColWidths[3],
 	}
 
-	contentWidth := p.Gap + p.ColWidths[0] + p.Gap + p.ColWidths[1] + p.Gap + p.ColWidths[2] + p.Gap + p.ColWidths[3] + p.Gap
+	rowWidth := p.Gap + p.ColWidths[0] + p.Gap + p.ColWidths[1] + p.Gap + p.ColWidths[2] + p.Gap + p.ColWidths[3] + p.Gap
 
 	// only renders a column if it fits
-	if p.X < (contentWidth - p.Gap - p.ColWidths[3]) {
+	if p.X < (rowWidth - p.Gap - p.ColWidths[3]) {
 		p.ColWidths[2] = 0
 		p.ColWidths[3] = 0
-	} else if p.X < contentWidth {
-		p.Cp[2] = p.Cp[3]
+	} else if p.X < rowWidth {
+		p.CellXPos[2] = p.CellXPos[3]
 		p.ColWidths[3] = 0
 	}
 }
@@ -238,33 +235,33 @@ func (p *Proc) keyBinds() {
 // The first field changes from PID to count.
 // CPU and Mem are added together for each Process.
 func Group(P []Process) []Process {
-	groupMap := make(map[string]Process)
-	for _, p := range P {
-		val, ok := groupMap[p.Command]
+	groupedP := make(map[string]Process)
+	for _, process := range P {
+		val, ok := groupedP[process.Command]
 		if ok {
-			newP := Process{
+			groupedP[process.Command] = Process{
 				val.PID + 1,
 				val.Command,
-				val.CPU + p.CPU,
-				val.Mem + p.Mem,
+				val.CPU + process.CPU,
+				val.Mem + process.Mem,
 			}
-			groupMap[p.Command] = newP
 		} else {
-			newP := Process{
+			groupedP[process.Command] = Process{
 				1,
-				p.Command,
-				p.CPU,
-				p.Mem,
+				process.Command,
+				process.CPU,
+				process.Mem,
 			}
-			groupMap[p.Command] = newP
 		}
 	}
-	groupList := make([]Process, len(groupMap))
-	i := 0
-	for _, val := range groupMap {
+
+	groupList := make([]Process, len(groupedP))
+	var i int
+	for _, val := range groupedP {
 		groupList[i] = val
 		i++
 	}
+
 	return groupList
 }
 

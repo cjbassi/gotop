@@ -16,13 +16,10 @@ import (
 const VERSION = "1.0.1"
 
 var (
-	// for when terminal is resized
-	resized = make(chan bool, 1)
+	termResized = make(chan bool, 1)
 
-	// for when help menu is toggled
 	helpToggled = make(chan bool, 1)
-	// whether help menu is toggled
-	helpStatus = false
+	helpVisible = false
 
 	// proc widget takes longer to load, wait to render until it loads data
 	procLoaded = make(chan bool, 1)
@@ -41,7 +38,6 @@ var (
 	help *w.HelpMenu
 )
 
-// Sets up docopt which is a command line argument parser
 func cliArguments() {
 	usage := `
 Usage: gotop [options]
@@ -101,13 +97,13 @@ func keyBinds() {
 	// toggles help menu
 	ui.On("?", func(e ui.Event) {
 		helpToggled <- true
-		helpStatus = !helpStatus
+		helpVisible = !helpVisible
 	})
 	// hides help menu
 	ui.On("<escape>", func(e ui.Event) {
-		if helpStatus {
+		if helpVisible {
 			helpToggled <- true
-			helpStatus = false
+			helpVisible = false
 		}
 	})
 }
@@ -126,11 +122,9 @@ func termuiColors() {
 }
 
 func widgetColors() {
-	// memory widget colors
 	mem.LineColor["Main"] = ui.Color(colorscheme.MainMem)
 	mem.LineColor["Swap"] = ui.Color(colorscheme.SwapMem)
 
-	// cpu widget colors
 	LineColor := make(map[string]ui.Color)
 	for i := 0; i < len(cpu.Data); i++ {
 		LineColor[fmt.Sprintf("CPU%d", i+1)] = ui.Color(colorscheme.CPULines[i])
@@ -158,7 +152,6 @@ func main() {
 
 	widgetColors()
 
-	// blocks till loaded
 	<-procLoaded
 
 	// inits termui
@@ -180,43 +173,43 @@ func main() {
 		help.XOffset = (ui.Body.Width - help.X) / 2
 		help.YOffset = (ui.Body.Height - help.Y) / 2
 
-		resized <- true
+		termResized <- true
 	})
 
-	// All rendering done here
+	// all rendering done here
 	go func() {
 		ui.Render(ui.Body)
 		drawTick := time.NewTicker(time.Second)
 		for {
 			select {
 			case <-helpToggled:
-				if helpStatus {
+				if helpVisible {
 					ui.Clear()
 					ui.Render(help)
 				} else {
 					ui.Render(ui.Body)
 				}
-			case <-resized:
-				if !helpStatus {
+			case <-termResized:
+				if !helpVisible {
 					ui.Clear()
 					ui.Render(ui.Body)
-				} else if helpStatus {
+				} else if helpVisible {
 					ui.Clear()
 					ui.Render(help)
 				}
 			case <-keyPressed:
-				if !helpStatus {
+				if !helpVisible {
 					ui.Render(proc)
 				}
 			case <-drawTick.C:
-				if !helpStatus {
+				if !helpVisible {
 					ui.Render(ui.Body)
 				}
 			}
 		}
 	}()
 
-	// handles kill signal
+	// handles os kill signal
 	c := make(chan os.Signal, 2)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {

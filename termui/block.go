@@ -77,10 +77,12 @@ func (b *Block) SetGrid(c0, r0, c1, r1 int) {
 	b.Grid = image.Rect(c0, r0, c1, r1)
 }
 
+// GetXOffset implements Bufferer interface.
 func (b *Block) GetXOffset() int {
 	return b.XOffset
 }
 
+// GetYOffset implements Bufferer interface.
 func (b *Block) GetYOffset() int {
 	return b.YOffset
 }

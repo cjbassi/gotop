@@ -19,11 +19,12 @@ type Grid struct {
 	Rows    int
 }
 
+// NewGrid creates an empty Grid.
 func NewGrid() *Grid {
 	return &Grid{}
 }
 
-// Set takes a widget along with it's grid dimensions to be controlled by the grid.
+// Set assigns a widget and its grid dimensions to Grid.
 func (g *Grid) Set(x0, y0, x1, y1 int, widget GridBufferer) {
 	if widget == nil {
 		return
@@ -38,14 +39,14 @@ func (g *Grid) Set(x0, y0, x1, y1 int, widget GridBufferer) {
 	g.Widgets = append(g.Widgets, widget)
 }
 
-// Resize resizes each widget in the grid's control.
+// Resize resizes each widget in the grid.
 func (g *Grid) Resize() {
 	for _, w := range g.Widgets {
 		w.Resize(g.Width, g.Height, g.Cols, g.Rows)
 	}
 }
 
-// Buffer implements Bufferer interface and merges each widget into one buffer.
+// Buffer implements the Bufferer interface by merging each widget in Grid into one buffer.
 func (g *Grid) Buffer() *Buffer {
 	buf := NewFilledBuffer(0, 0, g.Width, g.Height, Cell{' ', ColorDefault, Theme.Bg})
 	for _, w := range g.Widgets {
@@ -54,10 +55,12 @@ func (g *Grid) Buffer() *Buffer {
 	return buf
 }
 
+// GetXOffset implements Bufferer interface.
 func (g *Grid) GetXOffset() int {
 	return 0
 }
 
+// GetYOffset implements Bufferer interface.
 func (g *Grid) GetYOffset() int {
 	return 0
 }

@@ -1,21 +1,22 @@
 package termui
 
-// Color is an integer in the range -1 to 255
+// Color is an integer in the range -1 to 255.
 type Color int
 
 // ColorDefault = clear
 const ColorDefault = -1
 
-// Copied from termbox
+// Copied from termbox. Attributes that can be bitwise OR'ed with a color.
 const (
 	AttrBold Color = 1 << (iota + 9)
 	AttrUnderline
 	AttrReverse
 )
 
-// Theme is assigned to the current theme
+// Theme is assigned to the current theme.
 var Theme = DefaultTheme
 
+// DefaultTheme implements a generic set of colors to use by default.
 var DefaultTheme = Colorscheme{
 	Fg: 7,
 	Bg: -1,

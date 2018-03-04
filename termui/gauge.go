@@ -35,10 +35,8 @@ func (g *Gauge) Buffer() *Buffer {
 	// plot percentage
 	s := strconv.Itoa(g.Percent) + "%" + g.Description
 	s = MaxString(s, g.X)
-
 	y := (g.Y + 1) / 2
 	x := ((g.X - len(s)) + 1) / 2
-
 	for i, char := range s {
 		bg := g.Bg
 		fg := g.Fg

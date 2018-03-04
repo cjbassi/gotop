@@ -10,7 +10,7 @@ type Table struct {
 	Header       []string
 	Rows         [][]string
 	ColWidths    []int
-	Cp           []int // column position
+	CellXPos     []int // column position
 	Gap          int   // gap between columns
 	Cursor       Color
 	UniqueCol    int    // the column used to identify the selected item
@@ -34,6 +34,7 @@ func NewTable() *Table {
 }
 
 // ColResize is the default column resizer, but can be overriden.
+// ColResize calculates the width of each column.
 func (t *Table) ColResize() {
 	// calculate gap size based on total width
 	t.Gap = 3
@@ -46,7 +47,7 @@ func (t *Table) ColResize() {
 	cur := 0
 	for _, w := range t.ColWidths {
 		cur += t.Gap
-		t.Cp = append(t.Cp, cur)
+		t.CellXPos = append(t.CellXPos, cur)
 		cur += w
 	}
 }
@@ -55,21 +56,20 @@ func (t *Table) ColResize() {
 func (t *Table) Buffer() *Buffer {
 	buf := t.Block.Buffer()
 
-	// makes sure there isn't a gap at the bottom of the table view
+	// removes gap at the bottom of the current view if there is one
 	if t.TopRow > len(t.Rows)-(t.Y-1) {
 		t.TopRow = len(t.Rows) - (t.Y - 1)
 	}
 
 	t.ColResizer()
 
-	// print header
-	// for i := 0; i < render; i++ {
+	// prints header
 	for i, width := range t.ColWidths {
 		if width == 0 {
 			break
 		}
 		r := MaxString(t.Header[i], t.X-6)
-		buf.SetString(t.Cp[i], 1, r, t.Fg|AttrBold, t.Bg)
+		buf.SetString(t.CellXPos[i], 1, r, t.Fg|AttrBold, t.Bg)
 	}
 
 	// prints each row
@@ -77,7 +77,7 @@ func (t *Table) Buffer() *Buffer {
 		row := t.Rows[rowNum]
 		y := (rowNum + 2) - t.TopRow
 
-		// cursor
+		// prints cursor
 		bg := t.Bg
 		if (t.SelectedItem == "" && rowNum == t.SelectedRow) || (t.SelectedItem != "" && t.SelectedItem == row[t.UniqueCol]) {
 			bg = t.Cursor
@@ -97,7 +97,7 @@ func (t *Table) Buffer() *Buffer {
 				break
 			}
 			r := MaxString(row[i], t.X-6)
-			buf.SetString(t.Cp[i], y, r, t.Fg, bg)
+			buf.SetString(t.CellXPos[i], y, r, t.Fg, bg)
 		}
 	}
 
@@ -108,7 +108,7 @@ func (t *Table) Buffer() *Buffer {
 //                               Cursor Movement                               //
 /////////////////////////////////////////////////////////////////////////////////
 
-// calcPos is used to calculate the cursor position and where in the process list we are located.
+// calcPos is used to calculate the cursor position and the current view.
 func (t *Table) calcPos() {
 	t.SelectedItem = ""
 
@@ -146,6 +146,8 @@ func (t *Table) Bottom() {
 	t.SelectedRow = len(t.Rows) - 1
 	t.calcPos()
 }
+
+// The number of lines in a page is equal to the height of the widget.
 
 func (t *Table) HalfPageUp() {
 	t.SelectedRow = t.SelectedRow - (t.Y-2)/2

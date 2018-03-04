@@ -4,7 +4,7 @@ import (
 	"time"
 
 	ui "github.com/cjbassi/gotop/termui"
-	mem "github.com/shirou/gopsutil/mem"
+	psMem "github.com/shirou/gopsutil/mem"
 )
 
 type Mem struct {
@@ -13,7 +13,10 @@ type Mem struct {
 }
 
 func NewMem() *Mem {
-	m := &Mem{ui.NewLineGraph(), time.Second}
+	m := &Mem{
+		LineGraph: ui.NewLineGraph(),
+		interval:  time.Second,
+	}
 	m.Label = "Memory Usage"
 	m.Data["Main"] = []float64{0}
 	m.Data["Swap"] = []float64{0}
@@ -30,8 +33,8 @@ func NewMem() *Mem {
 }
 
 func (m *Mem) update() {
-	main, _ := mem.VirtualMemory()
-	swap, _ := mem.SwapMemory()
+	main, _ := psMem.VirtualMemory()
+	swap, _ := psMem.SwapMemory()
 	m.Data["Main"] = append(m.Data["Main"], main.UsedPercent)
 	m.Data["Swap"] = append(m.Data["Swap"], swap.UsedPercent)
 }

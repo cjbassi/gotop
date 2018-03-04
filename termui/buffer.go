@@ -17,14 +17,17 @@ type Buffer struct {
 	CellMap map[image.Point]Cell
 }
 
+// NewCell returne a new Cell given all necessary fields.
 func NewCell(ch rune, Fg, Bg Color) Cell {
 	return Cell{ch, Fg, Bg}
 }
 
+// NewBuffer returns a new empty Buffer.
 func NewBuffer() *Buffer {
 	return &Buffer{
 		CellMap: make(map[image.Point]Cell),
-		Area:    image.Rectangle{}}
+		Area:    image.Rectangle{},
+	}
 }
 
 // NewFilledBuffer returns a new Buffer filled with the given Cell.
@@ -32,16 +35,11 @@ func NewFilledBuffer(x0, y0, x1, y1 int, c Cell) *Buffer {
 	buf := NewBuffer()
 	buf.Area.Min = image.Pt(x0, y0)
 	buf.Area.Max = image.Pt(x1, y1)
-
-	for x := buf.Area.Min.X; x < buf.Area.Max.X; x++ {
-		for y := buf.Area.Min.Y; y < buf.Area.Max.Y; y++ {
-			buf.SetCell(x, y, c)
-		}
-	}
+	buf.Fill(c)
 	return buf
 }
 
-// Set assigns a Cell to (x,y).
+// SetCell assigns a Cell to (x,y).
 func (b *Buffer) SetCell(x, y int, c Cell) {
 	b.CellMap[image.Pt(x, y)] = c
 }
@@ -82,7 +80,7 @@ func (b *Buffer) Merge(bs ...*Buffer) {
 	}
 }
 
-// MergeWithOffset merges the given buffer at a certain position on the given buffer.
+// MergeWithOffset merges a Buffer onto another with an offset.
 func (b *Buffer) MergeWithOffset(buf *Buffer, xOffset, yOffset int) {
 	for p, c := range buf.CellMap {
 		b.SetCell(p.X+xOffset, p.Y+yOffset, c)

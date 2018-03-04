@@ -5,28 +5,29 @@ package widgets
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
 	ui "github.com/cjbassi/gotop/termui"
-	ps "github.com/shirou/gopsutil/host"
+	psHost "github.com/shirou/gopsutil/host"
 )
 
 type Temp struct {
 	*ui.Block
-	interval   time.Duration
-	Data       []int
-	DataLabels []string
-	Threshold  int
-	TempLow    ui.Color
-	TempHigh   ui.Color
+	interval  time.Duration
+	Data      map[string]int
+	Threshold int
+	TempLow   ui.Color
+	TempHigh  ui.Color
 }
 
 func NewTemp() *Temp {
 	t := &Temp{
 		Block:     ui.NewBlock(),
 		interval:  time.Second * 5,
-		Threshold: 80, // temp at which color should change to red
+		Data:      make(map[string]int),
+		Threshold: 80, // temp at which color should change
 	}
 	t.Label = "Temperatures"
 
@@ -42,38 +43,41 @@ func NewTemp() *Temp {
 }
 
 func (t *Temp) update() {
-	sensors, _ := ps.SensorsTemperatures()
-	temps := []int{}
-	labels := []string{}
-	for _, temp := range sensors {
+	sensors, _ := psHost.SensorsTemperatures()
+	for _, sensor := range sensors {
 		// only sensors with input in their name are giving us live temp info
-		if strings.Contains(temp.SensorKey, "input") {
-			temps = append(temps, int(temp.Temperature))
+		if strings.Contains(sensor.SensorKey, "input") {
 			// removes '_input' from the end of the sensor name
-			labels = append(labels, temp.SensorKey[:strings.Index(temp.SensorKey, "_input")])
+			label := sensor.SensorKey[:strings.Index(sensor.SensorKey, "_input")]
+			t.Data[label] = int(sensor.Temperature)
 		}
 	}
-	t.Data = temps
-	t.DataLabels = labels
 }
 
 // Buffer implements ui.Bufferer interface.
 func (t *Temp) Buffer() *ui.Buffer {
 	buf := t.Block.Buffer()
 
-	for y, text := range t.DataLabels {
+	var keys []string
+	for k := range t.Data {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for y, key := range keys {
 		if y+1 > t.Y {
 			break
 		}
 
 		fg := t.TempLow
-		if t.Data[y] >= t.Threshold {
+		if t.Data[key] >= t.Threshold {
 			fg = t.TempHigh
 		}
 
-		s := ui.MaxString(text, (t.X - 4))
+		s := ui.MaxString(key, (t.X - 4))
 		buf.SetString(1, y+1, s, t.Fg, t.Bg)
-		buf.SetString(t.X-2, y+1, fmt.Sprintf("%dC", t.Data[y]), fg, t.Bg)
+		buf.SetString(t.X-2, y+1, fmt.Sprintf("%dC", t.Data[key]), fg, t.Bg)
+
 	}
 
 	return buf
