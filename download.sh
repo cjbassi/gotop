@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION=1.0.1
+VERSION=1.1.0
 
 download() {
     curl -L https://github.com/cjbassi/gotop/releases/download/$VERSION/gotop-$VERSION-${1}.tgz > gotop.tgz

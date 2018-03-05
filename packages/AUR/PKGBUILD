@@ -1,7 +1,7 @@
 # Maintainer: Caleb Bassi <calebjbassi@gmail.com>
 
 pkgname=gotop
-pkgver=1.0.1
+pkgver=1.1.0
 pkgrel=1
 pkgdesc="A TUI graphical activity monitor inspired by gtop"
 arch=("x86_64" "i686")
