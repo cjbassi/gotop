@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Build Steps
-# 1. update version number in `gotop.go`, `PKGBUILD`, and `install.sh`
+# 1. update version number in `gotop.go` and `install.sh`
 # 2. run this script
 # 3. publish binaries on GitHub
-# 4. push changes to GitHub
-# 5. push `PKGBUILD` to AUR
+# 4. delete `builds` folder
+# 5. push changes to GitHub
 
 VERSION=$(go run gotop.go -v)
 
