@@ -1,9 +1,9 @@
 # gotop
 
-![image](https://github.com/cjbassi/gotop/blob/master/demo.gif)
-
-Another TUI graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!
+Another TUI graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!  
 Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https://github.com/exrook/drawille-go), and a modified version of [termui](https://github.com/gizak/termui).
+
+![image](https://github.com/cjbassi/gotop/blob/master/demo.gif)
 
 
 ## Installation
