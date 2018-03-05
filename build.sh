@@ -7,6 +7,8 @@
 # 4. delete `builds` folder
 # 5. push changes to GitHub
 
+# more info at https://www.digitalocean.com/community/tutorials/how-to-build-go-executables-for-multiple-platforms-on-ubuntu-16-04
+
 VERSION=$(go run gotop.go -v)
 
 mkdir builds

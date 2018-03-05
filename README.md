@@ -61,24 +61,3 @@ go get github.com/cjbassi/gotop
 
 A different Colorscheme can be set with the `-c` flag followed its name. You can find them in the `colorschemes` folder.
 Feel free to add a new one. You can use 256 colors, bold, underline, and reverse. You can see the template and get more info [here](https://github.com/cjbassi/gotop/blob/master/colorschemes/template.go) and see the default colorscheme as an example [here](https://github.com/cjbassi/gotop/blob/master/colorschemes/default.go).
-
-
-## TODO
-
-* Network Usage
-    - increase height of sparkline depending on widget size
-* Process List
-    - memory total goes above 100%
-* Graphs
-    - zooming in and out of graphs
-    - command line option to set polling interval for CPU and mem
-* general
-    - command line option to only show processes, CPU, and mem
-    - gopsutil cross-compiling issue on linux_amd64 for darwin_i386
-* try to get the drawille fork merged upstream
-* termui code cleanup
-    - termui buffers should ignore characters set outside the widget area
-        - ignore writes or give an error?
-    - termui Blocks should be indexed at 0, and maybe change their X and Y variables too
-    - draw borders and label after widget contents
-    - only merge buffers that are within the original's area
