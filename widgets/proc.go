@@ -158,7 +158,7 @@ func (p *Proc) ColResize() {
 func (p *Proc) keyBinds() {
 	ui.On("MouseLeft", func(e ui.Event) {
 		p.Click(e.MouseX, e.MouseY)
-		ui.Render(p)
+		p.KeyPressed <- true
 	})
 
 	ui.On("MouseWheelUp", "MouseWheelDown", func(e ui.Event) {
