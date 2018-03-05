@@ -2,7 +2,7 @@
 
 ![image](https://github.com/cjbassi/gotop/blob/master/demo.gif)
 
-Another TUI graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!  
+Another TUI graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!
 Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https://github.com/exrook/drawille-go), and a modified version of [termui](https://github.com/gizak/termui).
 
 
@@ -36,11 +36,11 @@ go get github.com/cjbassi/gotop
 
 ### Keybinds
 
-* Quit: `q` or `Ctrl-c`
+* Quit: `q` or `<C-c>`
 * Navigation:
     * `<up>`/`<down>` and `j`/`k`: up and down
-    * `C-d` and `C-u`: up and down half a page
-    * `C-f` and `C-b`: up and down a full page
+    * `<C-d>` and `<C-u>`: up and down half a page
+    * `<C-f>` and `<C-b>`: up and down a full page
     * `gg` and `G`: jump to top and bottom
 * Process Sorting:
     * `c`: CPU

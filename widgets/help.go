@@ -7,21 +7,21 @@ import (
 )
 
 const KEYBINDS = `
-Quit: 'q' or 'Ctrl-c'
+Quit: q or <C-c>
 
-Navigation:
-  - '<up>'/'<down>' and 'j'/'k': up and down
-  - 'C-d' and 'C-u': up and down half a page
-  - 'C-f' and 'C-b': up and down a full page
-  - 'gg' and 'G': jump to top and bottom
+Navigation
+  - <up>/<down> and j/k: up and down
+  - <C-d> and <C-u>: up and down half a page
+  - <C-f> and <C-b>: up and down a full page
+  - gg and G: jump to top and bottom
 
-Process Sorting:
-  - 'c': CPU
-  - 'm': Mem
-  - 'p': PID
+Process Sorting
+  - c: CPU
+  - m: Mem
+  - p: PID
 
-'<tab>': toggle process grouping
-'dd': kill the selected process or process group
+<tab>: toggle process grouping
+dd: kill the selected process or process group
 `
 
 type HelpMenu struct {
