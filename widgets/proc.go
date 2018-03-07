@@ -156,16 +156,16 @@ func (p *Proc) ColResize() {
 }
 
 func (p *Proc) keyBinds() {
-	ui.On("MouseLeft", func(e ui.Event) {
+	ui.On("<MouseLeft>", func(e ui.Event) {
 		p.Click(e.MouseX, e.MouseY)
 		p.KeyPressed <- true
 	})
 
-	ui.On("MouseWheelUp", "MouseWheelDown", func(e ui.Event) {
+	ui.On("<MouseWheelUp>", "<MouseWheelDown>", func(e ui.Event) {
 		switch e.Key {
-		case "MouseWheelDown":
+		case "<MouseWheelDown>":
 			p.Down()
-		case "MouseWheelUp":
+		case "<MouseWheelUp>":
 			p.Up()
 		}
 		p.KeyPressed <- true
@@ -181,7 +181,7 @@ func (p *Proc) keyBinds() {
 		p.KeyPressed <- true
 	})
 
-	viKeys := []string{"j", "k", "gg", "G", "C-d", "C-u", "C-f", "C-b"}
+	viKeys := []string{"j", "k", "gg", "G", "<C-d>", "<C-u>", "<C-f>", "<C-b>"}
 	ui.On(viKeys, func(e ui.Event) {
 		switch e.Key {
 		case "j":
@@ -192,13 +192,13 @@ func (p *Proc) keyBinds() {
 			p.Top()
 		case "G":
 			p.Bottom()
-		case "C-d":
+		case "<C-d>":
 			p.HalfPageDown()
-		case "C-u":
+		case "<C-u>":
 			p.HalfPageUp()
-		case "C-f":
+		case "<C-f>":
 			p.PageDown()
-		case "C-b":
+		case "<C-b>":
 			p.PageUp()
 		}
 		p.KeyPressed <- true

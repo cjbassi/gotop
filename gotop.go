@@ -90,7 +90,7 @@ func setupGrid() {
 
 func keyBinds() {
 	// quits
-	ui.On("q", "C-c", func(e ui.Event) {
+	ui.On("q", "<C-c>", func(e ui.Event) {
 		ui.StopLoop()
 	})
 
@@ -166,7 +166,7 @@ func main() {
 	// load help widget after init termui/termbox so that it has access to terminal size
 	help = w.NewHelpMenu()
 
-	ui.On("resize", func(e ui.Event) {
+	ui.On("<resize>", func(e ui.Event) {
 		ui.Body.Width, ui.Body.Height = e.Width, e.Height
 		ui.Body.Resize()
 

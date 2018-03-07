@@ -6,6 +6,23 @@ import (
 	tb "github.com/nsf/termbox-go"
 )
 
+/*
+here's the list of events which you can assign handlers too using the `On` function:
+	mouse events:
+		<MouseLeft> <MouseRight> <MouseMiddle>
+		<MouseWheelUp> <MouseWheelDown>
+	keyboard events:
+		any uppercase or lowercase letter or a set of two letters like j or jj or J or JJ
+		<C-d> etc
+		<M-d> etc
+		<up> <down> <left> <right>
+		<insert> <delete> <home> <end> <previous> <next>
+		<backspace> <tab> <enter> <escape> <space>
+		<C-<space>> etc
+	terminal events:
+		<resize>
+*/
+
 var eventStream = EventStream{
 	make(map[string]func(Event)),
 	"",
@@ -104,7 +121,7 @@ func convertTermboxKeyValue(e tb.Event) string {
 	mod := ""
 
 	if e.Mod == tb.ModAlt {
-		mod = "M-"
+		mod = "<M-"
 	}
 	if e.Ch == 0 {
 		if e.Key > 0xFFFF-12 {
@@ -115,7 +132,7 @@ func convertTermboxKeyValue(e tb.Event) string {
 		}
 
 		if e.Key <= 0x7F {
-			pre = "C-"
+			pre = "<C-"
 			k = string('a' - 1 + int(e.Key))
 			kmap := map[tb.Key][2]string{
 				tb.KeyCtrlSpace:     {"C-", "<space>"},
@@ -135,23 +152,27 @@ func convertTermboxKeyValue(e tb.Event) string {
 		}
 	}
 
+	if pre != "" {
+		k += ">"
+	}
+
 	return pre + mod + k
 }
 
 func convertTermboxMouseValue(e tb.Event) string {
 	switch e.Key {
 	case tb.MouseLeft:
-		return "MouseLeft"
+		return "<MouseLeft>"
 	case tb.MouseMiddle:
-		return "MouseMiddle"
+		return "<MouseMiddle>"
 	case tb.MouseRight:
-		return "MouseRight"
+		return "<MouseRight>"
 	case tb.MouseWheelUp:
-		return "MouseWheelUp"
+		return "<MouseWheelUp>"
 	case tb.MouseWheelDown:
-		return "MouseWheelDown"
+		return "<MouseWheelDown>"
 	case tb.MouseRelease:
-		return "MouseRelease"
+		return "<MouseRelease>"
 	}
 	return ""
 }
@@ -173,7 +194,7 @@ func convertTermboxEvent(e tb.Event) Event {
 		}
 	case tb.EventResize:
 		ne = Event{
-			Key:    "resize",
+			Key:    "<resize>",
 			Width:  e.Width,
 			Height: e.Height,
 		}
