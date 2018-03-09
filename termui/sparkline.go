@@ -63,13 +63,31 @@ func (sl *Sparklines) Buffer() *Buffer {
 				max = line.Data[i]
 			}
 		}
+		maxHeight := sparkY - title2Y
+		gap := 100 / float64(maxHeight)
 		// prints sparkline
 		for x := sl.X; x >= 1; x-- {
-			char := SPARKS[0]
+			var char rune
 			if (sl.X - x) < len(line.Data) {
-				char = SPARKS[int((float64(line.Data[(len(line.Data)-1)-(sl.X-x)])/float64(max))*7)]
+				cur := line.Data[(len(line.Data)-1)-(sl.X-x)]
+				percent := (float64(cur) / float64(max)) * 100
+				for i := 0; i < maxHeight; i++ {
+					min := float64(i) * gap
+					y := sparkY - i
+					buf.SetCell(x, y, Cell{char, line.LineColor, sl.Bg})
+					if percent < min {
+						char = ' '
+					} else if percent > min+gap {
+						char = SPARKS[7]
+					} else {
+						char = SPARKS[int(((percent-min)/gap)*7)]
+					}
+					buf.SetCell(x, y, Cell{char, line.LineColor, sl.Bg})
+				}
+			} else {
+				char = SPARKS[0]
+				buf.SetCell(x, sparkY, Cell{char, line.LineColor, sl.Bg})
 			}
-			buf.SetCell(x, sparkY, Cell{char, line.LineColor, sl.Bg})
 		}
 	}
 
