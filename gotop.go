@@ -28,6 +28,8 @@ var (
 
 	colorscheme = colorschemes.Default
 
+	minimal = false
+
 	cpu  *w.CPU
 	mem  *w.Mem
 	proc *w.Proc
@@ -44,7 +46,8 @@ Usage: gotop [options]
 
 Options:
   -c, --color <name>    Set a colorscheme.
-  -h, --help		    Show this screen.
+  -h, --help            Show this screen.
+  -m, --minimal         Only show CPU, Mem and Process widgets.
   -v, --version         Show version.
 
 Colorschemes:
@@ -58,6 +61,8 @@ Colorschemes:
 	if val, _ := args["--color"]; val != nil {
 		handleColorscheme(val.(string))
 	}
+
+	minimal, _ = args["--minimal"].(bool)
 }
 
 func handleColorscheme(cs string) {
@@ -78,14 +83,20 @@ func setupGrid() {
 	ui.Body.Cols = 12
 	ui.Body.Rows = 12
 
-	ui.Body.Set(0, 0, 12, 4, cpu)
+	if minimal {
+		ui.Body.Set(0, 0, 12, 6, cpu)
+		ui.Body.Set(0, 6, 6, 12, mem)
+		ui.Body.Set(6, 6, 12, 12, proc)
+	} else {
+		ui.Body.Set(0, 0, 12, 4, cpu)
 
-	ui.Body.Set(0, 4, 4, 6, disk)
-	ui.Body.Set(0, 6, 4, 8, temp)
-	ui.Body.Set(4, 4, 12, 8, mem)
+		ui.Body.Set(0, 4, 4, 6, disk)
+		ui.Body.Set(0, 6, 4, 8, temp)
+		ui.Body.Set(4, 4, 12, 8, mem)
 
-	ui.Body.Set(0, 8, 6, 12, net)
-	ui.Body.Set(6, 8, 12, 12, proc)
+		ui.Body.Set(0, 8, 6, 12, net)
+		ui.Body.Set(6, 8, 12, 12, proc)
+	}
 }
 
 func keyBinds() {
@@ -131,8 +142,10 @@ func widgetColors() {
 	}
 	cpu.LineColor = LineColor
 
-	temp.TempLow = ui.Color(colorscheme.TempLow)
-	temp.TempHigh = ui.Color(colorscheme.TempHigh)
+	if !minimal {
+		temp.TempLow = ui.Color(colorscheme.TempLow)
+		temp.TempHigh = ui.Color(colorscheme.TempHigh)
+	}
 }
 
 func main() {
@@ -146,9 +159,11 @@ func main() {
 	cpu = w.NewCPU()
 	mem = w.NewMem()
 	proc = w.NewProc(procLoaded, keyPressed)
-	net = w.NewNet()
-	disk = w.NewDisk()
-	temp = w.NewTemp()
+	if !minimal {
+		net = w.NewNet()
+		disk = w.NewDisk()
+		temp = w.NewTemp()
+	}
 
 	widgetColors()
 
