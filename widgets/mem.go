@@ -12,10 +12,10 @@ type Mem struct {
 	interval time.Duration
 }
 
-func NewMem() *Mem {
+func NewMem(interval time.Duration) *Mem {
 	m := &Mem{
 		LineGraph: ui.NewLineGraph(),
-		interval:  time.Second,
+		interval:  interval,
 	}
 	m.Label = "Memory Usage"
 	m.Data["Main"] = []float64{0}

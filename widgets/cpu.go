@@ -14,12 +14,12 @@ type CPU struct {
 	interval time.Duration
 }
 
-func NewCPU() *CPU {
+func NewCPU(interval time.Duration) *CPU {
 	count, _ := psCPU.Counts(false)
 	c := &CPU{
 		LineGraph: ui.NewLineGraph(),
 		count:     count,
-		interval:  time.Second,
+		interval:  interval,
 	}
 	c.Label = "CPU Usage"
 	for i := 0; i < c.count; i++ {
@@ -41,7 +41,7 @@ func NewCPU() *CPU {
 func (c *CPU) update() {
 	// psutil calculates the CPU usage over a 1 second interval, therefore it blocks for 1 second
 	// `true` makes it so psutil doesn't group CPU usage percentages
-	percent, _ := psCPU.Percent(time.Second, true)
+	percent, _ := psCPU.Percent(c.interval, true)
 	for i := 0; i < c.count; i++ {
 		key := "CPU" + strconv.Itoa(i+1)
 		c.Data[key] = append(c.Data[key], percent[i])

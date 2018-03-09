@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -28,7 +29,8 @@ var (
 
 	colorscheme = colorschemes.Default
 
-	minimal = false
+	minimal  = false
+	interval = time.Second
 
 	cpu  *w.CPU
 	mem  *w.Mem
@@ -48,6 +50,7 @@ Options:
   -c, --color <name>    Set a colorscheme.
   -h, --help            Show this screen.
   -m, --minimal         Only show CPU, Mem and Process widgets.
+  -r, --rate=RATE       Number of times per second to update CPU and Mem widgets [default: 1].
   -v, --version         Show version.
 
 Colorschemes:
@@ -63,6 +66,10 @@ Colorschemes:
 	}
 
 	minimal, _ = args["--minimal"].(bool)
+
+	rateStr, _ := args["--rate"].(string)
+	rate, _ := strconv.Atoi(rateStr)
+	interval = time.Second / time.Duration(rate)
 }
 
 func handleColorscheme(cs string) {
@@ -156,8 +163,8 @@ func main() {
 	// need to do this before initializing widgets so that they can inherit the colors
 	termuiColors()
 
-	cpu = w.NewCPU()
-	mem = w.NewMem()
+	cpu = w.NewCPU(interval)
+	mem = w.NewMem(interval)
 	proc = w.NewProc(procLoaded, keyPressed)
 	if !minimal {
 		net = w.NewNet()
@@ -194,7 +201,7 @@ func main() {
 	// all rendering done here
 	go func() {
 		ui.Render(ui.Body)
-		drawTick := time.NewTicker(time.Second)
+		drawTick := time.NewTicker(interval)
 		for {
 			select {
 			case <-helpToggled:
