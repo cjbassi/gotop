@@ -68,8 +68,12 @@ Colorschemes:
 	minimal, _ = args["--minimal"].(bool)
 
 	rateStr, _ := args["--rate"].(string)
-	rate, _ := strconv.Atoi(rateStr)
-	interval = time.Second / time.Duration(rate)
+	rate, _ := strconv.ParseFloat(rateStr, 64)
+	if rate < 1 {
+		interval = time.Second * time.Duration(1/rate)
+	} else {
+		interval = time.Second / time.Duration(rate)
+	}
 }
 
 func handleColorscheme(cs string) {
