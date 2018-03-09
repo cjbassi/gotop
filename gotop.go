@@ -47,7 +47,7 @@ func cliArguments() {
 Usage: gotop [options]
 
 Options:
-  -c, --color <name>    Set a colorscheme.
+  -c, --color=NAME      Set a colorscheme.
   -h, --help            Show this screen.
   -m, --minimal         Only show CPU, Mem and Process widgets.
   -r, --rate=RATE       Number of times per second to update CPU and Mem widgets [default: 1].
