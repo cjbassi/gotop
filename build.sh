@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Build Steps
-# 1. update version number in `gotop.go` and `install.sh`
+# 1. update version number in `gotop.go` and `download.sh`
 # 2. run this script
 # 3. publish binaries on GitHub
 # 4. push changes to GitHub
@@ -11,8 +11,8 @@
 
 VERSION=$(go run gotop.go -v)
 
-mkdir builds
-cd builds
+mkdir build
+cd build
 
 env GOOS=darwin GOARCH=amd64 go build ../
 tar czf gotop-$VERSION-darwin_amd64.tgz gotop
