@@ -4,8 +4,8 @@
 # 1. update version number in `gotop.go` and `install.sh`
 # 2. run this script
 # 3. publish binaries on GitHub
-# 4. delete `builds` folder
-# 5. push changes to GitHub
+# 4. push changes to GitHub
+# 5. update AUR package
 
 # more info at https://www.digitalocean.com/community/tutorials/how-to-build-go-executables-for-multiple-platforms-on-ubuntu-16-04
 
