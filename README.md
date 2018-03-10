@@ -37,7 +37,7 @@ go get github.com/cjbassi/gotop
 ### Keybinds
 
 * Quit: `q` or `<C-c>`
-* Navigation:
+* Process Navigation:
     * `<up>`/`<down>` and `j`/`k`: up and down
     * `<C-d>` and `<C-u>`: up and down half a page
     * `<C-f>` and `<C-b>`: up and down a full page
@@ -48,6 +48,7 @@ go get github.com/cjbassi/gotop
     * `p`: PID
 * `<tab>`: toggle process grouping
 * `dd`: kill the selected process or process group
+* `h` and `l`: zoom in and out of CPU and Mem graphs
 * `?`: toggles keybind help menu
 
 

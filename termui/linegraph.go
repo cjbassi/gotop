@@ -12,6 +12,7 @@ type LineGraph struct {
 	*Block
 	Data      map[string][]float64
 	LineColor map[string]Color
+	Zoom      int
 
 	DefaultLineColor Color
 }
@@ -22,6 +23,7 @@ func NewLineGraph() *LineGraph {
 		Block:     NewBlock(),
 		Data:      make(map[string][]float64),
 		LineColor: make(map[string]Color),
+		Zoom:      5,
 
 		DefaultLineColor: Theme.LineGraph,
 	}
@@ -61,9 +63,18 @@ func (lc *LineGraph) Buffer() *Buffer {
 		lastY, lastX := -1, -1
 		// assign colors to `colors` and lines/points to the canvas
 		for i := len(seriesData) - 1; i >= 0; i-- {
-			x := ((lc.X + 1) * 2) - 1 - (((len(seriesData) - 1) - i) * 5)
+			x := ((lc.X + 1) * 2) - 1 - (((len(seriesData) - 1) - i) * lc.Zoom)
 			y := ((lc.Y + 1) * 4) - 1 - int((float64((lc.Y)*4)-1)*(seriesData[i]/100))
-			if x < 0 { // stop rendering at the left-most wall
+			if x < 0 {
+				// render the line to the last point up to the wall
+				if x > 0-lc.Zoom {
+					for _, p := range drawille.Line(lastX, lastY, x, y) {
+						if p.X > 0 {
+							c.Set(p.X, p.Y)
+							colors[p.X/2][p.Y/4] = seriesLineColor
+						}
+					}
+				}
 				break
 			}
 			if lastY == -1 { // if this is the first point

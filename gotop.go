@@ -26,11 +26,15 @@ var (
 	procLoaded = make(chan bool, 1)
 	// used to render the proc widget whenever a key is pressed for it
 	keyPressed = make(chan bool, 1)
+	// used to render cpu and mem when zoom has changed
+	zoomed = make(chan bool, 1)
 
 	colorscheme = colorschemes.Default
 
-	minimal  = false
-	interval = time.Second
+	minimal      = false
+	interval     = time.Second
+	zoom         = 7
+	zoomInterval = 3
 
 	cpu  *w.CPU
 	mem  *w.Mem
@@ -128,6 +132,21 @@ func keyBinds() {
 			helpVisible = false
 		}
 	})
+
+	ui.On("h", func(e ui.Event) {
+		zoom += zoomInterval
+		cpu.Zoom = zoom
+		mem.Zoom = zoom
+		zoomed <- true
+	})
+	ui.On("l", func(e ui.Event) {
+		if zoom > zoomInterval {
+			zoom -= zoomInterval
+			cpu.Zoom = zoom
+			mem.Zoom = zoom
+			zoomed <- true
+		}
+	})
 }
 
 func termuiColors() {
@@ -167,8 +186,8 @@ func main() {
 	// need to do this before initializing widgets so that they can inherit the colors
 	termuiColors()
 
-	cpu = w.NewCPU(interval)
-	mem = w.NewMem(interval)
+	cpu = w.NewCPU(interval, zoom)
+	mem = w.NewMem(interval, zoom)
 	proc = w.NewProc(procLoaded, keyPressed)
 	if !minimal {
 		net = w.NewNet()
@@ -226,6 +245,10 @@ func main() {
 			case <-keyPressed:
 				if !helpVisible {
 					ui.Render(proc)
+				}
+			case <-zoomed:
+				if !helpVisible {
+					ui.Render(ui.Body)
 				}
 			case <-drawTick.C:
 				if !helpVisible {

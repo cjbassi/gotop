@@ -14,7 +14,7 @@ type CPU struct {
 	interval time.Duration
 }
 
-func NewCPU(interval time.Duration) *CPU {
+func NewCPU(interval time.Duration, zoom int) *CPU {
 	count, _ := psCPU.Counts(false)
 	c := &CPU{
 		LineGraph: ui.NewLineGraph(),
@@ -22,6 +22,7 @@ func NewCPU(interval time.Duration) *CPU {
 		interval:  interval,
 	}
 	c.Label = "CPU Usage"
+	c.Zoom = zoom
 	for i := 0; i < c.count; i++ {
 		key := "CPU" + strconv.Itoa(i+1)
 		c.Data[key] = []float64{0}
