@@ -68,8 +68,8 @@ func (b *Block) drawLabel(buf *Buffer) {
 func (b *Block) Resize(termWidth, termHeight, termCols, termRows int) {
 	b.X = int((float64(b.Grid.Dx())/float64(termCols))*float64(termWidth)) - 2
 	b.Y = int((float64(b.Grid.Dy())/float64(termRows))*float64(termHeight)) - 2
-	b.XOffset = int(((float64(b.Grid.Min.X) / float64(termCols)) * float64(termWidth)))
-	b.YOffset = int(((float64(b.Grid.Min.Y) / float64(termRows)) * float64(termHeight)))
+	b.XOffset = int((float64(b.Grid.Min.X) / float64(termCols)) * float64(termWidth))
+	b.YOffset = int((float64(b.Grid.Min.Y) / float64(termRows)) * float64(termHeight))
 }
 
 // SetGrid create a rectangle representing the block's dimensions in the grid.
