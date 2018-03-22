@@ -3,8 +3,8 @@
 Another TUI graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!  
 Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https://github.com/exrook/drawille-go), and a modified version of [termui](https://github.com/gizak/termui).
 
-<img src="https://github.com/cjbassi/gotop/blob/master/demo.gif" />
-<img src="https://github.com/cjbassi/gotop/blob/master/minimal.png" />
+<img src="https://github.com/cjbassi/gotop/blob/master/media/demo.gif" />
+<img src="https://github.com/cjbassi/gotop/blob/master/media/minimal.png" />
 
 
 ## Installation
