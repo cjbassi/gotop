@@ -13,29 +13,29 @@ type Mem struct {
 }
 
 func NewMem(interval time.Duration, zoom int) *Mem {
-	m := &Mem{
+	self := &Mem{
 		LineGraph: ui.NewLineGraph(),
 		interval:  interval,
 	}
-	m.Label = "Memory Usage"
-	m.Zoom = zoom
-	m.Data["Main"] = []float64{0}
-	m.Data["Swap"] = []float64{0}
+	self.Label = "Memory Usage"
+	self.Zoom = zoom
+	self.Data["Main"] = []float64{0}
+	self.Data["Swap"] = []float64{0}
 
-	go m.update()
-	ticker := time.NewTicker(m.interval)
+	go self.update()
+	ticker := time.NewTicker(self.interval)
 	go func() {
 		for range ticker.C {
-			m.update()
+			self.update()
 		}
 	}()
 
-	return m
+	return self
 }
 
-func (m *Mem) update() {
+func (self *Mem) update() {
 	main, _ := psMem.VirtualMemory()
 	swap, _ := psMem.SwapMemory()
-	m.Data["Main"] = append(m.Data["Main"], main.UsedPercent)
-	m.Data["Swap"] = append(m.Data["Swap"], swap.UsedPercent)
+	self.Data["Main"] = append(self.Data["Main"], main.UsedPercent)
+	self.Data["Swap"] = append(self.Data["Swap"], swap.UsedPercent)
 }

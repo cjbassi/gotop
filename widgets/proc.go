@@ -37,7 +37,7 @@ type Proc struct {
 
 func NewProc(loaded, keyPressed chan bool) *Proc {
 	cpuCount, _ := psCPU.Counts(false)
-	p := &Proc{
+	self := &Proc{
 		Table:      ui.NewTable(),
 		interval:   time.Second,
 		cpuCount:   cpuCount,
@@ -45,33 +45,33 @@ func NewProc(loaded, keyPressed chan bool) *Proc {
 		group:      true,
 		KeyPressed: keyPressed,
 	}
-	p.ColResizer = p.ColResize
-	p.Label = "Process List"
-	p.ColWidths = []int{5, 10, 4, 4}
+	self.ColResizer = self.ColResize
+	self.Label = "Process List"
+	self.ColWidths = []int{5, 10, 4, 4}
 
-	p.UniqueCol = 0
-	if p.group {
-		p.UniqueCol = 1
+	self.UniqueCol = 0
+	if self.group {
+		self.UniqueCol = 1
 	}
 
-	p.keyBinds()
+	self.keyBinds()
 
 	go func() {
-		p.update()
+		self.update()
 		loaded <- true
 	}()
 
-	ticker := time.NewTicker(p.interval)
+	ticker := time.NewTicker(self.interval)
 	go func() {
 		for range ticker.C {
-			p.update()
+			self.update()
 		}
 	}()
 
-	return p
+	return self
 }
 
-func (p *Proc) update() {
+func (self *Proc) update() {
 	psProcesses, _ := psProc.Processes()
 	processes := make([]Process, len(psProcesses))
 	for i, psProcess := range psProcesses {
@@ -83,150 +83,150 @@ func (p *Proc) update() {
 		processes[i] = Process{
 			pid,
 			command,
-			cpu / float64(p.cpuCount),
+			cpu / float64(self.cpuCount),
 			mem,
 		}
 	}
-	p.ungroupedProcs = processes
-	p.groupedProcs = Group(processes)
+	self.ungroupedProcs = processes
+	self.groupedProcs = Group(processes)
 
-	p.Sort()
+	self.Sort()
 }
 
 // Sort sorts either the grouped or ungrouped []Process based on the sortMethod.
 // Called with every update, when the sort method is changed, and when processes are grouped and ungrouped.
-func (p *Proc) Sort() {
-	p.Header = []string{"Count", "Command", "CPU%", "Mem%"}
+func (self *Proc) Sort() {
+	self.Header = []string{"Count", "Command", "CPU%", "Mem%"}
 
-	if !p.group {
-		p.Header[0] = "PID"
+	if !self.group {
+		self.Header[0] = "PID"
 	}
 
-	processes := &p.ungroupedProcs
-	if p.group {
-		processes = &p.groupedProcs
+	processes := &self.ungroupedProcs
+	if self.group {
+		processes = &self.groupedProcs
 	}
 
-	switch p.sortMethod {
+	switch self.sortMethod {
 	case "c":
 		sort.Sort(sort.Reverse(ProcessByCPU(*processes)))
-		p.Header[2] += DOWN
+		self.Header[2] += DOWN
 	case "p":
-		if p.group {
+		if self.group {
 			sort.Sort(sort.Reverse(ProcessByPID(*processes)))
 		} else {
 			sort.Sort(ProcessByPID(*processes))
 		}
-		p.Header[0] += DOWN
+		self.Header[0] += DOWN
 	case "m":
 		sort.Sort(sort.Reverse(ProcessByMem(*processes)))
-		p.Header[3] += DOWN
+		self.Header[3] += DOWN
 	}
 
-	p.Rows = FieldsToStrings(*processes)
+	self.Rows = FieldsToStrings(*processes)
 }
 
 // ColResize overrides the default ColResize in the termui table.
-func (p *Proc) ColResize() {
+func (self *Proc) ColResize() {
 	// calculate gap size based on total width
-	p.Gap = 3
-	if p.X < 50 {
-		p.Gap = 1
-	} else if p.X < 75 {
-		p.Gap = 2
+	self.Gap = 3
+	if self.X < 50 {
+		self.Gap = 1
+	} else if self.X < 75 {
+		self.Gap = 2
 	}
 
-	p.CellXPos = []int{
-		p.Gap,
-		p.Gap + p.ColWidths[0] + p.Gap,
-		p.X - p.Gap - p.ColWidths[3] - p.Gap - p.ColWidths[2],
-		p.X - p.Gap - p.ColWidths[3],
+	self.CellXPos = []int{
+		self.Gap,
+		self.Gap + self.ColWidths[0] + self.Gap,
+		self.X - self.Gap - self.ColWidths[3] - self.Gap - self.ColWidths[2],
+		self.X - self.Gap - self.ColWidths[3],
 	}
 
-	rowWidth := p.Gap + p.ColWidths[0] + p.Gap + p.ColWidths[1] + p.Gap + p.ColWidths[2] + p.Gap + p.ColWidths[3] + p.Gap
+	rowWidth := self.Gap + self.ColWidths[0] + self.Gap + self.ColWidths[1] + self.Gap + self.ColWidths[2] + self.Gap + self.ColWidths[3] + self.Gap
 
 	// only renders a column if it fits
-	if p.X < (rowWidth - p.Gap - p.ColWidths[3]) {
-		p.ColWidths[2] = 0
-		p.ColWidths[3] = 0
-	} else if p.X < rowWidth {
-		p.CellXPos[2] = p.CellXPos[3]
-		p.ColWidths[3] = 0
+	if self.X < (rowWidth - self.Gap - self.ColWidths[3]) {
+		self.ColWidths[2] = 0
+		self.ColWidths[3] = 0
+	} else if self.X < rowWidth {
+		self.CellXPos[2] = self.CellXPos[3]
+		self.ColWidths[3] = 0
 	}
 }
 
-func (p *Proc) keyBinds() {
+func (self *Proc) keyBinds() {
 	ui.On("<MouseLeft>", func(e ui.Event) {
-		p.Click(e.MouseX, e.MouseY)
-		p.KeyPressed <- true
+		self.Click(e.MouseX, e.MouseY)
+		self.KeyPressed <- true
 	})
 
 	ui.On("<MouseWheelUp>", "<MouseWheelDown>", func(e ui.Event) {
 		switch e.Key {
 		case "<MouseWheelDown>":
-			p.Down()
+			self.Down()
 		case "<MouseWheelUp>":
-			p.Up()
+			self.Up()
 		}
-		p.KeyPressed <- true
+		self.KeyPressed <- true
 	})
 
 	ui.On("<up>", "<down>", func(e ui.Event) {
 		switch e.Key {
 		case "<up>":
-			p.Up()
+			self.Up()
 		case "<down>":
-			p.Down()
+			self.Down()
 		}
-		p.KeyPressed <- true
+		self.KeyPressed <- true
 	})
 
 	viKeys := []string{"j", "k", "gg", "G", "<C-d>", "<C-u>", "<C-f>", "<C-b>"}
 	ui.On(viKeys, func(e ui.Event) {
 		switch e.Key {
 		case "j":
-			p.Down()
+			self.Down()
 		case "k":
-			p.Up()
+			self.Up()
 		case "gg":
-			p.Top()
+			self.Top()
 		case "G":
-			p.Bottom()
+			self.Bottom()
 		case "<C-d>":
-			p.HalfPageDown()
+			self.HalfPageDown()
 		case "<C-u>":
-			p.HalfPageUp()
+			self.HalfPageUp()
 		case "<C-f>":
-			p.PageDown()
+			self.PageDown()
 		case "<C-b>":
-			p.PageUp()
+			self.PageUp()
 		}
-		p.KeyPressed <- true
+		self.KeyPressed <- true
 	})
 
 	ui.On("dd", func(e ui.Event) {
-		p.Kill()
+		self.Kill()
 	})
 
 	ui.On("<tab>", func(e ui.Event) {
-		p.group = !p.group
-		if p.group {
-			p.UniqueCol = 1
+		self.group = !self.group
+		if self.group {
+			self.UniqueCol = 1
 		} else {
-			p.UniqueCol = 0
+			self.UniqueCol = 0
 		}
-		p.sortMethod = "c"
-		p.Sort()
-		p.Top()
-		p.KeyPressed <- true
+		self.sortMethod = "c"
+		self.Sort()
+		self.Top()
+		self.KeyPressed <- true
 	})
 
 	ui.On("m", "c", "p", func(e ui.Event) {
-		if p.sortMethod != e.Key {
-			p.sortMethod = e.Key
-			p.Top()
-			p.Sort()
-			p.KeyPressed <- true
+		if self.sortMethod != e.Key {
+			self.sortMethod = e.Key
+			self.Top()
+			self.Sort()
+			self.KeyPressed <- true
 		}
 	})
 }
@@ -279,13 +279,13 @@ func FieldsToStrings(P []Process) [][]string {
 }
 
 // Kill kills process or group of processes.
-func (p *Proc) Kill() {
-	p.SelectedItem = ""
+func (self *Proc) Kill() {
+	self.SelectedItem = ""
 	command := "kill"
-	if p.UniqueCol == 1 {
+	if self.UniqueCol == 1 {
 		command = "pkill"
 	}
-	cmd := exec.Command(command, p.Rows[p.SelectedRow][p.UniqueCol])
+	cmd := exec.Command(command, self.Rows[self.SelectedRow][self.UniqueCol])
 	cmd.Start()
 }
 

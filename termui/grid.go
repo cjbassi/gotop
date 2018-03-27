@@ -25,7 +25,7 @@ func NewGrid() *Grid {
 }
 
 // Set assigns a widget and its grid dimensions to Grid.
-func (g *Grid) Set(x0, y0, x1, y1 int, widget GridBufferer) {
+func (self *Grid) Set(x0, y0, x1, y1 int, widget GridBufferer) {
 	if widget == nil {
 		return
 	}
@@ -34,33 +34,33 @@ func (g *Grid) Set(x0, y0, x1, y1 int, widget GridBufferer) {
 	}
 
 	widget.SetGrid(x0, y0, x1, y1)
-	widget.Resize(g.Width, g.Height, g.Cols, g.Rows)
+	widget.Resize(self.Width, self.Height, self.Cols, self.Rows)
 
-	g.Widgets = append(g.Widgets, widget)
+	self.Widgets = append(self.Widgets, widget)
 }
 
 // Resize resizes each widget in the grid.
-func (g *Grid) Resize() {
-	for _, w := range g.Widgets {
-		w.Resize(g.Width, g.Height, g.Cols, g.Rows)
+func (self *Grid) Resize() {
+	for _, w := range self.Widgets {
+		w.Resize(self.Width, self.Height, self.Cols, self.Rows)
 	}
 }
 
 // Buffer implements the Bufferer interface by merging each widget in Grid into one buffer.
-func (g *Grid) Buffer() *Buffer {
-	buf := NewFilledBuffer(0, 0, g.Width, g.Height, Cell{' ', ColorDefault, Theme.Bg})
-	for _, w := range g.Widgets {
+func (self *Grid) Buffer() *Buffer {
+	buf := NewFilledBuffer(0, 0, self.Width, self.Height, Cell{' ', ColorDefault, Theme.Bg})
+	for _, w := range self.Widgets {
 		buf.MergeWithOffset(w.Buffer(), w.GetXOffset(), w.GetYOffset())
 	}
 	return buf
 }
 
 // GetXOffset implements Bufferer interface.
-func (g *Grid) GetXOffset() int {
+func (self *Grid) GetXOffset() int {
 	return 0
 }
 
 // GetYOffset implements Bufferer interface.
-func (g *Grid) GetYOffset() int {
+func (self *Grid) GetYOffset() int {
 	return 0
 }

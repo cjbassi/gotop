@@ -39,12 +39,12 @@ func NewHelpMenu() *HelpMenu {
 	return &HelpMenu{block}
 }
 
-func (hm *HelpMenu) Buffer() *ui.Buffer {
-	buf := hm.Block.Buffer()
+func (self *HelpMenu) Buffer() *ui.Buffer {
+	buf := self.Block.Buffer()
 
 	for y, line := range strings.Split(KEYBINDS, "\n") {
 		for x, char := range line {
-			buf.SetCell(x+1, y, ui.NewCell(char, ui.Color(7), hm.Bg))
+			buf.SetCell(x+1, y, ui.NewCell(char, ui.Color(7), self.Bg))
 		}
 	}
 

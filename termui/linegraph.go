@@ -30,21 +30,21 @@ func NewLineGraph() *LineGraph {
 }
 
 // Buffer implements Bufferer interface.
-func (lc *LineGraph) Buffer() *Buffer {
-	buf := lc.Block.Buffer()
+func (self *LineGraph) Buffer() *Buffer {
+	buf := self.Block.Buffer()
 	// we render each data point on to the canvas then copy over the braille to the buffer at the end
 	// fyi braille characters have 2x4 dots for each character
 	c := drawille.NewCanvas()
 	// used to keep track of the braille colors until the end when we render the braille to the buffer
-	colors := make([][]Color, lc.X+2)
+	colors := make([][]Color, self.X+2)
 	for i := range colors {
-		colors[i] = make([]Color, lc.Y+2)
+		colors[i] = make([]Color, self.Y+2)
 	}
 
 	// sort the series so that overlapping data will overlap the same way each time
-	seriesList := make([]string, len(lc.Data))
+	seriesList := make([]string, len(self.Data))
 	i := 0
-	for seriesName := range lc.Data {
+	for seriesName := range self.Data {
 		seriesList[i] = seriesName
 		i++
 	}
@@ -53,21 +53,21 @@ func (lc *LineGraph) Buffer() *Buffer {
 	// draw lines in reverse order so that the first color defined in the colorscheme is on top
 	for i := len(seriesList) - 1; i >= 0; i-- {
 		seriesName := seriesList[i]
-		seriesData := lc.Data[seriesName]
-		seriesLineColor, ok := lc.LineColor[seriesName]
+		seriesData := self.Data[seriesName]
+		seriesLineColor, ok := self.LineColor[seriesName]
 		if !ok {
-			seriesLineColor = lc.DefaultLineColor
+			seriesLineColor = self.DefaultLineColor
 		}
 
 		// coordinates of last point
 		lastY, lastX := -1, -1
 		// assign colors to `colors` and lines/points to the canvas
 		for i := len(seriesData) - 1; i >= 0; i-- {
-			x := ((lc.X + 1) * 2) - 1 - (((len(seriesData) - 1) - i) * lc.Zoom)
-			y := ((lc.Y + 1) * 4) - 1 - int((float64((lc.Y)*4)-1)*(seriesData[i]/100))
+			x := ((self.X + 1) * 2) - 1 - (((len(seriesData) - 1) - i) * self.Zoom)
+			y := ((self.Y + 1) * 4) - 1 - int((float64((self.Y)*4)-1)*(seriesData[i]/100))
 			if x < 0 {
 				// render the line to the last point up to the wall
-				if x > 0-lc.Zoom {
+				if x > 0-self.Zoom {
 					for _, p := range drawille.Line(lastX, lastY, x, y) {
 						if p.X > 0 {
 							c.Set(p.X, p.Y)
@@ -97,7 +97,7 @@ func (lc *LineGraph) Buffer() *Buffer {
 					continue
 				}
 				if char != 10240 { // empty braille character
-					buf.SetCell(x, y, Cell{char, colors[x][y], lc.Bg})
+					buf.SetCell(x, y, Cell{char, colors[x][y], self.Bg})
 				}
 			}
 		}
@@ -106,17 +106,17 @@ func (lc *LineGraph) Buffer() *Buffer {
 	// renders key ontop
 	for j, seriesName := range seriesList {
 		// sorts lines again
-		seriesData := lc.Data[seriesName]
-		seriesLineColor, ok := lc.LineColor[seriesName]
+		seriesData := self.Data[seriesName]
+		seriesLineColor, ok := self.LineColor[seriesName]
 		if !ok {
-			seriesLineColor = lc.DefaultLineColor
+			seriesLineColor = self.DefaultLineColor
 		}
 
 		// render key ontop, but let braille be drawn over space characters
 		str := fmt.Sprintf("%s %3.0f%%", seriesName, seriesData[len(seriesData)-1])
 		for k, char := range str {
 			if char != ' ' {
-				buf.SetCell(3+k, j+2, Cell{char, seriesLineColor, lc.Bg})
+				buf.SetCell(3+k, j+2, Cell{char, seriesLineColor, self.Bg})
 			}
 		}
 

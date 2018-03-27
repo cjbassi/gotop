@@ -32,69 +32,69 @@ func NewBlock() *Block {
 	}
 }
 
-func (b *Block) drawBorder(buf *Buffer) {
-	x := b.X + 1
-	y := b.Y + 1
+func (self *Block) drawBorder(buf *Buffer) {
+	x := self.X + 1
+	y := self.Y + 1
 
 	// draw lines
-	buf.Merge(NewFilledBuffer(0, 0, x, 1, Cell{HORIZONTAL_LINE, b.BorderFg, b.BorderBg}))
-	buf.Merge(NewFilledBuffer(0, y, x, y+1, Cell{HORIZONTAL_LINE, b.BorderFg, b.BorderBg}))
-	buf.Merge(NewFilledBuffer(0, 0, 1, y+1, Cell{VERTICAL_LINE, b.BorderFg, b.BorderBg}))
-	buf.Merge(NewFilledBuffer(x, 0, x+1, y+1, Cell{VERTICAL_LINE, b.BorderFg, b.BorderBg}))
+	buf.Merge(NewFilledBuffer(0, 0, x, 1, Cell{HORIZONTAL_LINE, self.BorderFg, self.BorderBg}))
+	buf.Merge(NewFilledBuffer(0, y, x, y+1, Cell{HORIZONTAL_LINE, self.BorderFg, self.BorderBg}))
+	buf.Merge(NewFilledBuffer(0, 0, 1, y+1, Cell{VERTICAL_LINE, self.BorderFg, self.BorderBg}))
+	buf.Merge(NewFilledBuffer(x, 0, x+1, y+1, Cell{VERTICAL_LINE, self.BorderFg, self.BorderBg}))
 
 	// draw corners
-	buf.SetCell(0, 0, Cell{TOP_LEFT, b.BorderFg, b.BorderBg})
-	buf.SetCell(x, 0, Cell{TOP_RIGHT, b.BorderFg, b.BorderBg})
-	buf.SetCell(0, y, Cell{BOTTOM_LEFT, b.BorderFg, b.BorderBg})
-	buf.SetCell(x, y, Cell{BOTTOM_RIGHT, b.BorderFg, b.BorderBg})
+	buf.SetCell(0, 0, Cell{TOP_LEFT, self.BorderFg, self.BorderBg})
+	buf.SetCell(x, 0, Cell{TOP_RIGHT, self.BorderFg, self.BorderBg})
+	buf.SetCell(0, y, Cell{BOTTOM_LEFT, self.BorderFg, self.BorderBg})
+	buf.SetCell(x, y, Cell{BOTTOM_RIGHT, self.BorderFg, self.BorderBg})
 }
 
-func (b *Block) drawLabel(buf *Buffer) {
-	r := MaxString(b.Label, (b.X-3)-1)
-	buf.SetString(3, 0, r, b.LabelFg, b.LabelBg)
-	if b.Label == "" {
+func (self *Block) drawLabel(buf *Buffer) {
+	r := MaxString(self.Label, (self.X-3)-1)
+	buf.SetString(3, 0, r, self.LabelFg, self.LabelBg)
+	if self.Label == "" {
 		return
 	}
-	c := Cell{' ', b.Fg, b.Bg}
+	c := Cell{' ', self.Fg, self.Bg}
 	buf.SetCell(2, 0, c)
-	if len(b.Label)+3 < b.X {
-		buf.SetCell(len(b.Label)+3, 0, c)
+	if len(self.Label)+3 < self.X {
+		buf.SetCell(len(self.Label)+3, 0, c)
 	} else {
-		buf.SetCell(b.X-1, 0, c)
+		buf.SetCell(self.X-1, 0, c)
 	}
 }
 
 // Resize computes Height, Width, XOffset, and YOffset given terminal dimensions.
-func (b *Block) Resize(termWidth, termHeight, termCols, termRows int) {
-	b.X = int((float64(b.Grid.Dx())/float64(termCols))*float64(termWidth)) - 2
-	b.Y = int((float64(b.Grid.Dy())/float64(termRows))*float64(termHeight)) - 2
-	b.XOffset = int((float64(b.Grid.Min.X) / float64(termCols)) * float64(termWidth))
-	b.YOffset = int((float64(b.Grid.Min.Y) / float64(termRows)) * float64(termHeight))
+func (self *Block) Resize(termWidth, termHeight, termCols, termRows int) {
+	self.X = int((float64(self.Grid.Dx())/float64(termCols))*float64(termWidth)) - 2
+	self.Y = int((float64(self.Grid.Dy())/float64(termRows))*float64(termHeight)) - 2
+	self.XOffset = int((float64(self.Grid.Min.X) / float64(termCols)) * float64(termWidth))
+	self.YOffset = int((float64(self.Grid.Min.Y) / float64(termRows)) * float64(termHeight))
 }
 
 // SetGrid create a rectangle representing the block's dimensions in the grid.
-func (b *Block) SetGrid(c0, r0, c1, r1 int) {
-	b.Grid = image.Rect(c0, r0, c1, r1)
+func (self *Block) SetGrid(c0, r0, c1, r1 int) {
+	self.Grid = image.Rect(c0, r0, c1, r1)
 }
 
 // GetXOffset implements Bufferer interface.
-func (b *Block) GetXOffset() int {
-	return b.XOffset
+func (self *Block) GetXOffset() int {
+	return self.XOffset
 }
 
 // GetYOffset implements Bufferer interface.
-func (b *Block) GetYOffset() int {
-	return b.YOffset
+func (self *Block) GetYOffset() int {
+	return self.YOffset
 }
 
 // Buffer implements Bufferer interface and draws background, border, and borderlabel.
-func (b *Block) Buffer() *Buffer {
+func (self *Block) Buffer() *Buffer {
 	buf := NewBuffer()
-	buf.SetAreaXY(b.X+2, b.Y+2)
-	buf.Fill(Cell{' ', ColorDefault, b.Bg})
+	buf.SetAreaXY(self.X+2, self.Y+2)
+	buf.Fill(Cell{' ', ColorDefault, self.Bg})
 
-	b.drawBorder(buf)
-	b.drawLabel(buf)
+	self.drawBorder(buf)
+	self.drawLabel(buf)
 
 	return buf
 }

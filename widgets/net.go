@@ -25,46 +25,46 @@ func NewNet() *Net {
 	sent.Data = []int{0}
 
 	spark := ui.NewSparklines(recv, sent)
-	n := &Net{
+	self := &Net{
 		Sparklines: spark,
 		interval:   time.Second,
 	}
-	n.Label = "Network Usage"
+	self.Label = "Network Usage"
 
-	go n.update()
-	ticker := time.NewTicker(n.interval)
+	go self.update()
+	ticker := time.NewTicker(self.interval)
 	go func() {
 		for range ticker.C {
-			n.update()
+			self.update()
 		}
 	}()
 
-	return n
+	return self
 }
 
-func (n *Net) update() {
+func (self *Net) update() {
 	// `false` causes psutil to group all network activity
 	interfaces, _ := psNet.IOCounters(false)
 	recvTotal := interfaces[0].BytesRecv
 	sentTotal := interfaces[0].BytesSent
 
-	if n.recvTotal != 0 { // if this isn't the first update
-		recvRecent := recvTotal - n.recvTotal
-		sentRecent := sentTotal - n.sentTotal
+	if self.recvTotal != 0 { // if this isn't the first update
+		recvRecent := recvTotal - self.recvTotal
+		sentRecent := sentTotal - self.sentTotal
 
-		n.Lines[0].Data = append(n.Lines[0].Data, int(recvRecent))
-		n.Lines[1].Data = append(n.Lines[1].Data, int(sentRecent))
+		self.Lines[0].Data = append(self.Lines[0].Data, int(recvRecent))
+		self.Lines[1].Data = append(self.Lines[1].Data, int(sentRecent))
 	}
 
 	// used in later calls to update
-	n.recvTotal = recvTotal
-	n.sentTotal = sentTotal
+	self.recvTotal = recvTotal
+	self.sentTotal = sentTotal
 
 	// renders net widget titles
 	for i := 0; i < 2; i++ {
 		var method string // either 'Rx' or 'Tx'
 		var total float64
-		recent := n.Lines[i].Data[len(n.Lines[i].Data)-1]
+		recent := self.Lines[i].Data[len(self.Lines[i].Data)-1]
 		unitTotal := "B"
 		unitRecent := "B"
 
@@ -92,7 +92,7 @@ func (n *Net) update() {
 			unitTotal = "MB"
 		}
 
-		n.Lines[i].Title1 = fmt.Sprintf(" Total %s: %5.1f %s", method, total, unitTotal)
-		n.Lines[i].Title2 = fmt.Sprintf(" %s/s: %9d %2s/s", method, recent, unitRecent)
+		self.Lines[i].Title1 = fmt.Sprintf(" Total %s: %5.1f %s", method, total, unitTotal)
+		self.Lines[i].Title2 = fmt.Sprintf(" %s/s: %9d %2s/s", method, recent, unitRecent)
 	}
 }

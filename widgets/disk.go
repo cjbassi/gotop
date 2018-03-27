@@ -16,26 +16,26 @@ type Disk struct {
 }
 
 func NewDisk() *Disk {
-	d := &Disk{
+	self := &Disk{
 		Gauge:    ui.NewGauge(),
 		fs:       "/",
 		interval: time.Second * 5,
 	}
-	d.Label = "Disk Usage"
+	self.Label = "Disk Usage"
 
-	go d.update()
-	ticker := time.NewTicker(d.interval)
+	go self.update()
+	ticker := time.NewTicker(self.interval)
 	go func() {
 		for range ticker.C {
-			d.update()
+			self.update()
 		}
 	}()
 
-	return d
+	return self
 }
 
-func (d *Disk) update() {
-	usage, _ := psDisk.Usage(d.fs)
-	d.Percent = int(usage.UsedPercent)
-	d.Description = fmt.Sprintf(" (%dGB free)", int(utils.BytesToGB(usage.Free)))
+func (self *Disk) update() {
+	usage, _ := psDisk.Usage(self.fs)
+	self.Percent = int(usage.UsedPercent)
+	self.Description = fmt.Sprintf(" (%dGB free)", int(utils.BytesToGB(usage.Free)))
 }

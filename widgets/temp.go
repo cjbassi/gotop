@@ -23,60 +23,60 @@ type Temp struct {
 }
 
 func NewTemp() *Temp {
-	t := &Temp{
+	self := &Temp{
 		Block:     ui.NewBlock(),
 		interval:  time.Second * 5,
 		Data:      make(map[string]int),
 		Threshold: 80, // temp at which color should change
 	}
-	t.Label = "Temperatures"
+	self.Label = "Temperatures"
 
-	go t.update()
-	ticker := time.NewTicker(t.interval)
+	go self.update()
+	ticker := time.NewTicker(self.interval)
 	go func() {
 		for range ticker.C {
-			t.update()
+			self.update()
 		}
 	}()
 
-	return t
+	return self
 }
 
-func (t *Temp) update() {
+func (self *Temp) update() {
 	sensors, _ := psHost.SensorsTemperatures()
 	for _, sensor := range sensors {
 		// only sensors with input in their name are giving us live temp info
 		if strings.Contains(sensor.SensorKey, "input") {
 			// removes '_input' from the end of the sensor name
 			label := sensor.SensorKey[:strings.Index(sensor.SensorKey, "_input")]
-			t.Data[label] = int(sensor.Temperature)
+			self.Data[label] = int(sensor.Temperature)
 		}
 	}
 }
 
 // Buffer implements ui.Bufferer interface.
-func (t *Temp) Buffer() *ui.Buffer {
-	buf := t.Block.Buffer()
+func (self *Temp) Buffer() *ui.Buffer {
+	buf := self.Block.Buffer()
 
 	var keys []string
-	for k := range t.Data {
+	for k := range self.Data {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 
 	for y, key := range keys {
-		if y+1 > t.Y {
+		if y+1 > self.Y {
 			break
 		}
 
-		fg := t.TempLow
-		if t.Data[key] >= t.Threshold {
-			fg = t.TempHigh
+		fg := self.TempLow
+		if self.Data[key] >= self.Threshold {
+			fg = self.TempHigh
 		}
 
-		s := ui.MaxString(key, (t.X - 4))
-		buf.SetString(1, y+1, s, t.Fg, t.Bg)
-		buf.SetString(t.X-2, y+1, fmt.Sprintf("%dC", t.Data[key]), fg, t.Bg)
+		s := ui.MaxString(key, (self.X - 4))
+		buf.SetString(1, y+1, s, self.Fg, self.Bg)
+		buf.SetString(self.X-2, y+1, fmt.Sprintf("%dC", self.Data[key]), fg, self.Bg)
 
 	}
 

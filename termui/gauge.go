@@ -21,27 +21,27 @@ func NewGauge() *Gauge {
 }
 
 // Buffer implements Bufferer interface.
-func (g *Gauge) Buffer() *Buffer {
-	buf := g.Block.Buffer()
+func (self *Gauge) Buffer() *Buffer {
+	buf := self.Block.Buffer()
 
 	// plot bar
-	width := g.Percent * g.X / 100
-	for y := 1; y <= g.Y; y++ {
+	width := self.Percent * self.X / 100
+	for y := 1; y <= self.Y; y++ {
 		for x := 1; x <= width; x++ {
-			buf.SetCell(x, y, Cell{' ', g.GaugeColor, g.GaugeColor})
+			buf.SetCell(x, y, Cell{' ', self.GaugeColor, self.GaugeColor})
 		}
 	}
 
 	// plot percentage
-	s := strconv.Itoa(g.Percent) + "%" + g.Description
-	s = MaxString(s, g.X)
-	y := (g.Y + 1) / 2
-	x := ((g.X - len(s)) + 1) / 2
+	s := strconv.Itoa(self.Percent) + "%" + self.Description
+	s = MaxString(s, self.X)
+	y := (self.Y + 1) / 2
+	x := ((self.X - len(s)) + 1) / 2
 	for i, char := range s {
-		bg := g.Bg
-		fg := g.Fg
+		bg := self.Bg
+		fg := self.Fg
 		if x+i < width {
-			fg = g.GaugeColor
+			fg = self.GaugeColor
 			bg = AttrReverse
 		}
 		buf.SetCell(1+x+i, y, Cell{char, fg, bg})

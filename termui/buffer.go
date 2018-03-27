@@ -40,60 +40,60 @@ func NewFilledBuffer(x0, y0, x1, y1 int, c Cell) *Buffer {
 }
 
 // SetCell assigns a Cell to (x,y).
-func (b *Buffer) SetCell(x, y int, c Cell) {
-	b.CellMap[image.Pt(x, y)] = c
+func (self *Buffer) SetCell(x, y int, c Cell) {
+	self.CellMap[image.Pt(x, y)] = c
 }
 
 // SetString assigns a string to a Buffer starting at (x,y).
-func (b *Buffer) SetString(x, y int, s string, fg, bg Color) {
+func (self *Buffer) SetString(x, y int, s string, fg, bg Color) {
 	for i, char := range s {
-		b.SetCell(x+i, y, Cell{char, fg, bg})
+		self.SetCell(x+i, y, Cell{char, fg, bg})
 	}
 }
 
 // At returns the cell at (x,y).
-func (b *Buffer) At(x, y int) Cell {
-	return b.CellMap[image.Pt(x, y)]
+func (self *Buffer) At(x, y int) Cell {
+	return self.CellMap[image.Pt(x, y)]
 }
 
-// SetArea assigns a new rect area to Buffer b.
-func (b *Buffer) SetArea(r image.Rectangle) {
-	b.Area.Max = r.Max
-	b.Area.Min = r.Min
+// SetArea assigns a new rect area to self.
+func (self *Buffer) SetArea(r image.Rectangle) {
+	self.Area.Max = r.Max
+	self.Area.Min = r.Min
 }
 
 // SetAreaXY sets the Buffer bounds from (0,0) to (x,y).
-func (b *Buffer) SetAreaXY(x, y int) {
-	b.Area.Min.Y = 0
-	b.Area.Min.X = 0
-	b.Area.Max.Y = y
-	b.Area.Max.X = x
+func (self *Buffer) SetAreaXY(x, y int) {
+	self.Area.Min.Y = 0
+	self.Area.Min.X = 0
+	self.Area.Max.Y = y
+	self.Area.Max.X = x
 }
 
 // Merge merges the given buffers onto the current Buffer.
-func (b *Buffer) Merge(bs ...*Buffer) {
+func (self *Buffer) Merge(bs ...*Buffer) {
 	for _, buf := range bs {
 		for p, c := range buf.CellMap {
-			b.SetCell(p.X, p.Y, c)
+			self.SetCell(p.X, p.Y, c)
 		}
-		b.SetArea(b.Area.Union(buf.Area))
+		self.SetArea(self.Area.Union(buf.Area))
 	}
 }
 
 // MergeWithOffset merges a Buffer onto another with an offset.
-func (b *Buffer) MergeWithOffset(buf *Buffer, xOffset, yOffset int) {
+func (self *Buffer) MergeWithOffset(buf *Buffer, xOffset, yOffset int) {
 	for p, c := range buf.CellMap {
-		b.SetCell(p.X+xOffset, p.Y+yOffset, c)
+		self.SetCell(p.X+xOffset, p.Y+yOffset, c)
 	}
 	rect := image.Rect(xOffset, yOffset, buf.Area.Max.X+xOffset, buf.Area.Max.Y+yOffset)
-	b.SetArea(b.Area.Union(rect))
+	self.SetArea(self.Area.Union(rect))
 }
 
 // Fill fills the Buffer with a Cell.
-func (b *Buffer) Fill(c Cell) {
-	for x := b.Area.Min.X; x < b.Area.Max.X; x++ {
-		for y := b.Area.Min.Y; y < b.Area.Max.Y; y++ {
-			b.SetCell(x, y, c)
+func (self *Buffer) Fill(c Cell) {
+	for x := self.Area.Min.X; x < self.Area.Max.X; x++ {
+		for y := self.Area.Min.Y; y < self.Area.Max.Y; y++ {
+			self.SetCell(x, y, c)
 		}
 	}
 }
