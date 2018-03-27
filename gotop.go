@@ -167,8 +167,12 @@ func widgetColors() {
 	mem.LineColor["Swap"] = ui.Color(colorscheme.SwapMem)
 
 	LineColor := make(map[string]ui.Color)
-	for i := 0; i < len(cpu.Data); i++ {
-		LineColor[fmt.Sprintf("CPU%d", i+1)] = ui.Color(colorscheme.CPULines[i])
+	if cpu.Count <= 8 {
+		for i := 0; i < len(cpu.Data); i++ {
+			LineColor[fmt.Sprintf("CPU%d", i+1)] = ui.Color(colorscheme.CPULines[i])
+		}
+	} else {
+		LineColor["Average"] = ui.Color(colorscheme.CPULines[0])
 	}
 	cpu.LineColor = LineColor
 
