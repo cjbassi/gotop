@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	ui "github.com/cjbassi/gotop/termui"
+	ui "github.com/cjbassi/termui"
 	psHost "github.com/shirou/gopsutil/host"
 )
 

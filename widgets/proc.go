@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	ui "github.com/cjbassi/gotop/termui"
+	ui "github.com/cjbassi/termui"
 	psCPU "github.com/shirou/gopsutil/cpu"
 	psProc "github.com/shirou/gopsutil/process"
 )

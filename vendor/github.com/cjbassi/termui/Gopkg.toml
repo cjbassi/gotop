@@ -27,15 +27,11 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/cjbassi/termui"
+  name = "github.com/cjbassi/drawille-go"
 
 [[constraint]]
-  name = "github.com/docopt/docopt-go"
-  version = "0.6.2"
-
-[[constraint]]
-  name = "github.com/shirou/gopsutil"
-  version = "2.18.2"
+  branch = "master"
+  name = "github.com/nsf/termbox-go"
 
 [prune]
   go-tests = true

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	ui "github.com/cjbassi/gotop/termui"
 	"github.com/cjbassi/gotop/utils"
+	ui "github.com/cjbassi/termui"
 	psDisk "github.com/shirou/gopsutil/disk"
 )
 

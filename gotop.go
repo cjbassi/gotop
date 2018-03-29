@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/cjbassi/gotop/colorschemes"
-	ui "github.com/cjbassi/gotop/termui"
 	w "github.com/cjbassi/gotop/widgets"
+	ui "github.com/cjbassi/termui"
 	"github.com/docopt/docopt-go"
 )
 

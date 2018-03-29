@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	ui "github.com/cjbassi/gotop/termui"
+	ui "github.com/cjbassi/termui"
 	psCPU "github.com/shirou/gopsutil/cpu"
 )
 

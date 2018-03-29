@@ -3,7 +3,7 @@ package widgets
 import (
 	"time"
 
-	ui "github.com/cjbassi/gotop/termui"
+	ui "github.com/cjbassi/termui"
 	psMem "github.com/shirou/gopsutil/mem"
 )
 

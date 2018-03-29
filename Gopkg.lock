@@ -2,22 +2,28 @@
 
 
 [[projects]]
-  branch = "master"
   name = "github.com/StackExchange/wmi"
   packages = ["."]
   revision = "5d049714c4a64225c3c79a7cf7d02f7fb5b96338"
+  version = "1.0.0"
 
 [[projects]]
   branch = "master"
   name = "github.com/cjbassi/drawille-go"
   packages = ["."]
-  revision = "d0448e2d0e80b7d72d6dde569751c1c057938e90"
+  revision = "ad535d0f92cd951308cdb80675e05c62c6b8b296"
 
 [[projects]]
   branch = "master"
+  name = "github.com/cjbassi/termui"
+  packages = ["."]
+  revision = "d8e7d6f2c53c6f045c1d95c9fa9968e4d2ba569e"
+
+[[projects]]
   name = "github.com/docopt/docopt-go"
   packages = ["."]
-  revision = "ee0de3bc6815ee19d4a46c7eb90f829db0e014b1"
+  revision = "784ddc588536785e7299f7272f39101f7faccc3f"
+  version = "0.6.2"
 
 [[projects]]
   name = "github.com/go-ole/go-ole"
@@ -38,10 +44,9 @@
   branch = "master"
   name = "github.com/nsf/termbox-go"
   packages = ["."]
-  revision = "88b7b944be8bc8d8ec6195fca97c5869ba20f99d"
+  revision = "e2050e41c8847748ec5288741c0b19a8cb26d084"
 
 [[projects]]
-  branch = "master"
   name = "github.com/shirou/gopsutil"
   packages = [
     "cpu",
@@ -52,7 +57,8 @@
     "net",
     "process"
   ]
-  revision = "543a05cce094293c7747322720256bee15d88a12"
+  revision = "5776ff9c7c5d063d574ef53d740f75c68b448e53"
+  version = "v2.18.02"
 
 [[projects]]
   branch = "master"
@@ -67,11 +73,11 @@
     "unix",
     "windows"
   ]
-  revision = "37707fdb30a5b38865cfb95e5aab41707daec7fd"
+  revision = "378d26f46672a356c46195c28f61bdb4c0a781dd"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "fe5e32a6c38ce5386a60b47c63ef9dcbe8ef0d22121e1a0f4e5357e238cec5dc"
+  inputs-digest = "d2076f778d670ace1a8d4ddb709c3421637ec24b72e6e8502e5bbf41e93def62"
   solver-name = "gps-cdcl"
   solver-version = 1
