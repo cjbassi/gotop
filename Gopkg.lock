@@ -20,10 +20,10 @@
   revision = "d8e7d6f2c53c6f045c1d95c9fa9968e4d2ba569e"
 
 [[projects]]
+  branch = "master"
   name = "github.com/docopt/docopt-go"
   packages = ["."]
-  revision = "784ddc588536785e7299f7272f39101f7faccc3f"
-  version = "0.6.2"
+  revision = "ee0de3bc6815ee19d4a46c7eb90f829db0e014b1"
 
 [[projects]]
   name = "github.com/go-ole/go-ole"
@@ -78,6 +78,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d2076f778d670ace1a8d4ddb709c3421637ec24b72e6e8502e5bbf41e93def62"
+  inputs-digest = "22a656ce826eed217bf58555e692a26e2d791e256a6f17b8b06b9c964bb30f11"
   solver-name = "gps-cdcl"
   solver-version = 1

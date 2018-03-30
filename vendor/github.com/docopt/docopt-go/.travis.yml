@@ -7,15 +7,17 @@ language: go
 go:
     - 1.4
     - 1.5
+    - 1.6
+    - 1.7
+    - 1.8
+    - 1.9
     - tip
 
 matrix:
     fast_finish: true
 
 before_install:
-    - go get golang.org/x/tools/cmd/vet
     - go get golang.org/x/tools/cmd/cover
-    - go get github.com/golang/lint/golint
     - go get github.com/mattn/goveralls
 
 install:
@@ -23,7 +25,6 @@ install:
 
 script:
     - go vet -x ./...
-    - $HOME/gopath/bin/golint ./...
     - go test -v ./...
     - go test -covermode=count -coverprofile=profile.cov .
 
