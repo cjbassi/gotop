@@ -9,19 +9,19 @@
 
 # more info at https://www.digitalocean.com/community/tutorials/how-to-build-go-executables-for-multiple-platforms-on-ubuntu-16-04
 
-VERSION=$(go run gotop.go -v)
+VERSION=$(go run main.go -v)
 
-mkdir build
+mkdir -p build
 cd build
 
-env GOOS=darwin GOARCH=amd64 go build ../
+env GOOS=darwin GOARCH=amd64 go build -o gotop ../
 tar czf gotop-$VERSION-darwin_amd64.tgz gotop
 rm gotop
 
-env GOOS=linux GOARCH=386 go build ../
+env GOOS=linux GOARCH=386 go build -o gotop ../
 tar czf gotop-$VERSION-linux_386.tgz gotop
 rm gotop
 
-env GOOS=linux GOARCH=amd64 go build ../
+env GOOS=linux GOARCH=amd64 go build -o gotop ../
 tar czf gotop-$VERSION-linux_amd64.tgz gotop
 rm gotop
