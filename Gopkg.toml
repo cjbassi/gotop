@@ -7,8 +7,8 @@
   name = "github.com/docopt/docopt-go"
 
 [[constraint]]
+  branch = "master"
   name = "github.com/shirou/gopsutil"
-  version = "2.18.2"
 
 [prune]
   go-tests = true
