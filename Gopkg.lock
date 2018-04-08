@@ -17,7 +17,7 @@
   branch = "master"
   name = "github.com/cjbassi/termui"
   packages = ["."]
-  revision = "d8e7d6f2c53c6f045c1d95c9fa9968e4d2ba569e"
+  revision = "caeddf326ed4eb0a443f865b619d49baefd552fa"
 
 [[projects]]
   branch = "master"
@@ -47,6 +47,7 @@
   revision = "e2050e41c8847748ec5288741c0b19a8cb26d084"
 
 [[projects]]
+  branch = "master"
   name = "github.com/shirou/gopsutil"
   packages = [
     "cpu",
@@ -57,8 +58,7 @@
     "net",
     "process"
   ]
-  revision = "5776ff9c7c5d063d574ef53d740f75c68b448e53"
-  version = "v2.18.02"
+  revision = "cd915bdc31582b0a56405ede7fa2f4ab043f851b"
 
 [[projects]]
   branch = "master"
@@ -78,6 +78,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "22a656ce826eed217bf58555e692a26e2d791e256a6f17b8b06b9c964bb30f11"
+  inputs-digest = "ec71ab41237638295a9293629386692d305ad3a4d80090ff43bba530e0f9af42"
   solver-name = "gps-cdcl"
   solver-version = 1
