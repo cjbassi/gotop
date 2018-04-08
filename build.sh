@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Build Steps
-# 1. update version number in `gotop.go` and `download.sh`
+# 1. update version number in `main.go` and `download.sh`
 # 2. run this script
 # 3. publish binaries on GitHub
 # 4. push changes to GitHub
