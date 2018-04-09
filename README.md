@@ -24,7 +24,7 @@ Then move `gotop` into your $PATH somewhere.
 
 ### Arch Linux
 
-Alternatively, if you're on Arch Linux, you can install the `gotop` package from the AUR.
+Alternatively, if you're on Arch Linux, you can install the `gotop-bin` package from the AUR.
 
 ### Source
 
