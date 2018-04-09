@@ -1,6 +1,7 @@
 package widgets
 
 import (
+	"log"
 	"strconv"
 	"time"
 
@@ -46,10 +47,14 @@ func NewCPU(interval time.Duration, zoom int) *CPU {
 func (self *CPU) update() {
 	// psutil calculates the CPU usage over a 1 second interval, therefore it blocks for 1 second
 	if self.Count <= 8 {
-		percent, _ := psCPU.Percent(self.interval, true)
+		percents, _ := psCPU.Percent(self.interval, true)
+		if len(percents) != self.Count {
+			log.Fatalf("\nself.Count: %d\nlen(percents): %d\npercents: %v", self.Count, len(percents), percents)
+		}
 		for i := 0; i < self.Count; i++ {
 			key := "CPU" + strconv.Itoa(i)
-			self.Data[key] = append(self.Data[key], percent[i])
+			percent := percents[i]
+			self.Data[key] = append(self.Data[key], percent)
 		}
 	} else {
 		percent, _ := psCPU.Percent(self.interval, false)
