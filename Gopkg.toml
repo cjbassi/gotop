@@ -1,14 +1,14 @@
 [[constraint]]
-  branch = "master"
   name = "github.com/cjbassi/termui"
+  branch = "master"
 
 [[constraint]]
-  branch = "master"
   name = "github.com/docopt/docopt-go"
+  branch = "master"
 
 [[constraint]]
-  branch = "master"
   name = "github.com/shirou/gopsutil"
+  branch = "master"
 
 [prune]
   go-tests = true
