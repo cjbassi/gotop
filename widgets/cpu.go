@@ -49,7 +49,8 @@ func (self *CPU) update() {
 	if self.Count <= 8 {
 		percents, _ := psCPU.Percent(self.interval, true)
 		if len(percents) != self.Count {
-			log.Fatalf("\nself.Count: %d\nlen(percents): %d\npercents: %v", self.Count, len(percents), percents)
+			count, _ := psCPU.Counts(false)
+			log.Fatalf("\nself.Count: %d\ngopsutil.Counts(): %d\nlen(percents): %d\npercents: %v", self.Count, count, len(percents), percents)
 		}
 		for i := 0; i < self.Count; i++ {
 			key := "CPU" + strconv.Itoa(i)
