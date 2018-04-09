@@ -17,7 +17,7 @@
   branch = "master"
   name = "github.com/cjbassi/termui"
   packages = ["."]
-  revision = "caeddf326ed4eb0a443f865b619d49baefd552fa"
+  revision = "66ddabe8ef7585a3ccfd0c14e7218940f5a95777"
 
 [[projects]]
   branch = "master"
@@ -44,7 +44,7 @@
   branch = "master"
   name = "github.com/nsf/termbox-go"
   packages = ["."]
-  revision = "e2050e41c8847748ec5288741c0b19a8cb26d084"
+  revision = "3e24a7b6661e09b87a9f49d693034219f81602fa"
 
 [[projects]]
   branch = "master"
@@ -73,7 +73,7 @@
     "unix",
     "windows"
   ]
-  revision = "378d26f46672a356c46195c28f61bdb4c0a781dd"
+  revision = "3b87a42e500a6dc65dae1a55d0b641295971163e"
 
 [solve-meta]
   analyzer-name = "dep"

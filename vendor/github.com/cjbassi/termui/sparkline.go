@@ -1,5 +1,9 @@
 package termui
 
+import (
+	"log"
+)
+
 var SPARKS = [8]rune{'▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'}
 
 // Sparkline is like: ▅▆▂▂▅▇▂▂▃▆▆▆▅▃. The data points should be non-negative integers.
@@ -67,7 +71,11 @@ func (self *Sparklines) Buffer() *Buffer {
 		for x := self.X; x >= 1; x-- {
 			char := SPARKS[0]
 			if (self.X - x) < len(line.Data) {
-				char = SPARKS[int((float64(line.Data[(len(line.Data)-1)-(self.X-x)])/float64(max))*7)]
+				index := int((float64(line.Data[(len(line.Data)-1)-(self.X-x)]) / float64(max)) * 7)
+				if index < 0 || index >= len(SPARKS) {
+					log.Fatalf("\nindex: %d\nlen(SPARKS): %d", index, len(SPARKS))
+				}
+				char = SPARKS[index]
 			}
 			buf.SetCell(x, sparkY, Cell{char, line.LineColor, self.Bg})
 		}
