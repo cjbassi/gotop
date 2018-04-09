@@ -25,7 +25,7 @@ func NewCPU(interval time.Duration, zoom int) *CPU {
 	self.Zoom = zoom
 	if self.Count <= 8 {
 		for i := 0; i < self.Count; i++ {
-			key := "CPU" + strconv.Itoa(i+1)
+			key := "CPU" + strconv.Itoa(i)
 			self.Data[key] = []float64{0}
 		}
 	} else {
@@ -48,7 +48,7 @@ func (self *CPU) update() {
 	if self.Count <= 8 {
 		percent, _ := psCPU.Percent(self.interval, true)
 		for i := 0; i < self.Count; i++ {
-			key := "CPU" + strconv.Itoa(i+1)
+			key := "CPU" + strconv.Itoa(i)
 			self.Data[key] = append(self.Data[key], percent[i])
 		}
 	} else {

@@ -169,7 +169,7 @@ func widgetColors() {
 	LineColor := make(map[string]ui.Color)
 	if cpu.Count <= 8 {
 		for i := 0; i < len(cpu.Data); i++ {
-			LineColor[fmt.Sprintf("CPU%d", i+1)] = ui.Color(colorscheme.CPULines[i])
+			LineColor[fmt.Sprintf("CPU%d", i)] = ui.Color(colorscheme.CPULines[i])
 		}
 	} else {
 		LineColor["Average"] = ui.Color(colorscheme.CPULines[0])
