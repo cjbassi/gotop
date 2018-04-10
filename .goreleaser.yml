@@ -1,0 +1,20 @@
+# Build Steps
+# 1. update version number in `main.go` and `download.sh`
+# 2. commit changes
+# 3.
+# 4. push changes to GitHub
+# 5. update AUR package
+
+builds:
+  - binary: gotop
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - 386
+    ignore:
+      - goos: darwin
+        goarch: 386
+archive:
+  format: tgz

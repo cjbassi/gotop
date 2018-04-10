@@ -3,9 +3,10 @@
 VERSION=1.2.3
 
 download() {
-    curl -L https://github.com/cjbassi/gotop/releases/download/$VERSION/gotop-$VERSION-${1}.tgz > gotop.tgz
-    tar xf gotop.tgz
-    rm gotop.tgz
+    archive=gotop-$VERSION-${1}.tgz
+    curl -LO https://github.com/cjbassi/gotop/releases/download/$VERSION/$archive
+    tar xf $archive
+    rm $archive
 }
 
 arch=$(uname -sm)
