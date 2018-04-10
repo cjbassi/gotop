@@ -1,9 +1,10 @@
 # Build Steps
 # 1. update version number in `main.go` and `download.sh`
 # 2. commit changes
-# 3.
-# 4. push changes to GitHub
-# 5. update AUR package
+# 3. tag commit
+# 4. run goreleaser
+# 5. push changes to GitHub
+# 6. update AUR package
 
 builds:
   - binary: gotop
