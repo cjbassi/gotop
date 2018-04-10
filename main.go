@@ -59,6 +59,7 @@ Options:
 
 Colorschemes:
   default
+  default-dark (for white background)
   solarized
   monokai
 `
@@ -82,12 +83,14 @@ Colorschemes:
 
 func handleColorscheme(cs string) {
 	switch cs {
-	case "monokai":
-		colorscheme = colorschemes.Monokai
-	case "solarized":
-		colorscheme = colorschemes.Solarized
 	case "default":
 		colorscheme = colorschemes.Default
+	case "solarized":
+		colorscheme = colorschemes.Solarized
+	case "monokai":
+		colorscheme = colorschemes.Monokai
+	case "default-dark":
+		colorscheme = colorschemes.DefaultDark
 	default:
 		fmt.Fprintf(os.Stderr, "error: colorscheme not recognized\n")
 		os.Exit(1)
