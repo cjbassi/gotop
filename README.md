@@ -9,7 +9,7 @@ Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https:/
 
 ## Installation
 
-Go programs compile to a single binary and there are currently prebuilt ones for 32/64bit Linux and 64bit OSX. Either clone the repo and run [download.sh](https://github.com/cjbassi/gotop/blob/master/download.sh) to download the correct binary, use the AUR if you're on Arch, or build from source.
+Go programs compile to a single binary and there are currently prebuilt ones for 32/64bit Linux and 64bit OSX. Either clone the repo and run [download.sh](https://github.com/cjbassi/gotop/blob/master/download.sh) to download the correct binary, use the AUR if you're on Arch Linux, or build from source.
 
 ### Using Git
 
@@ -68,3 +68,7 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
 
 `-m`, `--minimal`         Only show CPU, Mem and Process widgets.  
 `-r`, `--rate=RATE`       Number of times per second to update CPU and Mem widgets [default: 1].
+
+## Stargazers over time
+
+[![Stargazers over time](https://starcharts.herokuapp.com/cjbassi/gotop.svg)](https://starcharts.herokuapp.com/cjbassi/gotop)
