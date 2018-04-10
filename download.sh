@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-VERSION=1.2.3
+VERSION=1.2.4
 
 download() {
-    archive=gotop-$VERSION-${1}.tgz
+    archive=gotop_${VERSION}_${1}.tgz
     curl -LO https://github.com/cjbassi/gotop/releases/download/$VERSION/$archive
     tar xf $archive
     rm $archive
