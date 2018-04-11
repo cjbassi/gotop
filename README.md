@@ -23,7 +23,6 @@ git clone --depth 1 https://github.com/cjbassi/gotop.git /tmp/gotop
 
 Then move `gotop` into your $PATH somewhere.
 
-
 ### Arch Linux
 
 Install the `gotop-bin` package from the AUR.
@@ -54,7 +53,6 @@ go get github.com/cjbassi/gotop
 * `h` and `l`: zoom in and out of CPU and Mem graphs
 * `?`: toggles keybind help menu
 
-
 ### Mouse
 
 * click to select process
@@ -66,11 +64,16 @@ go get github.com/cjbassi/gotop
 A different Colorscheme can be set with the `-c` flag followed its name. You can find them in the `colorschemes` folder.
 Feel free to add a new one. You can use 256 colors, bold, underline, and reverse. You can see the template and get more info [here](https://github.com/cjbassi/gotop/blob/master/colorschemes/template.go) and see the default colorscheme as an example [here](https://github.com/cjbassi/gotop/blob/master/colorschemes/default.go).
 
-
 ### CLI Options
 
 `-m`, `--minimal`         Only show CPU, Mem and Process widgets.  
 `-r`, `--rate=RATE`       Number of times per second to update CPU and Mem widgets [default: 1].
+
+
+## Credits
+
+* [Logo](https://github.com/cjbassi/gotop/blob/master/media/logo.png) by [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771)
+
 
 ## Stargazers over time
 
