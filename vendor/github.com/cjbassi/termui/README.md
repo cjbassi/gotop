@@ -12,6 +12,7 @@ Some usage improvements include:
 * linegraph uses [drawille-go](https://github.com/exrook/drawille-go)
     * no longer have to choose between dot mode and braille mode; uses a superior braille mode
 * table supports mouse and keyboard navigation
+* table is scrollable
 * more powerful table column width sizing
 * visual improvements to linegraph and table
 

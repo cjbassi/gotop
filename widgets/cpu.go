@@ -1,10 +1,11 @@
 package widgets
 
 import (
-	"log"
+	"fmt"
 	"strconv"
 	"time"
 
+	"github.com/cjbassi/gotop/utils"
 	ui "github.com/cjbassi/termui"
 	psCPU "github.com/shirou/gopsutil/cpu"
 )
@@ -50,7 +51,14 @@ func (self *CPU) update() {
 		percents, _ := psCPU.Percent(self.interval, true)
 		if len(percents) != self.Count {
 			count, _ := psCPU.Counts(false)
-			log.Fatalf("\nself.Count: %d\ngopsutil.Counts(): %d\nlen(percents): %d\npercents: %v\nself.interval: %v", self.Count, count, len(percents), percents, self.interval)
+			utils.Error("CPU percentages",
+				fmt.Sprint(
+					"self.Count: ", self.Count, "\n",
+					"gopsutil.Counts(): ", count, "\n",
+					"len(percents): ", len(percents), "\n",
+					"percents: ", percents, "\n",
+					"self.interval: ", self.interval,
+				))
 		}
 		for i := 0; i < self.Count; i++ {
 			key := "CPU" + strconv.Itoa(i)

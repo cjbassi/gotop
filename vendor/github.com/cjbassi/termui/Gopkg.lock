@@ -17,7 +17,7 @@
   branch = "master"
   name = "github.com/nsf/termbox-go"
   packages = ["."]
-  revision = "e2050e41c8847748ec5288741c0b19a8cb26d084"
+  revision = "3e24a7b6661e09b87a9f49d693034219f81602fa"
 
 [solve-meta]
   analyzer-name = "dep"

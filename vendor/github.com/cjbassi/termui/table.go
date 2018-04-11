@@ -1,7 +1,7 @@
 package termui
 
 import (
-	"log"
+	"fmt"
 	"strings"
 )
 
@@ -76,7 +76,13 @@ func (self *Table) Buffer() *Buffer {
 	// prints each row
 	for rowNum := self.TopRow; rowNum < self.TopRow+self.Y-1 && rowNum < len(self.Rows); rowNum++ {
 		if rowNum < 0 || rowNum >= len(self.Rows) {
-			log.Fatalf("\nrowNum: %d\nself.TopRow: %d\nlen(self.Rows): %d\nself.Y: %d", rowNum, self.TopRow, len(self.Rows), self.Y)
+			Error("table rows",
+				fmt.Sprint(
+					"rowNum: ", rowNum, "\n",
+					"self.TopRow: ", self.TopRow, "\n",
+					"len(self.Rows): ", len(self.Rows), "\n",
+					"self.Y: ", self.Y,
+				))
 		}
 		row := self.Rows[rowNum]
 		y := (rowNum + 2) - self.TopRow

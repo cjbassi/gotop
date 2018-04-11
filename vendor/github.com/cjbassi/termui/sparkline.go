@@ -1,7 +1,7 @@
 package termui
 
 import (
-	"log"
+	"fmt"
 )
 
 var SPARKS = [8]rune{'▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'}
@@ -71,9 +71,23 @@ func (self *Sparklines) Buffer() *Buffer {
 		for x := self.X; x >= 1; x-- {
 			char := SPARKS[0]
 			if (self.X - x) < len(line.Data) {
-				index := int((float64(line.Data[(len(line.Data)-1)-(self.X-x)]) / float64(max)) * 7)
+				offset := self.X - x
+				cur_item := line.Data[(len(line.Data)-1)-offset]
+				percent := float64(cur_item) / float64(max)
+				index := int(percent * 7)
 				if index < 0 || index >= len(SPARKS) {
-					log.Fatalf("\nindex: %d\nlen(SPARKS): %d", index, len(SPARKS))
+					Error("sparkline",
+						fmt.Sprint(
+							"len(line.Data): ", len(line.Data), "\n",
+							"max: ", max, "\n",
+							"x: ", x, "\n",
+							"self.X: ", self.X, "\n",
+							"offset: ", offset, "\n",
+							"cur_item: ", cur_item, "\n",
+							"percent: ", percent, "\n",
+							"index: ", index, "\n",
+							"len(SPARKS): ", len(SPARKS),
+						))
 				}
 				char = SPARKS[index]
 			}

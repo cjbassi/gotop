@@ -1,6 +1,7 @@
 package termui
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -21,4 +22,15 @@ func MaxString(s string, l int) string {
 
 func Round(f float64) float64 {
 	return math.Floor(f + .5)
+}
+
+func Error(issue, diagnostics string) {
+	Close()
+	fmt.Println("Error caught. Exiting program.")
+	fmt.Println()
+	fmt.Println("Issue with " + issue + ".")
+	fmt.Println()
+	fmt.Println("Diagnostics:\n" + diagnostics)
+	fmt.Println()
+	panic(1)
 }
