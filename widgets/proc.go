@@ -7,6 +7,7 @@ import (
 	"time"
 
 	ui "github.com/cjbassi/termui"
+	"github.com/mattn/go-runewidth"
 	psCPU "github.com/shirou/gopsutil/cpu"
 	psProc "github.com/shirou/gopsutil/process"
 )
@@ -15,6 +16,18 @@ const (
 	UP   = "▲"
 	DOWN = "▼"
 )
+
+var (
+	cUP   = UP
+	cDOWN = DOWN
+)
+
+func init() {
+	if runewidth.StringWidth(UP) == 2 {
+		cUP = "«"
+		cDOWN = "»"
+	}
+}
 
 // Process represents each process.
 type Process struct {
@@ -110,17 +123,17 @@ func (self *Proc) Sort() {
 	switch self.sortMethod {
 	case "c":
 		sort.Sort(sort.Reverse(ProcessByCPU(*processes)))
-		self.Header[2] += DOWN
+		self.Header[2] += cDOWN
 	case "p":
 		if self.group {
 			sort.Sort(sort.Reverse(ProcessByPID(*processes)))
 		} else {
 			sort.Sort(ProcessByPID(*processes))
 		}
-		self.Header[0] += DOWN
+		self.Header[0] += cDOWN
 	case "m":
 		sort.Sort(sort.Reverse(ProcessByMem(*processes)))
-		self.Header[3] += DOWN
+		self.Header[3] += cDOWN
 	}
 
 	self.Rows = FieldsToStrings(*processes)
