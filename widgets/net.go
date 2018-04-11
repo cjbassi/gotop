@@ -55,7 +55,7 @@ func (self *Net) update() {
 		self.Lines[0].Data = append(self.Lines[0].Data, int(recvRecent))
 		self.Lines[1].Data = append(self.Lines[1].Data, int(sentRecent))
 
-		if recvRecent < 0 || sentRecent < 0 {
+		if int(recvRecent) < 0 || int(sentRecent) < 0 {
 			utils.Error("net data",
 				fmt.Sprint(
 					"curRecvTotal: ", curRecvTotal, "\n",

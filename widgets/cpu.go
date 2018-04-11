@@ -12,7 +12,7 @@ import (
 
 type CPU struct {
 	*ui.LineGraph
-	Count    int // number of CPUs
+	Count    int // number of cores
 	interval time.Duration
 }
 
