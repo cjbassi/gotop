@@ -63,7 +63,9 @@ func (self *Net) update() {
 					"self.prevRecvTotal: ", self.prevRecvTotal, "\n",
 					"self.prevSentTotal: ", self.prevSentTotal, "\n",
 					"recvRecent: ", recvRecent, "\n",
-					"sentRecent: ", sentRecent,
+					"sentRecent: ", sentRecent, "\n",
+					"int(recvRecent): ", int(recvRecent), "\n",
+					"int(sentRecent): ", int(sentRecent),
 				))
 		}
 	}
