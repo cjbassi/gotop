@@ -13,8 +13,8 @@ type Net struct {
 	*ui.Sparklines
 	interval time.Duration
 	// used to calculate recent network activity
-	recvTotal uint64
-	sentTotal uint64
+	prevRecvTotal uint64
+	prevSentTotal uint64
 }
 
 func NewNet() *Net {
@@ -45,22 +45,34 @@ func NewNet() *Net {
 func (self *Net) update() {
 	// `false` causes psutil to group all network activity
 	interfaces, _ := psNet.IOCounters(false)
-	recvTotal := interfaces[0].BytesRecv
-	sentTotal := interfaces[0].BytesSent
+	curRecvTotal := interfaces[0].BytesRecv
+	curSentTotal := interfaces[0].BytesSent
 
-	if self.recvTotal != 0 { // if this isn't the first update
-		recvRecent := recvTotal - self.recvTotal
-		sentRecent := sentTotal - self.sentTotal
+	if self.prevRecvTotal != 0 { // if this isn't the first update
+		recvRecent := curRecvTotal - self.prevRecvTotal
+		sentRecent := curSentTotal - self.prevSentTotal
 
 		self.Lines[0].Data = append(self.Lines[0].Data, int(recvRecent))
 		self.Lines[1].Data = append(self.Lines[1].Data, int(sentRecent))
+
+		if recvRecent < 0 || sentRecent < 0 {
+			utils.Error("net data",
+				fmt.Sprint(
+					"curRecvTotal: ", curRecvTotal, "\n",
+					"curSentTotal: ", curSentTotal, "\n",
+					"self.prevRecvTotal: ", self.prevRecvTotal, "\n",
+					"self.prevSentTotal: ", self.prevSentTotal, "\n",
+					"recvRecent: ", recvRecent, "\n",
+					"sentRecent: ", sentRecent,
+				))
+		}
 	}
 
 	// used in later calls to update
-	self.recvTotal = recvTotal
-	self.sentTotal = sentTotal
+	self.prevRecvTotal = curRecvTotal
+	self.prevSentTotal = curSentTotal
 
-	// renders net widget titles
+	// net widget titles
 	for i := 0; i < 2; i++ {
 		var method string // either 'Rx' or 'Tx'
 		var total float64
@@ -69,10 +81,10 @@ func (self *Net) update() {
 		unitRecent := "B"
 
 		if i == 0 {
-			total = float64(recvTotal)
+			total = float64(curRecvTotal)
 			method = "Rx"
 		} else {
-			total = float64(sentTotal)
+			total = float64(curSentTotal)
 			method = "Tx"
 		}
 
