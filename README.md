@@ -1,4 +1,7 @@
-# gotop
+<div align="center">
+    <img src="https://github.com/cjbassi/gotop/blob/master/media/logo.png" width="20%" height="20%" />
+    <br><br>
+</div>
 
 Another TUI graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!  
 Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https://github.com/exrook/drawille-go), and a [fork](https://github.com/cjbassi/termui) of [termui](https://github.com/gizak/termui).
