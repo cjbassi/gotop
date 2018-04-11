@@ -45,8 +45,9 @@ func NewCPU(interval time.Duration, zoom int) *CPU {
 	return self
 }
 
+// calculates the CPU usage over a 1 second interval and blocks for the duration
 func (self *CPU) update() {
-	// psutil calculates the CPU usage over a 1 second interval, therefore it blocks for 1 second
+	// show average cpu usage if more than 8 cores
 	if self.Count <= 8 {
 		percents, _ := psCPU.Percent(self.interval, true)
 		if len(percents) != self.Count {
