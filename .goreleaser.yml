@@ -17,8 +17,5 @@ builds:
     goarch:
       - amd64
       - 386
-    ignore:
-      - goos: darwin
-        goarch: 386
 archive:
   format: tgz

@@ -9,7 +9,7 @@ Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https:/
 
 ## Installation
 
-Go programs compile to a single binary and there are currently prebuilt ones for 32/64bit Linux and 64bit OSX. Either clone the repo and run [download.sh](https://github.com/cjbassi/gotop/blob/master/download.sh) to download the correct binary, use the AUR if you're on Arch Linux, or build from source.
+Go programs compile to a single binary and there are currently prebuilt ones for 32/64bit Linux and 32/64bit OSX. Either clone the repo and run [download.sh](https://github.com/cjbassi/gotop/blob/master/download.sh) to download the correct binary, use the AUR if you're on Arch Linux, or build from source.
 
 ### Using Git
 
