@@ -204,8 +204,6 @@ func main() {
 
 	widgetColors()
 
-	<-procLoaded
-
 	// inits termui
 	err := ui.Init()
 	if err != nil {
@@ -233,32 +231,29 @@ func main() {
 		ui.Render(ui.Body)
 		drawTick := time.NewTicker(interval)
 		for {
-			select {
-			case <-helpToggled:
-				if helpVisible {
-					ui.Clear()
-					ui.Render(help)
-				} else {
+			if helpVisible {
+				select {
+				case <-helpToggled:
 					ui.Render(ui.Body)
-				}
-			case <-termResized:
-				if !helpVisible {
-					ui.Clear()
-					ui.Render(ui.Body)
-				} else if helpVisible {
+				case <-termResized:
 					ui.Clear()
 					ui.Render(help)
 				}
-			case <-keyPressed:
-				if !helpVisible {
+			} else {
+				select {
+				case <-procLoaded:
 					ui.Render(proc)
-				}
-			case <-zoomed:
-				if !helpVisible {
+				case <-helpToggled:
+					ui.Clear()
+					ui.Render(help)
+				case <-termResized:
+					ui.Clear()
 					ui.Render(ui.Body)
-				}
-			case <-drawTick.C:
-				if !helpVisible {
+				case <-keyPressed:
+					ui.Render(proc)
+				case <-zoomed:
+					ui.Render(cpu, mem)
+				case <-drawTick.C:
 					ui.Render(ui.Body)
 				}
 			}
