@@ -57,20 +57,16 @@ func (self *Table) ColResize() {
 func (self *Table) Buffer() *Buffer {
 	buf := self.Block.Buffer()
 
-	// removes gap at the bottom of the current view if there is one
-	// if self.TopRow > len(self.Rows)-(self.Y-1) {
-	// 	self.TopRow = len(self.Rows) - (self.Y - 1)
-	// }
-
 	self.ColResizer()
 
 	// prints header
-	for i, width := range self.ColWidths {
+	for i, h := range self.Header {
+		width := self.ColWidths[i]
 		if width == 0 {
 			break
 		}
-		r := MaxString(self.Header[i], self.X-6)
-		buf.SetString(self.CellXPos[i], 1, r, self.Fg|AttrBold, self.Bg)
+		h = MaxString(h, self.X-6)
+		buf.SetString(self.CellXPos[i], 1, h, self.Fg|AttrBold, self.Bg)
 	}
 
 	// prints each row
