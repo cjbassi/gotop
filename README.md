@@ -7,7 +7,7 @@ Another TUI graphical activity monitor, inspired by [gtop](https://github.com/ak
 Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https://github.com/exrook/drawille-go), and a [fork](https://github.com/cjbassi/termui) of [termui](https://github.com/gizak/termui).
 
 <img src="https://github.com/cjbassi/gotop/blob/master/media/demo.gif" />
-<img src="https://github.com/cjbassi/gotop/blob/master/media/minimal.png" />
+<img src="https://github.com/cjbassi/gotop/blob/master/media/minimal.png" width="96%" height="96%"/>
 
 
 ## Installation
