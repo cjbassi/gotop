@@ -32,15 +32,16 @@ type HelpMenu struct {
 
 func NewHelpMenu() *HelpMenu {
 	block := ui.NewBlock()
-	block.X = 48                                   // width - 1
-	block.Y = 17                                   // height - 1
-	block.XOffset = (ui.Body.Width - block.X) / 2  // X coordinate
-	block.YOffset = (ui.Body.Height - block.Y) / 2 // Y coordinate
+	block.X = 48 // width - 1
+	block.Y = 17 // height - 1
 	return &HelpMenu{block}
 }
 
 func (self *HelpMenu) Buffer() *ui.Buffer {
 	buf := self.Block.Buffer()
+
+	self.Block.XOffset = (ui.Body.Width - self.Block.X) / 2  // X coordinate
+	self.Block.YOffset = (ui.Body.Height - self.Block.Y) / 2 // Y coordinate
 
 	for y, line := range strings.Split(KEYBINDS, "\n") {
 		for x, char := range line {

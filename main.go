@@ -230,6 +230,8 @@ func main() {
 
 	widgetColors()
 
+	help = w.NewHelpMenu()
+
 	// inits termui
 	err := ui.Init()
 	if err != nil {
@@ -238,9 +240,6 @@ func main() {
 	defer ui.Close()
 
 	setupGrid()
-
-	// load help widget after init termui so that it has access to terminal size
-	help = w.NewHelpMenu()
 
 	ui.On("<resize>", func(e ui.Event) {
 		ui.Body.Width, ui.Body.Height = e.Width, e.Height
