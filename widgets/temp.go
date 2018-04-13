@@ -31,7 +31,8 @@ func NewTemp() *Temp {
 	}
 	self.Label = "Temperatures"
 
-	go self.update()
+	self.update()
+
 	ticker := time.NewTicker(self.interval)
 	go func() {
 		for range ticker.C {

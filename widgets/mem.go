@@ -22,7 +22,8 @@ func NewMem(interval time.Duration, zoom int) *Mem {
 	self.Data["Main"] = []float64{0}
 	self.Data["Swap"] = []float64{0}
 
-	go self.update()
+	self.update()
+
 	ticker := time.NewTicker(self.interval)
 	go func() {
 		for range ticker.C {

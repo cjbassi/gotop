@@ -34,7 +34,9 @@ func NewCPU(interval time.Duration, zoom int) *CPU {
 		self.Data["Average"] = []float64{0}
 	}
 
+	// update asynchronously because of 1 second blocking period
 	go self.update()
+
 	ticker := time.NewTicker(self.interval)
 	go func() {
 		for range ticker.C {
