@@ -12,9 +12,11 @@ Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https:/
 
 ## Installation
 
-Go programs compile to a single binary and there are currently prebuilt ones for 32/64bit Linux, ARM Linux, and 32/64bit OSX. Either clone the repo and run [download.sh](https://github.com/cjbassi/gotop/blob/master/download.sh) to download the correct binary, use the AUR if you're on Arch Linux, or build from source.
+Go programs compile to a single binary and there are currently prebuilt ones for 32/64bit Linux, ARM Linux, and 32/64bit OSX.
 
 ### Using Git
+
+Clone the repo then run [download.sh](https://github.com/cjbassi/gotop/blob/master/download.sh) to download the correct binary:
 
 ```
 git clone --depth 1 https://github.com/cjbassi/gotop.git /tmp/gotop
@@ -26,6 +28,13 @@ Then move `gotop` into your $PATH somewhere.
 ### Arch Linux
 
 Install the `gotop-bin` package from the AUR.
+
+### Homebrew
+
+```
+brew tap cjbassi/gotop
+brew install gotop
+```
 
 ### Source
 
