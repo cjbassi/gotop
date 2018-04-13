@@ -11,10 +11,15 @@ download() {
 
 arch=$(uname -sm)
 case "$arch" in
-    Linux\ *64)  download linux_amd64    ;;
-    Linux\ *86)  download linux_386      ;;
-    Darwin\ *64) download darwin_amd64   ;;
-    Darwin\ *86) download darwin_386     ;;
+    Darwin\ *64)        download darwin_amd64   ;;
+    Darwin\ *86)        download darwin_386     ;;
+    Linux\ *64)         download linux_amd64    ;;
+    Linux\ *86)         download linux_386      ;;
+    Linux\ armv5*)      download linux_arm5     ;;
+    Linux\ armv6*)      download linux_arm6     ;;
+    Linux\ armv7*)      download linux_arm7     ;;
+    Linux\ armv8*)      download linux_arm8     ;;
+    Linux\ aarch64*)    download linux_arm8     ;;
     *)
         echo "No binary found for your system"
         exit 1

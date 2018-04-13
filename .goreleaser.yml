@@ -24,4 +24,7 @@ builds:
       - 6
       - 7
 archive:
+  name_template: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}{{ .Arm }}{{ end }}"
+  replacements:
+    arm64: arm8
   format: tgz
