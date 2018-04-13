@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"sync"
 	"syscall"
 	"time"
 
@@ -24,6 +25,7 @@ var (
 
 	// proc widget takes longer to load, wait to render until it loads data
 	widgetsLoaded = make(chan bool, 1)
+	wg            sync.WaitGroup
 	// used to render the proc widget whenever a key is pressed for it
 	keyPressed = make(chan bool, 1)
 	// used to render cpu and mem when zoom has changed
@@ -189,6 +191,39 @@ func widgetColors() {
 	}
 }
 
+func initWidgets() {
+	wg.Add(widgetCount)
+
+	go func() {
+		defer wg.Done()
+		cpu = w.NewCPU(interval, zoom)
+	}()
+	go func() {
+		defer wg.Done()
+		mem = w.NewMem(interval, zoom)
+	}()
+	go func() {
+		defer wg.Done()
+		proc = w.NewProc(keyPressed)
+	}()
+	if !minimal {
+		go func() {
+			defer wg.Done()
+			net = w.NewNet()
+		}()
+		go func() {
+			defer wg.Done()
+			disk = w.NewDisk()
+		}()
+		go func() {
+			defer wg.Done()
+			temp = w.NewTemp()
+		}()
+	}
+
+	wg.Wait()
+}
+
 func main() {
 	cliArguments()
 
@@ -197,36 +232,7 @@ func main() {
 	// need to do this before initializing widgets so that they can inherit the colors
 	termuiColors()
 
-	go func() {
-		cpu = w.NewCPU(interval, zoom)
-		widgetsLoaded <- true
-	}()
-	go func() {
-		mem = w.NewMem(interval, zoom)
-		widgetsLoaded <- true
-	}()
-	go func() {
-		proc = w.NewProc(keyPressed)
-		widgetsLoaded <- true
-	}()
-	if !minimal {
-		go func() {
-			net = w.NewNet()
-			widgetsLoaded <- true
-		}()
-		go func() {
-			disk = w.NewDisk()
-			widgetsLoaded <- true
-		}()
-		go func() {
-			temp = w.NewTemp()
-			widgetsLoaded <- true
-		}()
-	}
-
-	for i := 0; i < widgetCount; i++ {
-		<-widgetsLoaded
-	}
+	initWidgets()
 
 	widgetColors()
 
