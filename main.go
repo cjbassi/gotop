@@ -23,7 +23,7 @@ var (
 	helpVisible = false
 
 	// proc widget takes longer to load, wait to render until it loads data
-	procLoaded = make(chan bool, 1)
+	widgetsLoaded = make(chan bool, 1)
 	// used to render the proc widget whenever a key is pressed for it
 	keyPressed = make(chan bool, 1)
 	// used to render cpu and mem when zoom has changed
@@ -32,6 +32,7 @@ var (
 	colorscheme = colorschemes.Default
 
 	minimal      = false
+	widgetCount  = 6
 	interval     = time.Second
 	zoom         = 7
 	zoomInterval = 3
@@ -71,6 +72,9 @@ Colorschemes:
 	}
 
 	minimal, _ = args["--minimal"].(bool)
+	if minimal {
+		widgetCount = 3
+	}
 
 	rateStr, _ := args["--rate"].(string)
 	rate, _ := strconv.ParseFloat(rateStr, 64)
@@ -193,13 +197,35 @@ func main() {
 	// need to do this before initializing widgets so that they can inherit the colors
 	termuiColors()
 
-	cpu = w.NewCPU(interval, zoom)
-	mem = w.NewMem(interval, zoom)
-	proc = w.NewProc(procLoaded, keyPressed)
+	go func() {
+		cpu = w.NewCPU(interval, zoom)
+		widgetsLoaded <- true
+	}()
+	go func() {
+		mem = w.NewMem(interval, zoom)
+		widgetsLoaded <- true
+	}()
+	go func() {
+		proc = w.NewProc(keyPressed)
+		widgetsLoaded <- true
+	}()
 	if !minimal {
-		net = w.NewNet()
-		disk = w.NewDisk()
-		temp = w.NewTemp()
+		go func() {
+			net = w.NewNet()
+			widgetsLoaded <- true
+		}()
+		go func() {
+			disk = w.NewDisk()
+			widgetsLoaded <- true
+		}()
+		go func() {
+			temp = w.NewTemp()
+			widgetsLoaded <- true
+		}()
+	}
+
+	for i := 0; i < widgetCount; i++ {
+		<-widgetsLoaded
 	}
 
 	widgetColors()
@@ -213,7 +239,7 @@ func main() {
 
 	setupGrid()
 
-	// load help widget after init termui/termbox so that it has access to terminal size
+	// load help widget after init termui so that it has access to terminal size
 	help = w.NewHelpMenu()
 
 	ui.On("<resize>", func(e ui.Event) {
@@ -241,8 +267,6 @@ func main() {
 				}
 			} else {
 				select {
-				case <-procLoaded:
-					ui.Render(proc)
 				case <-helpToggled:
 					ui.Clear()
 					ui.Render(help)

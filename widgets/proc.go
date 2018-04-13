@@ -35,7 +35,7 @@ type Proc struct {
 	KeyPressed     chan bool
 }
 
-func NewProc(loaded, keyPressed chan bool) *Proc {
+func NewProc(keyPressed chan bool) *Proc {
 	cpuCount, _ := psCPU.Counts(false)
 	self := &Proc{
 		Table:      ui.NewTable(),
@@ -56,10 +56,7 @@ func NewProc(loaded, keyPressed chan bool) *Proc {
 
 	self.keyBinds()
 
-	go func() {
-		self.update()
-		loaded <- true
-	}()
+	self.update()
 
 	ticker := time.NewTicker(self.interval)
 	go func() {
