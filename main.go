@@ -23,9 +23,7 @@ var (
 	helpToggled = make(chan bool, 1)
 	helpVisible = false
 
-	// proc widget takes longer to load, wait to render until it loads data
-	widgetsLoaded = make(chan bool, 1)
-	wg            sync.WaitGroup
+	wg sync.WaitGroup
 	// used to render the proc widget whenever a key is pressed for it
 	keyPressed = make(chan bool, 1)
 	// used to render cpu and mem when zoom has changed
@@ -191,6 +189,7 @@ func widgetColors() {
 	}
 }
 
+// load widgets asynchronously but wait till they are all finished
 func initWidgets() {
 	wg.Add(widgetCount)
 
