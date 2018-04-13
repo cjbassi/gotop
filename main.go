@@ -15,7 +15,7 @@ import (
 	"github.com/docopt/docopt-go"
 )
 
-const VERSION = "1.2.11"
+const VERSION = "1.2.12"
 
 var (
 	termResized = make(chan bool, 1)
