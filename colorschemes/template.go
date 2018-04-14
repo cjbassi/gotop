@@ -8,11 +8,9 @@ package colorschemes
 	You can combine a color with 'Bold', 'Underline', or 'Reverse' by using bitwise OR ('|') and the name of the attribute.
 	For example, to get Bold red Labels, you would do 'Labels: 2 | Bold'.
 
-	Once you've created a colorscheme, add an entry for it in the `handleColorscheme` function
-	in `gotop.go`.
+	Once you've created a colorscheme, add an entry for it in the `handleColorscheme` function in `gotop.go`.
 */
 
-// Ignore this
 const (
 	Bold int = 1 << (iota + 9)
 	Underline

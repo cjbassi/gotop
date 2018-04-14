@@ -250,9 +250,6 @@ func main() {
 		ui.Body.Width, ui.Body.Height = e.Width, e.Height
 		ui.Body.Resize()
 
-		help.XOffset = (ui.Body.Width - help.X) / 2
-		help.YOffset = (ui.Body.Height - help.Y) / 2
-
 		termResized <- true
 	})
 
