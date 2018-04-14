@@ -285,7 +285,7 @@ func main() {
 		}
 	}()
 
-	// handles os kill signal
+	// handles kill signal sent to gotop
 	c := make(chan os.Signal, 2)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {

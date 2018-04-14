@@ -7,14 +7,21 @@ import (
 	"time"
 
 	ui "github.com/cjbassi/termui"
+	"github.com/mattn/go-runewidth"
 	psCPU "github.com/shirou/gopsutil/cpu"
 	psProc "github.com/shirou/gopsutil/process"
 )
+
+var arrowWidth int
 
 const (
 	UP   = "▲"
 	DOWN = "▼"
 )
+
+func init() {
+	arrowWidth = runewidth.StringWidth(UP)
+}
 
 // Process represents each process.
 type Process struct {

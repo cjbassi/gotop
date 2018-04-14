@@ -85,11 +85,11 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
 
 ## Built With
 
-* [A termui fork](https://github.com/cjbassi/termui)
-* [drawille-go](https://github.com/exrook/drawille-go)
+* [My termui fork](https://github.com/cjbassi/termui)
+    * [drawille-go](https://github.com/exrook/drawille-go)
+    * [termbox](https://github.com/nsf/termbox-go)
 * [gopsutil](https://github.com/shirou/gopsutil)
 * [goreleaser](https://github.com/goreleaser/goreleaser)
-* [termbox](https://github.com/nsf/termbox-go)
 
 
 ## Stargazers over time
