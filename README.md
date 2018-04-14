@@ -3,8 +3,7 @@
     <br><br>
 </div>
 
-Another TUI graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!  
-Built with [gopsutil](https://github.com/shirou/gopsutil), [drawille-go](https://github.com/exrook/drawille-go), and a [fork](https://github.com/cjbassi/termui) of [termui](https://github.com/gizak/termui).
+Another terminal based graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!  
 
 <img src="https://github.com/cjbassi/gotop/blob/master/media/demo.gif" />
 <img src="https://github.com/cjbassi/gotop/blob/master/media/minimal.png" width="96%" />
@@ -82,6 +81,14 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
 ## Credits
 
 * [Logo](https://github.com/cjbassi/gotop/blob/master/media/logo.png) by [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771)
+
+
+## Built With
+
+* [cjbassi/termui](https://github.com/cjbassi/termui)
+* [drawille-go](https://github.com/exrook/drawille-go)
+* [gopsutil](https://github.com/shirou/gopsutil)
+* [goreleaser](https://github.com/goreleaser/goreleaser)
 
 
 ## Stargazers over time
