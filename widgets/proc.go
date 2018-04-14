@@ -140,7 +140,11 @@ func (self *Proc) ColResize() {
 		self.X - self.Gap - self.ColWidths[3],
 	}
 
-	rowWidth := self.Gap + self.ColWidths[0] + self.Gap + self.ColWidths[1] + self.Gap + self.ColWidths[2] + self.Gap + self.ColWidths[3] + self.Gap
+	rowWidth := self.Gap +
+		self.ColWidths[0] + self.Gap +
+		self.ColWidths[1] + self.Gap +
+		self.ColWidths[2] + self.Gap +
+		self.ColWidths[3] + self.Gap
 
 	// only renders a column if it fits
 	if self.X < (rowWidth - self.Gap - self.ColWidths[3]) {
