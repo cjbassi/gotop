@@ -1,5 +1,9 @@
 package termui
 
+import (
+	"github.com/gdamore/tcell"
+)
+
 var Body *Grid
 
 // GridBufferer introduces a Bufferer that can be manipulated by Grid.
@@ -48,7 +52,7 @@ func (self *Grid) Resize() {
 
 // Buffer implements the Bufferer interface by merging each widget in Grid into one buffer.
 func (self *Grid) Buffer() *Buffer {
-	buf := NewFilledBuffer(0, 0, self.Width, self.Height, Cell{' ', ColorDefault, Theme.Bg})
+	buf := NewFilledBuffer(0, 0, self.Width, self.Height, Cell{' ', tcell.StyleDefault})
 	for _, w := range self.Widgets {
 		buf.MergeWithOffset(w.Buffer(), w.GetXOffset(), w.GetYOffset())
 	}

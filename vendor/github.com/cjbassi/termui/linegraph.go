@@ -5,27 +5,28 @@ import (
 	"sort"
 
 	drawille "github.com/cjbassi/drawille-go"
+	"github.com/gdamore/tcell"
 )
 
 // LineGraph implements a line graph of data points.
 type LineGraph struct {
 	*Block
-	Data      map[string][]float64
-	LineColor map[string]Color
-	Zoom      int
+	Data       map[string][]float64
+	LineStyles map[string]tcell.Style
+	Zoom       int
 
-	DefaultLineColor Color
+	DefaultLineColor tcell.Style
 }
 
 // NewLineGraph returns a new LineGraph with current theme.
 func NewLineGraph() *LineGraph {
 	return &LineGraph{
-		Block:     NewBlock(),
-		Data:      make(map[string][]float64),
-		LineColor: make(map[string]Color),
-		Zoom:      5,
+		Block:      NewBlock(),
+		Data:       make(map[string][]float64),
+		LineStyles: make(map[string]tcell.Style),
+		Zoom:       5,
 
-		DefaultLineColor: Theme.LineGraph,
+		DefaultLineColor: tcell.StyleDefault,
 	}
 }
 
@@ -36,9 +37,9 @@ func (self *LineGraph) Buffer() *Buffer {
 	// fyi braille characters have 2x4 dots for each character
 	c := drawille.NewCanvas()
 	// used to keep track of the braille colors until the end when we render the braille to the buffer
-	colors := make([][]Color, self.X+2)
-	for i := range colors {
-		colors[i] = make([]Color, self.Y+2)
+	styles := make([][]tcell.Style, self.X+2)
+	for i := range styles {
+		styles[i] = make([]tcell.Style, self.Y+2)
 	}
 
 	// sort the series so that overlapping data will overlap the same way each time
@@ -54,7 +55,7 @@ func (self *LineGraph) Buffer() *Buffer {
 	for i := len(seriesList) - 1; i >= 0; i-- {
 		seriesName := seriesList[i]
 		seriesData := self.Data[seriesName]
-		seriesLineColor, ok := self.LineColor[seriesName]
+		seriesLineColor, ok := self.LineStyles[seriesName]
 		if !ok {
 			seriesLineColor = self.DefaultLineColor
 		}
@@ -71,7 +72,7 @@ func (self *LineGraph) Buffer() *Buffer {
 					for _, p := range drawille.Line(lastX, lastY, x, y) {
 						if p.X > 0 {
 							c.Set(p.X, p.Y)
-							colors[p.X/2][p.Y/4] = seriesLineColor
+							styles[p.X/2][p.Y/4] = seriesLineColor
 						}
 					}
 				}
@@ -79,11 +80,11 @@ func (self *LineGraph) Buffer() *Buffer {
 			}
 			if lastY == -1 { // if this is the first point
 				c.Set(x, y)
-				colors[x/2][y/4] = seriesLineColor
+				styles[x/2][y/4] = seriesLineColor
 			} else {
 				c.DrawLine(lastX, lastY, x, y)
 				for _, p := range drawille.Line(lastX, lastY, x, y) {
-					colors[p.X/2][p.Y/4] = seriesLineColor
+					styles[p.X/2][p.Y/4] = seriesLineColor
 				}
 			}
 			lastX, lastY = x, y
@@ -97,7 +98,7 @@ func (self *LineGraph) Buffer() *Buffer {
 					continue
 				}
 				if char != 10240 { // empty braille character
-					buf.SetCell(x, y, Cell{char, colors[x][y], self.Bg})
+					buf.SetCell(x, y, Cell{char, styles[x][y]})
 				}
 			}
 		}
@@ -107,7 +108,7 @@ func (self *LineGraph) Buffer() *Buffer {
 	for j, seriesName := range seriesList {
 		// sorts lines again
 		seriesData := self.Data[seriesName]
-		seriesLineColor, ok := self.LineColor[seriesName]
+		seriesLineColor, ok := self.LineStyles[seriesName]
 		if !ok {
 			seriesLineColor = self.DefaultLineColor
 		}
@@ -116,7 +117,7 @@ func (self *LineGraph) Buffer() *Buffer {
 		str := fmt.Sprintf("%s %3.0f%%", seriesName, seriesData[len(seriesData)-1])
 		for k, char := range str {
 			if char != ' ' {
-				buf.SetCell(3+k, j+2, Cell{char, seriesLineColor, self.Bg})
+				buf.SetCell(3+k, j+2, Cell{char, seriesLineColor})
 			}
 		}
 

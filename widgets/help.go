@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	ui "github.com/cjbassi/termui"
+	"github.com/gdamore/tcell"
 )
 
 const KEYBINDS = `
@@ -45,7 +46,7 @@ func (self *HelpMenu) Buffer() *ui.Buffer {
 
 	for y, line := range strings.Split(KEYBINDS, "\n") {
 		for x, char := range line {
-			buf.SetCell(x+1, y, ui.NewCell(char, ui.Color(7), self.Bg))
+			buf.SetCell(x+1, y, ui.NewCell(char, tcell.StyleDefault))
 		}
 	}
 

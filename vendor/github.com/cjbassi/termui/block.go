@@ -2,33 +2,29 @@ package termui
 
 import (
 	"image"
+
+	"github.com/gdamore/tcell"
 )
 
 // Block is a base struct for all other upper level widgets.
 type Block struct {
-	Grid     image.Rectangle
-	X        int // largest X value in the inner square
-	Y        int // largest Y value in the inner square
-	XOffset  int // the X position of the widget on the terminal
-	YOffset  int // the Y position of the widget on the terminal
-	Label    string
-	BorderFg Color
-	BorderBg Color
-	LabelFg  Color
-	LabelBg  Color
-	Fg       Color
-	Bg       Color
+	Grid        image.Rectangle
+	X           int // largest X value in the inner square
+	Y           int // largest Y value in the inner square
+	XOffset     int // the X position of the widget on the terminal
+	YOffset     int // the Y position of the widget on the terminal
+	Label       string
+	BorderStyle tcell.Style
+	LabelStyle  tcell.Style
+	Style       tcell.Style
 }
 
 // NewBlock returns a *Block which inherits styles from the current theme.
 func NewBlock() *Block {
 	return &Block{
-		Fg:       Theme.Fg,
-		Bg:       Theme.Bg,
-		BorderFg: Theme.BorderFg,
-		BorderBg: Theme.BorderBg,
-		LabelFg:  Theme.LabelFg,
-		LabelBg:  Theme.LabelBg,
+		Style:       tcell.StyleDefault,
+		BorderStyle: BorderStyle,
+		LabelStyle:  LabelStyle,
 	}
 }
 
@@ -37,25 +33,25 @@ func (self *Block) drawBorder(buf *Buffer) {
 	y := self.Y + 1
 
 	// draw lines
-	buf.Merge(NewFilledBuffer(0, 0, x, 1, Cell{HORIZONTAL_LINE, self.BorderFg, self.BorderBg}))
-	buf.Merge(NewFilledBuffer(0, y, x, y+1, Cell{HORIZONTAL_LINE, self.BorderFg, self.BorderBg}))
-	buf.Merge(NewFilledBuffer(0, 0, 1, y+1, Cell{VERTICAL_LINE, self.BorderFg, self.BorderBg}))
-	buf.Merge(NewFilledBuffer(x, 0, x+1, y+1, Cell{VERTICAL_LINE, self.BorderFg, self.BorderBg}))
+	buf.Merge(NewFilledBuffer(0, 0, x, 1, Cell{HORIZONTAL_LINE, self.BorderStyle}))
+	buf.Merge(NewFilledBuffer(0, y, x, y+1, Cell{HORIZONTAL_LINE, self.BorderStyle}))
+	buf.Merge(NewFilledBuffer(0, 0, 1, y+1, Cell{VERTICAL_LINE, self.BorderStyle}))
+	buf.Merge(NewFilledBuffer(x, 0, x+1, y+1, Cell{VERTICAL_LINE, self.BorderStyle}))
 
 	// draw corners
-	buf.SetCell(0, 0, Cell{TOP_LEFT, self.BorderFg, self.BorderBg})
-	buf.SetCell(x, 0, Cell{TOP_RIGHT, self.BorderFg, self.BorderBg})
-	buf.SetCell(0, y, Cell{BOTTOM_LEFT, self.BorderFg, self.BorderBg})
-	buf.SetCell(x, y, Cell{BOTTOM_RIGHT, self.BorderFg, self.BorderBg})
+	buf.SetCell(0, 0, Cell{TOP_LEFT, self.BorderStyle})
+	buf.SetCell(x, 0, Cell{TOP_RIGHT, self.BorderStyle})
+	buf.SetCell(0, y, Cell{BOTTOM_LEFT, self.BorderStyle})
+	buf.SetCell(x, y, Cell{BOTTOM_RIGHT, self.BorderStyle})
 }
 
 func (self *Block) drawLabel(buf *Buffer) {
 	r := MaxString(self.Label, (self.X-3)-1)
-	buf.SetString(3, 0, r, self.LabelFg, self.LabelBg)
+	buf.SetString(3, 0, r, self.LabelStyle)
 	if self.Label == "" {
 		return
 	}
-	c := Cell{' ', self.Fg, self.Bg}
+	c := Cell{' ', self.Style}
 	buf.SetCell(2, 0, c)
 	if len(self.Label)+3 < self.X {
 		buf.SetCell(len(self.Label)+3, 0, c)
@@ -91,7 +87,7 @@ func (self *Block) GetYOffset() int {
 func (self *Block) Buffer() *Buffer {
 	buf := NewBuffer()
 	buf.SetAreaXY(self.X+2, self.Y+2)
-	buf.Fill(Cell{' ', ColorDefault, self.Bg})
+	buf.Fill(Cell{' ', tcell.StyleDefault})
 
 	self.drawBorder(buf)
 	self.drawLabel(buf)

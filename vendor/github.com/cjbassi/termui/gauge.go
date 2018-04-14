@@ -2,21 +2,23 @@ package termui
 
 import (
 	"strconv"
+
+	"github.com/gdamore/tcell"
 )
 
 // Gauge is a progress bar like widget.
 type Gauge struct {
 	*Block
 	Percent     int
-	GaugeColor  Color
+	BarStyle    tcell.Style
 	Description string
 }
 
 // NewGauge return a new gauge with current theme.
 func NewGauge() *Gauge {
 	return &Gauge{
-		Block:      NewBlock(),
-		GaugeColor: Theme.GaugeColor,
+		Block:    NewBlock(),
+		BarStyle: tcell.StyleDefault.Foreground(tcell.ColorWhite).Reverse(true),
 	}
 }
 
@@ -28,7 +30,7 @@ func (self *Gauge) Buffer() *Buffer {
 	width := self.Percent * self.X / 100
 	for y := 1; y <= self.Y; y++ {
 		for x := 1; x <= width; x++ {
-			buf.SetCell(x, y, Cell{' ', self.GaugeColor, self.GaugeColor})
+			buf.SetCell(x, y, Cell{' ', self.BarStyle})
 		}
 	}
 
@@ -38,13 +40,11 @@ func (self *Gauge) Buffer() *Buffer {
 	y := (self.Y + 1) / 2
 	x := ((self.X - len(s)) + 1) / 2
 	for i, char := range s {
-		bg := self.Bg
-		fg := self.Fg
+		st := tcell.StyleDefault
 		if x+i < width {
-			fg = self.GaugeColor
-			bg = AttrReverse
+			st = st.Reverse(true)
 		}
-		buf.SetCell(1+x+i, y, Cell{char, fg, bg})
+		buf.SetCell(1+x+i, y, Cell{char, st})
 	}
 
 	return buf

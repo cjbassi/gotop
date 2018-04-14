@@ -14,16 +14,31 @@
   revision = "ad535d0f92cd951308cdb80675e05c62c6b8b296"
 
 [[projects]]
-  branch = "master"
+  branch = "tcell-migration"
   name = "github.com/cjbassi/termui"
   packages = ["."]
-  revision = "39b79d4cffc860780782f8ca6cca4bbb9d38bbf2"
+  revision = "eb915cbb31aa154ad97467f585ef463f349437aa"
 
 [[projects]]
   branch = "master"
   name = "github.com/docopt/docopt-go"
   packages = ["."]
   revision = "ee0de3bc6815ee19d4a46c7eb90f829db0e014b1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/gdamore/encoding"
+  packages = ["."]
+  revision = "b23993cbb6353f0e6aa98d0ee318a34728f628b9"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/gdamore/tcell"
+  packages = [
+    ".",
+    "terminfo"
+  ]
+  revision = "2548ddfbd80a92e96bdde663cdb77b56d65e7dd9"
 
 [[projects]]
   name = "github.com/go-ole/go-ole"
@@ -35,16 +50,16 @@
   version = "v1.2.1"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/lucasb-eyer/go-colorful"
+  packages = ["."]
+  revision = "231272389856c976b7500c4fffcc52ddf06ff4eb"
+
+[[projects]]
   name = "github.com/mattn/go-runewidth"
   packages = ["."]
   revision = "9e777a8366cce605130a531d2cd6363d07ad7317"
   version = "v0.0.2"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/nsf/termbox-go"
-  packages = ["."]
-  revision = "3e24a7b6661e09b87a9f49d693034219f81602fa"
 
 [[projects]]
   branch = "master"
@@ -58,7 +73,7 @@
     "net",
     "process"
   ]
-  revision = "cd915bdc31582b0a56405ede7fa2f4ab043f851b"
+  revision = "a5c2888e464b14fa882c2a059e0f95716bd45cf1"
 
 [[projects]]
   branch = "master"
@@ -73,11 +88,23 @@
     "unix",
     "windows"
   ]
-  revision = "3b87a42e500a6dc65dae1a55d0b641295971163e"
+  revision = "f6f352972f061230a99fbf49d1eb8073ebdb36cb"
+
+[[projects]]
+  name = "golang.org/x/text"
+  packages = [
+    "encoding",
+    "encoding/internal/identifier",
+    "internal/gen",
+    "transform",
+    "unicode/cldr"
+  ]
+  revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
+  version = "v0.3.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ec71ab41237638295a9293629386692d305ad3a4d80090ff43bba530e0f9af42"
+  inputs-digest = "ce0fcad6dbc5089c7684a4923ef5a59bfbadff7d0d5306a576a865a458422d15"
   solver-name = "gps-cdcl"
   solver-version = 1

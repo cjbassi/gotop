@@ -1,8 +1,9 @@
 package termui
 
 import (
-	"fmt"
 	"strings"
+
+	"github.com/gdamore/tcell"
 )
 
 // Table tracks all the attributes of a Table instance
@@ -13,7 +14,7 @@ type Table struct {
 	ColWidths    []int
 	CellXPos     []int // column position
 	Gap          int   // gap between columns
-	Cursor       Color
+	CursorStyle  tcell.Style
 	UniqueCol    int    // the column used to identify the selected item
 	SelectedItem string // used to keep the cursor on the correct item if the data changes
 	SelectedRow  int
@@ -25,7 +26,7 @@ type Table struct {
 func NewTable() *Table {
 	self := &Table{
 		Block:       NewBlock(),
-		Cursor:      Theme.TableCursor,
+		CursorStyle: tcell.StyleDefault.Background(tcell.ColorBlue),
 		SelectedRow: 0,
 		TopRow:      0,
 		UniqueCol:   0,
@@ -66,32 +67,23 @@ func (self *Table) Buffer() *Buffer {
 			break
 		}
 		h = MaxString(h, self.X-6)
-		buf.SetString(self.CellXPos[i], 1, h, self.Fg|AttrBold, self.Bg)
+		buf.SetString(self.CellXPos[i], 1, h, tcell.StyleDefault.Bold(true))
 	}
 
 	// prints each row
 	for rowNum := self.TopRow; rowNum < self.TopRow+self.Y-1 && rowNum < len(self.Rows); rowNum++ {
-		if rowNum < 0 || rowNum >= len(self.Rows) {
-			Error("table rows",
-				fmt.Sprint(
-					"rowNum: ", rowNum, "\n",
-					"self.TopRow: ", self.TopRow, "\n",
-					"len(self.Rows): ", len(self.Rows), "\n",
-					"self.Y: ", self.Y,
-				))
-		}
 		row := self.Rows[rowNum]
 		y := (rowNum + 2) - self.TopRow
 
-		// prints cursor
-		bg := self.Bg
+		// prints cursor if applicable
+		st := tcell.StyleDefault
 		if (self.SelectedItem == "" && rowNum == self.SelectedRow) || (self.SelectedItem != "" && self.SelectedItem == row[self.UniqueCol]) {
-			bg = self.Cursor
+			st = self.CursorStyle
 			for _, width := range self.ColWidths {
 				if width == 0 {
 					break
 				}
-				buf.SetString(1, y, strings.Repeat(" ", self.X), self.Fg, bg)
+				buf.SetString(1, y, strings.Repeat(" ", self.X), st)
 			}
 			self.SelectedItem = row[self.UniqueCol]
 			self.SelectedRow = rowNum
@@ -103,7 +95,7 @@ func (self *Table) Buffer() *Buffer {
 				break
 			}
 			r := MaxString(row[i], self.X-6)
-			buf.SetString(self.CellXPos[i], y, r, self.Fg, bg)
+			buf.SetString(self.CellXPos[i], y, r, st)
 		}
 	}
 

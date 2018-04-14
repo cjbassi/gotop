@@ -10,6 +10,7 @@ import (
 	"time"
 
 	ui "github.com/cjbassi/termui"
+	"github.com/gdamore/tcell"
 	psHost "github.com/shirou/gopsutil/host"
 )
 
@@ -18,8 +19,8 @@ type Temp struct {
 	interval  time.Duration
 	Data      map[string]int
 	Threshold int
-	TempLow   ui.Color
-	TempHigh  ui.Color
+	TempLow   tcell.Style
+	TempHigh  tcell.Style
 }
 
 func NewTemp() *Temp {
@@ -70,14 +71,14 @@ func (self *Temp) Buffer() *ui.Buffer {
 			break
 		}
 
-		fg := self.TempLow
+		st := self.TempLow
 		if self.Data[key] >= self.Threshold {
-			fg = self.TempHigh
+			st = self.TempHigh
 		}
 
 		s := ui.MaxString(key, (self.X - 4))
-		buf.SetString(1, y+1, s, self.Fg, self.Bg)
-		buf.SetString(self.X-2, y+1, fmt.Sprintf("%dC", self.Data[key]), fg, self.Bg)
+		buf.SetString(1, y+1, s, self.Style)
+		buf.SetString(self.X-2, y+1, fmt.Sprintf("%dC", self.Data[key]), st)
 
 	}
 

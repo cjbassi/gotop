@@ -1,9 +1,9 @@
 package termui
 
 import (
-	"strconv"
+	// "strconv"
 
-	tb "github.com/nsf/termbox-go"
+	"github.com/gdamore/tcell"
 )
 
 /*
@@ -27,14 +27,14 @@ var eventStream = EventStream{
 	make(map[string]func(Event)),
 	"",
 	make(chan bool, 1),
-	make(chan tb.Event),
+	make(chan tcell.Event),
 }
 
 type EventStream struct {
 	eventHandlers map[string]func(Event)
 	prevKey       string // previous keypress
 	stopLoop      chan bool
-	eventQueue    chan tb.Event // list of events from termbox
+	eventQueue    chan tcell.Event // list of events from termbox
 }
 
 // Event is a copy of termbox.Event that only contains the fields we need.
@@ -47,31 +47,35 @@ type Event struct {
 }
 
 // handleEvent calls the approriate callback function if there is one.
-func handleEvent(e tb.Event) {
-	if e.Type == tb.EventError {
-		panic(e.Err)
-	}
+func handleEvent(e tcell.Event) {
+	// if e.Type == tcell.EventError {
+	// 	panic(e.Err)
+	// }
 
-	ne := convertTermboxEvent(e)
+	ne := convertEvent(e)
 
 	if val, ok := eventStream.eventHandlers[ne.Key]; ok {
 		val(ne)
-		eventStream.prevKey = ""
-	} else { // check if the last 2 keys form a key combo with a handler
-		// if this is a keyboard event and the previous event was unhandled
-		if e.Type == tb.EventKey && eventStream.prevKey != "" {
-			combo := eventStream.prevKey + ne.Key
-			if val, ok := eventStream.eventHandlers[combo]; ok {
-				ne.Key = combo
-				val(ne)
-				eventStream.prevKey = ""
-			} else {
-				eventStream.prevKey = ne.Key
-			}
-		} else {
-			eventStream.prevKey = ne.Key
-		}
 	}
+
+	// if val, ok := eventStream.eventHandlers[ne.Key]; ok {
+	// 	val(ne)
+	// 	eventStream.prevKey = ""
+	// } else { // check if the last 2 keys form a key combo with a handler
+	// 	// if this is a keyboard event and the previous event was unhandled
+	// 	if e.Type == tcell.EventKey && eventStream.prevKey != "" {
+	// 		combo := eventStream.prevKey + ne.Key
+	// 		if val, ok := eventStream.eventHandlers[combo]; ok {
+	// 			ne.Key = combo
+	// 			val(ne)
+	// 			eventStream.prevKey = ""
+	// 		} else {
+	// 			eventStream.prevKey = ne.Key
+	// 		}
+	// 	} else {
+	// 		eventStream.prevKey = ne.Key
+	// 	}
+	// }
 }
 
 // Loop gets events from termbox and passes them off to handleEvent.
@@ -79,7 +83,7 @@ func handleEvent(e tb.Event) {
 func Loop() {
 	go func() {
 		for {
-			eventStream.eventQueue <- tb.PollEvent()
+			eventStream.eventQueue <- screen.PollEvent()
 		}
 	}()
 
@@ -113,90 +117,92 @@ func On(things ...interface{}) {
 	}
 }
 
-// convertTermboxKeyValue converts a termbox keyboard event to a more friendly string format.
-// Combines modifiers into the string instead of having them as additional fields in an event.
-func convertTermboxKeyValue(e tb.Event) string {
-	k := string(e.Ch)
-	pre := ""
-	mod := ""
+// // convertEventKey converts a tcell keyboard event to a more friendly string format.
+// // Combines modifiers into the string instead of having them as additional fields in an event.
+// func convertEventKey(e tcell.Event) string {
+// 	k := string(e.Ch)
+// 	pre := ""
+// 	mod := ""
 
-	if e.Mod == tb.ModAlt {
-		mod = "<M-"
-	}
-	if e.Ch == 0 {
-		if e.Key > 0xFFFF-12 {
-			k = "<f" + strconv.Itoa(0xFFFF-int(e.Key)+1) + ">"
-		} else if e.Key > 0xFFFF-25 {
-			ks := []string{"<insert>", "<delete>", "<home>", "<end>", "<previous>", "<next>", "<up>", "<down>", "<left>", "<right>"}
-			k = ks[0xFFFF-int(e.Key)-12]
-		}
+// 	if e.Mod == tcell.ModAlt {
+// 		mod = "<M-"
+// 	}
+// 	if e.Ch == 0 {
+// 		if e.Key > 0xFFFF-12 {
+// 			k = "<f" + strconv.Itoa(0xFFFF-int(e.Key)+1) + ">"
+// 		} else if e.Key > 0xFFFF-25 {
+// 			ks := []string{"<insert>", "<delete>", "<home>", "<end>", "<previous>", "<next>", "<up>", "<down>", "<left>", "<right>"}
+// 			k = ks[0xFFFF-int(e.Key)-12]
+// 		}
 
-		if e.Key <= 0x7F {
-			pre = "<C-"
-			k = string('a' - 1 + int(e.Key))
-			kmap := map[tb.Key][2]string{
-				tb.KeyCtrlSpace:     {"C-", "<space>"},
-				tb.KeyBackspace:     {"", "<backspace>"},
-				tb.KeyTab:           {"", "<tab>"},
-				tb.KeyEnter:         {"", "<enter>"},
-				tb.KeyEsc:           {"", "<escape>"},
-				tb.KeyCtrlBackslash: {"C-", "\\"},
-				tb.KeyCtrlSlash:     {"C-", "/"},
-				tb.KeySpace:         {"", "<space>"},
-				tb.KeyCtrl8:         {"C-", "8"},
-			}
-			if sk, ok := kmap[e.Key]; ok {
-				pre = sk[0]
-				k = sk[1]
-			}
-		}
-	}
+// 		if e.Key <= 0x7F {
+// 			pre = "<C-"
+// 			k = string('a' - 1 + int(e.Key))
+// 			kmap := map[tcell.Key][2]string{
+// 				tcell.KeyCtrlSpace:     {"C-", "<space>"},
+// 				tcell.KeyBackspace:     {"", "<backspace>"},
+// 				tcell.KeyTab:           {"", "<tab>"},
+// 				tcell.KeyEnter:         {"", "<enter>"},
+// 				tcell.KeyEsc:           {"", "<escape>"},
+// 				tcell.KeyCtrlBackslash: {"C-", "\\"},
+// 				tcell.KeyCtrlSlash:     {"C-", "/"},
+// 				tcell.KeySpace:         {"", "<space>"},
+// 				tcell.KeyCtrl8:         {"C-", "8"},
+// 			}
+// 			if sk, ok := kmap[e.Key]; ok {
+// 				pre = sk[0]
+// 				k = sk[1]
+// 			}
+// 		}
+// 	}
 
-	if pre != "" {
-		k += ">"
-	}
+// 	if pre != "" {
+// 		k += ">"
+// 	}
 
-	return pre + mod + k
-}
+// 	return pre + mod + k
+// }
 
-func convertTermboxMouseValue(e tb.Event) string {
-	switch e.Key {
-	case tb.MouseLeft:
+func convertMouseValue(e *tcell.EventMouse) string {
+	switch e.Buttons() {
+	case tcell.Button1:
 		return "<MouseLeft>"
-	case tb.MouseMiddle:
+	case tcell.Button2:
 		return "<MouseMiddle>"
-	case tb.MouseRight:
+	case tcell.Button3:
 		return "<MouseRight>"
-	case tb.MouseWheelUp:
+	case tcell.WheelUp:
 		return "<MouseWheelUp>"
-	case tb.MouseWheelDown:
+	case tcell.WheelDown:
 		return "<MouseWheelDown>"
-	case tb.MouseRelease:
-		return "<MouseRelease>"
 	}
 	return ""
 }
 
-// convertTermboxEvent turns a termbox event into a termui event.
-func convertTermboxEvent(e tb.Event) Event {
+// convertEvent turns a termbox event into a termui event.
+func convertEvent(e interface{}) Event {
 	var ne Event
 
-	switch e.Type {
-	case tb.EventKey:
+	switch e.(type) {
+	case *tcell.EventKey:
 		ne = Event{
-			Key: convertTermboxKeyValue(e),
+			// Key: convertEventKey(e.Key()),
+			Key: "hi",
 		}
-	case tb.EventMouse:
+	case *tcell.EventMouse:
+		me := e.(*tcell.EventMouse)
+		x, y := me.Position()
 		ne = Event{
-			Key:    convertTermboxMouseValue(e),
-			MouseX: e.MouseX,
-			MouseY: e.MouseY,
+			Key:    convertMouseValue(me),
+			MouseX: x,
+			MouseY: y,
 		}
-	case tb.EventResize:
+	case *tcell.EventResize:
+		width, height := screen.Size()
 		ne = Event{
 			Key:    "<resize>",
-			Width:  e.Width,
-			Height: e.Height,
+			Width:  width,
+			Height: height,
 		}
 	}
 

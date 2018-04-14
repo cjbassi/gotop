@@ -2,13 +2,14 @@ package termui
 
 import (
 	"image"
+
+	"github.com/gdamore/tcell"
 )
 
 // Cell is a rune with assigned Fg and Bg.
 type Cell struct {
-	Ch rune
-	Fg Color
-	Bg Color
+	Ch    rune
+	Style tcell.Style
 }
 
 // Buffer is a renderable rectangle cell data container.
@@ -18,8 +19,8 @@ type Buffer struct {
 }
 
 // NewCell returne a new Cell given all necessary fields.
-func NewCell(ch rune, Fg, Bg Color) Cell {
-	return Cell{ch, Fg, Bg}
+func NewCell(ch rune, Style tcell.Style) Cell {
+	return Cell{ch, Style}
 }
 
 // NewBuffer returns a new empty Buffer.
@@ -45,9 +46,9 @@ func (self *Buffer) SetCell(x, y int, c Cell) {
 }
 
 // SetString assigns a string to a Buffer starting at (x,y).
-func (self *Buffer) SetString(x, y int, s string, fg, bg Color) {
+func (self *Buffer) SetString(x, y int, s string, Style tcell.Style) {
 	for i, char := range s {
-		self.SetCell(x+i, y, Cell{char, fg, bg})
+		self.SetCell(x+i, y, Cell{char, Style})
 	}
 }
 

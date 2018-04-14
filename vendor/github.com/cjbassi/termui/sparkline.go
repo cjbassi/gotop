@@ -2,6 +2,8 @@ package termui
 
 import (
 	"fmt"
+
+	"github.com/gdamore/tcell"
 )
 
 var SPARKS = [8]rune{'▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'}
@@ -11,8 +13,8 @@ type Sparkline struct {
 	Data       []int
 	Title1     string
 	Title2     string
-	TitleColor Color
-	LineColor  Color
+	TitleStyle tcell.Style
+	GraphStyle tcell.Style
 }
 
 // Sparklines is a renderable widget which groups together the given sparklines.
@@ -29,8 +31,8 @@ func (self *Sparklines) Add(sl Sparkline) {
 // NewSparkline returns an unrenderable single sparkline that intended to be added into a Sparklines.
 func NewSparkline() *Sparkline {
 	return &Sparkline{
-		TitleColor: Theme.Fg,
-		LineColor:  Theme.Sparkline,
+		TitleStyle: tcell.StyleDefault.Bold(true),
+		GraphStyle: tcell.StyleDefault.Foreground(tcell.ColorBlue),
 	}
 }
 
@@ -56,8 +58,8 @@ func (self *Sparklines) Buffer() *Buffer {
 		title2Y := (2 + (self.Y/lc)*i) + 1
 		title1 := MaxString(line.Title1, self.X)
 		title2 := MaxString(line.Title2, self.X)
-		buf.SetString(1, title1Y, title1, line.TitleColor|AttrBold, self.Bg)
-		buf.SetString(1, title2Y, title2, line.TitleColor|AttrBold, self.Bg)
+		buf.SetString(1, title1Y, title1, line.TitleStyle)
+		buf.SetString(1, title2Y, title2, line.TitleStyle)
 
 		sparkY := (self.Y / lc) * (i + 1)
 		// finds max data in current view used for relative heights
@@ -91,7 +93,7 @@ func (self *Sparklines) Buffer() *Buffer {
 				}
 				char = SPARKS[index]
 			}
-			buf.SetCell(x, sparkY, Cell{char, line.LineColor, self.Bg})
+			buf.SetCell(x, sparkY, Cell{char, line.GraphStyle})
 		}
 	}
 

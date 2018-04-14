@@ -1,20 +1,33 @@
 package termui
 
 import (
-	tb "github.com/nsf/termbox-go"
+	"github.com/gdamore/tcell"
 )
+
+var screen tcell.Screen
 
 // Init initializes termui library. This function should be called before any others.
 // After initialization, the library must be finalized by 'Close' function.
 func Init() error {
-	if err := tb.Init(); err != nil {
+	var err error
+
+	screen, err = tcell.NewScreen()
+	if err != nil {
 		return err
 	}
-	tb.SetInputMode(tb.InputEsc | tb.InputMouse)
-	tb.SetOutputMode(tb.Output256)
+	if err = screen.Init(); err != nil {
+		return err
+	}
+	screen.EnableMouse()
 
 	Body = NewGrid()
-	Body.Width, Body.Height = tb.Size()
+	Body.Width, Body.Height = screen.Size()
+
+	On("<resize>", func(e Event) {
+		screen.Sync()
+		Body.Width, Body.Height = e.Width, e.Height
+		Body.Resize()
+	})
 
 	return nil
 }
@@ -22,5 +35,5 @@ func Init() error {
 // Close finalizes termui library.
 // It should be called after successful initialization when termui's functionality isn't required anymore.
 func Close() {
-	tb.Close()
+	screen.Fini()
 }

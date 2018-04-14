@@ -13,6 +13,7 @@ import (
 	w "github.com/cjbassi/gotop/widgets"
 	ui "github.com/cjbassi/termui"
 	"github.com/docopt/docopt-go"
+	"github.com/gdamore/tcell"
 )
 
 const VERSION = "1.2.12"
@@ -89,12 +90,12 @@ func handleColorscheme(cs string) {
 	switch cs {
 	case "default":
 		colorscheme = colorschemes.Default
-	case "solarized":
-		colorscheme = colorschemes.Solarized
-	case "monokai":
-		colorscheme = colorschemes.Monokai
-	case "default-dark":
-		colorscheme = colorschemes.DefaultDark
+	// case "solarized":
+	// 	colorscheme = colorschemes.Solarized
+	// case "monokai":
+	// 	colorscheme = colorschemes.Monokai
+	// case "default-dark":
+	// 	colorscheme = colorschemes.DefaultDark
 	default:
 		fmt.Fprintf(os.Stderr, "error: colorscheme not recognized\n")
 		os.Exit(1)
@@ -157,35 +158,37 @@ func keyBinds() {
 }
 
 func termuiColors() {
-	ui.Theme.Fg = ui.Color(colorscheme.Fg)
-	ui.Theme.Bg = ui.Color(colorscheme.Bg)
-	ui.Theme.LabelFg = ui.Color(colorscheme.BorderLabel)
-	ui.Theme.LabelBg = ui.Color(colorscheme.Bg)
-	ui.Theme.BorderFg = ui.Color(colorscheme.BorderLine)
-	ui.Theme.BorderBg = ui.Color(colorscheme.Bg)
+	// ui.Theme.Fg = ui.Color(colorscheme.Fg)
+	// ui.Theme.Bg = ui.Color(colorscheme.Bg)
+	// ui.Theme.LabelFg = ui.Color(colorscheme.BorderLabel)
+	// ui.Theme.LabelBg = ui.Color(colorscheme.Bg)
+	// ui.Theme.BorderFg = ui.Color(colorscheme.BorderLine)
+	// ui.Theme.BorderBg = ui.Color(colorscheme.Bg)
 
-	ui.Theme.TableCursor = ui.Color(colorscheme.ProcCursor)
-	ui.Theme.Sparkline = ui.Color(colorscheme.Sparkline)
-	ui.Theme.GaugeColor = ui.Color(colorscheme.DiskBar)
+	// ui.Theme.TableCursor = ui.Color(colorscheme.ProcCursor)
+	// ui.Theme.Sparkline = ui.Color(colorscheme.Sparkline)
+	// ui.Theme.GaugeColor = ui.Color(colorscheme.DiskBar)
 }
 
 func widgetColors() {
-	mem.LineColor["Main"] = ui.Color(colorscheme.MainMem)
-	mem.LineColor["Swap"] = ui.Color(colorscheme.SwapMem)
+	st := tcell.StyleDefault
 
-	LineColor := make(map[string]ui.Color)
+	mem.LineStyles["Main"] = st.Foreground(tcell.NewHexColor(colorscheme.MainMem))
+	mem.LineStyles["Swap"] = st.Foreground(tcell.NewHexColor(colorscheme.SwapMem))
+
+	LineStyles := make(map[string]tcell.Style)
 	if cpu.Count <= 8 {
 		for i := 0; i < len(cpu.Data); i++ {
-			LineColor[fmt.Sprintf("CPU%d", i)] = ui.Color(colorscheme.CPULines[i])
+			LineStyles[fmt.Sprintf("CPU%d", i)] = st.Foreground(tcell.NewHexColor(colorscheme.CPULines[i]))
 		}
 	} else {
-		LineColor["Average"] = ui.Color(colorscheme.CPULines[0])
+		LineStyles["Average"] = st.Foreground(tcell.NewHexColor(colorscheme.CPULines[0]))
 	}
-	cpu.LineColor = LineColor
+	cpu.LineStyles = LineStyles
 
 	if !minimal {
-		temp.TempLow = ui.Color(colorscheme.TempLow)
-		temp.TempHigh = ui.Color(colorscheme.TempHigh)
+		temp.TempLow = st.Foreground(tcell.NewHexColor(colorscheme.TempLow))
+		temp.TempHigh = st.Foreground(tcell.NewHexColor(colorscheme.TempHigh))
 	}
 }
 
@@ -279,6 +282,7 @@ func main() {
 				case <-zoomed:
 					ui.Render(cpu, mem)
 				case <-drawTick.C:
+					ui.Clear()
 					ui.Render(ui.Body)
 				}
 			}

@@ -1,6 +1,10 @@
 [[constraint]]
-  name = "github.com/cjbassi/termui"
+  name = "github.com/gdamore/tcell"
   branch = "master"
+
+[[constraint]]
+  name = "github.com/cjbassi/termui"
+  branch = "tcell-migration"
 
 [[constraint]]
   name = "github.com/docopt/docopt-go"

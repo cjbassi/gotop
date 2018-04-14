@@ -12,36 +12,44 @@ package colorschemes
 	in `gotop.go`.
 */
 
-// Ignore this
-const (
-	Bold int = 1 << (iota + 9)
-	Underline
-	Reverse
-)
-
 type Colorscheme struct {
-	Name   string
-	Author string
+	Default int32
 
-	Fg int
-	Bg int
-
-	BorderLabel int
-	BorderLine  int
+	BorderLabel int32
+	BorderLine  int32
 
 	// should add at least 8 here
-	CPULines []int
+	CPULines []int32
 
-	MainMem int
-	SwapMem int
+	MainMem int32
+	SwapMem int32
 
-	ProcCursor int
+	ProcCursor int32
 
-	Sparkline int
+	Sparkline int32
 
-	DiskBar int
+	DiskBar int32
 
 	// colors the temperature number a different color if it's over a certain threshold
-	TempLow  int
-	TempHigh int
+	TempLow  int32
+	TempHigh int32
 }
+
+const (
+	ColorBlack   = 0x000000
+	ColorMaroon  = 0x800000
+	ColorGreen   = 0x008000
+	ColorOlive   = 0x808000
+	ColorNavy    = 0x000080
+	ColorPurple  = 0x800080
+	ColorTeal    = 0x008080
+	ColorSilver  = 0xC0C0C0
+	ColorGray    = 0x808080
+	ColorRed     = 0xFF0000
+	ColorLime    = 0x00FF00
+	ColorYellow  = 0xFFFF00
+	ColorBlue    = 0x0000FF
+	ColorFuchsia = 0xFF00FF
+	ColorAqua    = 0x00FFFF
+	ColorWhite   = 0xFFFFFF
+)
