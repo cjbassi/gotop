@@ -1,12 +1,14 @@
 <div align="center">
-    <img src="https://github.com/cjbassi/gotop/blob/master/media/logo.png" width="20%" />
-    <br><br>
-</div>
 
-Another terminal based graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!  
+<img src="https://github.com/cjbassi/gotop/blob/master/media/logo.png" width="20%" />
+<br><br>
+
+Another terminal based graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!
 
 <img src="https://github.com/cjbassi/gotop/blob/master/media/demo.gif" />
 <img src="https://github.com/cjbassi/gotop/blob/master/media/minimal.png" width="96%" />
+
+</div>
 
 
 ## Installation
