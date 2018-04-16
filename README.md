@@ -13,9 +13,9 @@ Another terminal based graphical activity monitor, inspired by [gtop](https://gi
 
 ## Installation
 
-Go programs compile to a single binary and there are currently prebuilt ones for 32/64bit Linux, ARM Linux, and 32/64bit OSX.
+Only working and tested on Linux. OSX is no longer supported due to issues with gopsutil, although that may change in the future.
 
-**Disclaimer**: Many people are having issues with the OSX binary, so your success with it may vary. If you're getting an error about 'CPU Percentages', a temporary fix is to install gotop from source using `go get github.com/cjbassi/gotop`.
+Go programs compile to a single binary and there are currently prebuilt ones for 32/64bit Linux and ARM Linux.
 
 ### Using Git
 
@@ -31,13 +31,6 @@ Then move `gotop` into your $PATH somewhere.
 ### Arch Linux
 
 Install the `gotop-bin` package from the AUR.
-
-### Homebrew
-
-```
-brew tap cjbassi/gotop
-brew install gotop
-```
 
 ### Source
 
