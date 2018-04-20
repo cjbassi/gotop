@@ -21,7 +21,7 @@ Go programs compile to a single binary and there are currently prebuilt ones for
 
 Clone the repo then run [download.sh](https://github.com/cjbassi/gotop/blob/master/download.sh) to download the correct binary:
 
-```
+```sh
 git clone --depth 1 https://github.com/cjbassi/gotop.git /tmp/gotop
 /tmp/gotop/download.sh
 ```
@@ -34,7 +34,7 @@ Install the `gotop-bin` package from the AUR.
 
 ### Source
 
-```
+```sh
 go get github.com/cjbassi/gotop
 ```
 
