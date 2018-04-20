@@ -34,13 +34,14 @@ type Process struct {
 
 type Proc struct {
 	*ui.Table
-	cpuCount       int
-	interval       time.Duration
-	sortMethod     string
-	groupedProcs   []Process
-	ungroupedProcs []Process
-	group          bool
-	KeyPressed     chan bool
+	cpuCount         int
+	interval         time.Duration
+	sortMethod       string
+	groupedProcs     []Process
+	ungroupedProcs   []Process
+	group            bool
+	KeyPressed       chan bool
+	DefaultColWidths []int
 }
 
 func NewProc(keyPressed chan bool) *Proc {
@@ -53,9 +54,10 @@ func NewProc(keyPressed chan bool) *Proc {
 		group:      true,
 		KeyPressed: keyPressed,
 	}
-	self.ColResizer = self.ColResize
 	self.Label = "Process List"
-	self.ColWidths = []int{5, 10, 4, 4}
+	self.ColResizer = self.ColResize
+	self.DefaultColWidths = []int{5, 10, 4, 4}
+	self.ColWidths = make([]int, 4)
 
 	self.UniqueCol = 0
 	if self.group {
@@ -133,6 +135,8 @@ func (self *Proc) Sort() {
 
 // ColResize overrides the default ColResize in the termui table.
 func (self *Proc) ColResize() {
+	copy(self.ColWidths, self.DefaultColWidths)
+
 	// calculate gap size based on total width
 	self.Gap = 3
 	if self.X < 50 {
@@ -159,7 +163,7 @@ func (self *Proc) ColResize() {
 		self.ColWidths[2] = 0
 		self.ColWidths[3] = 0
 	} else if self.X < rowWidth {
-		self.CellXPos[2] = self.CellXPos[3]
+		self.CellXPos[2] = self.CellXPos[3] - 1
 		self.ColWidths[3] = 0
 	}
 }
