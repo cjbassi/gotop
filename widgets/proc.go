@@ -144,8 +144,8 @@ func (self *Proc) ColResize() {
 	self.CellXPos = []int{
 		self.Gap,
 		self.Gap + self.ColWidths[0] + self.Gap,
-		self.X - self.Gap - self.ColWidths[3] - self.Gap - self.ColWidths[2],
-		self.X - self.Gap - self.ColWidths[3],
+		(self.X + 2) - self.Gap - self.ColWidths[3] - self.Gap - self.ColWidths[2],
+		(self.X + 2) - self.Gap - self.ColWidths[3],
 	}
 
 	rowWidth := self.Gap +
