@@ -224,7 +224,6 @@ func (self *Proc) keyBinds() {
 		} else {
 			self.UniqueCol = 0
 		}
-		self.sortMethod = "c"
 		self.Sort()
 		self.Top()
 		self.KeyPressed <- true
