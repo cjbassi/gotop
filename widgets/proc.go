@@ -1,6 +1,7 @@
 package widgets
 
 import (
+	"fmt"
 	"os/exec"
 	"sort"
 	"strconv"
@@ -280,8 +281,8 @@ func FieldsToStrings(P []Process) [][]string {
 		strings[i] = make([]string, 4)
 		strings[i][0] = strconv.Itoa(int(p.PID))
 		strings[i][1] = p.Command
-		strings[i][2] = strconv.FormatFloat(p.CPU, 'f', 1, 64)
-		strings[i][3] = strconv.FormatFloat(float64(p.Mem), 'f', 1, 32)
+		strings[i][2] = fmt.Sprintf("%4s", strconv.FormatFloat(p.CPU, 'f', 1, 64))
+		strings[i][3] = fmt.Sprintf("%4s", strconv.FormatFloat(float64(p.Mem), 'f', 1, 32))
 	}
 	return strings
 }
