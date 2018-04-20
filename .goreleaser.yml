@@ -12,7 +12,6 @@
 builds:
   - binary: gotop
     goos:
-      - darwin
       - linux
     goarch:
       - amd64
@@ -28,9 +27,3 @@ archive:
   replacements:
     arm64: arm8
   format: tgz
-brew:
-  github:
-    owner: cjbassi
-    name: homebrew-gotop
-  description: "A terminal based graphical activity monitor inspired by gtop and vtop"
-  homepage: "https://github.com/cjbassi/gotop"
