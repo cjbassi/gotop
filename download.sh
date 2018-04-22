@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION=1.2.13
+VERSION=1.2.14
 
 download() {
     archive=gotop_${VERSION}_${1}.tgz
