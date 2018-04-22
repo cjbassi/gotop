@@ -8,21 +8,14 @@ import (
 	"time"
 
 	ui "github.com/cjbassi/termui"
-	"github.com/mattn/go-runewidth"
 	psCPU "github.com/shirou/gopsutil/cpu"
 	psProc "github.com/shirou/gopsutil/process"
 )
-
-var arrowWidth int
 
 const (
 	UP   = "▲"
 	DOWN = "▼"
 )
-
-func init() {
-	arrowWidth = runewidth.StringWidth(UP)
-}
 
 // Process represents each process.
 type Process struct {
@@ -137,13 +130,7 @@ func (self *Proc) Sort() {
 func (self *Proc) ColResize() {
 	copy(self.ColWidths, self.DefaultColWidths)
 
-	// calculate gap size based on total width
 	self.Gap = 3
-	if self.X < 50 {
-		self.Gap = 1
-	} else if self.X < 75 {
-		self.Gap = 2
-	}
 
 	self.CellXPos = []int{
 		self.Gap,
@@ -163,7 +150,7 @@ func (self *Proc) ColResize() {
 		self.ColWidths[2] = 0
 		self.ColWidths[3] = 0
 	} else if self.X < rowWidth {
-		self.CellXPos[2] = self.CellXPos[3] - 1
+		self.CellXPos[2] = self.CellXPos[3]
 		self.ColWidths[3] = 0
 	}
 }

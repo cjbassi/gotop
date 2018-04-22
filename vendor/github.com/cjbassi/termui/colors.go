@@ -13,25 +13,6 @@ const (
 	AttrReverse
 )
 
-// Theme is assigned to the current theme.
-var Theme = DefaultTheme
-
-// DefaultTheme implements a generic set of colors to use by default.
-var DefaultTheme = Colorscheme{
-	Fg: 7,
-	Bg: -1,
-
-	LabelFg:  7,
-	LabelBg:  -1,
-	BorderFg: 6,
-	BorderBg: -1,
-
-	Sparkline:   4,
-	LineGraph:   0,
-	TableCursor: 4,
-	GaugeColor:  7,
-}
-
 // A Colorscheme represents the current look-and-feel of the dashboard.
 type Colorscheme struct {
 	Fg Color
@@ -46,4 +27,19 @@ type Colorscheme struct {
 	LineGraph   Color
 	TableCursor Color
 	GaugeColor  Color
+}
+
+var Theme = Colorscheme{
+	Fg: 7,
+	Bg: -1,
+
+	LabelFg:  7,
+	LabelBg:  -1,
+	BorderFg: 6,
+	BorderBg: -1,
+
+	Sparkline:   4,
+	LineGraph:   0,
+	TableCursor: 4,
+	GaugeColor:  7,
 }

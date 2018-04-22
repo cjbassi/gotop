@@ -8,17 +8,21 @@ import (
 // Table tracks all the attributes of a Table instance
 type Table struct {
 	*Block
-	Header       []string
-	Rows         [][]string
-	ColWidths    []int
-	CellXPos     []int // column position
-	Gap          int   // gap between columns
-	Cursor       Color
+
+	Header []string
+	Rows   [][]string
+
+	ColWidths  []int
+	CellXPos   []int  // column position
+	ColResizer func() // for widgets that inherit a Table and want to overload the ColResize method
+	Gap        int    // gap between columns
+
+	Cursor Color
+
 	UniqueCol    int    // the column used to identify the selected item
 	SelectedItem string // used to keep the cursor on the correct item if the data changes
 	SelectedRow  int
-	TopRow       int    // used to indicate where in the table we are scrolled at
-	ColResizer   func() // for widgets that inherit a Table and want to overload the ColResize method
+	TopRow       int // used to indicate where in the table we are scrolled at
 }
 
 // NewTable returns a new Table instance
@@ -63,9 +67,9 @@ func (self *Table) Buffer() *Buffer {
 	for i, h := range self.Header {
 		width := self.ColWidths[i]
 		if width == 0 {
-			break
+			continue
 		}
-		h = MaxString(h, self.X-6)
+		h = MaxString(h, self.X-self.CellXPos[i])
 		buf.SetString(self.CellXPos[i], 1, h, self.Fg|AttrBold, self.Bg)
 	}
 
@@ -89,7 +93,7 @@ func (self *Table) Buffer() *Buffer {
 			bg = self.Cursor
 			for _, width := range self.ColWidths {
 				if width == 0 {
-					break
+					continue
 				}
 				buf.SetString(1, y, strings.Repeat(" ", self.X), self.Fg, bg)
 			}
@@ -100,9 +104,9 @@ func (self *Table) Buffer() *Buffer {
 		// prints each col of the row
 		for i, width := range self.ColWidths {
 			if width == 0 {
-				break
+				continue
 			}
-			r := MaxString(row[i], self.X-6)
+			r := MaxString(row[i], self.X-self.CellXPos[i])
 			buf.SetString(self.CellXPos[i], y, r, self.Fg, bg)
 		}
 	}
