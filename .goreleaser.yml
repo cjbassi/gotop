@@ -23,6 +23,8 @@ builds:
       - 5
       - 6
       - 7
+    hooks:
+      post: ./build-darwin-cgo.sh
 archive:
   name_template: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}{{ .Arm }}{{ end }}"
   replacements:
