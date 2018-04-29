@@ -12,6 +12,7 @@
 builds:
   - binary: gotop
     goos:
+      - darwin
       - linux
     goarch:
       - amd64
@@ -22,8 +23,16 @@ builds:
       - 5
       - 6
       - 7
+    hooks:
+      post: ./build-darwin-cgo.sh
 archive:
   name_template: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}{{ .Arm }}{{ end }}"
   replacements:
     arm64: arm8
   format: tgz
+brew:
+  github:
+    owner: cjbassi
+    name: homebrew-gotop
+  description: "A terminal based graphical activity monitor inspired by gtop and vtop"
+  homepage: "https://github.com/cjbassi/gotop"
