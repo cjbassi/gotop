@@ -194,29 +194,29 @@ func initWidgets() {
 	wg.Add(widgetCount)
 
 	go func() {
-		defer wg.Done()
 		cpu = w.NewCPU(interval, zoom)
+		wg.Done()
 	}()
 	go func() {
-		defer wg.Done()
 		mem = w.NewMem(interval, zoom)
+		wg.Done()
 	}()
 	go func() {
-		defer wg.Done()
 		proc = w.NewProc(keyPressed)
+		wg.Done()
 	}()
 	if !minimal {
 		go func() {
-			defer wg.Done()
 			net = w.NewNet()
+			wg.Done()
 		}()
 		go func() {
-			defer wg.Done()
 			disk = w.NewDisk()
+			wg.Done()
 		}()
 		go func() {
-			defer wg.Done()
 			temp = w.NewTemp()
+			wg.Done()
 		}()
 	}
 
