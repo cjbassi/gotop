@@ -27,3 +27,5 @@ archive:
   replacements:
     arm64: arm8
   format: tgz
+dockers:
+  - image: cjbassi/gotop
