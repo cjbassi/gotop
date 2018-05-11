@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cjbassi/gotop/utils"
+	"github.com/cjbassi/gotop/src/utils"
 	ui "github.com/cjbassi/termui"
 	psDisk "github.com/shirou/gopsutil/disk"
 )
