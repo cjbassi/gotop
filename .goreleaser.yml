@@ -1,13 +1,13 @@
 # Build Steps:
-#  1. Make sure everything builds and runs
+#  1. make sure gotop builds and runs
 #  2. update version number in 'main.go' and 'download.sh'
 #  3. commit changes
 #  4. tag commit
 #  5. export token
 #  6. `sudo dockerd`
-#  7. run goreleaser
-#  8. delete 'dist' folder
-#  9. push changes to GitHub
+#  7. `goreleaser`
+#  8. `rm -r dist`
+#  9. `git push`
 # 10. update AUR package
 
 builds:
