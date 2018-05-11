@@ -2,9 +2,9 @@ make sure gotop builds and runs
 update version number in 'main.go' and 'download.sh'
 commit changes
 tag commit
-export token
-`sudo dockerd`
-`goreleaser`
-`rm -r dist`
-`git push`
+export GitHub token
+run `sudo dockerd`
+run `goreleaser`
+run `rm -r dist`
+run `git push`
 update AUR package
