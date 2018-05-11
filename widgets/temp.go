@@ -55,13 +55,13 @@ func (self *Temp) update() {
 	}
 }
 
-// Buffer implements ui.Bufferer interface.
+// Buffer implements ui.Bufferer interface and renders the widget.
 func (self *Temp) Buffer() *ui.Buffer {
 	buf := self.Block.Buffer()
 
 	var keys []string
-	for k := range self.Data {
-		keys = append(keys, k)
+	for key := range self.Data {
+		keys = append(keys, key)
 	}
 	sort.Strings(keys)
 
@@ -77,7 +77,7 @@ func (self *Temp) Buffer() *ui.Buffer {
 
 		s := ui.MaxString(key, (self.X - 4))
 		buf.SetString(1, y+1, s, self.Fg, self.Bg)
-		buf.SetString(self.X-2, y+1, fmt.Sprintf("%dC", self.Data[key]), fg, self.Bg)
+		buf.SetString(self.X-2, y+1, fmt.Sprintf("%2dC", self.Data[key]), fg, self.Bg)
 
 	}
 
