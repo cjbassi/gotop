@@ -18,3 +18,4 @@ archive:
   format: tgz
 dockers:
   - image: cjbassi/gotop
+  - dockerfile: build/Dockerfile
