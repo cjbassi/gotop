@@ -1,0 +1,10 @@
+make sure gotop builds and runs
+update version number in 'main.go' and 'download.sh'
+commit changes
+tag commit
+export token
+`sudo dockerd`
+`goreleaser`
+`rm -r dist`
+`git push`
+update AUR package
