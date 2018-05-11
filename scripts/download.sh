@@ -20,7 +20,9 @@ case "$arch" in
     Linux\ *64)         download linux_amd64    ;;
     Linux\ *86)         download linux_386      ;;
     *)
-        echo "No binary found for your system"
+        echo "\
+No binary found for your system.
+Feel free to request that we prebuild one that works on your system."
         exit 1
         ;;
 esac

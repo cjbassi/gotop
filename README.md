@@ -18,8 +18,7 @@ Only working and tested on Linux. OSX is no longer supported due to issues with 
 
 ### Using Git
 
-Go programs compile to a single binary and there are currently prebuilt ones for 32/64bit Linux and ARM Linux in the [releases tab](https://github.com/cjbassi/gotop/releases).  
-Clone the repo then run [scripts/download.sh](https://github.com/cjbassi/gotop/blob/master/scripts/download.sh) to download the correct binary for your system:
+Clone the repo then run [scripts/download.sh](https://github.com/cjbassi/gotop/blob/master/scripts/download.sh) to download the correct binary for you system from the release tab:
 
 ```sh
 git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
