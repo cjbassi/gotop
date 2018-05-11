@@ -27,9 +27,11 @@ git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
 
 Then move `gotop` into your $PATH somewhere.
 
+
 ### Arch Linux
 
 Install the `gotop-bin` package from the AUR.
+
 
 ### Source
 
@@ -37,16 +39,9 @@ Install the `gotop-bin` package from the AUR.
 go get github.com/cjbassi/gotop
 ```
 
-### Docker
-
-```
-docker run -it --rm cjbassi/gotop
-```
-
-Note: Process list doesn't work when running with Docker.
-
 
 ## Usage
+
 
 ### Keybinds
 
@@ -65,6 +60,7 @@ Note: Process list doesn't work when running with Docker.
 * `h` and `l`: zoom in and out of CPU and Mem graphs
 * `?`: toggles keybind help menu
 
+
 ### Mouse
 
 * click to select process
@@ -79,6 +75,7 @@ Feel free to add a new one.
 You can use 256 colors, bold, underline, and reverse.
 You can see the template and get more info [here](https://github.com/cjbassi/gotop/blob/master/src/colorschemes/template.go)
 and see the default colorscheme as an example [here](https://github.com/cjbassi/gotop/blob/master/src/colorschemes/default.go).
+
 
 ### CLI Options
 
