@@ -1,15 +1,24 @@
 #!/usr/bin/env bash
 
-VERSION=1.2.15
+
+get_latest_release_version() {
+  curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
+    grep '"tag_name":' |                                            # Get tag line
+    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
+}
+
 
 download() {
-    archive=gotop_${VERSION}_${1}.tgz
-    curl -LO https://github.com/cjbassi/gotop/releases/download/$VERSION/$archive
+    archive=gotop_${version}_${1}.tgz
+    curl -LO https://github.com/cjbassi/gotop/releases/download/$version/$archive
     tar xf $archive
     rm $archive
 }
 
+
 arch=$(uname -sm)
+version=$(get_latest_release_version 'cjbassi/gotop')
+
 case "$arch" in
     # order matters
     Linux\ armv5*)      download linux_arm5     ;;
