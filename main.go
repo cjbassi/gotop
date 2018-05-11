@@ -15,7 +15,7 @@ import (
 	"github.com/docopt/docopt-go"
 )
 
-const VERSION = "1.2.15"
+var version = "updated by goreleaser"
 
 var (
 	termResized = make(chan bool, 1)
@@ -65,7 +65,7 @@ Colorschemes:
   monokai
 `
 
-	args, _ := docopt.ParseArgs(usage, os.Args[1:], VERSION)
+	args, _ := docopt.ParseArgs(usage, os.Args[1:], version)
 
 	if val, _ := args["--color"]; val != nil {
 		handleColorscheme(val.(string))

@@ -1,10 +1,7 @@
 make sure gotop builds and runs
-update version number in 'main.go' and 'scripts/download.sh'
-commit changes
-tag commit with latest version number
+tag commit with version number
 export GitHub token in shell
 run `sudo dockerd`
-run `goreleaser`
-run `rm -r dist`
+run `goreleaser --rm-dist`
 run `git push`
 update AUR package
