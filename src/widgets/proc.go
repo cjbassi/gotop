@@ -47,7 +47,7 @@ func NewProc(keyPressed chan bool) *Proc {
 		group:      true,
 		KeyPressed: keyPressed,
 	}
-	self.Label = "Process List"
+	self.Label = "Processes"
 	self.ColResizer = self.ColResize
 	self.DefaultColWidths = []int{5, 10, 4, 4}
 	self.ColWidths = make([]int, 4)
