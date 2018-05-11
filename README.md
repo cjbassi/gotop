@@ -15,7 +15,7 @@ Another terminal based graphical activity monitor, inspired by [gtop](https://gi
 
 Only working and tested on Linux. OSX is no longer supported due to issues with gopsutil, but that is currently being worked on. Windows support is also in the works.
 
-Go programs compile to a single binary and there are currently prebuilt ones for 32/64bit Linux and ARM Linux.
+Go programs compile to a single binary and there are currently prebuilt ones for 32/64bit Linux and ARM Linux. Use one of the following methods to get the binary installed on your machine:
 
 ### Using Git
 
