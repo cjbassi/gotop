@@ -16,6 +16,8 @@ archive:
   replacements:
     arm64: arm8
   format: tgz
+  files:
+    - none*
 dockers:
   - image: cjbassi/gotop
   - dockerfile: build/Dockerfile
