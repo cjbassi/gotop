@@ -1,8 +1,8 @@
 make sure gotop builds and runs
-update version number in 'main.go' and 'download.sh'
+update version number in 'main.go' and 'scripts/download.sh'
 commit changes
-tag commit
-export GitHub token
+tag commit with latest version number
+export GitHub token in shell
 run `sudo dockerd`
 run `goreleaser`
 run `rm -r dist`
