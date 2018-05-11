@@ -1,12 +1,12 @@
 <div align="center">
 
-<img src="https://github.com/cjbassi/gotop/blob/master/media/logo.png" width="20%" />
+<img src="https://github.com/cjbassi/gotop/blob/master/assets/logo.png" width="20%" />
 <br><br>
 
 Another terminal based graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!
 
-<img src="https://github.com/cjbassi/gotop/blob/master/media/demo.gif" />
-<img src="https://github.com/cjbassi/gotop/blob/master/media/minimal.png" width="96%" />
+<img src="https://github.com/cjbassi/gotop/blob/master/assets/demo.gif" />
+<img src="https://github.com/cjbassi/gotop/blob/master/assets/minimal.png" width="96%" />
 
 </div>
 
@@ -85,7 +85,7 @@ Feel free to add a new one. You can use 256 colors, bold, underline, and reverse
 
 ## Credits
 
-* [Logo](https://github.com/cjbassi/gotop/blob/master/media/logo.png) by [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771)
+* [Logo](https://github.com/cjbassi/gotop/blob/master/assets/logo.png) by [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771)
 
 
 ## Built With
