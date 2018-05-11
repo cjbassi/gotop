@@ -74,8 +74,12 @@ Note: Process list doesn't work using Docker.
 
 ### Colorschemes
 
-A different Colorscheme can be set with the `-c` flag followed its name. You can find them in the `colorschemes` folder.
-Feel free to add a new one. You can use 256 colors, bold, underline, and reverse. You can see the template and get more info [here](https://github.com/cjbassi/gotop/blob/master/colorschemes/template.go) and see the default colorscheme as an example [here](https://github.com/cjbassi/gotop/blob/master/colorschemes/default.go).
+A different Colorscheme can be set with the `-c` flag followed its name.
+You can find different ones in [src/colorschemes](https://github.com/cjbassi/gotop/tree/master/src/colorschemes).
+Feel free to add a new one.
+You can use 256 colors, bold, underline, and reverse.
+You can see the template and get more info [here](https://github.com/cjbassi/gotop/blob/master/src/colorschemes/template.go)
+and see the default colorscheme as an example [here](https://github.com/cjbassi/gotop/blob/master/src/colorschemes/default.go).
 
 ### CLI Options
 
