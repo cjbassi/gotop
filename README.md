@@ -19,11 +19,11 @@ Go programs compile to a single binary and there are currently prebuilt ones for
 
 ### Using Git
 
-Clone the repo then run [download.sh](https://github.com/cjbassi/gotop/blob/master/download.sh) to download the correct binary:
+Clone the repo then run [scripts/download.sh](https://github.com/cjbassi/gotop/blob/master/scripts/download.sh) to download the correct binary:
 
 ```sh
-git clone --depth 1 https://github.com/cjbassi/gotop.git /tmp/gotop
-/tmp/gotop/download.sh
+git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
+/tmp/gotop/scripts/download.sh
 ```
 
 Then move `gotop` into your $PATH somewhere.
