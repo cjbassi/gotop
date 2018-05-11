@@ -3,5 +3,4 @@ tag commit with version number
 export GitHub token in shell
 run `sudo dockerd`
 run `goreleaser --rm-dist -f build/.goreleaser.yml`
-run `git push`
 update AUR package
