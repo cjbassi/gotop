@@ -44,7 +44,7 @@ go get github.com/cjbassi/gotop
 docker run -it --rm cjbassi/gotop
 ```
 
-Note: Process list doesn't work using Docker.
+Note: Process list doesn't work when running with Docker.
 
 
 ## Usage
