@@ -1,18 +1,22 @@
-package psutil
+package widgets
 
 import (
-	// "fmt"
 	"os/exec"
 	"strconv"
 	"strings"
 )
 
-// Process represents each process.
-type Process struct {
-	PID     int
-	Command string
-	CPU     float64
-	Mem     float64
+func (self *Proc) update() {
+	processes := Processes()
+	// have to iterate like this in order to actually change the value
+	for i, _ := range processes {
+		processes[i].CPU /= self.cpuCount
+	}
+
+	self.ungroupedProcs = processes
+	self.groupedProcs = Group(processes)
+
+	self.Sort()
 }
 
 func Processes() []Process {
@@ -21,7 +25,6 @@ func Processes() []Process {
 	processes := []Process{}
 	for _, line := range strings.Split(strOutput, "\n")[1:] {
 		split := strings.Fields(line)
-		// fmt.Println(split)
 		pid, _ := strconv.Atoi(split[0])
 		cpu, _ := strconv.ParseFloat(split[2], 64)
 		mem, _ := strconv.ParseFloat(split[3], 64)
