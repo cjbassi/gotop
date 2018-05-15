@@ -58,7 +58,7 @@
     "net",
     "process"
   ]
-  revision = "cd915bdc31582b0a56405ede7fa2f4ab043f851b"
+  revision = "57f370e13068146efe1cb7129f79e5d51da8a242"
 
 [[projects]]
   branch = "master"
