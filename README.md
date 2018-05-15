@@ -18,7 +18,7 @@ Only working and tested on Linux. OSX is no longer supported due to issues with 
 
 ### Using Git
 
-Clone the repo then run [scripts/download.sh](https://github.com/cjbassi/gotop/blob/master/scripts/download.sh) to download the correct binary for you system from the release tab:
+Clone the repo and then run [scripts/download.sh](https://github.com/cjbassi/gotop/blob/master/scripts/download.sh) to download the correct binary for your system from the [releases tab](https://github.com/cjbassi/gotop/releases):
 
 ```sh
 git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
