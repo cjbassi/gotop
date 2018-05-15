@@ -65,8 +65,9 @@ func NewProc(keyPressed chan bool) *Proc {
 
 func (self *Proc) update() {
 	processes := psutil.Processes()
-	for _, process := range processes {
-		process.CPU /= self.cpuCount
+	// have to iterate like this in order to actually change the value
+	for i, _ := range processes {
+		processes[i].CPU /= self.cpuCount
 	}
 
 	self.ungroupedProcs = processes
