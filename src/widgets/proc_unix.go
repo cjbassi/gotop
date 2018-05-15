@@ -1,3 +1,5 @@
+// +build freebsd linux darwin
+
 package widgets
 
 import (
