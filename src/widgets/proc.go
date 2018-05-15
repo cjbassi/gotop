@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/cjbassi/gotop/src/psutil"
 	ui "github.com/cjbassi/termui"
 	psCPU "github.com/shirou/gopsutil/cpu"
-	psProc "github.com/shirou/gopsutil/process"
 )
 
 const (
@@ -17,21 +17,13 @@ const (
 	DOWN = "▼"
 )
 
-// Process represents each process.
-type Process struct {
-	PID     int32
-	Command string
-	CPU     float64
-	Mem     float32
-}
-
 type Proc struct {
 	*ui.Table
-	cpuCount         int
+	cpuCount         float64
 	interval         time.Duration
 	sortMethod       string
-	groupedProcs     []Process
-	ungroupedProcs   []Process
+	groupedProcs     []psutil.Process
+	ungroupedProcs   []psutil.Process
 	group            bool
 	KeyPressed       chan bool
 	DefaultColWidths []int
@@ -42,7 +34,7 @@ func NewProc(keyPressed chan bool) *Proc {
 	self := &Proc{
 		Table:      ui.NewTable(),
 		interval:   time.Second,
-		cpuCount:   cpuCount,
+		cpuCount:   float64(cpuCount),
 		sortMethod: "c",
 		group:      true,
 		KeyPressed: keyPressed,
@@ -72,21 +64,11 @@ func NewProc(keyPressed chan bool) *Proc {
 }
 
 func (self *Proc) update() {
-	psProcesses, _ := psProc.Processes()
-	processes := make([]Process, len(psProcesses))
-	for i, psProcess := range psProcesses {
-		pid := psProcess.Pid
-		command, _ := psProcess.Name()
-		cpu, _ := psProcess.CPUPercent()
-		mem, _ := psProcess.MemoryPercent()
-
-		processes[i] = Process{
-			pid,
-			command,
-			cpu / float64(self.cpuCount),
-			mem,
-		}
+	processes := psutil.Processes()
+	for _, process := range processes {
+		process.CPU /= self.cpuCount
 	}
+
 	self.ungroupedProcs = processes
 	self.groupedProcs = Group(processes)
 
@@ -233,19 +215,19 @@ func (self *Proc) keyBinds() {
 // Group groupes a []Process based on command name.
 // The first field changes from PID to count.
 // CPU and Mem are added together for each Process.
-func Group(P []Process) []Process {
-	groupedP := make(map[string]Process)
+func Group(P []psutil.Process) []psutil.Process {
+	groupedP := make(map[string]psutil.Process)
 	for _, process := range P {
 		val, ok := groupedP[process.Command]
 		if ok {
-			groupedP[process.Command] = Process{
+			groupedP[process.Command] = psutil.Process{
 				val.PID + 1,
 				val.Command,
 				val.CPU + process.CPU,
 				val.Mem + process.Mem,
 			}
 		} else {
-			groupedP[process.Command] = Process{
+			groupedP[process.Command] = psutil.Process{
 				1,
 				process.Command,
 				process.CPU,
@@ -254,7 +236,7 @@ func Group(P []Process) []Process {
 		}
 	}
 
-	groupList := make([]Process, len(groupedP))
+	groupList := make([]psutil.Process, len(groupedP))
 	var i int
 	for _, val := range groupedP {
 		groupList[i] = val
@@ -265,7 +247,7 @@ func Group(P []Process) []Process {
 }
 
 // FieldsToStrings converts a []Process to a [][]string
-func FieldsToStrings(P []Process) [][]string {
+func FieldsToStrings(P []psutil.Process) [][]string {
 	strings := make([][]string, len(P))
 	for i, p := range P {
 		strings[i] = make([]string, 4)
@@ -292,7 +274,7 @@ func (self *Proc) Kill() {
 //                              []Process Sorting                              //
 /////////////////////////////////////////////////////////////////////////////////
 
-type ProcessByCPU []Process
+type ProcessByCPU []psutil.Process
 
 // Len implements Sort interface
 func (P ProcessByCPU) Len() int {
@@ -309,7 +291,7 @@ func (P ProcessByCPU) Less(i, j int) bool {
 	return P[i].CPU < P[j].CPU
 }
 
-type ProcessByPID []Process
+type ProcessByPID []psutil.Process
 
 // Len implements Sort interface
 func (P ProcessByPID) Len() int {
@@ -326,7 +308,7 @@ func (P ProcessByPID) Less(i, j int) bool {
 	return P[i].PID < P[j].PID
 }
 
-type ProcessByMem []Process
+type ProcessByMem []psutil.Process
 
 // Len implements Sort interface
 func (P ProcessByMem) Len() int {
