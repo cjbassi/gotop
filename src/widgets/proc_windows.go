@@ -18,6 +18,9 @@ func (self *Proc) update() {
 			command,
 			cpu / self.cpuCount,
 			float64(mem),
+			// getting command args using gopsutil's Cmdline and CmdlineSlice wasn't
+			// working the last time I tried it, so we're just reusing 'command'
+			command,
 		}
 	}
 

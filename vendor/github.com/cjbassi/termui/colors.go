@@ -1,6 +1,7 @@
 package termui
 
 // Color is an integer in the range -1 to 255.
+// -1 is clear, while 0-255 are xterm 256 colors.
 type Color int
 
 // ColorDefault = clear

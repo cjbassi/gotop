@@ -22,7 +22,7 @@ func (self *Proc) update() {
 }
 
 func Processes() []Process {
-	output, _ := exec.Command("ps", "--no-headers", "-acxo", "pid,comm,pcpu,pmem").Output()
+	output, _ := exec.Command("ps", "--no-headers", "-axo", "pid,comm,pcpu,pmem,args").Output()
 	strOutput := strings.TrimSpace(string(output))
 	processes := []Process{}
 	for _, line := range strings.Split(strOutput, "\n") {
@@ -35,6 +35,7 @@ func Processes() []Process {
 			Command: split[1],
 			CPU:     cpu,
 			Mem:     mem,
+			Args:    strings.Join(split[4:], " "),
 		}
 		processes = append(processes, process)
 	}

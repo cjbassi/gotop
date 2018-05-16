@@ -106,7 +106,11 @@ func (self *Table) Buffer() *Buffer {
 			if width == 0 {
 				continue
 			}
-			r := MaxString(row[i], self.X-self.CellXPos[i])
+			width = self.X - self.CellXPos[i]
+			if len(self.CellXPos) > i+1 {
+				width -= self.X - self.CellXPos[i+1]
+			}
+			r := MaxString(row[i], width)
 			buf.SetString(self.CellXPos[i], y, r, self.Fg, bg)
 		}
 	}

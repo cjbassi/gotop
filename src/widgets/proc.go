@@ -22,6 +22,7 @@ type Process struct {
 	Command string
 	CPU     float64
 	Mem     float64
+	Args    string
 }
 
 type Proc struct {
@@ -100,7 +101,7 @@ func (self *Proc) Sort() {
 		self.Header[3] += DOWN
 	}
 
-	self.Rows = FieldsToStrings(*processes)
+	self.Rows = FieldsToStrings(*processes, self.group)
 }
 
 // ColResize overrides the default ColResize in the termui table.
@@ -220,6 +221,7 @@ func Group(P []Process) []Process {
 				val.Command,
 				val.CPU + process.CPU,
 				val.Mem + process.Mem,
+				"",
 			}
 		} else {
 			groupedP[process.Command] = Process{
@@ -227,6 +229,7 @@ func Group(P []Process) []Process {
 				process.Command,
 				process.CPU,
 				process.Mem,
+				"",
 			}
 		}
 	}
@@ -242,14 +245,18 @@ func Group(P []Process) []Process {
 }
 
 // FieldsToStrings converts a []Process to a [][]string
-func FieldsToStrings(P []Process) [][]string {
+func FieldsToStrings(P []Process, grouped bool) [][]string {
 	strings := make([][]string, len(P))
 	for i, p := range P {
 		strings[i] = make([]string, 4)
 		strings[i][0] = strconv.Itoa(int(p.PID))
-		strings[i][1] = p.Command
+		if grouped {
+			strings[i][1] = p.Command
+		} else {
+			strings[i][1] = p.Args
+		}
 		strings[i][2] = fmt.Sprintf("%4s", strconv.FormatFloat(p.CPU, 'f', 1, 64))
-		strings[i][3] = fmt.Sprintf("%4s", strconv.FormatFloat(float64(p.Mem), 'f', 1, 32))
+		strings[i][3] = fmt.Sprintf("%4s", strconv.FormatFloat(float64(p.Mem), 'f', 1, 64))
 	}
 	return strings
 }
