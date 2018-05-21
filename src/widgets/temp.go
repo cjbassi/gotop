@@ -78,7 +78,6 @@ func (self *Temp) Buffer() *ui.Buffer {
 		s := ui.MaxString(key, (self.X - 4))
 		buf.SetString(1, y+1, s, self.Fg, self.Bg)
 		buf.SetString(self.X-2, y+1, fmt.Sprintf("%2dC", self.Data[key]), fg, self.Bg)
-
 	}
 
 	return buf

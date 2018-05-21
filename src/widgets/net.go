@@ -75,13 +75,11 @@ func (self *Net) update() {
 	self.prevRecvTotal = curRecvTotal
 	self.prevSentTotal = curSentTotal
 
-	// net widget titles
+	// render widget titles
 	for i := 0; i < 2; i++ {
 		var method string // either 'Rx' or 'Tx'
 		var total float64
 		recent := self.Lines[i].Data[len(self.Lines[i].Data)-1]
-		unitTotal := "B"
-		unitRecent := "B"
 
 		if i == 0 {
 			total = float64(curRecvTotal)
@@ -91,21 +89,9 @@ func (self *Net) update() {
 			method = "Tx"
 		}
 
-		if recent >= 1000000 {
-			recent = int(utils.BytesToMB(uint64(recent)))
-			unitRecent = "MB"
-		} else if recent >= 1000 {
-			recent = int(utils.BytesToKB(uint64(recent)))
-			unitRecent = "kB"
-		}
-
-		if total >= 1000000000 {
-			total = utils.BytesToGB(uint64(total))
-			unitTotal = "GB"
-		} else if total >= 1000000 {
-			total = utils.BytesToMB(uint64(total))
-			unitTotal = "MB"
-		}
+		recentFloat, unitRecent := utils.ConvertBytes(uint64(recent))
+		recent = int(recentFloat)
+		total, unitTotal := utils.ConvertBytes(uint64(total))
 
 		self.Lines[i].Title1 = fmt.Sprintf(" Total %s: %5.1f %s", method, total, unitTotal)
 		self.Lines[i].Title2 = fmt.Sprintf(" %s/s: %9d %2s/s", method, recent, unitRecent)

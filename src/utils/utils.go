@@ -19,6 +19,25 @@ func BytesToGB(b uint64) float64 {
 	return float64(b) / math.Pow10(9)
 }
 
+func ConvertBytes(b uint64) (float64, string) {
+	if b >= 1000000000 {
+		return BytesToGB(uint64(b)), "GB"
+	} else if b >= 1000000 {
+		return BytesToMB(uint64(b)), "MB"
+	} else if b >= 1000 {
+		return BytesToKB(uint64(b)), "KB"
+	} else {
+		return float64(b), "B"
+	}
+}
+
+func Max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
 func Error(issue, diagnostics string) {
 	ui.Close()
 	fmt.Println("Error caught. Exiting program.")

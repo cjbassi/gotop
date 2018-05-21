@@ -16,8 +16,10 @@ type Table struct {
 	CellXPos   []int  // column position
 	ColResizer func() // for widgets that inherit a Table and want to overload the ColResize method
 	Gap        int    // gap between columns
+	PadLeft    int
 
-	Cursor Color
+	Cursor      bool
+	CursorColor Color
 
 	UniqueCol    int    // the column used to identify the selected item
 	SelectedItem string // used to keep the cursor on the correct item if the data changes
@@ -29,7 +31,7 @@ type Table struct {
 func NewTable() *Table {
 	self := &Table{
 		Block:       NewBlock(),
-		Cursor:      Theme.TableCursor,
+		CursorColor: Theme.TableCursor,
 		SelectedRow: 0,
 		TopRow:      0,
 		UniqueCol:   0,
@@ -41,20 +43,6 @@ func NewTable() *Table {
 // ColResize is the default column resizer, but can be overriden.
 // ColResize calculates the width of each column.
 func (self *Table) ColResize() {
-	// calculate gap size based on total width
-	self.Gap = 3
-	if self.X < 50 {
-		self.Gap = 1
-	} else if self.X < 75 {
-		self.Gap = 2
-	}
-
-	cur := 0
-	for _, w := range self.ColWidths {
-		cur += self.Gap
-		self.CellXPos = append(self.CellXPos, cur)
-		cur += w
-	}
 }
 
 // Buffer implements the Bufferer interface.
@@ -63,13 +51,25 @@ func (self *Table) Buffer() *Buffer {
 
 	self.ColResizer()
 
+	// finds exact column starting position
+	self.CellXPos = []int{}
+	cur := 1 + self.PadLeft
+	for _, w := range self.ColWidths {
+		self.CellXPos = append(self.CellXPos, cur)
+		cur += w
+		cur += self.Gap
+	}
+
 	// prints header
 	for i, h := range self.Header {
 		width := self.ColWidths[i]
 		if width == 0 {
 			continue
 		}
-		h = MaxString(h, self.X-self.CellXPos[i])
+		// don't render column if it doesn't fit in widget
+		if width > (self.X-self.CellXPos[i])+1 {
+			continue
+		}
 		buf.SetString(self.CellXPos[i], 1, h, self.Fg|AttrBold, self.Bg)
 	}
 
@@ -89,16 +89,18 @@ func (self *Table) Buffer() *Buffer {
 
 		// prints cursor
 		bg := self.Bg
-		if (self.SelectedItem == "" && rowNum == self.SelectedRow) || (self.SelectedItem != "" && self.SelectedItem == row[self.UniqueCol]) {
-			bg = self.Cursor
-			for _, width := range self.ColWidths {
-				if width == 0 {
-					continue
+		if self.Cursor {
+			if (self.SelectedItem == "" && rowNum == self.SelectedRow) || (self.SelectedItem != "" && self.SelectedItem == row[self.UniqueCol]) {
+				bg = self.CursorColor
+				for _, width := range self.ColWidths {
+					if width == 0 {
+						continue
+					}
+					buf.SetString(1, y, strings.Repeat(" ", self.X), self.Fg, bg)
 				}
-				buf.SetString(1, y, strings.Repeat(" ", self.X), self.Fg, bg)
+				self.SelectedItem = row[self.UniqueCol]
+				self.SelectedRow = rowNum
 			}
-			self.SelectedItem = row[self.UniqueCol]
-			self.SelectedRow = rowNum
 		}
 
 		// prints each col of the row
@@ -106,9 +108,9 @@ func (self *Table) Buffer() *Buffer {
 			if width == 0 {
 				continue
 			}
-			width = self.X - self.CellXPos[i]
-			if len(self.CellXPos) > i+1 {
-				width -= self.X - self.CellXPos[i+1]
+			// don't render column if width is greater than distance to end of widget
+			if width > (self.X-self.CellXPos[i])+1 {
+				continue
 			}
 			r := MaxString(row[i], width)
 			buf.SetString(self.CellXPos[i], y, r, self.Fg, bg)
