@@ -22,10 +22,11 @@ func (self *Proc) update() {
 }
 
 func Processes() []Process {
-	output, _ := exec.Command("ps", "--no-headers", "-axo", "pid,comm,pcpu,pmem,args").Output()
-	strOutput := strings.TrimSpace(string(output))
+	output, _ := exec.Command("ps", "-axo", "pid,comm,pcpu,pmem,args").Output()
+	// converts to []string and removes the header
+	strOutput := strings.Split(strings.TrimSpace(string(output)), "\n")[1:]
 	processes := []Process{}
-	for _, line := range strings.Split(strOutput, "\n") {
+	for _, line := range strOutput {
 		split := strings.Fields(line)
 		pid, _ := strconv.Atoi(split[0])
 		cpu, _ := strconv.ParseFloat(split[2], 64)
