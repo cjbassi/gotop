@@ -13,7 +13,7 @@ Another terminal based graphical activity monitor, inspired by [gtop](https://gi
 
 ## Installation
 
-Only working and tested on Linux. OSX is no longer supported due to issues with gopsutil, but that is currently being worked on. Windows support is also in the works.
+Working and tested on Linux and OSX, with Windows support being worked on.
 
 
 ### Using Git
@@ -31,6 +31,14 @@ Then move `gotop` into your $PATH somewhere.
 ### Arch Linux
 
 Install the `gotop-bin` package from the AUR.
+
+
+### Homebrew
+
+```
+brew tap cjbassi/gotop
+brew install gotop
+```
 
 
 ### Source
