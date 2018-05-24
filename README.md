@@ -93,7 +93,8 @@ and see the default colorscheme as an example [here](https://github.com/cjbassi/
 
 ## Credits
 
-* [Logo](https://github.com/cjbassi/gotop/blob/master/assets/logo.png) by [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771)
+* [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771) for the [logo](https://github.com/cjbassi/gotop/blob/master/assets/logo.png)
+* [f1337](https://github.com/f1337) for helping port gotop to OSX
 
 
 ## Built With
