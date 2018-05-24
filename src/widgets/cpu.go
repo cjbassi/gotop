@@ -67,9 +67,11 @@ func (self *CPU) update() {
 			key := "CPU" + strconv.Itoa(i)
 			percent := percents[i]
 			self.Data[key] = append(self.Data[key], percent)
+			self.Labels[key] = fmt.Sprintf("%3.0f%%", percent)
 		}
 	} else {
 		percent, _ := psCPU.Percent(self.interval, false)
 		self.Data["Average"] = append(self.Data["Average"], percent[0])
+		self.Labels["Average"] = fmt.Sprintf("%3.0f%%", percent[0])
 	}
 }

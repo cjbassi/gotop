@@ -1,8 +1,10 @@
 package widgets
 
 import (
+	"fmt"
 	"time"
 
+	"github.com/cjbassi/gotop/src/utils"
 	ui "github.com/cjbassi/termui"
 	psMem "github.com/shirou/gopsutil/mem"
 )
@@ -39,4 +41,11 @@ func (self *Mem) update() {
 	swap, _ := psMem.SwapMemory()
 	self.Data["Main"] = append(self.Data["Main"], main.UsedPercent)
 	self.Data["Swap"] = append(self.Data["Swap"], swap.UsedPercent)
+
+	mainTotalBytes, mainTotalMagnitude := utils.ConvertBytes(main.Total)
+	swapTotalBytes, swapTotalMagnitude := utils.ConvertBytes(swap.Total)
+	mainUsedBytes, mainUsedMagnitude := utils.ConvertBytes(main.Used)
+	swapUsedBytes, swapUsedMagnitude := utils.ConvertBytes(swap.Used)
+	self.Labels["Main"] = fmt.Sprintf("%3.0f%% %.0f%s/%.0f%s", main.UsedPercent, mainUsedBytes, mainUsedMagnitude, mainTotalBytes, mainTotalMagnitude)
+	self.Labels["Swap"] = fmt.Sprintf("%3.0f%% %.0f%s/%.0f%s", swap.UsedPercent, swapUsedBytes, swapUsedMagnitude, swapTotalBytes, swapTotalMagnitude)
 }

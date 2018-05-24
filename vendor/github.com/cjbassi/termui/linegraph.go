@@ -1,7 +1,6 @@
 package termui
 
 import (
-	"fmt"
 	"sort"
 
 	drawille "github.com/cjbassi/drawille-go"
@@ -13,6 +12,7 @@ type LineGraph struct {
 	Data      map[string][]float64
 	LineColor map[string]Color
 	Zoom      int
+	Labels    map[string]string
 
 	DefaultLineColor Color
 }
@@ -23,6 +23,7 @@ func NewLineGraph() *LineGraph {
 		Block:     NewBlock(),
 		Data:      make(map[string][]float64),
 		LineColor: make(map[string]Color),
+		Labels:    make(map[string]string),
 		Zoom:      5,
 
 		DefaultLineColor: Theme.LineGraph,
@@ -103,17 +104,15 @@ func (self *LineGraph) Buffer() *Buffer {
 		}
 	}
 
-	// renders key ontop
+	// renders key/label ontop
 	for j, seriesName := range seriesList {
-		// sorts lines again
-		seriesData := self.Data[seriesName]
 		seriesLineColor, ok := self.LineColor[seriesName]
 		if !ok {
 			seriesLineColor = self.DefaultLineColor
 		}
 
 		// render key ontop, but let braille be drawn over space characters
-		str := fmt.Sprintf("%s %3.0f%%", seriesName, seriesData[len(seriesData)-1])
+		str := seriesName + " " + self.Labels[seriesName]
 		for k, char := range str {
 			if char != ' ' {
 				buf.SetCell(3+k, j+2, Cell{char, seriesLineColor, self.Bg})

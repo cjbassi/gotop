@@ -17,7 +17,7 @@
   branch = "master"
   name = "github.com/cjbassi/termui"
   packages = ["."]
-  revision = "87dbce7f69558bede7c7c7a51324ce4d8cfcb87b"
+  revision = "9d77ad53bd1562d72b66b7ab5965e6495955846e"
 
 [[projects]]
   branch = "master"
