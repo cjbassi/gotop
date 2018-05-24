@@ -21,6 +21,8 @@ version=$(get_latest_release_version 'cjbassi/gotop')
 
 case "$arch" in
     # order matters
+    Darwin\ *64)        download darwin_amd64   ;;
+    Darwin\ *86)        download darwin_386     ;;
     Linux\ armv5*)      download linux_arm5     ;;
     Linux\ armv6*)      download linux_arm6     ;;
     Linux\ armv7*)      download linux_arm7     ;;
