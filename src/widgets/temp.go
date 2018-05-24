@@ -6,11 +6,9 @@ package widgets
 import (
 	"fmt"
 	"sort"
-	"strings"
 	"time"
 
 	ui "github.com/cjbassi/termui"
-	psHost "github.com/shirou/gopsutil/host"
 )
 
 type Temp struct {
@@ -41,18 +39,6 @@ func NewTemp() *Temp {
 	}()
 
 	return self
-}
-
-func (self *Temp) update() {
-	sensors, _ := psHost.SensorsTemperatures()
-	for _, sensor := range sensors {
-		// only sensors with input in their name are giving us live temp info
-		if strings.Contains(sensor.SensorKey, "input") {
-			// removes '_input' from the end of the sensor name
-			label := sensor.SensorKey[:strings.Index(sensor.SensorKey, "_input")]
-			self.Data[label] = int(sensor.Temperature)
-		}
-	}
 }
 
 // Buffer implements ui.Bufferer interface and renders the widget.

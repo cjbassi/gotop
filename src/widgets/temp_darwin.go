@@ -1,18 +1,17 @@
-// +build darwin
-// +build cgo
+// TODO do we need to add '+build cgo'?
 
-package host
+package widgets
 
 // #cgo LDFLAGS: -framework IOKit
 // #include "include/smc.c"
 import "C"
-import "context"
 
-func SensorsTemperatures() ([]TemperatureStat, error) {
-	return SensorsTemperaturesWithContext(context.Background())
+type TemperatureStat struct {
+	SensorKey   string  `json:"sensorKey"`
+	Temperature float64 `json:"sensorTemperature"`
 }
 
-func SensorsTemperaturesWithContext(ctx context.Context) ([]TemperatureStat, error) {
+func SensorsTemperatures() ([]TemperatureStat, error) {
 	temperatureKeys := []string{
 		C.AMBIENT_AIR_0,
 		C.AMBIENT_AIR_1,
@@ -48,4 +47,11 @@ func SensorsTemperaturesWithContext(ctx context.Context) ([]TemperatureStat, err
 		})
 	}
 	return temperatures, nil
+}
+
+func (self *Temp) update() {
+	sensors, _ := SensorsTemperatures()
+	for _, sensor := range sensors {
+		self.Data[sensor.SensorKey] = int(sensor.Temperature)
+	}
 }
