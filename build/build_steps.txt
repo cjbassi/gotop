@@ -1,8 +1,12 @@
 need to have goreleaser, xgo, and dockerd installed
 
 make sure gotop builds and runs
+update version number in main.go
+add, commit, and push change
 tag commit with version number
 export GitHub token in shell
 make sure dockerd is running
 run `goreleaser --rm-dist -f build/.goreleaser.yml`
+update GitHub release with Darwin builds
+update homebrew-gotop
 update AUR package
