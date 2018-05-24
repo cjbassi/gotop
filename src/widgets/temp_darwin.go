@@ -11,7 +11,7 @@ type TemperatureStat struct {
 	Temperature float64 `json:"sensorTemperature"`
 }
 
-func SensorsTempatures() ([]TemperatureStat, error) {
+func SensorsTemperatures() ([]TemperatureStat, error) {
 	temperatureKeys := []string{
 		C.AMBIENT_AIR_0,
 		C.AMBIENT_AIR_1,
