@@ -58,9 +58,10 @@ func (self *Disk) update() {
 	for _, Part := range Partitions {
 		device := strings.Replace(Part.Device, "/dev/", "", -1)
 		if _, ok := self.Partitions[device]; !ok {
+			mountPoint := strings.Replace(Part.Mountpoint, "\\040", " ", -1)
 			self.Partitions[device] = &Partition{
 				Device: device,
-				Mount:  Part.Mountpoint,
+				Mount:  mountPoint,
 			}
 		}
 	}
