@@ -37,8 +37,8 @@ var (
 	zoom         = 7
 	zoomInterval = 3
 
-	averageLoad = true
-	percpuLoad = true
+	averageLoad = false
+	percpuLoad = false
 
 	cpu  *w.CPU
 	mem  *w.Mem

@@ -28,6 +28,14 @@ func NewCPU(interval time.Duration, zoom int, average bool, percpu bool) *CPU {
 	self.Label = "CPU Usage"
 	self.Zoom = zoom
 
+	if !(self.Average || self.PerCPU) {
+		if self.Count <= 8 {
+			self.PerCPU = true
+		} else {
+			self.Average = true
+		}
+	}
+
 	if self.Average {
 		self.Data["Average"] = []float64{0}
 	}
