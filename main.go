@@ -38,7 +38,7 @@ var (
 	zoomInterval = 3
 
 	averageLoad = false
-	percpuLoad = false
+	percpuLoad  = false
 
 	cpu  *w.CPU
 	mem  *w.Mem
@@ -60,6 +60,8 @@ Options:
   -m, --minimal         Only show CPU, Mem and Process widgets.
   -r, --rate=RATE       Number of times per second to update CPU and Mem widgets [default: 1].
   -v, --version         Show version.
+  -p, --percpu          Show each CPU in the CPU widget.
+  -a, --averagecpu      Show average CPU in the CPU widget.
 
 Colorschemes:
   default
@@ -86,6 +88,9 @@ Colorschemes:
 	} else {
 		interval = time.Second / time.Duration(rate)
 	}
+
+	averageLoad, _ = args["--averagecpu"].(bool)
+	percpuLoad, _ = args["--percpu"].(bool)
 }
 
 func handleColorscheme(cs string) {
