@@ -10,11 +10,9 @@ Another terminal based graphical activity monitor, inspired by [gtop](https://gi
 
 </div>
 
-
 ## Installation
 
-Working and tested on Linux and OSX, with Windows support being worked on.
-
+Working and tested on Linux and OSX. Windows support is planned.
 
 ### Using Git
 
@@ -27,11 +25,9 @@ git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
 
 Then move `gotop` into your $PATH somewhere.
 
-
 ### Arch Linux
 
 Install the `gotop-bin` package from the AUR.
-
 
 ### Homebrew
 
@@ -40,71 +36,62 @@ brew tap cjbassi/gotop
 brew install gotop
 ```
 
-
 ### Source
 
 ```sh
 go get github.com/cjbassi/gotop
 ```
 
-
 ## Usage
-
 
 ### Keybinds
 
-* Quit: `q` or `<C-c>`
-* Process Navigation:
-    * `<up>`/`<down>` and `j`/`k`: up and down
-    * `<C-d>` and `<C-u>`: up and down half a page
-    * `<C-f>` and `<C-b>`: up and down a full page
-    * `gg` and `G`: jump to top and bottom
-* Process Sorting:
-    * `c`: CPU
-    * `m`: Mem
-    * `p`: PID
-* `<tab>`: toggle process grouping
-* `dd`: kill the selected process or process group
-* `h` and `l`: zoom in and out of CPU and Mem graphs
-* `?`: toggles keybind help menu
-
+- Quit: `q` or `<C-c>`
+- Process Navigation:
+  - `<up>`/`<down>` and `j`/`k`: up and down
+  - `<C-d>` and `<C-u>`: up and down half a page
+  - `<C-f>` and `<C-b>`: up and down a full page
+  - `gg` and `G`: jump to top and bottom
+- Process Sorting:
+  - `c`: CPU
+  - `m`: Mem
+  - `p`: PID
+- `<tab>`: toggle process grouping
+- `dd`: kill the selected process or process group
+- `h` and `l`: zoom in and out of CPU and Mem graphs
+- `?`: toggles keybind help menu
 
 ### Mouse
 
-* click to select process
-* mouse wheel to scroll through processes
-
+- click to select process
+- mouse wheel to scroll through processes
 
 ### Colorschemes
 
-A different Colorscheme can be set with the `-c` flag followed its name.
-You can find different ones in [src/colorschemes](https://github.com/cjbassi/gotop/tree/master/src/colorschemes).
-Feel free to add a new one.
-You can use 256 colors, bold, underline, and reverse.
-You can see the template and get more info [here](https://github.com/cjbassi/gotop/blob/master/src/colorschemes/template.go)
-and see the default colorscheme as an example [here](https://github.com/cjbassi/gotop/blob/master/src/colorschemes/default.go).
-
+gotop ships with a few colorschemes which can be set with the `-c` flag followed by the name of one.
+You can find all the colorschemes in [src/colorschemes](https://github.com/cjbassi/gotop/tree/master/src/colorschemes) and you can make your own by checking out the [template](https://github.com/cjbassi/gotop/blob/master/src/colorschemes/template.go). Colorschemes PR's are welcome!
 
 ### CLI Options
 
-`-m`, `--minimal`         Only show CPU, Mem and Process widgets.  
-`-r`, `--rate=RATE`       Number of times per second to update CPU and Mem widgets [default: 1].
-
+`-c`, `--color=NAME` Set a colorscheme.  
+`-m`, `--minimal` Only show CPU, Mem and Process widgets.  
+`-r`, `--rate=RATE` Number of times per second to update CPU and Mem widgets [default: 1].  
+`-v`, `--version` Show version.  
+`-c`, `--percpu` Show each CPU in the CPU widget.  
+`-a`, `--averagecpu` Show average CPU in the CPU widget.
 
 ## Credits
 
-* [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771) for the [logo](https://github.com/cjbassi/gotop/blob/master/assets/logo.png)
-* [f1337](https://github.com/f1337) for helping port gotop to OSX
-
+- [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771) for the [logo](https://github.com/cjbassi/gotop/blob/master/assets/logo.png)
+- [f1337](https://github.com/f1337) for helping port gotop to OSX
 
 ## Built With
 
-* [My termui fork](https://github.com/cjbassi/termui)
-    * [drawille-go](https://github.com/exrook/drawille-go)
-    * [termbox](https://github.com/nsf/termbox-go)
-* [gopsutil](https://github.com/shirou/gopsutil)
-* [goreleaser](https://github.com/goreleaser/goreleaser)
-
+- [cjbassi/termui](https://github.com/cjbassi/termui)
+  - [drawille-go](https://github.com/exrook/drawille-go)
+  - [termbox](https://github.com/nsf/termbox-go)
+- [gopsutil](https://github.com/shirou/gopsutil)
+- [goreleaser](https://github.com/goreleaser/goreleaser)
 
 ## Stargazers over time
 
