@@ -249,6 +249,7 @@ func (self *Proc) Kill() {
 	}
 	cmd := exec.Command(command, self.Rows[self.SelectedRow][self.UniqueCol])
 	cmd.Start()
+	cmd.Wait()
 }
 
 /////////////////////////////////////////////////////////////////////////////////
