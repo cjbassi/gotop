@@ -38,7 +38,7 @@ func NewCPU(interval time.Duration, zoom int, average bool, percpu bool) *CPU {
 	}
 
 	if self.Average {
-		self.Data["Average"] = []float64{0}
+		self.Data["AVRG"] = []float64{0}
 	}
 
 	if self.PerCPU {
@@ -63,28 +63,32 @@ func NewCPU(interval time.Duration, zoom int, average bool, percpu bool) *CPU {
 // calculates the CPU usage over a 1 second interval and blocks for the duration
 func (self *CPU) update() {
 	if self.Average {
-		percent, _ := psCPU.Percent(self.interval, false)
-		self.Data["Average"] = append(self.Data["Average"], percent[0])
-		self.Labels["Average"] = fmt.Sprintf("%3.0f%%", percent[0])
+		go func() {
+			percent, _ := psCPU.Percent(self.interval, false)
+			self.Data["AVRG"] = append(self.Data["AVRG"], percent[0])
+			self.Labels["AVRG"] = fmt.Sprintf("%3.0f%%", percent[0])
+		}()
 	}
 
 	if self.PerCPU {
-		percents, _ := psCPU.Percent(self.interval, true)
-		if len(percents) != self.Count {
-			count, _ := psCPU.Counts(false)
-			utils.Error("CPU percentages",
-				fmt.Sprint(
-					"self.Count: ", self.Count, "\n",
-					"gopsutil.Counts(): ", count, "\n",
-					"len(percents): ", len(percents), "\n",
-					"percents: ", percents, "\n",
-					"self.interval: ", self.interval,
-				))
-		}
-		for i := 0; i < self.Count; i++ {
-			k := fmt.Sprintf("CPU%d", i)
-			self.Data[k] = append(self.Data[k], percents[i])
-			self.Labels[k] = fmt.Sprintf("%3.0f%%", percents[i])
-		}
+		go func() {
+			percents, _ := psCPU.Percent(self.interval, true)
+			if len(percents) != self.Count {
+				count, _ := psCPU.Counts(false)
+				utils.Error("CPU percentages",
+					fmt.Sprint(
+						"self.Count: ", self.Count, "\n",
+						"gopsutil.Counts(): ", count, "\n",
+						"len(percents): ", len(percents), "\n",
+						"percents: ", percents, "\n",
+						"self.interval: ", self.interval,
+					))
+			}
+			for i := 0; i < self.Count; i++ {
+				k := fmt.Sprintf("CPU%d", i)
+				self.Data[k] = append(self.Data[k], percents[i])
+				self.Labels[k] = fmt.Sprintf("%3.0f%%", percents[i])
+			}
+		}()
 	}
 }
