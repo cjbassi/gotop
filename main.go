@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"sort"
 	"strconv"
 	"sync"
 	"syscall"
@@ -181,14 +182,19 @@ func widgetColors() {
 	mem.LineColor["Main"] = ui.Color(colorscheme.MainMem)
 	mem.LineColor["Swap"] = ui.Color(colorscheme.SwapMem)
 
+	var keys []string
+	for key := range cpu.Data {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
 	i := 0
-	for k := range cpu.Data {
+	for _, v := range keys {
 		if i >= len(colorscheme.CPULines) {
 			// assuming colorscheme for CPU lines is not empty
 			i = 0
 		}
 		c := colorscheme.CPULines[i]
-		cpu.LineColor[k] = ui.Color(c)
+		cpu.LineColor[v] = ui.Color(c)
 		i++
 	}
 
