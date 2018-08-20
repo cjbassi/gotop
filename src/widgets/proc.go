@@ -138,15 +138,19 @@ func (self *Proc) keyBinds() {
 		self.KeyPressed <- true
 	})
 
-	viKeys := []string{"j", "k", "gg", "G", "<C-d>", "<C-u>", "<C-f>", "<C-b>"}
+	viKeys := []string{"j", "k", "gg", "G", "<C-d>", "<C-u>", "<C-f>", "<C-b>", "<home>", "<end>"}
 	ui.On(viKeys, func(e ui.Event) {
 		switch e.Key {
 		case "j":
 			self.Down()
 		case "k":
 			self.Up()
+		case "<home>":
+			fallthrough
 		case "gg":
 			self.Top()
+		case "<end>":
+			fallthrough
 		case "G":
 			self.Bottom()
 		case "<C-d>":
