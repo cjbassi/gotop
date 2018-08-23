@@ -88,15 +88,15 @@ func (self *Table) Buffer() *Buffer {
 		y := (rowNum + 2) - self.TopRow
 
 		// prints cursor
-		bg := self.Bg
+		fg := self.Fg
 		if self.Cursor {
 			if (self.SelectedItem == "" && rowNum == self.SelectedRow) || (self.SelectedItem != "" && self.SelectedItem == row[self.UniqueCol]) {
-				bg = self.CursorColor
+				fg = self.CursorColor | AttrReverse
 				for _, width := range self.ColWidths {
 					if width == 0 {
 						continue
 					}
-					buf.SetString(1, y, strings.Repeat(" ", self.X), self.Fg, bg)
+					buf.SetString(1, y, strings.Repeat(" ", self.X), fg, self.Bg)
 				}
 				self.SelectedItem = row[self.UniqueCol]
 				self.SelectedRow = rowNum
@@ -113,7 +113,7 @@ func (self *Table) Buffer() *Buffer {
 				continue
 			}
 			r := MaxString(row[i], width)
-			buf.SetString(self.CellXPos[i], y, r, self.Fg, bg)
+			buf.SetString(self.CellXPos[i], y, r, fg, self.Bg)
 		}
 	}
 
