@@ -46,6 +46,6 @@ func (self *Mem) update() {
 	swapTotalBytes, swapTotalMagnitude := utils.ConvertBytes(swap.Total)
 	mainUsedBytes, mainUsedMagnitude := utils.ConvertBytes(main.Used)
 	swapUsedBytes, swapUsedMagnitude := utils.ConvertBytes(swap.Used)
-	self.Labels["Main"] = fmt.Sprintf("%3.0f%% %.0f%s/%.0f%s", main.UsedPercent, mainUsedBytes, mainUsedMagnitude, mainTotalBytes, mainTotalMagnitude)
-	self.Labels["Swap"] = fmt.Sprintf("%3.0f%% %.0f%s/%.0f%s", swap.UsedPercent, swapUsedBytes, swapUsedMagnitude, swapTotalBytes, swapTotalMagnitude)
+	self.Labels["Main"] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s", main.UsedPercent, mainUsedBytes, mainUsedMagnitude, mainTotalBytes, mainTotalMagnitude)
+	self.Labels["Swap"] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s", swap.UsedPercent, swapUsedBytes, swapUsedMagnitude, swapTotalBytes, swapTotalMagnitude)
 }

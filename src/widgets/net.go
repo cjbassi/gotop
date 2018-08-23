@@ -48,10 +48,12 @@ func (self *Net) update() {
 	interfaces, _ := psNet.IOCounters(false)
 	curRecvTotal := interfaces[0].BytesRecv
 	curSentTotal := interfaces[0].BytesSent
+	var recvRecent uint64 = 0
+	var sentRecent uint64 = 0
 
 	if self.prevRecvTotal != 0 { // if this isn't the first update
-		recvRecent := curRecvTotal - self.prevRecvTotal
-		sentRecent := curSentTotal - self.prevSentTotal
+		recvRecent = curRecvTotal - self.prevRecvTotal
+		sentRecent = curSentTotal - self.prevSentTotal
 
 		self.Lines[0].Data = append(self.Lines[0].Data, int(recvRecent))
 		self.Lines[1].Data = append(self.Lines[1].Data, int(sentRecent))
@@ -77,23 +79,17 @@ func (self *Net) update() {
 
 	// render widget titles
 	for i := 0; i < 2; i++ {
-		var method string // either 'Rx' or 'Tx'
-		var total float64
-		recent := self.Lines[i].Data[len(self.Lines[i].Data)-1]
+		total, label, recent := func() (uint64, string, uint64) {
+			if i == 0 {
+				return curRecvTotal, "RX", recvRecent
+			}
+			return curSentTotal, "Tx", sentRecent
+		}()
 
-		if i == 0 {
-			total = float64(curRecvTotal)
-			method = "Rx"
-		} else {
-			total = float64(curSentTotal)
-			method = "Tx"
-		}
+		recentConv, unitRecent := utils.ConvertBytes(uint64(recent))
+		totalConv, unitTotal := utils.ConvertBytes(uint64(total))
 
-		recentFloat, unitRecent := utils.ConvertBytes(uint64(recent))
-		recent = int(recentFloat)
-		total, unitTotal := utils.ConvertBytes(uint64(total))
-
-		self.Lines[i].Title1 = fmt.Sprintf(" Total %s: %5.1f %s", method, total, unitTotal)
-		self.Lines[i].Title2 = fmt.Sprintf(" %s/s: %9d %2s/s", method, recent, unitRecent)
+		self.Lines[i].Title1 = fmt.Sprintf(" Total %s: %5.1f %s", label, totalConv, unitTotal)
+		self.Lines[i].Title2 = fmt.Sprintf(" %s/s: %9.1f %2s/s", label, recentConv, unitRecent)
 	}
 }
