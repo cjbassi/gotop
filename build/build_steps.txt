@@ -1,4 +1,7 @@
-need to have goreleaser, xgo, and dockerd installed
+Dependencies:
+- goreleaser: `go get github.com/goreleaser/goreleaser`
+- xgo: `docker pull karalabe/xgo-latest; go get github.com/karalabe/xgo`
+- dockerd
 
 make sure gotop builds and runs
 update version number in main.go
