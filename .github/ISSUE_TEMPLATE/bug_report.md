@@ -1,6 +1,7 @@
 ---
 name: Bug report
-about: Template to report bugs
+about: Template to report bugs.
+
 ---
 
 <!-- Please search existing issues to avoid creating duplicates. -->
