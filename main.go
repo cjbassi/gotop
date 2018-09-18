@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/signal"
 	"sort"
@@ -10,7 +12,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/cjbassi/gotop/src/colorschemes"
+	"github.com/cjbassi/gotop/colorschemes"
 	w "github.com/cjbassi/gotop/src/widgets"
 	ui "github.com/cjbassi/termui"
 	"github.com/docopt/docopt-go"
@@ -105,9 +107,30 @@ func handleColorscheme(cs string) {
 	case "default-dark":
 		colorscheme = colorschemes.DefaultDark
 	default:
+		colorscheme = getCustomColorscheme(cs)
+	}
+}
+
+// getCustomColorscheme	tries to read a custom json colorscheme from
+// {$XDG_CONFIG_HOME,~/.config}/gotop/{name}.json
+func getCustomColorscheme(name string) colorschemes.Colorscheme {
+	xdg := os.Getenv("XDG_CONFIG_HOME")
+	if xdg == "" {
+		xdg = os.ExpandEnv("$HOME") + "/.config"
+	}
+	file := xdg + "/gotop/" + name + ".json"
+	dat, err := ioutil.ReadFile(file)
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: colorscheme not recognized\n")
 		os.Exit(1)
 	}
+	var colorscheme colorschemes.Colorscheme
+	err = json.Unmarshal(dat, &colorscheme)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: could not parse colorscheme\n")
+		os.Exit(1)
+	}
+	return colorscheme
 }
 
 func setupGrid() {

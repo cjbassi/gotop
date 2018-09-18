@@ -68,8 +68,9 @@ go get github.com/cjbassi/gotop
 
 ### Colorschemes
 
-gotop ships with a few colorschemes which can be set with the `-c` flag followed by the name of one.
-You can find all the colorschemes in [src/colorschemes](https://github.com/cjbassi/gotop/tree/master/src/colorschemes) and you can make your own by checking out the [template](https://github.com/cjbassi/gotop/blob/master/src/colorschemes/template.go). Colorschemes PR's are welcome!
+gotop ships with a few colorschemes which can be set with the `-c` flag followed by the name of one. You can find all the colorschemes in [colorschemes](https://github.com/cjbassi/gotop/tree/master/colorschemes).
+
+To make a custom colorscheme, check out the [template](https://github.com/cjbassi/gotop/blob/master/colorschemes/template.go) for instructions and then use [default.json](https://github.com/cjbassi/gotop/blob/master/colorschemes/default.json) as a starter. Then you can put the file at `~/.config/gotop/{name}.json` and load it with `gotop -c {name}`. Colorschemes PR's are welcome!
 
 ### CLI Options
 
