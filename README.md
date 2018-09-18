@@ -78,7 +78,7 @@ To make a custom colorscheme, check out the [template](https://github.com/cjbass
 `-m`, `--minimal` Only show CPU, Mem and Process widgets.  
 `-r`, `--rate=RATE` Number of times per second to update CPU and Mem widgets [default: 1].  
 `-v`, `--version` Show version.  
-`-c`, `--percpu` Show each CPU in the CPU widget.  
+`-p`, `--percpu` Show each CPU in the CPU widget.  
 `-a`, `--averagecpu` Show average CPU in the CPU widget.
 
 ## Credits
