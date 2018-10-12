@@ -1,2 +1,3 @@
-gotop*
 dist/
+build/gotop
+pkg/

@@ -12,13 +12,4 @@ homepage: "https://github.com/cjbassi/gotop"
 license: "GNU Affero General Public License v3.0"
 bindir: "/usr/local/bin"
 files:
-  ./gotop: "/usr/local/bin/gotop"
-overrides:
-  rpm:
-    scripts:
-      preinstall: ./scripts/preinstall.sh
-      postremove: ./scripts/postremove.sh
-  deb:
-    scripts:
-      postinstall: ./scripts/postinstall.sh
-      preremove: ./scripts/preremove.sh
+  /tmp/pkg/gotop: "/usr/local/bin/gotop"
