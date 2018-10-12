@@ -81,6 +81,17 @@ To make a custom colorscheme, check out the [template](https://github.com/cjbass
 `-p`, `--percpu` Show each CPU in the CPU widget.  
 `-a`, `--averagecpu` Show average CPU in the CPU widget.
 
+
+## Building deb/rpms
+
+To build dep/rpms using [nfpm](https://github.com/goreleaser/nfpm):
+
+```bash
+make all
+```
+
+This will place the built packages into the `pkg` folder.
+
 ## Credits
 
 - [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771) for the [logo](https://github.com/cjbassi/gotop/blob/master/assets/logo.png)
