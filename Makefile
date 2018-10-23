@@ -1,7 +1,7 @@
 VERSION=$(shell awk '/([0-9]{1}.?){3}/ {print $$4;}' main.go)
 
-.PHONY: default
-default: dist/gotop.rpm dist/gotop.deb
+.PHONY: all
+all: dist/gotop.rpm dist/gotop.deb
 
 dist/gotop:
 	@GOOS=linux GOARCH=amd64 go build -o $@
