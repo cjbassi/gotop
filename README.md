@@ -18,7 +18,7 @@ Working and tested on Linux and OSX. Windows support is planned.
 
 Clone the repo and then run [scripts/download.sh](https://github.com/cjbassi/gotop/blob/master/scripts/download.sh) to download the correct binary for your system from the [releases tab](https://github.com/cjbassi/gotop/releases):
 
-```sh
+```bash
 git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
 /tmp/gotop/scripts/download.sh
 ```
@@ -38,7 +38,7 @@ brew install gotop
 
 ### Source
 
-```sh
+```bash
 go get github.com/cjbassi/gotop
 ```
 
@@ -81,7 +81,6 @@ To make a custom colorscheme, check out the [template](https://github.com/cjbass
 `-p`, `--percpu` Show each CPU in the CPU widget.  
 `-a`, `--averagecpu` Show average CPU in the CPU widget.
 
-
 ## Building deb/rpms
 
 To build dep/rpms using [nfpm](https://github.com/goreleaser/nfpm):
@@ -90,7 +89,7 @@ To build dep/rpms using [nfpm](https://github.com/goreleaser/nfpm):
 make all
 ```
 
-This will place the built packages into the `pkg` folder.
+This will place the built packages into the `dist` folder.
 
 ## Credits
 

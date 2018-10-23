@@ -12,4 +12,4 @@ homepage: "https://github.com/cjbassi/gotop"
 license: "GNU Affero General Public License v3.0"
 bindir: "/usr/local/bin"
 files:
-  /tmp/pkg/gotop: "/usr/local/bin/gotop"
+  /tmp/dist/gotop: "/usr/local/bin/gotop"
