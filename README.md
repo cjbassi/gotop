@@ -22,8 +22,15 @@ Clone the repo and then run [scripts/download.sh](https://github.com/cjbassi/got
 git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
 /tmp/gotop/scripts/download.sh
 ```
+**(Optional)**
 
 Then move `gotop` into your $PATH somewhere.
+
+Or add an alias like following into your `~/.bashrc` or `~/.zshrc` (if you use zsh):
+```bash
+mv gotop /opt/
+sudo echo "alias gotop=/opt/gotop" > ~/.bashrc
+```
 
 ### Arch Linux
 
