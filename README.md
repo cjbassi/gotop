@@ -29,7 +29,7 @@ Then move `gotop` into your $PATH somewhere.
 Or add an alias like following into your `~/.bashrc` or `~/.zshrc` (if you use zsh):
 ```bash
 sudo mv gotop /opt/
-sudo echo "alias gotop=/opt/gotop" > ~/.bashrc
+sudo echo "alias gotop=/opt/gotop" >> ~/.bashrc
 source ~/.bashrc
 ```
 
