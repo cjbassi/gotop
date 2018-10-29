@@ -30,6 +30,7 @@ Or add an alias like following into your `~/.bashrc` or `~/.zshrc` (if you use z
 ```bash
 sudo mv gotop /opt/
 sudo echo "alias gotop=/opt/gotop" > ~/.bashrc
+source ~/.bashrc
 ```
 
 ### Arch Linux
