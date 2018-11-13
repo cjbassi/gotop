@@ -53,7 +53,11 @@ func (self *Temp) update() {
 	sensors, _ := SensorsTemperatures()
 	for _, sensor := range sensors {
 		if sensor.Temperature != 0 {
-			self.Data[sensor.SensorKey] = int(sensor.Temperature)
+			if self.Fahrenheit {
+				self.Data[sensor.SensorKey] = int(sensor.Temperature*9/5 + 32)
+			} else {
+				self.Data[sensor.SensorKey] = int(sensor.Temperature)
+			}
 		}
 	}
 }

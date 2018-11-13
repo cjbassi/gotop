@@ -30,6 +30,7 @@ var (
 	averageLoad  = false
 	percpuLoad   = false
 	widgetCount  = 6
+	fahrenheit  = false
 
 	cpu  *w.CPU
 	mem  *w.Mem
@@ -52,6 +53,7 @@ Options:
   -v, --version         Show version.
   -p, --percpu          Show each CPU in the CPU widget.
   -a, --averagecpu      Show average CPU in the CPU widget.
+  -f, --fahrenheit      Show temperatures in fahrenheit.
 
 Colorschemes:
   default
@@ -80,6 +82,7 @@ Colorschemes:
 	} else {
 		interval = time.Second / time.Duration(rate)
 	}
+	fahrenheit, _ = args["--fahrenheit"].(bool)
 }
 
 func handleColorscheme(cs string) {
@@ -204,7 +207,7 @@ func initWidgets() {
 			wg.Done()
 		}()
 		go func() {
-			temp = w.NewTemp()
+			temp = w.NewTemp(fahrenheit)
 			wg.Done()
 		}()
 	}
