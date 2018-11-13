@@ -13,14 +13,15 @@ import (
 
 type Temp struct {
 	*ui.Block
-	interval  time.Duration
-	Data      map[string]int
-	Threshold int
-	TempLow   ui.Color
-	TempHigh  ui.Color
+	interval   time.Duration
+	Data       map[string]int
+	Threshold  int
+	TempLow    ui.Color
+	TempHigh   ui.Color
+	Fahrenheit bool
 }
 
-func NewTemp() *Temp {
+func NewTemp(fahrenheit bool) *Temp {
 	self := &Temp{
 		Block:     ui.NewBlock(),
 		interval:  time.Second * 5,
@@ -28,6 +29,11 @@ func NewTemp() *Temp {
 		Threshold: 80, // temp at which color should change
 	}
 	self.Label = "Temperatures"
+
+	if fahrenheit {
+		self.Fahrenheit = true
+		self.Threshold = int(self.Threshold*9/5 + 32)
+	}
 
 	self.update()
 
@@ -63,7 +69,11 @@ func (self *Temp) Buffer() *ui.Buffer {
 
 		s := ui.MaxString(key, (self.X - 4))
 		buf.SetString(1, y+1, s, self.Fg, self.Bg)
-		buf.SetString(self.X-2, y+1, fmt.Sprintf("%2dC", self.Data[key]), fg, self.Bg)
+		if self.Fahrenheit {
+			buf.SetString(self.X-3, y+1, fmt.Sprintf("%3dF", self.Data[key]), fg, self.Bg)
+		} else {
+			buf.SetString(self.X-3, y+1, fmt.Sprintf("%3dC", self.Data[key]), fg, self.Bg)
+		}
 	}
 
 	return buf

@@ -7,6 +7,10 @@ import (
 func (self *Temp) update() {
 	sensors, _ := psHost.SensorsTemperatures()
 	for _, sensor := range sensors {
-		self.Data[sensor.SensorKey] = int(sensor.Temperature)
+		if self.Fahrenheit {
+			self.Data[sensor.SensorKey] = int(sensor.Temperature*9/5 + 32)
+		} else {
+			self.Data[sensor.SensorKey] = int(sensor.Temperature)
+		}
 	}
 }

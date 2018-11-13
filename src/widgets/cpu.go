@@ -43,7 +43,7 @@ func NewCPU(interval time.Duration, zoom int, average bool, percpu bool) *CPU {
 
 	if self.PerCPU {
 		for i := 0; i < self.Count; i++ {
-			k := fmt.Sprintf("CPU%d", i)
+			k := fmt.Sprintf("CPU%02d", i)
 			self.Data[k] = []float64{0}
 		}
 	}
@@ -85,7 +85,7 @@ func (self *CPU) update() {
 					))
 			}
 			for i := 0; i < self.Count; i++ {
-				k := fmt.Sprintf("CPU%d", i)
+				k := fmt.Sprintf("CPU%02d", i)
 				self.Data[k] = append(self.Data[k], percents[i])
 				self.Labels[k] = fmt.Sprintf("%3.0f%%", percents[i])
 			}

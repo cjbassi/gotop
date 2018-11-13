@@ -13,7 +13,11 @@ func (self *Temp) update() {
 		if strings.Contains(sensor.SensorKey, "input") {
 			// removes '_input' from the end of the sensor name
 			label := sensor.SensorKey[:strings.Index(sensor.SensorKey, "_input")]
-			self.Data[label] = int(sensor.Temperature)
+			if self.Fahrenheit {
+				self.Data[label] = int(sensor.Temperature*9/5 + 32)
+			} else {
+				self.Data[label] = int(sensor.Temperature)
+			}
 		}
 	}
 }
