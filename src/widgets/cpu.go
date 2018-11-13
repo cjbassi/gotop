@@ -2,7 +2,6 @@ package widgets
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/cjbassi/gotop/src/utils"
@@ -12,33 +11,47 @@ import (
 
 type CPU struct {
 	*ui.LineGraph
-	Count    int // number of cores
+	Count    int  // number of cores
+	Average  bool // show average load
+	PerCPU   bool // show per-core load
 	interval time.Duration
 }
 
-func NewCPU(interval time.Duration, zoom int) *CPU {
+func NewCPU(interval time.Duration, zoom int, average bool, percpu bool) *CPU {
 	count, _ := psCPU.Counts(false)
 	self := &CPU{
 		LineGraph: ui.NewLineGraph(),
 		Count:     count,
 		interval:  interval,
+		Average:   average,
+		PerCPU:    percpu,
 	}
 	self.Label = "CPU Usage"
 	self.Zoom = zoom
-	if self.Count <= 8 {
-		for i := 0; i < self.Count; i++ {
-			key := "CPU" + strconv.Itoa(i)
-			self.Data[key] = []float64{0}
+
+	if !(self.Average || self.PerCPU) {
+		if self.Count <= 8 {
+			self.PerCPU = true
+		} else {
+			self.Average = true
 		}
-	} else {
-		self.Data["Average"] = []float64{0}
 	}
 
-	// update asynchronously because of 1 second blocking period
-	go self.update()
+	if self.Average {
+		self.Data["AVRG"] = []float64{0}
+	}
+
+	if self.PerCPU {
+		for i := 0; i < self.Count; i++ {
+			k := fmt.Sprintf("CPU%d", i)
+			self.Data[k] = []float64{0}
+		}
+	}
 
 	ticker := time.NewTicker(self.interval)
 	go func() {
+		// update asynchronously because of 1 second blocking period
+		go self.update()
 		for range ticker.C {
 			self.update()
 		}
@@ -49,27 +62,33 @@ func NewCPU(interval time.Duration, zoom int) *CPU {
 
 // calculates the CPU usage over a 1 second interval and blocks for the duration
 func (self *CPU) update() {
-	// show average cpu usage if more than 8 cores
-	if self.Count <= 8 {
-		percents, _ := psCPU.Percent(self.interval, true)
-		if len(percents) != self.Count {
-			count, _ := psCPU.Counts(false)
-			utils.Error("CPU percentages",
-				fmt.Sprint(
-					"self.Count: ", self.Count, "\n",
-					"gopsutil.Counts(): ", count, "\n",
-					"len(percents): ", len(percents), "\n",
-					"percents: ", percents, "\n",
-					"self.interval: ", self.interval,
-				))
-		}
-		for i := 0; i < self.Count; i++ {
-			key := "CPU" + strconv.Itoa(i)
-			percent := percents[i]
-			self.Data[key] = append(self.Data[key], percent)
-		}
-	} else {
-		percent, _ := psCPU.Percent(self.interval, false)
-		self.Data["Average"] = append(self.Data["Average"], percent[0])
+	if self.Average {
+		go func() {
+			percent, _ := psCPU.Percent(self.interval, false)
+			self.Data["AVRG"] = append(self.Data["AVRG"], percent[0])
+			self.Labels["AVRG"] = fmt.Sprintf("%3.0f%%", percent[0])
+		}()
+	}
+
+	if self.PerCPU {
+		go func() {
+			percents, _ := psCPU.Percent(self.interval, true)
+			if len(percents) != self.Count {
+				count, _ := psCPU.Counts(false)
+				utils.Error("CPU percentages",
+					fmt.Sprint(
+						"self.Count: ", self.Count, "\n",
+						"gopsutil.Counts(): ", count, "\n",
+						"len(percents): ", len(percents), "\n",
+						"percents: ", percents, "\n",
+						"self.interval: ", self.interval,
+					))
+			}
+			for i := 0; i < self.Count; i++ {
+				k := fmt.Sprintf("CPU%d", i)
+				self.Data[k] = append(self.Data[k], percents[i])
+				self.Labels[k] = fmt.Sprintf("%3.0f%%", percents[i])
+			}
+		}()
 	}
 }

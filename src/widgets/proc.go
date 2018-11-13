@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/cjbassi/gotop/src/utils"
 	ui "github.com/cjbassi/termui"
 	psCPU "github.com/shirou/gopsutil/cpu"
 )
@@ -27,14 +28,13 @@ type Process struct {
 
 type Proc struct {
 	*ui.Table
-	cpuCount         float64
-	interval         time.Duration
-	sortMethod       string
-	groupedProcs     []Process
-	ungroupedProcs   []Process
-	group            bool
-	KeyPressed       chan bool
-	DefaultColWidths []int
+	cpuCount       float64
+	interval       time.Duration
+	sortMethod     string
+	groupedProcs   []Process
+	ungroupedProcs []Process
+	group          bool
+	KeyPressed     chan bool
 }
 
 func NewProc(keyPressed chan bool) *Proc {
@@ -49,8 +49,9 @@ func NewProc(keyPressed chan bool) *Proc {
 	}
 	self.Label = "Processes"
 	self.ColResizer = self.ColResize
-	self.DefaultColWidths = []int{5, 10, 4, 4}
-	self.ColWidths = make([]int, 4)
+	self.Cursor = true
+	self.Gap = 3
+	self.PadLeft = 2
 
 	self.UniqueCol = 0
 	if self.group {
@@ -106,30 +107,8 @@ func (self *Proc) Sort() {
 
 // ColResize overrides the default ColResize in the termui table.
 func (self *Proc) ColResize() {
-	copy(self.ColWidths, self.DefaultColWidths)
-
-	self.Gap = 3
-
-	self.CellXPos = []int{
-		self.Gap,
-		self.Gap + self.ColWidths[0] + self.Gap,
-		(self.X + 2) - self.Gap - self.ColWidths[3] - self.Gap - self.ColWidths[2],
-		(self.X + 2) - self.Gap - self.ColWidths[3],
-	}
-
-	rowWidth := self.Gap +
-		self.ColWidths[0] + self.Gap +
-		self.ColWidths[1] + self.Gap +
-		self.ColWidths[2] + self.Gap +
-		self.ColWidths[3] + self.Gap
-
-	// only renders a column if it fits
-	if self.X < (rowWidth - self.Gap - self.ColWidths[3]) {
-		self.ColWidths[2] = 0
-		self.ColWidths[3] = 0
-	} else if self.X < rowWidth {
-		self.CellXPos[2] = self.CellXPos[3]
-		self.ColWidths[3] = 0
+	self.ColWidths = []int{
+		5, utils.Max(self.X-26, 10), 4, 4,
 	}
 }
 
@@ -159,15 +138,19 @@ func (self *Proc) keyBinds() {
 		self.KeyPressed <- true
 	})
 
-	viKeys := []string{"j", "k", "gg", "G", "<C-d>", "<C-u>", "<C-f>", "<C-b>"}
+	viKeys := []string{"j", "k", "gg", "G", "<C-d>", "<C-u>", "<C-f>", "<C-b>", "<home>", "<end>"}
 	ui.On(viKeys, func(e ui.Event) {
 		switch e.Key {
 		case "j":
 			self.Down()
 		case "k":
 			self.Up()
+		case "<home>":
+			fallthrough
 		case "gg":
 			self.Top()
+		case "<end>":
+			fallthrough
 		case "G":
 			self.Bottom()
 		case "<C-d>":
@@ -270,6 +253,7 @@ func (self *Proc) Kill() {
 	}
 	cmd := exec.Command(command, self.Rows[self.SelectedRow][self.UniqueCol])
 	cmd.Start()
+	cmd.Wait()
 }
 
 /////////////////////////////////////////////////////////////////////////////////

@@ -1,21 +1,24 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/signal"
+	"sort"
 	"strconv"
 	"sync"
 	"syscall"
 	"time"
 
-	"github.com/cjbassi/gotop/src/colorschemes"
+	"github.com/cjbassi/gotop/colorschemes"
 	w "github.com/cjbassi/gotop/src/widgets"
 	ui "github.com/cjbassi/termui"
 	"github.com/docopt/docopt-go"
 )
 
-var version = "updated by goreleaser"
+var version = "1.5.0"
 
 var (
 	termResized = make(chan bool, 1)
@@ -37,6 +40,9 @@ var (
 	zoom         = 7
 	zoomInterval = 3
 
+	averageLoad = false
+	percpuLoad  = false
+
 	cpu  *w.CPU
 	mem  *w.Mem
 	proc *w.Proc
@@ -57,6 +63,8 @@ Options:
   -m, --minimal         Only show CPU, Mem and Process widgets.
   -r, --rate=RATE       Number of times per second to update CPU and Mem widgets [default: 1].
   -v, --version         Show version.
+  -p, --percpu          Show each CPU in the CPU widget.
+  -a, --averagecpu      Show average CPU in the CPU widget.
 
 Colorschemes:
   default
@@ -83,6 +91,9 @@ Colorschemes:
 	} else {
 		interval = time.Second / time.Duration(rate)
 	}
+
+	averageLoad, _ = args["--averagecpu"].(bool)
+	percpuLoad, _ = args["--percpu"].(bool)
 }
 
 func handleColorscheme(cs string) {
@@ -96,9 +107,30 @@ func handleColorscheme(cs string) {
 	case "default-dark":
 		colorscheme = colorschemes.DefaultDark
 	default:
+		colorscheme = getCustomColorscheme(cs)
+	}
+}
+
+// getCustomColorscheme	tries to read a custom json colorscheme from
+// {$XDG_CONFIG_HOME,~/.config}/gotop/{name}.json
+func getCustomColorscheme(name string) colorschemes.Colorscheme {
+	xdg := os.Getenv("XDG_CONFIG_HOME")
+	if xdg == "" {
+		xdg = os.ExpandEnv("$HOME") + "/.config"
+	}
+	file := xdg + "/gotop/" + name + ".json"
+	dat, err := ioutil.ReadFile(file)
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: colorscheme not recognized\n")
 		os.Exit(1)
 	}
+	var colorscheme colorschemes.Colorscheme
+	err = json.Unmarshal(dat, &colorscheme)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: could not parse colorscheme\n")
+		os.Exit(1)
+	}
+	return colorscheme
 }
 
 func setupGrid() {
@@ -173,15 +205,21 @@ func widgetColors() {
 	mem.LineColor["Main"] = ui.Color(colorscheme.MainMem)
 	mem.LineColor["Swap"] = ui.Color(colorscheme.SwapMem)
 
-	LineColor := make(map[string]ui.Color)
-	if cpu.Count <= 8 {
-		for i := 0; i < len(cpu.Data); i++ {
-			LineColor[fmt.Sprintf("CPU%d", i)] = ui.Color(colorscheme.CPULines[i])
-		}
-	} else {
-		LineColor["Average"] = ui.Color(colorscheme.CPULines[0])
+	var keys []string
+	for key := range cpu.Data {
+		keys = append(keys, key)
 	}
-	cpu.LineColor = LineColor
+	sort.Strings(keys)
+	i := 0
+	for _, v := range keys {
+		if i >= len(colorscheme.CPULines) {
+			// assuming colorscheme for CPU lines is not empty
+			i = 0
+		}
+		c := colorscheme.CPULines[i]
+		cpu.LineColor[v] = ui.Color(c)
+		i++
+	}
 
 	if !minimal {
 		temp.TempLow = ui.Color(colorscheme.TempLow)
@@ -194,7 +232,7 @@ func initWidgets() {
 	wg.Add(widgetCount)
 
 	go func() {
-		cpu = w.NewCPU(interval, zoom)
+		cpu = w.NewCPU(interval, zoom, averageLoad, percpuLoad)
 		wg.Done()
 	}()
 	go func() {

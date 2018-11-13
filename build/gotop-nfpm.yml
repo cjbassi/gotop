@@ -1,0 +1,15 @@
+name: "gotop"
+arch: "amd64"
+platform: "linux"
+version: "v${VERSION}"
+section: "default"
+priority: "extra"
+maintainer: "Caleb Bassi <calebjbassi@gmail.com>"
+description: |
+  A terminal based graphical activity monitor inspired by gtop and vtop
+vendor: "Caleb Bassi"
+homepage: "https://github.com/cjbassi/gotop"
+license: "GNU Affero General Public License v3.0"
+bindir: "/usr/local/bin"
+files:
+  /tmp/dist/gotop: "/usr/local/bin/gotop"

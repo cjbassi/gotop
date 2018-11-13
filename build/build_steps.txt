@@ -1,5 +1,18 @@
+Dependencies:
+- goreleaser: `go get github.com/goreleaser/goreleaser`
+- xgo: `docker pull karalabe/xgo-latest; go get github.com/karalabe/xgo`
+- dockerd
+
 make sure gotop builds and runs
+update version number in main.go
+commit changes
 tag commit with version number
+push changes
 export GitHub token in shell
+make sure dockerd is running
 run `goreleaser --rm-dist -f build/.goreleaser.yml`
-update AUR package
+update GitHub release with Darwin builds
+update homebrew-gotop
+    version numbers (there's 3)
+    sha256 (run `sha256sum {archived file}`)
+update AUR package version number

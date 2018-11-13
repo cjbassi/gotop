@@ -213,7 +213,7 @@ bool is_optical_disk_drive_full(void);
 
 /**
 Get the name of a fan.
-    
+
 :param: fanNum The number of the fan to check
 :param: name The name of the fan. Return will be empty on error.
 :returns: True if successful, false otherwise.

@@ -379,8 +379,8 @@ static kern_return_t read_smc(char *key, smc_return_t *result_smc)
 
     // Store data for return
     result_smc->dataSize = outputStruct.keyInfo.dataSize;
-    result_smc->dataType = outputStruct.keyInfo.dataType;    
-    
+    result_smc->dataType = outputStruct.keyInfo.dataType;
+
 
     // Second call to AppleSMC - now we can get the data
     inputStruct.keyInfo.dataSize = outputStruct.keyInfo.dataSize;
@@ -451,10 +451,10 @@ static kern_return_t get_machine_model(io_name_t model)
 {
     io_service_t  service;
     kern_return_t result;
-    
+
     service = IOServiceGetMatchingService(kIOMasterPortDefault,
                                           IOServiceMatching(IOSERVICE_MODEL));
-    
+
     if (service == 0) {
         printf("ERROR: %s NOT FOUND\n", IOSERVICE_MODEL);
         return kIOReturnError;
@@ -465,7 +465,7 @@ static kern_return_t get_machine_model(io_name_t model)
     IOObjectRelease(service);
 
     return result;
-} 
+}
 
 
 //------------------------------------------------------------------------------
@@ -600,7 +600,7 @@ bool get_fan_name(unsigned int fan_num, fan_name_t name)
     char key[5];
     kern_return_t result;
     smc_return_t  result_smc;
-    
+
     sprintf(key, "F%dID", fan_num);
     result = read_smc(key, &result_smc);
 
@@ -610,16 +610,16 @@ bool get_fan_name(unsigned int fan_num, fan_name_t name)
       return false;
     }
 
-  
+
     /*
     We know the data size is 16 bytes and the type is "{fds", a custom
     struct defined by the AppleSMC.kext. See TMP enum sources for the
     struct.
-        
+
     The last 12 bytes contain the name of the fan, an array of chars, hence
     the loop range.
     */
-    int index = 0; 
+    int index = 0;
     for (int i = 4; i < 16; i++) {
         // Check if at the end (name may not be full 12 bytes)
         // Could check for 0 (null), but instead we check for 32 (space). This
@@ -686,7 +686,7 @@ bool set_fan_min_rpm(unsigned int fan_num, unsigned int rpm, bool auth)
 
     // TODO: Don't use magic number
     result_smc.dataSize = 2;
-    result_smc.dataType = to_uint32_t(DATA_TYPE_FPE2); 
+    result_smc.dataType = to_uint32_t(DATA_TYPE_FPE2);
     to_fpe2(rpm, result_smc.data);
 
     sprintf(key, "F%dMn", fan_num);

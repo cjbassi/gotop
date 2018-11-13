@@ -10,92 +10,99 @@ Another terminal based graphical activity monitor, inspired by [gtop](https://gi
 
 </div>
 
-
 ## Installation
 
-Only working and tested on Linux. OSX is no longer supported due to issues with gopsutil, but that is currently being worked on. Windows support is also in the works.
-
+Working and tested on Linux and OSX. Windows support is planned.
 
 ### Using Git
 
 Clone the repo and then run [scripts/download.sh](https://github.com/cjbassi/gotop/blob/master/scripts/download.sh) to download the correct binary for your system from the [releases tab](https://github.com/cjbassi/gotop/releases):
 
-```sh
+```bash
 git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
 /tmp/gotop/scripts/download.sh
 ```
 
 Then move `gotop` into your $PATH somewhere.
 
-
 ### Arch Linux
 
 Install the `gotop-bin` package from the AUR.
 
+### Homebrew
+
+```
+brew tap cjbassi/gotop
+brew install gotop
+```
 
 ### Source
 
-```sh
+```bash
 go get github.com/cjbassi/gotop
 ```
 
-
 ## Usage
-
 
 ### Keybinds
 
-* Quit: `q` or `<C-c>`
-* Process Navigation:
-    * `<up>`/`<down>` and `j`/`k`: up and down
-    * `<C-d>` and `<C-u>`: up and down half a page
-    * `<C-f>` and `<C-b>`: up and down a full page
-    * `gg` and `G`: jump to top and bottom
-* Process Sorting:
-    * `c`: CPU
-    * `m`: Mem
-    * `p`: PID
-* `<tab>`: toggle process grouping
-* `dd`: kill the selected process or process group
-* `h` and `l`: zoom in and out of CPU and Mem graphs
-* `?`: toggles keybind help menu
-
+- Quit: `q` or `<C-c>`
+- Process Navigation:
+  - `<up>`/`<down>` and `j`/`k`: up and down
+  - `<C-d>` and `<C-u>`: up and down half a page
+  - `<C-f>` and `<C-b>`: up and down a full page
+  - `gg` and `G`: jump to top and bottom
+- Process Sorting:
+  - `c`: CPU
+  - `m`: Mem
+  - `p`: PID
+- `<tab>`: toggle process grouping
+- `dd`: kill the selected process or process group
+- `h` and `l`: zoom in and out of CPU and Mem graphs
+- `?`: toggles keybind help menu
 
 ### Mouse
 
-* click to select process
-* mouse wheel to scroll through processes
-
+- click to select process
+- mouse wheel to scroll through processes
 
 ### Colorschemes
 
-A different Colorscheme can be set with the `-c` flag followed its name.
-You can find different ones in [src/colorschemes](https://github.com/cjbassi/gotop/tree/master/src/colorschemes).
-Feel free to add a new one.
-You can use 256 colors, bold, underline, and reverse.
-You can see the template and get more info [here](https://github.com/cjbassi/gotop/blob/master/src/colorschemes/template.go)
-and see the default colorscheme as an example [here](https://github.com/cjbassi/gotop/blob/master/src/colorschemes/default.go).
+gotop ships with a few colorschemes which can be set with the `-c` flag followed by the name of one. You can find all the colorschemes in [colorschemes](https://github.com/cjbassi/gotop/tree/master/colorschemes).
 
+To make a custom colorscheme, check out the [template](https://github.com/cjbassi/gotop/blob/master/colorschemes/template.go) for instructions and then use [default.json](https://github.com/cjbassi/gotop/blob/master/colorschemes/default.json) as a starter. Then you can put the file at `~/.config/gotop/{name}.json` and load it with `gotop -c {name}`. Colorschemes PR's are welcome!
 
 ### CLI Options
 
-`-m`, `--minimal`         Only show CPU, Mem and Process widgets.  
-`-r`, `--rate=RATE`       Number of times per second to update CPU and Mem widgets [default: 1].
+`-c`, `--color=NAME` Set a colorscheme.  
+`-m`, `--minimal` Only show CPU, Mem and Process widgets.  
+`-r`, `--rate=RATE` Number of times per second to update CPU and Mem widgets [default: 1].  
+`-v`, `--version` Show version.  
+`-p`, `--percpu` Show each CPU in the CPU widget.  
+`-a`, `--averagecpu` Show average CPU in the CPU widget.
 
+## Building deb/rpms
+
+To build dep/rpms using [nfpm](https://github.com/goreleaser/nfpm):
+
+```bash
+make all
+```
+
+This will place the built packages into the `dist` folder.
 
 ## Credits
 
-* [Logo](https://github.com/cjbassi/gotop/blob/master/assets/logo.png) by [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771)
-
+- [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771) for the [logo](https://github.com/cjbassi/gotop/blob/master/assets/logo.png)
+- [f1337](https://github.com/f1337) for helping port gotop to OSX
 
 ## Built With
 
-* [My termui fork](https://github.com/cjbassi/termui)
-    * [drawille-go](https://github.com/exrook/drawille-go)
-    * [termbox](https://github.com/nsf/termbox-go)
-* [gopsutil](https://github.com/shirou/gopsutil)
-* [goreleaser](https://github.com/goreleaser/goreleaser)
-
+- [cjbassi/termui](https://github.com/cjbassi/termui)
+  - [drawille-go](https://github.com/exrook/drawille-go)
+  - [termbox](https://github.com/nsf/termbox-go)
+- [gopsutil](https://github.com/shirou/gopsutil)
+- [goreleaser](https://github.com/goreleaser/goreleaser)
 
 ## Stargazers over time
 
