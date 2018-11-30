@@ -52,6 +52,8 @@ func SensorsTemperatures() ([]TemperatureStat, error) {
 func (self *Temp) update() {
 	sensors, _ := SensorsTemperatures()
 	for _, sensor := range sensors {
-		self.Data[sensor.SensorKey] = int(sensor.Temperature)
+		if sensor.Temperature != 0 {
+			self.Data[sensor.SensorKey] = int(sensor.Temperature)
+		}
 	}
 }
