@@ -1,12 +1,12 @@
 <div align="center">
 
-<img src="https://github.com/cjbassi/gotop/blob/master/assets/logo.png" width="20%" />
+<img src="./assets/logo.png" width="20%" />
 <br><br>
 
 Another terminal based graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!
 
-<img src="https://github.com/cjbassi/gotop/blob/master/assets/demo.gif" />
-<img src="https://github.com/cjbassi/gotop/blob/master/assets/minimal.png" width="96%" />
+<img src="./assets/demo.gif" />
+<img src="./assets/minimal.png" width="96%" />
 
 </div>
 
@@ -16,7 +16,7 @@ Working and tested on Linux and OSX. Windows support is planned.
 
 ### Using Git
 
-Clone the repo and then run [scripts/download.sh](https://github.com/cjbassi/gotop/blob/master/scripts/download.sh) to download the correct binary for your system from the [releases tab](https://github.com/cjbassi/gotop/releases):
+Clone the repo and then run [scripts/download.sh](./scripts/download.sh) to download the correct binary for your system from the [releases tab](https://github.com/cjbassi/gotop/releases):
 
 ```bash
 git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
@@ -37,6 +37,8 @@ brew install gotop
 ```
 
 ### Source
+
+**Note**: This method requires Go 1.11+.
 
 ```bash
 go get github.com/cjbassi/gotop
@@ -75,9 +77,9 @@ go get github.com/cjbassi/gotop
 
 ### Colorschemes
 
-gotop ships with a few colorschemes which can be set with the `-c` flag followed by the name of one. You can find all the colorschemes in [colorschemes](https://github.com/cjbassi/gotop/tree/master/colorschemes).
+gotop ships with a few colorschemes which can be set with the `-c` flag followed by the name of one. You can find all the colorschemes in [colorschemes](./colorschemes).
 
-To make a custom colorscheme, check out the [template](https://github.com/cjbassi/gotop/blob/master/colorschemes/template.go) for instructions and then use [default.json](https://github.com/cjbassi/gotop/blob/master/colorschemes/default.json) as a starter. Then you can put the file at `~/.config/gotop/{name}.json` and load it with `gotop -c {name}`. Colorschemes PR's are welcome!
+To make a custom colorscheme, check out the [template](./colorschemes/template.go) for instructions and then use [default.json](./colorschemes/default.json) as a starter. Then you can put the file at `~/.config/gotop/{name}.json` and load it with `gotop -c {name}`. Colorschemes PR's are welcome!
 
 ### CLI Options
 
@@ -100,7 +102,7 @@ This will place the built packages into the `dist` folder.
 
 ## Credits
 
-- [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771) for the [logo](https://github.com/cjbassi/gotop/blob/master/assets/logo.png)
+- [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771) for the [logo](./assets/logo.png)
 - [f1337](https://github.com/f1337) for helping port gotop to OSX
 
 ## Built With
