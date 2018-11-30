@@ -4,6 +4,10 @@ github.com/cjbassi/drawille-go v0.0.0-20180329221028-ad535d0f92cd h1:nSJpATLVvFa
 github.com/cjbassi/drawille-go v0.0.0-20180329221028-ad535d0f92cd/go.mod h1:vjcQJUZJYD3MeVGhtZXSMnCHfUNZxsyYzJt90eCYxK4=
 github.com/cjbassi/termui v0.0.0-20180823181054-5edfcb3a441f h1:t8d9FIPBeDHClPJBkB8yJyIBcMIxzdMAY2xB1vWHi48=
 github.com/cjbassi/termui v0.0.0-20180823181054-5edfcb3a441f/go.mod h1:rqXckrwz+i0fH/zNwU6AdBNULHwmZsgehnSlhKP5i2Q=
+github.com/cjbassi/termui v0.0.0-20181129202454-e08bceac6d82 h1:Nohf7C2tEJfEtfJ2mAF244MPJUj6JT9Quzf4ZrkmEfE=
+github.com/cjbassi/termui v0.0.0-20181129202454-e08bceac6d82/go.mod h1:rqXckrwz+i0fH/zNwU6AdBNULHwmZsgehnSlhKP5i2Q=
+github.com/cjbassi/termui v0.0.0-20181129231847-3a3db079d9dd h1:12/9RCEyFB4mnNlafhySzhfPgFIfTxbjHrkhEX0SgDQ=
+github.com/cjbassi/termui v0.0.0-20181129231847-3a3db079d9dd/go.mod h1:rqXckrwz+i0fH/zNwU6AdBNULHwmZsgehnSlhKP5i2Q=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815 h1:bWDMxwH3px2JBh6AyO7hdCn/PkvCZXii8TGj7sbtEbQ=

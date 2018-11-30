@@ -23,7 +23,7 @@ git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
 /tmp/gotop/scripts/download.sh
 ```
 
-Then move `gotop` into your $PATH somewhere.
+Then move `gotop` into your \$PATH somewhere.
 
 ### Arch Linux
 
@@ -47,18 +47,25 @@ go get github.com/cjbassi/gotop
 ### Keybinds
 
 - Quit: `q` or `<C-c>`
-- Process Navigation:
-  - `<up>`/`<down>` and `j`/`k`: up and down
-  - `<C-d>` and `<C-u>`: up and down half a page
-  - `<C-f>` and `<C-b>`: up and down a full page
-  - `gg` and `G`: jump to top and bottom
-- Process Sorting:
+- Process navigation
+  - `k` and `<Up>`: up
+  - `j` and `<Down`: down
+  - `<C-u>`: half page up
+  - `<C-d>`: half page down
+  - `<C-b>`: full page up
+  - `<C-f>`: full page down
+  - `gg` and `<Home>`: jump to top
+  - `G` and `<End>`: jump to bottom
+- Process actions:
+  - `<Tab>`: toggle process grouping
+  - `dd`: kill selected process or group of processes
+- Process sorting
   - `c`: CPU
   - `m`: Mem
   - `p`: PID
-- `<tab>`: toggle process grouping
-- `dd`: kill the selected process or process group
-- `h` and `l`: zoom in and out of CPU and Mem graphs
+- CPU and Mem graph scaling:
+  - `h`: scale in
+  - `l`: scale out
 - `?`: toggles keybind help menu
 
 ### Mouse

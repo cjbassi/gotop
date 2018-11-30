@@ -34,10 +34,9 @@ type Proc struct {
 	groupedProcs   []Process
 	ungroupedProcs []Process
 	group          bool
-	KeyPressed     chan bool
 }
 
-func NewProc(keyPressed chan bool) *Proc {
+func NewProc() *Proc {
 	cpuCount, _ := psCPU.Counts(false)
 	self := &Proc{
 		Table:      ui.NewTable(),
@@ -45,7 +44,6 @@ func NewProc(keyPressed chan bool) *Proc {
 		cpuCount:   float64(cpuCount),
 		sortMethod: "c",
 		group:      true,
-		KeyPressed: keyPressed,
 	}
 	self.Label = "Processes"
 	self.ColResizer = self.ColResize
@@ -58,12 +56,10 @@ func NewProc(keyPressed chan bool) *Proc {
 		self.UniqueCol = 1
 	}
 
-	self.keyBinds()
-
 	self.update()
 
-	ticker := time.NewTicker(self.interval)
 	go func() {
+		ticker := time.NewTicker(self.interval)
 		for range ticker.C {
 			self.update()
 		}
@@ -112,83 +108,23 @@ func (self *Proc) ColResize() {
 	}
 }
 
-func (self *Proc) keyBinds() {
-	ui.On("<MouseLeft>", func(e ui.Event) {
-		self.Click(e.MouseX, e.MouseY)
-		self.KeyPressed <- true
-	})
-
-	ui.On("<MouseWheelUp>", "<MouseWheelDown>", func(e ui.Event) {
-		switch e.Key {
-		case "<MouseWheelDown>":
-			self.Down()
-		case "<MouseWheelUp>":
-			self.Up()
-		}
-		self.KeyPressed <- true
-	})
-
-	ui.On("<up>", "<down>", func(e ui.Event) {
-		switch e.Key {
-		case "<up>":
-			self.Up()
-		case "<down>":
-			self.Down()
-		}
-		self.KeyPressed <- true
-	})
-
-	viKeys := []string{"j", "k", "gg", "G", "<C-d>", "<C-u>", "<C-f>", "<C-b>", "<home>", "<end>"}
-	ui.On(viKeys, func(e ui.Event) {
-		switch e.Key {
-		case "j":
-			self.Down()
-		case "k":
-			self.Up()
-		case "<home>":
-			fallthrough
-		case "gg":
-			self.Top()
-		case "<end>":
-			fallthrough
-		case "G":
-			self.Bottom()
-		case "<C-d>":
-			self.HalfPageDown()
-		case "<C-u>":
-			self.HalfPageUp()
-		case "<C-f>":
-			self.PageDown()
-		case "<C-b>":
-			self.PageUp()
-		}
-		self.KeyPressed <- true
-	})
-
-	ui.On("dd", func(e ui.Event) {
-		self.Kill()
-	})
-
-	ui.On("<tab>", func(e ui.Event) {
-		self.group = !self.group
-		if self.group {
-			self.UniqueCol = 1
-		} else {
-			self.UniqueCol = 0
-		}
-		self.Sort()
+func (self *Proc) ChangeSort(e ui.Event) {
+	if self.sortMethod != e.ID {
+		self.sortMethod = e.ID
 		self.Top()
-		self.KeyPressed <- true
-	})
+		self.Sort()
+	}
+}
 
-	ui.On("m", "c", "p", func(e ui.Event) {
-		if self.sortMethod != e.Key {
-			self.sortMethod = e.Key
-			self.Top()
-			self.Sort()
-			self.KeyPressed <- true
-		}
-	})
+func (self *Proc) Tab() {
+	self.group = !self.group
+	if self.group {
+		self.UniqueCol = 1
+	} else {
+		self.UniqueCol = 0
+	}
+	self.Sort()
+	self.Top()
 }
 
 // Group groupes a []Process based on command name.

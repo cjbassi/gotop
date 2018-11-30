@@ -9,21 +9,28 @@ import (
 const KEYBINDS = `
 Quit: q or <C-c>
 
-Process Navigation
-  - <up>/<down> and j/k: up and down
-  - <C-d> and <C-u>: up and down half a page
-  - <C-f> and <C-b>: up and down a full page
-  - gg and G: jump to top and bottom
+Process navigation
+  - k and <Up>: up
+  - j and <Down>: down
+  - <C-u>: half page up
+  - <C-d>: half page down
+  - <C-b>: full page up
+  - <C-f>: full page down
+  - gg and <Home>: jump to top
+  - G and <End>: jump to bottom
 
-Process Sorting
+Process actions:
+  - <Tab>: toggle process grouping
+  - dd: kill selected process or group of processes
+
+Process sorting
   - c: CPU
   - m: Mem
   - p: PID
 
-<tab>: toggle process grouping
-dd: kill the selected process or process group
-
-h and l: zoom in and out of CPU and Mem graphs
+CPU and Mem graph scaling:
+  - h: scale in
+  - l: scale out
 `
 
 type HelpMenu struct {
@@ -32,8 +39,8 @@ type HelpMenu struct {
 
 func NewHelpMenu() *HelpMenu {
 	block := ui.NewBlock()
-	block.X = 48 // width - 1
-	block.Y = 17 // height - 1
+	block.X = 51 // width - 1
+	block.Y = 24 // height - 1
 	return &HelpMenu{block}
 }
 

@@ -33,8 +33,8 @@ func NewNet() *Net {
 
 	self.update()
 
-	ticker := time.NewTicker(self.interval)
 	go func() {
+		ticker := time.NewTicker(self.interval)
 		for range ticker.C {
 			self.update()
 		}
@@ -48,8 +48,8 @@ func (self *Net) update() {
 	interfaces, _ := psNet.IOCounters(false)
 	curRecvTotal := interfaces[0].BytesRecv
 	curSentTotal := interfaces[0].BytesSent
-	var recvRecent uint64 = 0
-	var sentRecent uint64 = 0
+	var recvRecent uint64
+	var sentRecent uint64
 
 	if self.prevRecvTotal != 0 { // if this isn't the first update
 		recvRecent = curRecvTotal - self.prevRecvTotal

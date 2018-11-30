@@ -21,27 +21,15 @@ import (
 var version = "1.5.1"
 
 var (
-	termResized = make(chan bool, 1)
-
-	helpToggled = make(chan bool, 1)
-	helpVisible = false
-
-	wg sync.WaitGroup
-	// used to render the proc widget whenever a key is pressed for it
-	keyPressed = make(chan bool, 1)
-	// used to render cpu and mem when zoom has changed
-	zoomed = make(chan bool, 1)
-
-	colorscheme = colorschemes.Default
-
+	colorscheme  = colorschemes.Default
 	minimal      = false
-	widgetCount  = 6
 	interval     = time.Second
 	zoom         = 7
 	zoomInterval = 3
-
-	averageLoad = false
-	percpuLoad  = false
+	helpVisible  = false
+	averageLoad  = false
+	percpuLoad   = false
+	widgetCount  = 6
 
 	cpu  *w.CPU
 	mem  *w.Mem
@@ -49,7 +37,6 @@ var (
 	net  *w.Net
 	disk *w.Disk
 	temp *w.Temp
-
 	help *w.HelpMenu
 )
 
@@ -78,6 +65,8 @@ Colorschemes:
 	if val, _ := args["--color"]; val != nil {
 		handleColorscheme(val.(string))
 	}
+	averageLoad, _ = args["--averagecpu"].(bool)
+	percpuLoad, _ = args["--percpu"].(bool)
 
 	minimal, _ = args["--minimal"].(bool)
 	if minimal {
@@ -91,9 +80,6 @@ Colorschemes:
 	} else {
 		interval = time.Second / time.Duration(rate)
 	}
-
-	averageLoad, _ = args["--averagecpu"].(bool)
-	percpuLoad, _ = args["--percpu"].(bool)
 }
 
 func handleColorscheme(cs string) {
@@ -153,41 +139,6 @@ func setupGrid() {
 	}
 }
 
-func keyBinds() {
-	// quits
-	ui.On("q", "<C-c>", func(e ui.Event) {
-		ui.StopLoop()
-	})
-
-	// toggles help menu
-	ui.On("?", func(e ui.Event) {
-		helpToggled <- true
-		helpVisible = !helpVisible
-	})
-	// hides help menu
-	ui.On("<escape>", func(e ui.Event) {
-		if helpVisible {
-			helpToggled <- true
-			helpVisible = false
-		}
-	})
-
-	ui.On("h", func(e ui.Event) {
-		zoom += zoomInterval
-		cpu.Zoom = zoom
-		mem.Zoom = zoom
-		zoomed <- true
-	})
-	ui.On("l", func(e ui.Event) {
-		if zoom > zoomInterval {
-			zoom -= zoomInterval
-			cpu.Zoom = zoom
-			mem.Zoom = zoom
-			zoomed <- true
-		}
-	})
-}
-
 func termuiColors() {
 	ui.Theme.Fg = ui.Color(colorscheme.Fg)
 	ui.Theme.Bg = ui.Color(colorscheme.Bg)
@@ -227,8 +178,8 @@ func widgetColors() {
 	}
 }
 
-// load widgets asynchronously but wait till they are all finished
 func initWidgets() {
+	var wg sync.WaitGroup
 	wg.Add(widgetCount)
 
 	go func() {
@@ -240,7 +191,7 @@ func initWidgets() {
 		wg.Done()
 	}()
 	go func() {
-		proc = w.NewProc(keyPressed)
+		proc = w.NewProc()
 		wg.Done()
 	}()
 	if !minimal {
@@ -261,18 +212,122 @@ func initWidgets() {
 	wg.Wait()
 }
 
+func eventLoop() {
+	drawTicker := time.NewTicker(interval).C
+
+	// handles kill signal sent to gotop
+	sigTerm := make(chan os.Signal, 2)
+	signal.Notify(sigTerm, os.Interrupt, syscall.SIGTERM)
+
+	uiEvents := ui.PollEvents()
+
+	previousKey := ""
+
+	for {
+		select {
+		case <-sigTerm:
+			return
+		case <-drawTicker:
+			if !helpVisible {
+				ui.Render(ui.Body)
+			}
+		case e := <-uiEvents:
+			switch e.ID {
+			case "q", "<C-c>":
+				return
+			case "?":
+				helpVisible = !helpVisible
+				if helpVisible {
+					ui.Clear()
+					ui.Render(help)
+				} else {
+					ui.Render(ui.Body)
+				}
+			case "h":
+				if !helpVisible {
+					zoom += zoomInterval
+					cpu.Zoom = zoom
+					mem.Zoom = zoom
+					ui.Render(cpu, mem)
+				}
+			case "l":
+				if !helpVisible {
+					if zoom > zoomInterval {
+						zoom -= zoomInterval
+						cpu.Zoom = zoom
+						mem.Zoom = zoom
+						ui.Render(cpu, mem)
+					}
+				}
+			case "<Escape>":
+				if helpVisible {
+					helpVisible = false
+					ui.Render(ui.Body)
+				}
+			case "<Resize>":
+				payload := e.Payload.(ui.Resize)
+				ui.Body.Width, ui.Body.Height = payload.Width, payload.Height
+				ui.Body.Resize()
+				ui.Clear()
+				if helpVisible {
+					ui.Render(help)
+				} else {
+					ui.Render(ui.Body)
+				}
+
+			case "<MouseLeft>":
+				payload := e.Payload.(ui.Mouse)
+				proc.Click(payload.X, payload.Y)
+				ui.Render(proc)
+			case "<MouseWheelUp>", "<Up>", "k":
+				proc.Up()
+				ui.Render(proc)
+			case "<MouseWheelDown>", "<Down>", "j":
+				proc.Down()
+				ui.Render(proc)
+			case "g", "<Home>":
+				if previousKey == "g" {
+					proc.Top()
+					ui.Render(proc)
+					previousKey = ""
+				}
+			case "G", "<End>":
+				proc.Bottom()
+				ui.Render(proc)
+			case "<C-d>":
+				proc.HalfPageDown()
+				ui.Render(proc)
+			case "<C-u>":
+				proc.HalfPageUp()
+				ui.Render(proc)
+			case "<C-f>":
+				proc.PageDown()
+				ui.Render(proc)
+			case "<C-b>":
+				proc.PageUp()
+				ui.Render(proc)
+			case "d":
+				if previousKey == "d" {
+					proc.Kill()
+					previousKey = ""
+				}
+			case "<Tab>":
+				proc.Tab()
+				ui.Render(proc)
+			case "m", "c", "p":
+				proc.ChangeSort(e)
+				ui.Render(proc)
+			}
+			previousKey = e.ID
+		}
+	}
+}
+
 func main() {
 	cliArguments()
-
-	keyBinds()
-
-	// need to do this before initializing widgets so that they can inherit the colors
-	termuiColors()
-
+	termuiColors() // need to do this before initializing widgets so that they can inherit the colors
 	initWidgets()
-
 	widgetColors()
-
 	help = w.NewHelpMenu()
 
 	// inits termui
@@ -283,53 +338,6 @@ func main() {
 	defer ui.Close()
 
 	setupGrid()
-
-	ui.On("<resize>", func(e ui.Event) {
-		ui.Body.Width, ui.Body.Height = e.Width, e.Height
-		ui.Body.Resize()
-
-		termResized <- true
-	})
-
-	// all rendering done here
-	go func() {
-		ui.Render(ui.Body)
-		drawTick := time.NewTicker(interval)
-		for {
-			if helpVisible {
-				select {
-				case <-helpToggled:
-					ui.Render(ui.Body)
-				case <-termResized:
-					ui.Clear()
-					ui.Render(help)
-				}
-			} else {
-				select {
-				case <-helpToggled:
-					ui.Clear()
-					ui.Render(help)
-				case <-termResized:
-					ui.Clear()
-					ui.Render(ui.Body)
-				case <-keyPressed:
-					ui.Render(proc)
-				case <-zoomed:
-					ui.Render(cpu, mem)
-				case <-drawTick.C:
-					ui.Render(ui.Body)
-				}
-			}
-		}
-	}()
-
-	// handles kill signal sent to gotop
-	c := make(chan os.Signal, 2)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-	go func() {
-		<-c
-		ui.StopLoop()
-	}()
-
-	ui.Loop()
+	ui.Render(ui.Body)
+	eventLoop()
 }

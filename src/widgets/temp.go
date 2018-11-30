@@ -31,8 +31,8 @@ func NewTemp() *Temp {
 
 	self.update()
 
-	ticker := time.NewTicker(self.interval)
 	go func() {
+		ticker := time.NewTicker(self.interval)
 		for range ticker.C {
 			self.update()
 		}
