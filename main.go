@@ -18,7 +18,7 @@ import (
 	"github.com/docopt/docopt-go"
 )
 
-var version = "1.5.1"
+var version = "1.6.0"
 
 var (
 	colorscheme  = colorschemes.Default
@@ -30,7 +30,7 @@ var (
 	averageLoad  = false
 	percpuLoad   = false
 	widgetCount  = 6
-	fahrenheit  = false
+	fahrenheit   = false
 
 	cpu  *w.CPU
 	mem  *w.Mem
