@@ -1,0 +1,3 @@
+[submodule "build/gotop-bin"]
+	path = build/gotop-bin
+	url = ssh://aur@aur.archlinux.org/gotop-bin.git
