@@ -14,6 +14,10 @@ var (
 	TB = uint64(math.Pow(2, 40))
 )
 
+func CelsiusToFahrenheit(c int) int {
+	return c*9/5 + 32
+}
+
 func BytesToKB(b uint64) float64 {
 	return float64(b) / float64(KB)
 }

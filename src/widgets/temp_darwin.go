@@ -4,7 +4,11 @@ package widgets
 
 // #cgo LDFLAGS: -framework IOKit
 // #include "include/smc.c"
-import "C"
+import (
+    "C"
+
+    "github.com/cjbassi/gotop/src/utils"
+}
 
 type TemperatureStat struct {
 	SensorKey   string  `json:"sensorKey"`
@@ -54,7 +58,7 @@ func (self *Temp) update() {
 	for _, sensor := range sensors {
 		if sensor.Temperature != 0 {
 			if self.Fahrenheit {
-				self.Data[sensor.SensorKey] = int(sensor.Temperature*9/5 + 32)
+				self.Data[sensor.SensorKey] = utils.CelsiusToFahrenheit(int(sensor.Temperature))
 			} else {
 				self.Data[sensor.SensorKey] = int(sensor.Temperature)
 			}
