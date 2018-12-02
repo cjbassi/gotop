@@ -27,7 +27,7 @@ Then move `gotop` into your \$PATH somewhere.
 
 ### Arch Linux
 
-Install the `gotop-bin` package from the AUR.
+Install `gotop-bin`, `gotop`, or `gotop-git` from the AUR.
 
 ### Homebrew
 
