@@ -11,20 +11,26 @@ import (
 
 type CPU struct {
 	*ui.LineGraph
-	Count    int  // number of cores
-	Average  bool // show average load
-	PerCPU   bool // show per-core load
-	interval time.Duration
+	Count        int  // number of cores
+	Average      bool // show average load
+	PerCPU       bool // show per-core load
+	interval     time.Duration
+	formatString string
 }
 
 func NewCPU(interval time.Duration, zoom int, average bool, percpu bool) *CPU {
 	count, _ := psCPU.Counts(false)
+	formatString := "CPU%1d"
+	if count > 10 {
+		formatString = "CPU%02d"
+	}
 	self := &CPU{
-		LineGraph: ui.NewLineGraph(),
-		Count:     count,
-		interval:  interval,
-		Average:   average,
-		PerCPU:    percpu,
+		LineGraph:    ui.NewLineGraph(),
+		Count:        count,
+		interval:     interval,
+		Average:      average,
+		PerCPU:       percpu,
+		formatString: formatString,
 	}
 	self.Label = "CPU Usage"
 	self.Zoom = zoom
@@ -43,7 +49,7 @@ func NewCPU(interval time.Duration, zoom int, average bool, percpu bool) *CPU {
 
 	if self.PerCPU {
 		for i := 0; i < self.Count; i++ {
-			k := fmt.Sprintf("CPU%02d", i)
+			k := fmt.Sprintf(formatString, i)
 			self.Data[k] = []float64{0}
 		}
 	}
@@ -85,7 +91,7 @@ func (self *CPU) update() {
 					))
 			}
 			for i := 0; i < self.Count; i++ {
-				k := fmt.Sprintf("CPU%02d", i)
+				k := fmt.Sprintf(self.formatString, i)
 				self.Data[k] = append(self.Data[k], percents[i])
 				self.Labels[k] = fmt.Sprintf("%3.0f%%", percents[i])
 			}
