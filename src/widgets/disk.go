@@ -57,6 +57,10 @@ func (self *Disk) update() {
 	// add partition if it's new
 	for _, Part := range Partitions {
 		device := strings.Replace(Part.Device, "/dev/", "", -1)
+		// don't show loop devices
+		if strings.HasPrefix(device, "loop") {
+			continue
+		}
 		if _, ok := self.Partitions[device]; !ok {
 			// https://github.com/shirou/gopsutil/issues/555
 			// have to remove artifacts produced by gopsutil when there's a space in the mount path
