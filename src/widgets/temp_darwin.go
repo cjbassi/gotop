@@ -4,11 +4,8 @@ package widgets
 
 // #cgo LDFLAGS: -framework IOKit
 // #include "include/smc.c"
-import (
-	"C"
-
-	"github.com/cjbassi/gotop/src/utils"
-)
+import "C"
+import "github.com/cjbassi/gotop/src/utils"
 
 type TemperatureStat struct {
 	SensorKey   string  `json:"sensorKey"`
