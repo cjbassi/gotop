@@ -31,6 +31,7 @@ var (
 	percpuLoad   = false
 	widgetCount  = 6
 	fahrenheit   = false
+	configDir    = getConfigDir()
 
 	cpu  *w.CPU
 	mem  *w.Mem
@@ -100,15 +101,18 @@ func handleColorscheme(cs string) {
 	}
 }
 
-// getCustomColorscheme	tries to read a custom json colorscheme from
-// {$XDG_CONFIG_HOME,~/.config}/gotop/{name}.json
-func getCustomColorscheme(name string) colorschemes.Colorscheme {
-	xdg := os.Getenv("XDG_CONFIG_HOME")
-	if xdg == "" {
-		xdg = os.ExpandEnv("$HOME") + "/.config"
+func getConfigDir() string {
+	globalConfigDir := os.Getenv("XDG_CONFIG_HOME")
+	if globalConfigDir == "" {
+		globalConfigDir = os.ExpandEnv("$HOME") + "/.config"
 	}
-	file := xdg + "/gotop/" + name + ".json"
-	dat, err := ioutil.ReadFile(file)
+	return globalConfigDir + "/gotop"
+}
+
+// getCustomColorscheme	tries to read a custom json colorscheme from {configDir}/{name}.json
+func getCustomColorscheme(name string) colorschemes.Colorscheme {
+	filePath := configDir + "/" + name + ".json"
+	dat, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: colorscheme not recognized\n")
 		os.Exit(1)
