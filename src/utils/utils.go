@@ -1,10 +1,7 @@
 package utils
 
 import (
-	"fmt"
 	"math"
-
-	ui "github.com/cjbassi/termui"
 )
 
 var (
@@ -54,15 +51,4 @@ func Max(a, b int) int {
 		return a
 	}
 	return b
-}
-
-func Error(issue, diagnostics string) {
-	ui.Close()
-	fmt.Println("Error caught. Exiting program.")
-	fmt.Println()
-	fmt.Println("Issue with " + issue + ".")
-	fmt.Println()
-	fmt.Println("Diagnostics:\n" + diagnostics)
-	fmt.Println()
-	panic(1)
 }

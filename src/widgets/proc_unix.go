@@ -3,6 +3,7 @@
 package widgets
 
 import (
+	"log"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -11,7 +12,7 @@ import (
 func (self *Proc) update() {
 	processes := Processes()
 	// have to iterate like this in order to actually change the value
-	for i, _ := range processes {
+	for i := range processes {
 		processes[i].CPU /= self.cpuCount
 	}
 
@@ -22,15 +23,27 @@ func (self *Proc) update() {
 }
 
 func Processes() []Process {
-	output, _ := exec.Command("ps", "-axo", "pid,comm,pcpu,pmem,args").Output()
+	output, err := exec.Command("ps", "-axo", "pid,comm,pcpu,pmem,args").Output()
+	if err != nil {
+		log.Printf("failed to execute 'ps' command: %v", err)
+	}
 	// converts to []string and removes the header
 	strOutput := strings.Split(strings.TrimSpace(string(output)), "\n")[1:]
 	processes := []Process{}
 	for _, line := range strOutput {
 		split := strings.Fields(line)
-		pid, _ := strconv.Atoi(split[0])
-		cpu, _ := strconv.ParseFloat(split[2], 64)
-		mem, _ := strconv.ParseFloat(split[3], 64)
+		pid, err := strconv.Atoi(split[0])
+		if err != nil {
+			log.Printf("failed to convert first field to int: %v. split: %v", err, split)
+		}
+		cpu, err := strconv.ParseFloat(split[2], 64)
+		if err != nil {
+			log.Printf("failed to convert third field to float: %v. split: %v", err, split)
+		}
+		mem, err := strconv.ParseFloat(split[3], 64)
+		if err != nil {
+			log.Printf("failed to convert fourth field to float: %v. split: %v", err, split)
+		}
 		process := Process{
 			PID:     pid,
 			Command: split[1],

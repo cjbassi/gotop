@@ -2,10 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"sync"
@@ -32,6 +33,8 @@ var (
 	widgetCount  = 6
 	fahrenheit   = false
 	configDir    = getConfigDir()
+	logPath      = filepath.Join(configDir, "errors.log")
+	stderrLogger = log.New(os.Stderr, "", 0)
 
 	cpu  *w.CPU
 	mem  *w.Mem
@@ -63,7 +66,10 @@ Colorschemes:
   monokai
 `
 
-	args, _ := docopt.ParseArgs(usage, os.Args[1:], version)
+	args, err := docopt.ParseArgs(usage, os.Args[1:], version)
+	if err != nil {
+		panic(err)
+	}
 
 	if val, _ := args["--color"]; val != nil {
 		handleColorscheme(val.(string))
@@ -77,7 +83,10 @@ Colorschemes:
 	}
 
 	rateStr, _ := args["--rate"].(string)
-	rate, _ := strconv.ParseFloat(rateStr, 64)
+	rate, err := strconv.ParseFloat(rateStr, 64)
+	if err != nil {
+		stderrLogger.Fatalf("error: invalid rate parameter")
+	}
 	if rate < 1 {
 		interval = time.Second * time.Duration(1/rate)
 	} else {
@@ -104,24 +113,22 @@ func handleColorscheme(cs string) {
 func getConfigDir() string {
 	globalConfigDir := os.Getenv("XDG_CONFIG_HOME")
 	if globalConfigDir == "" {
-		globalConfigDir = os.ExpandEnv("$HOME") + "/.config"
+		globalConfigDir = filepath.Join(os.ExpandEnv("$HOME"), ".config")
 	}
-	return globalConfigDir + "/gotop"
+	return filepath.Join(globalConfigDir, "gotop")
 }
 
 // getCustomColorscheme	tries to read a custom json colorscheme from {configDir}/{name}.json
 func getCustomColorscheme(name string) colorschemes.Colorscheme {
-	filePath := configDir + "/" + name + ".json"
+	filePath := filepath.Join(configDir, name+".json")
 	dat, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: colorscheme not recognized\n")
-		os.Exit(1)
+		stderrLogger.Fatalf("error: colorscheme not recognized")
 	}
 	var colorscheme colorschemes.Colorscheme
 	err = json.Unmarshal(dat, &colorscheme)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: could not parse colorscheme\n")
-		os.Exit(1)
+		stderrLogger.Fatalf("error: could not parse colorscheme")
 	}
 	return colorscheme
 }
@@ -334,6 +341,23 @@ func eventLoop() {
 }
 
 func main() {
+	// make the config directory
+	err := os.MkdirAll(configDir, 0755)
+	if err != nil {
+		stderrLogger.Fatalf("failed to make the configuration directory: %v", err)
+	}
+	// open the log file
+	lf, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0660)
+	if err != nil {
+		stderrLogger.Fatalf("failed to open log file: %v", err)
+	}
+	defer lf.Close()
+
+	// log time, filename, and line number
+	log.SetFlags(log.Ltime | log.Lshortfile)
+	// log to file
+	log.SetOutput(lf)
+
 	cliArguments()
 	termuiColors() // need to do this before initializing widgets so that they can inherit the colors
 	initWidgets()
@@ -341,7 +365,7 @@ func main() {
 	help = w.NewHelpMenu()
 
 	// inits termui
-	err := ui.Init()
+	err = ui.Init()
 	if err != nil {
 		panic(err)
 	}

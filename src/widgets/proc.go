@@ -2,6 +2,7 @@ package widgets
 
 import (
 	"fmt"
+	"log"
 	"os/exec"
 	"sort"
 	"strconv"
@@ -37,7 +38,10 @@ type Proc struct {
 }
 
 func NewProc() *Proc {
-	cpuCount, _ := psCPU.Counts(false)
+	cpuCount, err := psCPU.Counts(false)
+	if err != nil {
+		log.Printf("failed to get CPU count from gopsutil: %v", err)
+	}
 	self := &Proc{
 		Table:      ui.NewTable(),
 		interval:   time.Second,

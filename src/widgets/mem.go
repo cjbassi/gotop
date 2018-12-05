@@ -2,6 +2,7 @@ package widgets
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/cjbassi/gotop/src/utils"
@@ -37,8 +38,14 @@ func NewMem(interval time.Duration, zoom int) *Mem {
 }
 
 func (self *Mem) update() {
-	main, _ := psMem.VirtualMemory()
-	swap, _ := psMem.SwapMemory()
+	main, err := psMem.VirtualMemory()
+	if err != nil {
+		log.Printf("failed to get main memory info from gopsutil: %v", err)
+	}
+	swap, err := psMem.SwapMemory()
+	if err != nil {
+		log.Printf("failed to get swap memory info from gopsutil: %v", err)
+	}
 	self.Data["Main"] = append(self.Data["Main"], main.UsedPercent)
 	self.Data["Swap"] = append(self.Data["Swap"], swap.UsedPercent)
 

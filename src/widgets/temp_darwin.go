@@ -1,11 +1,13 @@
-// TODO do we need to add '+build cgo'?
-
 package widgets
 
 // #cgo LDFLAGS: -framework IOKit
 // #include "include/smc.c"
 import "C"
-import "github.com/cjbassi/gotop/src/utils"
+import (
+	"log"
+
+	"github.com/cjbassi/gotop/src/utils"
+)
 
 type TemperatureStat struct {
 	SensorKey   string  `json:"sensorKey"`
@@ -52,7 +54,10 @@ func SensorsTemperatures() ([]TemperatureStat, error) {
 }
 
 func (self *Temp) update() {
-	sensors, _ := SensorsTemperatures()
+	sensors, err := SensorsTemperatures()
+	if err != nil {
+		log.Printf("failed to get sensors from CGO: %v", err)
+	}
 	for _, sensor := range sensors {
 		if sensor.Temperature != 0 {
 			if self.Fahrenheit {

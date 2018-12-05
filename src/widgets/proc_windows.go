@@ -1,17 +1,31 @@
 package widgets
 
 import (
+	"log"
+
 	psProc "github.com/shirou/gopsutil/process"
 )
 
 func (self *Proc) update() {
-	psProcesses, _ := psProc.Processes()
+	psProcesses, err := psProc.Processes()
+	if err != nil {
+		log.Printf("failed to get processes from gopsutil: %v", err)
+	}
 	processes := make([]Process, len(psProcesses))
 	for i, psProcess := range psProcesses {
 		pid := psProcess.Pid
-		command, _ := psProcess.Name()
-		cpu, _ := psProcess.CPUPercent()
-		mem, _ := psProcess.MemoryPercent()
+		command, err := psProcess.Name()
+		if err != nil {
+			log.Printf("failed to get process command from gopsutil: %v. psProcess: %v. i: %v. pid: %v", err, psProcess, i, pid)
+		}
+		cpu, err := psProcess.CPUPercent()
+		if err != nil {
+			log.Printf("failed to get process cpu usage from gopsutil: %v. psProcess: %v. i: %v. pid: %v", err, psProcess, i, pid)
+		}
+		mem, err := psProcess.MemoryPercent()
+		if err != nil {
+			log.Printf("failed to get process memeory usage from gopsutil: %v. psProcess: %v. i: %v. pid: %v", err, psProcess, i, pid)
+		}
 
 		processes[i] = Process{
 			int(pid),

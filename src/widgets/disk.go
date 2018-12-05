@@ -2,6 +2,7 @@ package widgets
 
 import (
 	"fmt"
+	"log"
 	"sort"
 	"strings"
 	"time"
@@ -52,7 +53,10 @@ func NewDisk() *Disk {
 }
 
 func (self *Disk) update() {
-	Partitions, _ := psDisk.Partitions(false)
+	Partitions, err := psDisk.Partitions(false)
+	if err != nil {
+		log.Printf("failed to get disk partitions from gopsutil: %v", err)
+	}
 
 	// add partition if it's new
 	for _, Part := range Partitions {
@@ -93,13 +97,19 @@ func (self *Disk) update() {
 
 	// updates partition info
 	for _, Part := range self.Partitions {
-		usage, _ := psDisk.Usage(Part.Mount)
+		usage, err := psDisk.Usage(Part.Mount)
+		if err != nil {
+			log.Printf("failed to get partition usage statistics from gopsutil: %v. Part.Mount: %v", err, Part.Mount)
+		}
 		Part.UsedPercent = int(usage.UsedPercent)
 
 		Free, Mag := utils.ConvertBytes(usage.Free)
 		Part.Free = fmt.Sprintf("%3d%s", uint64(Free), Mag)
 
-		ret, _ := psDisk.IOCounters("/dev/" + Part.Device)
+		ret, err := psDisk.IOCounters("/dev/" + Part.Device)
+		if err != nil {
+			log.Printf("failed to get partition read/write info from gopsutil: %v. Part.Device: %v", err, Part.Device)
+		}
 		data := ret[Part.Device]
 		curRead, curWrite := data.ReadBytes, data.WriteBytes
 		if Part.TotalRead != 0 { // if this isn't the first update

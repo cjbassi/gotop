@@ -2,6 +2,7 @@ package widgets
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/cjbassi/gotop/src/utils"
@@ -45,7 +46,10 @@ func NewNet() *Net {
 
 func (self *Net) update() {
 	// `false` causes psutil to group all network activity
-	interfaces, _ := psNet.IOCounters(false)
+	interfaces, err := psNet.IOCounters(false)
+	if err != nil {
+		log.Printf("failed to get network activity from gopsutil: %v", err)
+	}
 	curRecvTotal := interfaces[0].BytesRecv
 	curSentTotal := interfaces[0].BytesSent
 	var recvRecent uint64
@@ -55,22 +59,19 @@ func (self *Net) update() {
 		recvRecent = curRecvTotal - self.prevRecvTotal
 		sentRecent = curSentTotal - self.prevSentTotal
 
+		if int(recvRecent) < 0 {
+			log.Printf("error: negative value for recently received network data from gopsutil. recvRecent: %v", recvRecent)
+			// recover from error
+			recvRecent = 0
+		}
+		if int(sentRecent) < 0 {
+			log.Printf("error: negative value for recently sent network data from gopsutil. sentRecent: %v", sentRecent)
+			// recover from error
+			sentRecent = 0
+		}
+
 		self.Lines[0].Data = append(self.Lines[0].Data, int(recvRecent))
 		self.Lines[1].Data = append(self.Lines[1].Data, int(sentRecent))
-
-		if int(recvRecent) < 0 || int(sentRecent) < 0 {
-			utils.Error("net data",
-				fmt.Sprint(
-					"curRecvTotal: ", curRecvTotal, "\n",
-					"curSentTotal: ", curSentTotal, "\n",
-					"self.prevRecvTotal: ", self.prevRecvTotal, "\n",
-					"self.prevSentTotal: ", self.prevSentTotal, "\n",
-					"recvRecent: ", recvRecent, "\n",
-					"sentRecent: ", sentRecent, "\n",
-					"int(recvRecent): ", int(recvRecent), "\n",
-					"int(sentRecent): ", int(sentRecent),
-				))
-		}
 	}
 
 	// used in later calls to update

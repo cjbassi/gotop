@@ -1,6 +1,7 @@
 package widgets
 
 import (
+	"log"
 	"strings"
 
 	"github.com/cjbassi/gotop/src/utils"
@@ -8,7 +9,10 @@ import (
 )
 
 func (self *Temp) update() {
-	sensors, _ := psHost.SensorsTemperatures()
+	sensors, err := psHost.SensorsTemperatures()
+	if err != nil {
+		log.Printf("failed to get sensors from gopsutil: %v", err)
+	}
 	for _, sensor := range sensors {
 		// only sensors with input in their name are giving us live temp info
 		if strings.Contains(sensor.SensorKey, "input") && sensor.Temperature != 0 {

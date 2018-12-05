@@ -2,9 +2,9 @@ package widgets
 
 import (
 	"fmt"
+	"log"
 	"time"
 
-	"github.com/cjbassi/gotop/src/utils"
 	ui "github.com/cjbassi/termui"
 	psCPU "github.com/shirou/gopsutil/cpu"
 )
@@ -19,7 +19,10 @@ type CPU struct {
 }
 
 func NewCPU(interval time.Duration, zoom int, average bool, percpu bool) *CPU {
-	count, _ := psCPU.Counts(false)
+	count, err := psCPU.Counts(false)
+	if err != nil {
+		log.Printf("failed to get CPU count from gopsutil: %v", err)
+	}
 	formatString := "CPU%1d"
 	if count > 10 {
 		formatString = "CPU%02d"
@@ -70,7 +73,10 @@ func NewCPU(interval time.Duration, zoom int, average bool, percpu bool) *CPU {
 func (self *CPU) update() {
 	if self.Average {
 		go func() {
-			percent, _ := psCPU.Percent(self.interval, false)
+			percent, err := psCPU.Percent(self.interval, false)
+			if err != nil {
+				log.Printf("failed to get average CPU usage percent from gopsutil: %v. self.interval: %v. percpu: %v", err, self.interval, false)
+			}
 			self.Data["AVRG"] = append(self.Data["AVRG"], percent[0])
 			self.Labels["AVRG"] = fmt.Sprintf("%3.0f%%", percent[0])
 		}()
@@ -78,17 +84,12 @@ func (self *CPU) update() {
 
 	if self.PerCPU {
 		go func() {
-			percents, _ := psCPU.Percent(self.interval, true)
+			percents, err := psCPU.Percent(self.interval, true)
+			if err != nil {
+				log.Printf("failed to get CPU usage percents from gopsutil: %v. self.interval: %v. percpu: %v", err, self.interval, true)
+			}
 			if len(percents) != self.Count {
-				count, _ := psCPU.Counts(false)
-				utils.Error("CPU percentages",
-					fmt.Sprint(
-						"self.Count: ", self.Count, "\n",
-						"gopsutil.Counts(): ", count, "\n",
-						"len(percents): ", len(percents), "\n",
-						"percents: ", percents, "\n",
-						"self.interval: ", self.interval,
-					))
+				log.Printf("error: number of CPU usage percents from gopsutil doesn't match CPU count. percents: %v. self.Count: %v", percents, self.Count)
 			}
 			for i := 0; i < self.Count; i++ {
 				k := fmt.Sprintf(self.formatString, i)
