@@ -96,7 +96,7 @@ func (self *Disk) update() {
 	for _, Part := range self.Partitions {
 		usage, err := psDisk.Usage(Part.Mount)
 		if err != nil {
-			log.Printf("failed to get partition usage statistics from gopsutil: %v. Part.Mount: %v", err, Part.Mount)
+			log.Printf("failed to get partition usage statistics from gopsutil: %v. Part: %v", err, Part)
 		}
 		Part.UsedPercent = int(usage.UsedPercent)
 
@@ -105,7 +105,7 @@ func (self *Disk) update() {
 
 		ret, err := psDisk.IOCounters("/dev/" + Part.Device)
 		if err != nil {
-			log.Printf("failed to get partition read/write info from gopsutil: %v. Part.Device: %v", err, Part.Device)
+			log.Printf("failed to get partition read/write info from gopsutil: %v. Part: %v", err, Part)
 		}
 		data := ret[Part.Device]
 		curRead, curWrite := data.ReadBytes, data.WriteBytes
