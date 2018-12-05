@@ -296,7 +296,6 @@ func eventLoop() {
 				if previousKey == "g" {
 					proc.Top()
 					ui.Render(proc)
-					previousKey = ""
 				}
 			case "G", "<End>":
 				proc.Bottom()
@@ -316,7 +315,6 @@ func eventLoop() {
 			case "d":
 				if previousKey == "d" {
 					proc.Kill()
-					previousKey = ""
 				}
 			case "<Tab>":
 				proc.Tab()
@@ -325,7 +323,12 @@ func eventLoop() {
 				proc.ChangeSort(e)
 				ui.Render(proc)
 			}
-			previousKey = e.ID
+
+			if previousKey == e.ID {
+				previousKey = ""
+			} else {
+				previousKey = e.ID
+			}
 		}
 	}
 }
