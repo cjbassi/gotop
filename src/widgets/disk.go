@@ -66,12 +66,9 @@ func (self *Disk) update() {
 			continue
 		}
 		if _, ok := self.Partitions[device]; !ok {
-			// https://github.com/shirou/gopsutil/issues/555
-			// have to remove artifacts produced by gopsutil when there's a space in the mount path
-			mountPoint := strings.Replace(Part.Mountpoint, "\\040", " ", -1)
 			self.Partitions[device] = &Partition{
 				Device: device,
-				Mount:  mountPoint,
+				Mount:  Part.Mountpoint,
 			}
 		}
 	}
