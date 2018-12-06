@@ -88,13 +88,14 @@ func (self *CPU) update() {
 			if err != nil {
 				log.Printf("failed to get CPU usage percents from gopsutil: %v. self.interval: %v. percpu: %v", err, self.interval, true)
 			}
-			if len(percents) != self.Count {
+			if len(percents) == self.Count {
+				for i, percent := range percents {
+					k := fmt.Sprintf(self.formatString, i)
+					self.Data[k] = append(self.Data[k], percent)
+					self.Labels[k] = fmt.Sprintf("%3.0f%%", percent)
+				}
+			} else {
 				log.Printf("error: number of CPU usage percents from gopsutil doesn't match CPU count. percents: %v. self.Count: %v", percents, self.Count)
-			}
-			for i := 0; i < self.Count; i++ {
-				k := fmt.Sprintf(self.formatString, i)
-				self.Data[k] = append(self.Data[k], percents[i])
-				self.Labels[k] = fmt.Sprintf("%3.0f%%", percents[i])
 			}
 		}()
 	}
