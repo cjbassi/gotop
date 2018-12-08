@@ -15,4 +15,4 @@ Required information:
 - Any relevenat hardware info:
 - tmux version if using tmux:
 
-Also please copy or attach `~/.config/gotop/log` if it exists and contains logs.
+Also please copy or attach `~/.config/gotop/errors.log` if it exists and contains logs.
