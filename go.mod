@@ -3,7 +3,7 @@ module github.com/cjbassi/gotop
 require (
 	github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6 // indirect
 	github.com/cjbassi/drawille-go v0.0.0-20180329221028-ad535d0f92cd // indirect
-	github.com/cjbassi/termui v0.0.0-20181129231847-3a3db079d9dd
+	github.com/cjbassi/termui v0.0.0-20181208033036-e8dd23f6146c
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
 	github.com/go-ole/go-ole v1.2.1 // indirect
