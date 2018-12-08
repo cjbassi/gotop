@@ -65,6 +65,7 @@ func (self *Disk) update() {
 		if strings.HasPrefix(device, "loop") {
 			continue
 		}
+		// check if partition doesn't already exist in our list
 		if _, ok := self.Partitions[device]; !ok {
 			self.Partitions[device] = &Partition{
 				Device: device,
@@ -75,7 +76,7 @@ func (self *Disk) update() {
 
 	// delete a partition if it no longer exists
 	todelete := []string{}
-	for key, _ := range self.Partitions {
+	for key := range self.Partitions {
 		exists := false
 		for _, Part := range Partitions {
 			device := strings.Replace(Part.Device, "/dev/", "", -1)
@@ -97,6 +98,7 @@ func (self *Disk) update() {
 		usage, err := psDisk.Usage(Part.Mount)
 		if err != nil {
 			log.Printf("failed to get partition usage statistics from gopsutil: %v. Part: %v", err, Part)
+			continue
 		}
 		Part.UsedPercent = int(usage.UsedPercent)
 
@@ -106,6 +108,7 @@ func (self *Disk) update() {
 		ret, err := psDisk.IOCounters("/dev/" + Part.Device)
 		if err != nil {
 			log.Printf("failed to get partition read/write info from gopsutil: %v. Part: %v", err, Part)
+			continue
 		}
 		data := ret[Part.Device]
 		curRead, curWrite := data.ReadBytes, data.WriteBytes
