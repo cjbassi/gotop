@@ -361,9 +361,11 @@ func logging() *os.File {
 }
 
 func main() {
-	defer logging().Close()
+	lf := logging()
+	defer lf.Close()
 	cliArguments()
-	termuiColors() // need to do this before initializing widgets so that they can inherit the colors
+	syscall.Dup2(int(lf.Fd()), 2) // redirect stderr to logfile
+	termuiColors()                // need to do this before initializing widgets so that they can inherit the colors
 	initWidgets()
 	widgetColors()
 	help = w.NewHelpMenu()
