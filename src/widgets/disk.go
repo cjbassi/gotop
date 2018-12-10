@@ -60,15 +60,14 @@ func (self *Disk) update() {
 
 	// add partition if it's new
 	for _, Part := range Partitions {
-		device := strings.Replace(Part.Device, "/dev/", "", -1)
 		// don't show loop devices
-		if strings.HasPrefix(device, "loop") {
+		if strings.HasPrefix(Part.Device, "loop") {
 			continue
 		}
 		// check if partition doesn't already exist in our list
-		if _, ok := self.Partitions[device]; !ok {
-			self.Partitions[device] = &Partition{
-				Device: device,
+		if _, ok := self.Partitions[Part.Device]; !ok {
+			self.Partitions[Part.Device] = &Partition{
+				Device: Part.Device,
 				Mount:  Part.Mountpoint,
 			}
 		}
@@ -79,8 +78,7 @@ func (self *Disk) update() {
 	for key := range self.Partitions {
 		exists := false
 		for _, Part := range Partitions {
-			device := strings.Replace(Part.Device, "/dev/", "", -1)
-			if key == device {
+			if key == Part.Device {
 				exists = true
 				break
 			}
@@ -105,7 +103,7 @@ func (self *Disk) update() {
 		Free, Mag := utils.ConvertBytes(usage.Free)
 		Part.Free = fmt.Sprintf("%3d%s", uint64(Free), Mag)
 
-		ret, err := psDisk.IOCounters("/dev/" + Part.Device)
+		ret, err := psDisk.IOCounters(Part.Device)
 		if err != nil {
 			log.Printf("failed to get partition read/write info from gopsutil: %v. Part: %v", err, Part)
 			continue
@@ -139,7 +137,7 @@ func (self *Disk) update() {
 	for i, key := range sortedPartitions {
 		Part := self.Partitions[key]
 		self.Rows[i] = make([]string, 6)
-		self.Rows[i][0] = Part.Device
+		self.Rows[i][0] = strings.Replace(Part.Device, "/dev/", "", -1)
 		self.Rows[i][1] = Part.Mount
 		self.Rows[i][2] = fmt.Sprintf("%d%%", Part.UsedPercent)
 		self.Rows[i][3] = Part.Free
