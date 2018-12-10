@@ -141,7 +141,7 @@ func (self *Disk) update() {
 	for i, key := range sortedPartitions {
 		Part := self.Partitions[key]
 		self.Rows[i] = make([]string, 6)
-		self.Rows[i][0] = strings.Replace(Part.Device, "/dev/", "", -1)
+		self.Rows[i][0] = strings.Replace(strings.Replace(Part.Device, "/dev/", "", -1), "mapper/", "", -1)
 		self.Rows[i][1] = Part.Mount
 		self.Rows[i][2] = fmt.Sprintf("%d%%", Part.UsedPercent)
 		self.Rows[i][3] = Part.Free
