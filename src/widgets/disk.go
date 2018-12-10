@@ -61,7 +61,7 @@ func (self *Disk) update() {
 	// add partition if it's new
 	for _, Part := range Partitions {
 		// don't show loop devices
-		if strings.HasPrefix(Part.Device, "loop") {
+		if strings.HasPrefix(Part.Device, "/dev/loop") {
 			continue
 		}
 		// check if partition doesn't already exist in our list
