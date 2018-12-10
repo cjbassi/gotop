@@ -64,6 +64,10 @@ func (self *Disk) update() {
 		if strings.HasPrefix(Part.Device, "/dev/loop") {
 			continue
 		}
+		// don't show docker container filesystems
+		if strings.HasPrefix(Part.Mountpoint, "/var/lib/docker/") {
+			continue
+		}
 		// check if partition doesn't already exist in our list
 		if _, ok := self.Partitions[Part.Device]; !ok {
 			self.Partitions[Part.Device] = &Partition{
