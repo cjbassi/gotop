@@ -45,13 +45,19 @@ func NewNet() *Net {
 }
 
 func (self *Net) update() {
-	// `false` causes psutil to group all network activity
-	interfaces, err := psNet.IOCounters(false)
+	interfaces, err := psNet.IOCounters(true)
 	if err != nil {
 		log.Printf("failed to get network activity from gopsutil: %v", err)
 	}
-	curRecvTotal := interfaces[0].BytesRecv
-	curSentTotal := interfaces[0].BytesSent
+	var curRecvTotal uint64
+	var curSentTotal uint64
+	for _, _interface := range interfaces {
+		// ignore VPN interface
+		if _interface.Name != "tun0" {
+			curRecvTotal += _interface.BytesRecv
+			curSentTotal += _interface.BytesSent
+		}
+	}
 	var recvRecent uint64
 	var sentRecent uint64
 
