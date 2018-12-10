@@ -340,7 +340,7 @@ func eventLoop() {
 	}
 }
 
-func main() {
+func logging() *os.File {
 	// make the config directory
 	err := os.MkdirAll(configDir, 0755)
 	if err != nil {
@@ -351,26 +351,26 @@ func main() {
 	if err != nil {
 		stderrLogger.Fatalf("failed to open log file: %v", err)
 	}
-	defer lf.Close()
 
 	// log time, filename, and line number
 	log.SetFlags(log.Ltime | log.Lshortfile)
 	// log to file
 	log.SetOutput(lf)
 
+	return lf
+}
+
+func main() {
+	defer logging().Close()
 	cliArguments()
 	termuiColors() // need to do this before initializing widgets so that they can inherit the colors
 	initWidgets()
 	widgetColors()
 	help = w.NewHelpMenu()
-
-	// inits termui
-	err = ui.Init()
-	if err != nil {
+	if err := ui.Init(); err != nil {
 		panic(err)
 	}
 	defer ui.Close()
-
 	setupGrid()
 	ui.Render(ui.Body)
 	eventLoop()
