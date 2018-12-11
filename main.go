@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -45,7 +46,7 @@ var (
 	help *w.HelpMenu
 )
 
-func cliArguments() {
+func cliArguments() error {
 	usage := `
 Usage: gotop [options]
 
@@ -68,11 +69,13 @@ Colorschemes:
 
 	args, err := docopt.ParseArgs(usage, os.Args[1:], version)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	if val, _ := args["--color"]; val != nil {
-		handleColorscheme(val.(string))
+		if err := handleColorscheme(val.(string)); err != nil {
+			return err
+		}
 	}
 	averageLoad, _ = args["--averagecpu"].(bool)
 	percpuLoad, _ = args["--percpu"].(bool)
@@ -85,7 +88,7 @@ Colorschemes:
 	rateStr, _ := args["--rate"].(string)
 	rate, err := strconv.ParseFloat(rateStr, 64)
 	if err != nil {
-		stderrLogger.Fatalf("error: invalid rate parameter")
+		return fmt.Errorf("invalid rate parameter")
 	}
 	if rate < 1 {
 		interval = time.Second * time.Duration(1/rate)
@@ -93,9 +96,11 @@ Colorschemes:
 		interval = time.Second / time.Duration(rate)
 	}
 	fahrenheit, _ = args["--fahrenheit"].(bool)
+
+	return nil
 }
 
-func handleColorscheme(cs string) {
+func handleColorscheme(cs string) error {
 	switch cs {
 	case "default":
 		colorscheme = colorschemes.Default
@@ -106,8 +111,12 @@ func handleColorscheme(cs string) {
 	case "default-dark":
 		colorscheme = colorschemes.DefaultDark
 	default:
-		colorscheme = getCustomColorscheme(cs)
+		if colorscheme, err := getCustomColorscheme(cs); err != nil {
+			colorscheme = colorscheme
+			return err
+		}
 	}
+	return nil
 }
 
 func getConfigDir() string {
@@ -119,18 +128,18 @@ func getConfigDir() string {
 }
 
 // getCustomColorscheme	tries to read a custom json colorscheme from {configDir}/{name}.json
-func getCustomColorscheme(name string) colorschemes.Colorscheme {
+func getCustomColorscheme(name string) (colorschemes.Colorscheme, error) {
+	var colorscheme colorschemes.Colorscheme
 	filePath := filepath.Join(configDir, name+".json")
 	dat, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		stderrLogger.Fatalf("error: colorscheme not recognized")
+		return colorscheme, fmt.Errorf("colorscheme file not found")
 	}
-	var colorscheme colorschemes.Colorscheme
 	err = json.Unmarshal(dat, &colorscheme)
 	if err != nil {
-		stderrLogger.Fatalf("error: could not parse colorscheme")
+		return colorscheme, fmt.Errorf("could not parse colorscheme file")
 	}
-	return colorscheme
+	return colorscheme, nil
 }
 
 func setupGrid() {
@@ -340,16 +349,15 @@ func eventLoop() {
 	}
 }
 
-func logging() *os.File {
+func logging() (*os.File, error) {
 	// make the config directory
-	err := os.MkdirAll(configDir, 0755)
-	if err != nil {
-		stderrLogger.Fatalf("failed to make the configuration directory: %v", err)
+	if err := os.MkdirAll(configDir, 0755); err != nil {
+		return nil, fmt.Errorf("failed to make the configuration directory: %v", err)
 	}
 	// open the log file
 	lf, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0660)
 	if err != nil {
-		stderrLogger.Fatalf("failed to open log file: %v", err)
+		return nil, fmt.Errorf("failed to open log file: %v", err)
 	}
 
 	// log time, filename, and line number
@@ -357,23 +365,34 @@ func logging() *os.File {
 	// log to file
 	log.SetOutput(lf)
 
-	return lf
+	return lf, nil
 }
 
 func main() {
-	lf := logging()
+	lf, err := logging()
+	if err != nil {
+		stderrLogger.Fatalf("failed to setup logging: %v", err)
+	}
 	defer lf.Close()
-	cliArguments()
-	syscall.Dup2(int(lf.Fd()), 2) // redirect stderr to logfile
-	termuiColors()                // need to do this before initializing widgets so that they can inherit the colors
+
+	if err := cliArguments(); err != nil {
+		stderrLogger.Fatalf("failed to parse cli args: %v", err)
+	}
+
+	termuiColors() // need to do this before initializing widgets so that they can inherit the colors
 	initWidgets()
 	widgetColors()
 	help = w.NewHelpMenu()
+
 	if err := ui.Init(); err != nil {
-		panic(err)
+		stderrLogger.Fatalf("failed to initialize termui: %v", err)
 	}
 	defer ui.Close()
+
+	syscall.Dup2(int(lf.Fd()), 2) // redirect stderr to logfile
+
 	setupGrid()
 	ui.Render(ui.Body)
+
 	eventLoop()
 }
