@@ -15,4 +15,7 @@ update GitHub release with Darwin builds
 update homebrew-gotop
     version numbers (there's 3)
     sha256 (run `sha256sum {archived file}`)
-update AUR package version number
+update AUR package
+    reset pkgrel
+    version number
+    sha256sum
