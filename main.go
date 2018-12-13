@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/cjbassi/gotop/colorschemes"
+	"github.com/cjbassi/gotop/src/logging"
 	w "github.com/cjbassi/gotop/src/widgets"
 	ui "github.com/cjbassi/termui"
 	"github.com/docopt/docopt-go"
@@ -349,7 +350,7 @@ func eventLoop() {
 	}
 }
 
-func logging() (*os.File, error) {
+func setupLogging() (*os.File, error) {
 	// make the config directory
 	if err := os.MkdirAll(configDir, 0755); err != nil {
 		return nil, fmt.Errorf("failed to make the configuration directory: %v", err)
@@ -369,7 +370,7 @@ func logging() (*os.File, error) {
 }
 
 func main() {
-	lf, err := logging()
+	lf, err := setupLogging()
 	if err != nil {
 		stderrLogger.Fatalf("failed to setup logging: %v", err)
 	}
@@ -389,7 +390,7 @@ func main() {
 	}
 	defer ui.Close()
 
-	syscall.Dup2(int(lf.Fd()), 2) // redirect stderr to logfile
+	logging.StderrToLogfile(lf)
 
 	setupGrid()
 	ui.Render(ui.Body)
