@@ -153,8 +153,8 @@ func (self *Disk) update() {
 // ColResize overrides the default ColResize in the termui table.
 func (self *Disk) ColResize() {
 	self.ColWidths = []int{
-		4,
-		utils.Max(5, self.X-33),
+		utils.Max(4, (self.X-29)/2),
+		utils.Max(5, (self.X-29)/2),
 		4, 5, 5, 5,
 	}
 
