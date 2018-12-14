@@ -356,7 +356,7 @@ func setupLogging() (*os.File, error) {
 		return nil, fmt.Errorf("failed to make the configuration directory: %v", err)
 	}
 	// open the log file
-	lf, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0660)
+	lf, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0660)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open log file: %v", err)
 	}
