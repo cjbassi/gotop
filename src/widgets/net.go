@@ -48,6 +48,7 @@ func (self *Net) update() {
 	interfaces, err := psNet.IOCounters(true)
 	if err != nil {
 		log.Printf("failed to get network activity from gopsutil: %v", err)
+		return
 	}
 	var curRecvTotal uint64
 	var curSentTotal uint64

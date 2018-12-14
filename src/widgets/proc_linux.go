@@ -1,6 +1,7 @@
 package widgets
 
 import (
+	"fmt"
 	"log"
 	"os/exec"
 	"strconv"
@@ -8,7 +9,12 @@ import (
 )
 
 func (self *Proc) update() {
-	processes := Processes()
+	processes, err := Processes()
+	if err != nil {
+		log.Printf("failed to retrieve processes: %v", err)
+		return
+	}
+
 	// have to iterate like this in order to actually change the value
 	for i := range processes {
 		processes[i].CPU /= self.cpuCount
@@ -20,10 +26,10 @@ func (self *Proc) update() {
 	self.Sort()
 }
 
-func Processes() []Process {
+func Processes() ([]Process, error) {
 	output, err := exec.Command("ps", "-axo", "pid:10,comm:50,pcpu:5,pmem:5,args").Output()
 	if err != nil {
-		log.Printf("failed to execute 'ps' command: %v", err)
+		return nil, fmt.Errorf("failed to execute 'ps' command: %v", err)
 	}
 
 	// converts to []string, removing trailing newline and header
@@ -52,5 +58,5 @@ func Processes() []Process {
 		}
 		processes = append(processes, process)
 	}
-	return processes
+	return processes, nil
 }

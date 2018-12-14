@@ -10,6 +10,7 @@ func (self *Proc) update() {
 	psProcesses, err := psProc.Processes()
 	if err != nil {
 		log.Printf("failed to get processes from gopsutil: %v", err)
+		return
 	}
 	processes := make([]Process, len(psProcesses))
 	for i, psProcess := range psProcesses {

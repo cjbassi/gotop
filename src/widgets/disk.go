@@ -56,6 +56,7 @@ func (self *Disk) update() {
 	Partitions, err := psDisk.Partitions(false)
 	if err != nil {
 		log.Printf("failed to get disk partitions from gopsutil: %v", err)
+		return
 	}
 
 	// add partition if it's new

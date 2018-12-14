@@ -76,9 +76,10 @@ func (self *CPU) update() {
 			percent, err := psCPU.Percent(self.interval, false)
 			if err != nil {
 				log.Printf("failed to get average CPU usage percent from gopsutil: %v. self.interval: %v. percpu: %v", err, self.interval, false)
+			} else {
+				self.Data["AVRG"] = append(self.Data["AVRG"], percent[0])
+				self.Labels["AVRG"] = fmt.Sprintf("%3.0f%%", percent[0])
 			}
-			self.Data["AVRG"] = append(self.Data["AVRG"], percent[0])
-			self.Labels["AVRG"] = fmt.Sprintf("%3.0f%%", percent[0])
 		}()
 	}
 
@@ -87,15 +88,16 @@ func (self *CPU) update() {
 			percents, err := psCPU.Percent(self.interval, true)
 			if err != nil {
 				log.Printf("failed to get CPU usage percents from gopsutil: %v. self.interval: %v. percpu: %v", err, self.interval, true)
-			}
-			if len(percents) == self.Count {
-				for i, percent := range percents {
-					k := fmt.Sprintf(self.formatString, i)
-					self.Data[k] = append(self.Data[k], percent)
-					self.Labels[k] = fmt.Sprintf("%3.0f%%", percent)
-				}
 			} else {
-				log.Printf("error: number of CPU usage percents from gopsutil doesn't match CPU count. percents: %v. self.Count: %v", percents, self.Count)
+				if len(percents) != self.Count {
+					log.Printf("error: number of CPU usage percents from gopsutil doesn't match CPU count. percents: %v. self.Count: %v", percents, self.Count)
+				} else {
+					for i, percent := range percents {
+						k := fmt.Sprintf(self.formatString, i)
+						self.Data[k] = append(self.Data[k], percent)
+						self.Labels[k] = fmt.Sprintf("%3.0f%%", percent)
+					}
+				}
 			}
 		}()
 	}

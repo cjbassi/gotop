@@ -11,6 +11,7 @@ func (self *Temp) update() {
 	sensors, err := psHost.SensorsTemperatures()
 	if err != nil {
 		log.Printf("failed to get sensors from gopsutil: %v", err)
+		return
 	}
 	for _, sensor := range sensors {
 		if sensor.Temperature != 0 {
