@@ -41,18 +41,20 @@ func (self *Mem) update() {
 	main, err := psMem.VirtualMemory()
 	if err != nil {
 		log.Printf("failed to get main memory info from gopsutil: %v", err)
+	} else {
+		self.Data["Main"] = append(self.Data["Main"], main.UsedPercent)
+		mainTotalBytes, mainTotalMagnitude := utils.ConvertBytes(main.Total)
+		mainUsedBytes, mainUsedMagnitude := utils.ConvertBytes(main.Used)
+		self.Labels["Main"] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s", main.UsedPercent, mainUsedBytes, mainUsedMagnitude, mainTotalBytes, mainTotalMagnitude)
 	}
+
 	swap, err := psMem.SwapMemory()
 	if err != nil {
 		log.Printf("failed to get swap memory info from gopsutil: %v", err)
+	} else {
+		self.Data["Swap"] = append(self.Data["Swap"], swap.UsedPercent)
+		swapTotalBytes, swapTotalMagnitude := utils.ConvertBytes(swap.Total)
+		swapUsedBytes, swapUsedMagnitude := utils.ConvertBytes(swap.Used)
+		self.Labels["Swap"] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s", swap.UsedPercent, swapUsedBytes, swapUsedMagnitude, swapTotalBytes, swapTotalMagnitude)
 	}
-	self.Data["Main"] = append(self.Data["Main"], main.UsedPercent)
-	self.Data["Swap"] = append(self.Data["Swap"], swap.UsedPercent)
-
-	mainTotalBytes, mainTotalMagnitude := utils.ConvertBytes(main.Total)
-	swapTotalBytes, swapTotalMagnitude := utils.ConvertBytes(swap.Total)
-	mainUsedBytes, mainUsedMagnitude := utils.ConvertBytes(main.Used)
-	swapUsedBytes, swapUsedMagnitude := utils.ConvertBytes(swap.Used)
-	self.Labels["Main"] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s", main.UsedPercent, mainUsedBytes, mainUsedMagnitude, mainTotalBytes, mainTotalMagnitude)
-	self.Labels["Swap"] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s", swap.UsedPercent, swapUsedBytes, swapUsedMagnitude, swapTotalBytes, swapTotalMagnitude)
 }
