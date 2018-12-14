@@ -12,7 +12,7 @@ Another terminal based graphical activity monitor, inspired by [gtop](https://gi
 
 ## Installation
 
-Working and tested on Linux and OSX. Windows support is planned.
+Working and tested on Linux, FreeBSD and OSX. Windows support is planned.
 
 ### Using Git
 
@@ -28,6 +28,12 @@ Then move `gotop` into your \$PATH somewhere.
 ### Arch Linux
 
 Install `gotop-bin`, `gotop`, or `gotop-git` from the AUR.
+
+### FreeBSD
+
+```
+pkg install gotop
+```
 
 ### Homebrew
 
