@@ -57,7 +57,7 @@ func NewCPU(interval time.Duration, zoom int, average bool, percpu bool) *CPU {
 		}
 	}
 
-	go self.update() // update asynchronously because of 1 second blocking period
+	self.update()
 
 	go func() {
 		ticker := time.NewTicker(self.interval)
@@ -69,7 +69,6 @@ func NewCPU(interval time.Duration, zoom int, average bool, percpu bool) *CPU {
 	return self
 }
 
-// calculates the CPU usage over a 1 second interval and blocks for the duration
 func (self *CPU) update() {
 	if self.Average {
 		go func() {
