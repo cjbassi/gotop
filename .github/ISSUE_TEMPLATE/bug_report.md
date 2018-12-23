@@ -15,4 +15,7 @@ Required information:
 - Any relevenat hardware info:
 - tmux version if using tmux:
 
-Also please copy or attach `~/.config/gotop/errors.log` if it exists and contains logs.
+Also please copy or attach the following file if it exists and contains logs:
+
+- Linux: `~/.config/gotop/errors.log`
+- OSX: `~/Library/Application Support/gotop/errors.log`
