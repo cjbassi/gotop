@@ -1,6 +1,7 @@
 module github.com/cjbassi/gotop
 
 require (
+	github.com/ProtonMail/go-appdir v0.0.0-20180220133335-7c788d1b45c6
 	github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6 // indirect
 	github.com/cjbassi/drawille-go v0.0.0-20180329221028-ad535d0f92cd // indirect
 	github.com/cjbassi/termui v0.0.0-20181208033036-e8dd23f6146c

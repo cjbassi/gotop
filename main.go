@@ -14,11 +14,12 @@ import (
 	"syscall"
 	"time"
 
+	appdir "github.com/ProtonMail/go-appdir"
 	"github.com/cjbassi/gotop/colorschemes"
 	"github.com/cjbassi/gotop/src/logging"
 	w "github.com/cjbassi/gotop/src/widgets"
 	ui "github.com/cjbassi/termui"
-	"github.com/docopt/docopt-go"
+	docopt "github.com/docopt/docopt-go"
 )
 
 var version = "1.7.1"
@@ -121,11 +122,8 @@ func handleColorscheme(cs string) error {
 }
 
 func getConfigDir() string {
-	globalConfigDir := os.Getenv("XDG_CONFIG_HOME")
-	if globalConfigDir == "" {
-		globalConfigDir = filepath.Join(os.ExpandEnv("$HOME"), ".config")
-	}
-	return filepath.Join(globalConfigDir, "gotop")
+	dirs := appdir.New("gotop")
+	return dirs.UserConfig()
 }
 
 // getCustomColorscheme	tries to read a custom json colorscheme from {configDir}/{name}.json
