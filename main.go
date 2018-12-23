@@ -35,7 +35,7 @@ var (
 	percpuLoad   = false
 	widgetCount  = 6
 	fahrenheit   = false
-	configDir    = getConfigDir()
+	configDir    = appdir.New("gotop").UserConfig()
 	logPath      = filepath.Join(configDir, "errors.log")
 	stderrLogger = log.New(os.Stderr, "", 0)
 
@@ -119,11 +119,6 @@ func handleColorscheme(cs string) error {
 		}
 	}
 	return nil
-}
-
-func getConfigDir() string {
-	dirs := appdir.New("gotop")
-	return dirs.UserConfig()
 }
 
 // getCustomColorscheme	tries to read a custom json colorscheme from {configDir}/{name}.json
