@@ -7,6 +7,7 @@ require (
 	github.com/cjbassi/termui v0.0.0-20181208033036-e8dd23f6146c
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
+	github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815
 	github.com/go-ole/go-ole v1.2.1 // indirect
 	github.com/mattn/go-runewidth v0.0.2 // indirect
 	github.com/nsf/termbox-go v0.0.0-20180407224525-3e24a7b6661e // indirect

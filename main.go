@@ -19,7 +19,7 @@ import (
 	"github.com/cjbassi/gotop/src/logging"
 	w "github.com/cjbassi/gotop/src/widgets"
 	ui "github.com/cjbassi/termui"
-	docopt "github.com/docopt/docopt-go"
+	docopt "github.com/docopt/docopt.go"
 )
 
 var version = "1.7.1"
