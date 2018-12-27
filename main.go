@@ -32,14 +32,16 @@ var (
 	zoomInterval = 3
 	helpVisible  = false
 	averageLoad  = false
+	battery      = false
 	percpuLoad   = false
-	widgetCount  = 6
+	widgetCount  = 7
 	fahrenheit   = false
 	configDir    = appdir.New("gotop").UserConfig()
 	logPath      = filepath.Join(configDir, "errors.log")
 	stderrLogger = log.New(os.Stderr, "", 0)
 
 	cpu  *w.CPU
+	batt *w.Batt
 	mem  *w.Mem
 	proc *w.Proc
 	net  *w.Net
@@ -61,6 +63,7 @@ Options:
   -p, --percpu          Show each CPU in the CPU widget.
   -a, --averagecpu      Show average CPU in the CPU widget.
   -f, --fahrenheit      Show temperatures in fahrenheit.
+  -b, --battery         Show battery charge over time (minimal overrides & sets false)
 
 Colorschemes:
   default
@@ -81,6 +84,7 @@ Colorschemes:
 	}
 	averageLoad, _ = args["--averagecpu"].(bool)
 	percpuLoad, _ = args["--percpu"].(bool)
+	battery, _ = args["--battery"].(bool)
 
 	minimal, _ = args["--minimal"].(bool)
 	if minimal {
@@ -145,7 +149,12 @@ func setupGrid() {
 		ui.Body.Set(0, 6, 6, 12, mem)
 		ui.Body.Set(6, 6, 12, 12, proc)
 	} else {
-		ui.Body.Set(0, 0, 12, 4, cpu)
+		if battery {
+			ui.Body.Set(0, 0, 8, 4, cpu)
+			ui.Body.Set(8, 0, 12, 4, batt)
+		} else {
+			ui.Body.Set(0, 0, 12, 4, cpu)
+		}
 
 		ui.Body.Set(0, 4, 4, 6, disk)
 		ui.Body.Set(0, 6, 4, 8, temp)
@@ -192,6 +201,21 @@ func widgetColors() {
 	if !minimal {
 		temp.TempLow = ui.Color(colorscheme.TempLow)
 		temp.TempHigh = ui.Color(colorscheme.TempHigh)
+		var battKeys []string
+		for key := range batt.Data {
+			battKeys = append(battKeys, key)
+		}
+		sort.Strings(battKeys)
+		bi := 0
+		for _, v := range battKeys {
+			if bi >= len(colorscheme.BattLines) {
+				// assuming colorscheme for CPU lines is not empty
+				bi = 0
+			}
+			c := colorscheme.BattLines[bi]
+			batt.LineColor[v] = ui.Color(c)
+			bi++
+		}
 	}
 }
 
@@ -212,6 +236,10 @@ func initWidgets() {
 		wg.Done()
 	}()
 	if !minimal {
+		go func() {
+			batt = w.NewBatt(time.Minute, zoom)
+			wg.Done()
+		}()
 		go func() {
 			net = w.NewNet()
 			wg.Done()

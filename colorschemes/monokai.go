@@ -9,6 +9,8 @@ var Monokai = Colorscheme{
 
 	CPULines: []int{81, 70, 208, 197, 249, 141, 221, 186},
 
+	BattLines: []int{81, 70, 208, 197, 249, 141, 221, 186},
+
 	MainMem: 208,
 	SwapMem: 186,
 
