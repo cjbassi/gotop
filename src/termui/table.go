@@ -50,7 +50,6 @@ func NewTable() *Table {
 func (self *Table) ColResize() {
 }
 
-// Buffer implements the Bufferer interface.
 func (self *Table) Draw(buf *Buffer) {
 	self.Lock()
 

@@ -41,7 +41,6 @@ func NewSparklines(ss ...*Sparkline) *Sparklines {
 	}
 }
 
-// Buffer implements Bufferer interface.
 func (self *Sparklines) Draw(buf *Buffer) {
 	self.Block.Draw(buf)
 
@@ -51,20 +50,24 @@ func (self *Sparklines) Draw(buf *Buffer) {
 	for i, line := range self.Lines {
 
 		// prints titles
-		title1Y := 2 + (self.Inner.Dy()/lc)*i
-		title2Y := (2 + (self.Inner.Dy()/lc)*i) + 1
+		title1Y := self.Inner.Min.Y + 1 + (self.Inner.Dy()/lc)*i
+		title2Y := self.Inner.Min.Y + 2 + (self.Inner.Dy()/lc)*i
 		title1 := TrimString(line.Title1, self.Inner.Dx())
 		title2 := TrimString(line.Title2, self.Inner.Dx())
-		buf.SetString(
-			title1,
-			image.Pt(self.Inner.Min.X, self.Inner.Min.Y+title1Y-1),
-			AttrPair{line.TitleColor | AttrBold, -1},
-		)
-		buf.SetString(
-			title2,
-			image.Pt(self.Inner.Min.X, self.Inner.Min.Y+title2Y-1),
-			AttrPair{line.TitleColor | AttrBold, -1},
-		)
+		if self.Inner.Dy() > 5 {
+			buf.SetString(
+				title1,
+				image.Pt(self.Inner.Min.X, title1Y),
+				AttrPair{line.TitleColor | AttrBold, -1},
+			)
+		}
+		if self.Inner.Dy() > 6 {
+			buf.SetString(
+				title2,
+				image.Pt(self.Inner.Min.X, title2Y),
+				AttrPair{line.TitleColor | AttrBold, -1},
+			)
+		}
 
 		sparkY := (self.Inner.Dy() / lc) * (i + 1)
 		// finds max data in current view used for relative heights

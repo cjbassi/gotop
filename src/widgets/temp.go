@@ -48,7 +48,6 @@ func NewTemp(fahrenheit bool) *Temp {
 	return self
 }
 
-// Buffer implements ui.Bufferer interface and renders the widget.
 func (self *Temp) Draw(buf *ui.Buffer) {
 	self.Block.Draw(buf)
 

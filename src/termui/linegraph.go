@@ -30,7 +30,6 @@ func NewLineGraph() *LineGraph {
 	}
 }
 
-// Buffer implements Bufferer interface.
 func (self *LineGraph) Draw(buf *Buffer) {
 	self.Block.Draw(buf)
 	// we render each data point on to the canvas then copy over the braille to the buffer at the end
