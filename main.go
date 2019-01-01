@@ -18,8 +18,8 @@ import (
 	"github.com/cjbassi/gotop/colorschemes"
 	"github.com/cjbassi/gotop/src/logging"
 	w "github.com/cjbassi/gotop/src/widgets"
-	ui "github.com/cjbassi/termui"
 	docopt "github.com/docopt/docopt.go"
+	ui "github.com/gizak/termui"
 )
 
 var version = "1.7.1"
@@ -34,11 +34,13 @@ var (
 	averageLoad  = false
 	battery      = false
 	percpuLoad   = false
-	widgetCount  = 7
 	fahrenheit   = false
 	configDir    = appdir.New("gotop").UserConfig()
 	logPath      = filepath.Join(configDir, "errors.log")
 	stderrLogger = log.New(os.Stderr, "", 0)
+	statusbar    = false
+	termWidth    int
+	termHeight   int
 
 	cpu  *w.CPU
 	batt *w.Batt
@@ -48,6 +50,7 @@ var (
 	disk *w.Disk
 	temp *w.Temp
 	help *w.HelpMenu
+	grid *ui.Grid
 )
 
 func cliArguments() error {
@@ -63,7 +66,8 @@ Options:
   -p, --percpu          Show each CPU in the CPU widget.
   -a, --averagecpu      Show average CPU in the CPU widget.
   -f, --fahrenheit      Show temperatures in fahrenheit.
-  -b, --battery         Show battery charge over time (minimal overrides & sets false)
+  -t, --battery         Show battery charge over time ('minimal' disables; widget updates slowly)
+  -b, --bar             Show a statusbar with the time.
 
 Colorschemes:
   default
@@ -87,9 +91,8 @@ Colorschemes:
 	battery, _ = args["--battery"].(bool)
 
 	minimal, _ = args["--minimal"].(bool)
-	if minimal {
-		widgetCount = 3
-	}
+
+	statusbar, _ = args["--bar"].(bool)
 
 	rateStr, _ := args["--rate"].(string)
 	rate, err := strconv.ParseFloat(rateStr, 64)
@@ -141,46 +144,68 @@ func getCustomColorscheme(name string) (colorschemes.Colorscheme, error) {
 }
 
 func setupGrid() {
-	ui.Body.Cols = 12
-	ui.Body.Rows = 12
+	grid = ui.NewGrid()
+	grid.SetRect(0, 0, termWidth, termHeight)
 
+	var barRow interface{}
 	if minimal {
-		ui.Body.Set(0, 0, 12, 6, cpu)
-		ui.Body.Set(0, 6, 6, 12, mem)
-		ui.Body.Set(6, 6, 12, 12, proc)
-	} else {
-		if battery {
-			ui.Body.Set(0, 0, 8, 4, cpu)
-			ui.Body.Set(8, 0, 12, 4, batt)
-		} else {
-			ui.Body.Set(0, 0, 12, 4, cpu)
+		rowHeight := 1.0 / 2
+		if statusbar {
+			rowHeight = 50.0 / 101
+			barRow = ui.NewRow(1.0/101, w.NewStatusBar())
 		}
-
-		ui.Body.Set(0, 4, 4, 6, disk)
-		ui.Body.Set(0, 6, 4, 8, temp)
-		ui.Body.Set(4, 4, 12, 8, mem)
-
-		ui.Body.Set(0, 8, 6, 12, net)
-		ui.Body.Set(6, 8, 12, 12, proc)
+		grid.Set(
+			ui.NewRow(rowHeight, cpu),
+			ui.NewRow(rowHeight,
+				ui.NewCol(1.0/2, mem),
+				ui.NewCol(1.0/2, proc),
+			),
+			barRow,
+		)
+	} else {
+		rowHeight := 1.0 / 3
+		if statusbar {
+			rowHeight = 50.0 / 151
+			barRow = ui.NewRow(1.0/151, w.NewStatusBar())
+		}
+		var cpuRow ui.GridItem
+		if battery {
+			cpuRow = ui.NewRow(rowHeight,
+				ui.NewCol(2.0/3, cpu),
+				ui.NewCol(1.0/3, batt),
+			)
+		} else {
+			cpuRow = ui.NewRow(rowHeight, cpu)
+		}
+		grid.Set(
+			cpuRow,
+			ui.NewRow(rowHeight,
+				ui.NewCol(1.0/3,
+					ui.NewRow(1.0/2, disk),
+					ui.NewRow(1.0/2, temp),
+				),
+				ui.NewCol(2.0/3, mem),
+			),
+			ui.NewRow(rowHeight,
+				ui.NewCol(1.0/2, net),
+				ui.NewCol(1.0/2, proc),
+			),
+			barRow,
+		)
 	}
 }
 
 func termuiColors() {
-	ui.Theme.Fg = ui.Color(colorscheme.Fg)
-	ui.Theme.Bg = ui.Color(colorscheme.Bg)
-	ui.Theme.LabelFg = ui.Color(colorscheme.BorderLabel)
-	ui.Theme.LabelBg = ui.Color(colorscheme.Bg)
-	ui.Theme.BorderFg = ui.Color(colorscheme.BorderLine)
-	ui.Theme.BorderBg = ui.Color(colorscheme.Bg)
-
-	ui.Theme.TableCursor = ui.Color(colorscheme.ProcCursor)
-	ui.Theme.Sparkline = ui.Color(colorscheme.Sparkline)
-	ui.Theme.GaugeColor = ui.Color(colorscheme.DiskBar)
+	ui.Theme.Default = ui.AttrPair{ui.Attribute(colorscheme.Fg), ui.Attribute(colorscheme.Bg)}
+	ui.Theme.Block.Title = ui.AttrPair{ui.Attribute(colorscheme.BorderLabel), ui.Attribute(colorscheme.Bg)}
+	ui.Theme.Block.Border = ui.AttrPair{ui.Attribute(colorscheme.BorderLine), ui.Attribute(colorscheme.Bg)}
 }
 
 func widgetColors() {
-	mem.LineColor["Main"] = ui.Color(colorscheme.MainMem)
-	mem.LineColor["Swap"] = ui.Color(colorscheme.SwapMem)
+	mem.LineColor["Main"] = ui.Attribute(colorscheme.MainMem)
+	mem.LineColor["Swap"] = ui.Attribute(colorscheme.SwapMem)
+
+	proc.CursorColor = ui.Attribute(colorscheme.ProcCursor)
 
 	var keys []string
 	for key := range cpu.Data {
@@ -194,60 +219,76 @@ func widgetColors() {
 			i = 0
 		}
 		c := colorscheme.CPULines[i]
-		cpu.LineColor[v] = ui.Color(c)
+		cpu.LineColor[v] = ui.Attribute(c)
 		i++
 	}
 
 	if !minimal {
-		temp.TempLow = ui.Color(colorscheme.TempLow)
-		temp.TempHigh = ui.Color(colorscheme.TempHigh)
-		var battKeys []string
-		for key := range batt.Data {
-			battKeys = append(battKeys, key)
-		}
-		sort.Strings(battKeys)
-		bi := 0
-		for _, v := range battKeys {
-			if bi >= len(colorscheme.BattLines) {
-				// assuming colorscheme for CPU lines is not empty
-				bi = 0
+		if battery {
+			var battKeys []string
+			for key := range batt.Data {
+				battKeys = append(battKeys, key)
 			}
-			c := colorscheme.BattLines[bi]
-			batt.LineColor[v] = ui.Color(c)
-			bi++
+			sort.Strings(battKeys)
+			i = 0 // Re-using variable from CPU
+			for _, v := range battKeys {
+				if i >= len(colorscheme.BattLines) {
+					// assuming colorscheme for battery lines is not empty
+					i = 0
+				}
+				c := colorscheme.BattLines[i]
+				batt.LineColor[v] = ui.Attribute(c)
+				i++
+			}
 		}
+
+		temp.TempLow = ui.Attribute(colorscheme.TempLow)
+		temp.TempHigh = ui.Attribute(colorscheme.TempHigh)
+
+		net.Lines[0].LineColor = ui.Attribute(colorscheme.Sparkline)
+		net.Lines[0].TitleColor = ui.Attribute(colorscheme.BorderLabel)
+		net.Lines[1].LineColor = ui.Attribute(colorscheme.Sparkline)
+		net.Lines[1].TitleColor = ui.Attribute(colorscheme.BorderLabel)
 	}
 }
 
 func initWidgets() {
 	var wg sync.WaitGroup
-	wg.Add(widgetCount)
 
+	wg.Add(1)
 	go func() {
 		cpu = w.NewCPU(interval, zoom, averageLoad, percpuLoad)
 		wg.Done()
 	}()
+	wg.Add(1)
 	go func() {
 		mem = w.NewMem(interval, zoom)
 		wg.Done()
 	}()
+	wg.Add(1)
 	go func() {
 		proc = w.NewProc()
 		wg.Done()
 	}()
 	if !minimal {
-		go func() {
-			batt = w.NewBatt(time.Minute, zoom)
-			wg.Done()
-		}()
+		if battery {
+			wg.Add(1)
+			go func() {
+				batt = w.NewBatt(time.Minute, zoom)
+				wg.Done()
+			}()
+		}
+		wg.Add(1)
 		go func() {
 			net = w.NewNet()
 			wg.Done()
 		}()
+		wg.Add(1)
 		go func() {
 			disk = w.NewDisk()
 			wg.Done()
 		}()
+		wg.Add(1)
 		go func() {
 			temp = w.NewTemp(fahrenheit)
 			wg.Done()
@@ -274,7 +315,7 @@ func eventLoop() {
 			return
 		case <-drawTicker:
 			if !helpVisible {
-				ui.Render(ui.Body)
+				ui.Render(grid)
 			}
 		case e := <-uiEvents:
 			switch e.ID {
@@ -286,7 +327,7 @@ func eventLoop() {
 					ui.Clear()
 					ui.Render(help)
 				} else {
-					ui.Render(ui.Body)
+					ui.Render(grid)
 				}
 			case "h":
 				if !helpVisible {
@@ -307,27 +348,27 @@ func eventLoop() {
 			case "<Escape>":
 				if helpVisible {
 					helpVisible = false
-					ui.Render(ui.Body)
+					ui.Render(grid)
 				}
 			case "<Resize>":
 				payload := e.Payload.(ui.Resize)
-				ui.Body.Width, ui.Body.Height = payload.Width, payload.Height
-				ui.Body.Resize()
+				grid.SetRect(0, 0, payload.Width, payload.Height)
+				help.Resize(payload.Width, payload.Height)
 				ui.Clear()
 				if helpVisible {
 					ui.Render(help)
 				} else {
-					ui.Render(ui.Body)
+					ui.Render(grid)
 				}
 
 			case "<MouseLeft>":
 				payload := e.Payload.(ui.Mouse)
 				proc.Click(payload.X, payload.Y)
 				ui.Render(proc)
-			case "<MouseWheelUp>", "<Up>", "k":
+			case "k", "<Up>", "<MouseWheelUp>":
 				proc.Up()
 				ui.Render(proc)
-			case "<MouseWheelDown>", "<Down>", "j":
+			case "j", "<Down>", "<MouseWheelDown>":
 				proc.Down()
 				ui.Render(proc)
 			case "g", "<Home>":
@@ -401,11 +442,6 @@ func main() {
 		stderrLogger.Fatalf("failed to parse cli args: %v", err)
 	}
 
-	termuiColors() // need to do this before initializing widgets so that they can inherit the colors
-	initWidgets()
-	widgetColors()
-	help = w.NewHelpMenu()
-
 	if err := ui.Init(); err != nil {
 		stderrLogger.Fatalf("failed to initialize termui: %v", err)
 	}
@@ -413,8 +449,16 @@ func main() {
 
 	logging.StderrToLogfile(lf)
 
+	termWidth, termHeight = ui.TerminalSize()
+
+	termuiColors() // need to do this before initializing widgets so that they can inherit the colors
+	initWidgets()
+	widgetColors()
+	help = w.NewHelpMenu()
+	help.Resize(termWidth, termHeight)
+
 	setupGrid()
-	ui.Render(ui.Body)
+	ui.Render(grid)
 
 	eventLoop()
 }

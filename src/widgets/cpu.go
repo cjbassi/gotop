@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	ui "github.com/cjbassi/termui"
+	ui "github.com/cjbassi/gotop/src/termui"
 	psCPU "github.com/shirou/gopsutil/cpu"
 )
 
@@ -35,7 +35,7 @@ func NewCPU(interval time.Duration, zoom int, average bool, percpu bool) *CPU {
 		PerCPU:       percpu,
 		formatString: formatString,
 	}
-	self.Label = "CPU Usage"
+	self.Title = " CPU Usage "
 	self.Zoom = zoom
 
 	if !(self.Average || self.PerCPU) {

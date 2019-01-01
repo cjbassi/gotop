@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	ui "github.com/cjbassi/termui"
+	ui "github.com/cjbassi/gotop/src/termui"
 	"github.com/distatus/battery"
 )
 
@@ -24,7 +24,7 @@ func NewBatt(interval time.Duration, zoom int) *Batt {
 		Count:     len(batts),
 		interval:  interval,
 	}
-	self.Label = "Battery Status"
+	self.Title = "Battery Status"
 	self.Zoom = zoom
 	if err != nil {
 		log.Printf("failed to get battery info from system: %v", err)

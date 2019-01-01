@@ -115,11 +115,11 @@ This will place the built packages into the `dist` folder.
 
 ## Built With
 
-- [cjbassi/termui](https://github.com/cjbassi/termui)
-  - [drawille-go](https://github.com/exrook/drawille-go)
-  - [termbox](https://github.com/nsf/termbox-go)
-- [gopsutil](https://github.com/shirou/gopsutil)
-- [goreleaser](https://github.com/goreleaser/goreleaser)
+- [gizak/termui](https://github.com/gizak/termui)
+  - [nsf/termbox](https://github.com/nsf/termbox-go)
+- [exrook/drawille-go](https://github.com/exrook/drawille-go)
+- [shirou/gopsutil](https://github.com/shirou/gopsutil)
+- [goreleaser/goreleaser](https://github.com/goreleaser/goreleaser)
 - [battery](https://github.com/distatus/battery)
 
 ## Stargazers over time
