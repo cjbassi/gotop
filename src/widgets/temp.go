@@ -5,10 +5,11 @@ package widgets
 
 import (
 	"fmt"
+	"image"
 	"sort"
 	"time"
 
-	ui "github.com/cjbassi/termui"
+	ui "github.com/gizak/termui"
 )
 
 type Temp struct {
@@ -16,8 +17,8 @@ type Temp struct {
 	interval   time.Duration
 	Data       map[string]int
 	Threshold  int
-	TempLow    ui.Color
-	TempHigh   ui.Color
+	TempLow    ui.Attribute
+	TempHigh   ui.Attribute
 	Fahrenheit bool
 }
 
@@ -28,7 +29,7 @@ func NewTemp(fahrenheit bool) *Temp {
 		Data:      make(map[string]int),
 		Threshold: 80, // temp at which color should change
 	}
-	self.Label = "Temperatures"
+	self.Title = " Temperatures "
 
 	if fahrenheit {
 		self.Fahrenheit = true
@@ -48,8 +49,8 @@ func NewTemp(fahrenheit bool) *Temp {
 }
 
 // Buffer implements ui.Bufferer interface and renders the widget.
-func (self *Temp) Buffer() *ui.Buffer {
-	buf := self.Block.Buffer()
+func (self *Temp) Draw(buf *ui.Buffer) {
+	self.Block.Draw(buf)
 
 	var keys []string
 	for key := range self.Data {
@@ -58,7 +59,7 @@ func (self *Temp) Buffer() *ui.Buffer {
 	sort.Strings(keys)
 
 	for y, key := range keys {
-		if y+1 > self.Y {
+		if y+1 > self.Inner.Dy() {
 			break
 		}
 
@@ -67,14 +68,23 @@ func (self *Temp) Buffer() *ui.Buffer {
 			fg = self.TempHigh
 		}
 
-		s := ui.MaxString(key, (self.X - 4))
-		buf.SetString(1, y+1, s, self.Fg, self.Bg)
+		s := ui.TrimString(key, (self.Inner.Dx() - 4))
+		buf.SetString(s,
+			image.Pt(self.Inner.Min.X, self.Inner.Min.Y+y),
+			ui.Theme.Default,
+		)
 		if self.Fahrenheit {
-			buf.SetString(self.X-3, y+1, fmt.Sprintf("%3dF", self.Data[key]), fg, self.Bg)
+			buf.SetString(
+				fmt.Sprintf("%3dF", self.Data[key]),
+				image.Pt(self.Inner.Dx()-3, y+1),
+				ui.AttrPair{fg, -1},
+			)
 		} else {
-			buf.SetString(self.X-3, y+1, fmt.Sprintf("%3dC", self.Data[key]), fg, self.Bg)
+			buf.SetString(
+				fmt.Sprintf("%3dC", self.Data[key]),
+				image.Pt(self.Inner.Max.X-4, self.Inner.Min.Y+y),
+				ui.AttrPair{fg, -1},
+			)
 		}
 	}
-
-	return buf
 }

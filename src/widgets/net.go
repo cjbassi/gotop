@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
+	ui "github.com/cjbassi/gotop/src/termui"
 	"github.com/cjbassi/gotop/src/utils"
-	ui "github.com/cjbassi/termui"
 	psNet "github.com/shirou/gopsutil/net"
 )
 
@@ -30,7 +30,7 @@ func NewNet() *Net {
 		Sparklines: spark,
 		interval:   time.Second,
 	}
-	self.Label = "Network Usage"
+	self.Title = " Network Usage "
 
 	self.update()
 

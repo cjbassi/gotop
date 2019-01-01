@@ -1,8 +1,10 @@
 package termui
 
 import (
-	"fmt"
+	"image"
 	"strings"
+
+	. "github.com/gizak/termui"
 )
 
 // Table tracks all the attributes of a Table instance
@@ -19,7 +21,7 @@ type Table struct {
 	PadLeft    int
 
 	Cursor      bool
-	CursorColor Color
+	CursorColor Attribute
 
 	UniqueCol    int    // the column used to identify the selected item
 	SelectedItem string // used to keep the cursor on the correct item if the data changes
@@ -30,8 +32,8 @@ type Table struct {
 // NewTable returns a new Table instance
 func NewTable() *Table {
 	self := &Table{
-		Block:       NewBlock(),
-		CursorColor: Theme.TableCursor,
+		Block: NewBlock(),
+		// CursorColor: Theme.TableCursor,
 		SelectedRow: 0,
 		TopRow:      0,
 		UniqueCol:   0,
@@ -46,8 +48,8 @@ func (self *Table) ColResize() {
 }
 
 // Buffer implements the Bufferer interface.
-func (self *Table) Buffer() *Buffer {
-	buf := self.Block.Buffer()
+func (self *Table) Draw(buf *Buffer) {
+	self.Block.Draw(buf)
 
 	self.ColResizer()
 
@@ -67,28 +69,26 @@ func (self *Table) Buffer() *Buffer {
 			continue
 		}
 		// don't render column if it doesn't fit in widget
-		if width > (self.X-self.CellXPos[i])+1 {
+		if width > (self.Inner.Dx()-self.CellXPos[i])+1 {
 			continue
 		}
-		buf.SetString(self.CellXPos[i], 1, h, self.Fg|AttrBold, self.Bg)
+		buf.SetString(
+			h,
+			image.Pt(self.Inner.Min.X+self.CellXPos[i]-1, self.Inner.Min.Y),
+			AttrPair{Theme.Default.Fg | AttrBold, -1},
+		)
 	}
 
 	// prints each row
-	for rowNum := self.TopRow; rowNum < self.TopRow+self.Y-1 && rowNum < len(self.Rows); rowNum++ {
+	for rowNum := self.TopRow; rowNum < self.TopRow+self.Inner.Dy()-1 && rowNum < len(self.Rows); rowNum++ {
 		if rowNum < 0 || rowNum >= len(self.Rows) {
-			Error("table rows",
-				fmt.Sprint(
-					"rowNum: ", rowNum, "\n",
-					"self.TopRow: ", self.TopRow, "\n",
-					"len(self.Rows): ", len(self.Rows), "\n",
-					"self.Y: ", self.Y,
-				))
+			panic("TODO")
 		}
 		row := self.Rows[rowNum]
 		y := (rowNum + 2) - self.TopRow
 
 		// prints cursor
-		fg := self.Fg
+		fg := Theme.Default.Fg
 		if self.Cursor {
 			if (self.SelectedItem == "" && rowNum == self.SelectedRow) || (self.SelectedItem != "" && self.SelectedItem == row[self.UniqueCol]) {
 				fg = self.CursorColor | AttrReverse
@@ -96,7 +96,11 @@ func (self *Table) Buffer() *Buffer {
 					if width == 0 {
 						continue
 					}
-					buf.SetString(1, y, strings.Repeat(" ", self.X), fg, self.Bg)
+					buf.SetString(
+						strings.Repeat(" ", self.Inner.Dx()),
+						image.Pt(self.Inner.Min.X, self.Inner.Min.Y+y-1),
+						AttrPair{fg, -1},
+					)
 				}
 				self.SelectedItem = row[self.UniqueCol]
 				self.SelectedRow = rowNum
@@ -109,15 +113,17 @@ func (self *Table) Buffer() *Buffer {
 				continue
 			}
 			// don't render column if width is greater than distance to end of widget
-			if width > (self.X-self.CellXPos[i])+1 {
+			if width > (self.Inner.Dx()-self.CellXPos[i])+1 {
 				continue
 			}
-			r := MaxString(row[i], width)
-			buf.SetString(self.CellXPos[i], y, r, fg, self.Bg)
+			r := TrimString(row[i], width)
+			buf.SetString(
+				r,
+				image.Pt(self.Inner.Min.X+self.CellXPos[i]-1, self.Inner.Min.Y+y-1),
+				AttrPair{fg, -1},
+			)
 		}
 	}
-
-	return buf
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -138,8 +144,8 @@ func (self *Table) calcPos() {
 	if self.SelectedRow > len(self.Rows)-1 {
 		self.SelectedRow = len(self.Rows) - 1
 	}
-	if self.SelectedRow > self.TopRow+(self.Y-2) {
-		self.TopRow = self.SelectedRow - (self.Y - 2)
+	if self.SelectedRow > self.TopRow+(self.Inner.Dy()-2) {
+		self.TopRow = self.SelectedRow - (self.Inner.Dy() - 2)
 	}
 }
 
@@ -166,29 +172,29 @@ func (self *Table) Bottom() {
 // The number of lines in a page is equal to the height of the widgeself.
 
 func (self *Table) HalfPageUp() {
-	self.SelectedRow = self.SelectedRow - (self.Y-2)/2
+	self.SelectedRow = self.SelectedRow - (self.Inner.Dy()-2)/2
 	self.calcPos()
 }
 
 func (self *Table) HalfPageDown() {
-	self.SelectedRow = self.SelectedRow + (self.Y-2)/2
+	self.SelectedRow = self.SelectedRow + (self.Inner.Dy()-2)/2
 	self.calcPos()
 }
 
 func (self *Table) PageUp() {
-	self.SelectedRow -= (self.Y - 2)
+	self.SelectedRow -= (self.Inner.Dy() - 2)
 	self.calcPos()
 }
 
 func (self *Table) PageDown() {
-	self.SelectedRow += (self.Y - 2)
+	self.SelectedRow += (self.Inner.Dy() - 2)
 	self.calcPos()
 }
 
 func (self *Table) Click(x, y int) {
-	x = x - self.XOffset
-	y = y - self.YOffset
-	if (x > 0 && x <= self.X) && (y > 0 && y <= self.Y) {
+	x = x - self.Min.X
+	y = y - self.Min.Y
+	if (x > 0 && x <= self.Inner.Dx()) && (y > 0 && y <= self.Inner.Dy()) {
 		self.SelectedRow = (self.TopRow + y) - 2
 		self.calcPos()
 	}

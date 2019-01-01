@@ -1,20 +1,22 @@
 package termui
 
 import (
+	"image"
 	"sort"
 
 	drawille "github.com/cjbassi/drawille-go"
+	. "github.com/gizak/termui"
 )
 
 // LineGraph implements a line graph of data points.
 type LineGraph struct {
 	*Block
 	Data      map[string][]float64
-	LineColor map[string]Color
+	LineColor map[string]Attribute
 	Zoom      int
 	Labels    map[string]string
 
-	DefaultLineColor Color
+	DefaultLineColor Attribute
 }
 
 // NewLineGraph returns a new LineGraph with current theme.
@@ -22,24 +24,22 @@ func NewLineGraph() *LineGraph {
 	return &LineGraph{
 		Block:     NewBlock(),
 		Data:      make(map[string][]float64),
-		LineColor: make(map[string]Color),
+		LineColor: make(map[string]Attribute),
 		Labels:    make(map[string]string),
 		Zoom:      5,
-
-		DefaultLineColor: Theme.LineGraph,
 	}
 }
 
 // Buffer implements Bufferer interface.
-func (self *LineGraph) Buffer() *Buffer {
-	buf := self.Block.Buffer()
+func (self *LineGraph) Draw(buf *Buffer) {
+	self.Block.Draw(buf)
 	// we render each data point on to the canvas then copy over the braille to the buffer at the end
 	// fyi braille characters have 2x4 dots for each character
 	c := drawille.NewCanvas()
 	// used to keep track of the braille colors until the end when we render the braille to the buffer
-	colors := make([][]Color, self.X+2)
+	colors := make([][]Attribute, self.Inner.Dx()+2)
 	for i := range colors {
-		colors[i] = make([]Color, self.Y+2)
+		colors[i] = make([]Attribute, self.Inner.Dy()+2)
 	}
 
 	// sort the series so that overlapping data will overlap the same way each time
@@ -64,8 +64,8 @@ func (self *LineGraph) Buffer() *Buffer {
 		lastY, lastX := -1, -1
 		// assign colors to `colors` and lines/points to the canvas
 		for i := len(seriesData) - 1; i >= 0; i-- {
-			x := ((self.X + 1) * 2) - 1 - (((len(seriesData) - 1) - i) * self.Zoom)
-			y := ((self.Y + 1) * 4) - 1 - int((float64((self.Y)*4)-1)*(seriesData[i]/100))
+			x := ((self.Inner.Dx() + 1) * 2) - 1 - (((len(seriesData) - 1) - i) * self.Zoom)
+			y := ((self.Inner.Dy() + 1) * 4) - 1 - int((float64((self.Inner.Dy())*4)-1)*(seriesData[i]/100))
 			if x < 0 {
 				// render the line to the last point up to the wall
 				if x > 0-self.Zoom {
@@ -98,7 +98,10 @@ func (self *LineGraph) Buffer() *Buffer {
 					continue
 				}
 				if char != 10240 { // empty braille character
-					buf.SetCell(x, y, Cell{char, colors[x][y], self.Bg})
+					buf.SetCell(
+						Cell{char, AttrPair{colors[x][y], -1}},
+						image.Pt(self.Inner.Min.X+x-1, self.Inner.Min.Y+y-1),
+					)
 				}
 			}
 		}
@@ -106,7 +109,7 @@ func (self *LineGraph) Buffer() *Buffer {
 
 	// renders key/label ontop
 	for i, seriesName := range seriesList {
-		if i+2 > self.Y {
+		if i+2 > self.Inner.Dy() {
 			continue
 		}
 		seriesLineColor, ok := self.LineColor[seriesName]
@@ -118,11 +121,12 @@ func (self *LineGraph) Buffer() *Buffer {
 		str := seriesName + " " + self.Labels[seriesName]
 		for k, char := range str {
 			if char != ' ' {
-				buf.SetCell(3+k, i+2, Cell{char, seriesLineColor, self.Bg})
+				buf.SetCell(
+					Cell{char, AttrPair{seriesLineColor, -1}},
+					image.Pt(self.Inner.Min.X+2+k, self.Inner.Min.Y+i+1),
+				)
 			}
 		}
 
 	}
-
-	return buf
 }

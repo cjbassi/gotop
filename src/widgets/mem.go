@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
+	ui "github.com/cjbassi/gotop/src/termui"
 	"github.com/cjbassi/gotop/src/utils"
-	ui "github.com/cjbassi/termui"
 	psMem "github.com/shirou/gopsutil/mem"
 )
 
@@ -20,7 +20,7 @@ func NewMem(interval time.Duration, zoom int) *Mem {
 		LineGraph: ui.NewLineGraph(),
 		interval:  interval,
 	}
-	self.Label = "Memory Usage"
+	self.Title = " Memory Usage "
 	self.Zoom = zoom
 	self.Data["Main"] = []float64{0}
 	self.Data["Swap"] = []float64{0}
