@@ -38,6 +38,7 @@ var (
 	configDir    = appdir.New("gotop").UserConfig()
 	logPath      = filepath.Join(configDir, "errors.log")
 	stderrLogger = log.New(os.Stderr, "", 0)
+	statusbar    = false
 	termWidth    int
 	termHeight   int
 
@@ -64,6 +65,7 @@ Options:
   -p, --percpu          Show each CPU in the CPU widget.
   -a, --averagecpu      Show average CPU in the CPU widget.
   -f, --fahrenheit      Show temperatures in fahrenheit.
+  -b, --bar             Show a statusbar with the time.
 
 Colorschemes:
   default
@@ -89,6 +91,8 @@ Colorschemes:
 	if minimal {
 		widgetCount = 3
 	}
+
+	statusbar, _ = args["--bar"].(bool)
 
 	rateStr, _ := args["--rate"].(string)
 	rate, err := strconv.ParseFloat(rateStr, 64)
@@ -143,28 +147,41 @@ func setupGrid() {
 	grid = ui.NewGrid()
 	grid.SetRect(0, 0, termWidth, termHeight)
 
+	var barRow interface{}
 	if minimal {
+		rowHeight := 1.0 / 2
+		if statusbar {
+			rowHeight = 50.0 / 101
+			barRow = ui.NewRow(1.0/101, w.NewStatusBar())
+		}
 		grid.Set(
-			ui.NewRow(1.0/2, cpu),
-			ui.NewRow(1.0/2,
+			ui.NewRow(rowHeight, cpu),
+			ui.NewRow(rowHeight,
 				ui.NewCol(1.0/2, mem),
 				ui.NewCol(1.0/2, proc),
 			),
+			barRow,
 		)
 	} else {
+		rowHeight := 1.0 / 3
+		if statusbar {
+			rowHeight = 50.0 / 151
+			barRow = ui.NewRow(1.0/151, w.NewStatusBar())
+		}
 		grid.Set(
-			ui.NewRow(1.0/3, cpu),
-			ui.NewRow(1.0/3,
+			ui.NewRow(rowHeight, cpu),
+			ui.NewRow(rowHeight,
 				ui.NewCol(1.0/3,
 					ui.NewRow(1.0/2, disk),
 					ui.NewRow(1.0/2, temp),
 				),
 				ui.NewCol(2.0/3, mem),
 			),
-			ui.NewRow(1.0/3,
+			ui.NewRow(rowHeight,
 				ui.NewCol(1.0/2, net),
 				ui.NewCol(1.0/2, proc),
 			),
+			barRow,
 		)
 	}
 }

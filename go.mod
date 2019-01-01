@@ -6,7 +6,7 @@ require (
 	github.com/cjbassi/drawille-go v0.0.0-20180329221028-ad535d0f92cd
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815
-	github.com/gizak/termui v0.0.0-20190101005313-46c77dca8480
+	github.com/gizak/termui v0.0.0-20190101100649-ffdef4cb72e9
 	github.com/go-ole/go-ole v1.2.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/shirou/gopsutil v2.18.11+incompatible

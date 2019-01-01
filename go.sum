@@ -10,6 +10,10 @@ github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815 h1:HMAfwOa33y82Ia
 github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:l7JNRynTRuqe45tpIyItHNqZWTxywYjp87MWTOnU5cg=
 github.com/gizak/termui v0.0.0-20190101005313-46c77dca8480 h1:+NHS7QUnQqEwIuhrHaFT6R78LMGbja4fYTu6wny7Q4s=
 github.com/gizak/termui v0.0.0-20190101005313-46c77dca8480/go.mod h1:S3xz8JHXNDPSNFsvXCdG7bHlEGrwvUG3a0joR/xYZ5M=
+github.com/gizak/termui v0.0.0-20190101093801-cb2e49106b0d h1:+4uQfMi8fK2KnydfTqUW9wuRLfNVkzz+LuH7EHPUwxA=
+github.com/gizak/termui v0.0.0-20190101093801-cb2e49106b0d/go.mod h1:S3xz8JHXNDPSNFsvXCdG7bHlEGrwvUG3a0joR/xYZ5M=
+github.com/gizak/termui v0.0.0-20190101100649-ffdef4cb72e9 h1:h5eo3CW6c9WMG+rN8cVxf25v8bSWFjuaDJdvtEWc61E=
+github.com/gizak/termui v0.0.0-20190101100649-ffdef4cb72e9/go.mod h1:S3xz8JHXNDPSNFsvXCdG7bHlEGrwvUG3a0joR/xYZ5M=
 github.com/go-ole/go-ole v1.2.1 h1:2lOsA72HgjxAuMlKpFiCbHTvu44PIVkZ5hqm3RSdI/E=
 github.com/go-ole/go-ole v1.2.1/go.mod h1:7FAglXiTm7HKlQRDeOQ6ZNUHidzCWXuZWq/1dTyBNF8=
 github.com/mattn/go-runewidth v0.0.2 h1:UnlwIPBGaTZfPQ6T1IGzPI0EkYAQmT9fAEJ/poFC63o=
