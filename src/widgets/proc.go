@@ -8,8 +8,9 @@ import (
 	"strconv"
 	"time"
 
+	ui "github.com/cjbassi/gotop/src/termui"
 	"github.com/cjbassi/gotop/src/utils"
-	ui "github.com/cjbassi/termui"
+	"github.com/gizak/termui"
 	psCPU "github.com/shirou/gopsutil/cpu"
 )
 
@@ -49,7 +50,7 @@ func NewProc() *Proc {
 		sortMethod: "c",
 		group:      true,
 	}
-	self.Label = "Processes"
+	self.Title = " Processes "
 	self.ColResizer = self.ColResize
 	self.Cursor = true
 	self.Gap = 3
@@ -108,11 +109,11 @@ func (self *Proc) Sort() {
 // ColResize overrides the default ColResize in the termui table.
 func (self *Proc) ColResize() {
 	self.ColWidths = []int{
-		5, utils.Max(self.X-26, 10), 4, 4,
+		5, utils.Max(self.Inner.Dx()-26, 10), 4, 4,
 	}
 }
 
-func (self *Proc) ChangeSort(e ui.Event) {
+func (self *Proc) ChangeSort(e termui.Event) {
 	if self.sortMethod != e.ID {
 		self.sortMethod = e.ID
 		self.Top()

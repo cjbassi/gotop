@@ -1,9 +1,10 @@
 package widgets
 
 import (
+	"image"
 	"strings"
 
-	ui "github.com/cjbassi/termui"
+	ui "github.com/gizak/termui"
 )
 
 const KEYBINDS = `
@@ -34,27 +35,33 @@ CPU and Mem graph scaling:
 `
 
 type HelpMenu struct {
-	*ui.Block
+	ui.Block
 }
 
 func NewHelpMenu() *HelpMenu {
-	block := ui.NewBlock()
-	block.X = 51 // width - 1
-	block.Y = 24 // height - 1
-	return &HelpMenu{block}
+	return &HelpMenu{
+		Block: *ui.NewBlock(),
+	}
 }
 
-func (self *HelpMenu) Buffer() *ui.Buffer {
-	buf := self.Block.Buffer()
+func (self *HelpMenu) Resize(termWidth, termHeight int) {
+	textWidth := 53
+	textHeight := 22
+	x := (termWidth - textWidth) / 2
+	y := (termHeight - textHeight) / 2
 
-	self.Block.XOffset = (ui.Body.Width - self.Block.X) / 2  // X coordinate
-	self.Block.YOffset = (ui.Body.Height - self.Block.Y) / 2 // Y coordinate
+	self.Block.SetRect(x, y, textWidth+x, textHeight+y)
+}
+
+func (self *HelpMenu) Draw(buf *ui.Buffer) {
+	self.Block.Draw(buf)
 
 	for y, line := range strings.Split(KEYBINDS, "\n") {
 		for x, char := range line {
-			buf.SetCell(x+1, y, ui.NewCell(char, ui.Color(7), self.Bg))
+			buf.SetCell(
+				ui.Cell{char, ui.AttrPair{ui.Attribute(7), -1}},
+				image.Pt(self.Inner.Min.X+x, self.Inner.Min.Y+y-1),
+			)
 		}
 	}
-
-	return buf
 }

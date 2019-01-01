@@ -18,8 +18,8 @@ import (
 	"github.com/cjbassi/gotop/colorschemes"
 	"github.com/cjbassi/gotop/src/logging"
 	w "github.com/cjbassi/gotop/src/widgets"
-	ui "github.com/cjbassi/termui"
 	docopt "github.com/docopt/docopt.go"
+	ui "github.com/gizak/termui"
 )
 
 var version = "1.7.1"
@@ -38,6 +38,8 @@ var (
 	configDir    = appdir.New("gotop").UserConfig()
 	logPath      = filepath.Join(configDir, "errors.log")
 	stderrLogger = log.New(os.Stderr, "", 0)
+	termWidth    int
+	termHeight   int
 
 	cpu  *w.CPU
 	mem  *w.Mem
@@ -46,6 +48,7 @@ var (
 	disk *w.Disk
 	temp *w.Temp
 	help *w.HelpMenu
+	grid *ui.Grid
 )
 
 func cliArguments() error {
@@ -137,41 +140,46 @@ func getCustomColorscheme(name string) (colorschemes.Colorscheme, error) {
 }
 
 func setupGrid() {
-	ui.Body.Cols = 12
-	ui.Body.Rows = 12
+	grid = ui.NewGrid()
+	grid.SetRect(0, 0, termWidth, termHeight)
 
 	if minimal {
-		ui.Body.Set(0, 0, 12, 6, cpu)
-		ui.Body.Set(0, 6, 6, 12, mem)
-		ui.Body.Set(6, 6, 12, 12, proc)
+		grid.Set(
+			ui.NewRow(1.0/2, cpu),
+			ui.NewRow(1.0/2,
+				ui.NewCol(1.0/2, mem),
+				ui.NewCol(1.0/2, proc),
+			),
+		)
 	} else {
-		ui.Body.Set(0, 0, 12, 4, cpu)
-
-		ui.Body.Set(0, 4, 4, 6, disk)
-		ui.Body.Set(0, 6, 4, 8, temp)
-		ui.Body.Set(4, 4, 12, 8, mem)
-
-		ui.Body.Set(0, 8, 6, 12, net)
-		ui.Body.Set(6, 8, 12, 12, proc)
+		grid.Set(
+			ui.NewRow(1.0/3, cpu),
+			ui.NewRow(1.0/3,
+				ui.NewCol(1.0/3,
+					ui.NewRow(1.0/2, disk),
+					ui.NewRow(1.0/2, temp),
+				),
+				ui.NewCol(2.0/3, mem),
+			),
+			ui.NewRow(1.0/3,
+				ui.NewCol(1.0/2, net),
+				ui.NewCol(1.0/2, proc),
+			),
+		)
 	}
 }
 
 func termuiColors() {
-	ui.Theme.Fg = ui.Color(colorscheme.Fg)
-	ui.Theme.Bg = ui.Color(colorscheme.Bg)
-	ui.Theme.LabelFg = ui.Color(colorscheme.BorderLabel)
-	ui.Theme.LabelBg = ui.Color(colorscheme.Bg)
-	ui.Theme.BorderFg = ui.Color(colorscheme.BorderLine)
-	ui.Theme.BorderBg = ui.Color(colorscheme.Bg)
-
-	ui.Theme.TableCursor = ui.Color(colorscheme.ProcCursor)
-	ui.Theme.Sparkline = ui.Color(colorscheme.Sparkline)
-	ui.Theme.GaugeColor = ui.Color(colorscheme.DiskBar)
+	ui.Theme.Default = ui.AttrPair{ui.Attribute(colorscheme.Fg), ui.Attribute(colorscheme.Bg)}
+	ui.Theme.Block.Title = ui.AttrPair{ui.Attribute(colorscheme.BorderLabel), ui.Attribute(colorscheme.Bg)}
+	ui.Theme.Block.Border = ui.AttrPair{ui.Attribute(colorscheme.BorderLine), ui.Attribute(colorscheme.Bg)}
 }
 
 func widgetColors() {
-	mem.LineColor["Main"] = ui.Color(colorscheme.MainMem)
-	mem.LineColor["Swap"] = ui.Color(colorscheme.SwapMem)
+	mem.LineColor["Main"] = ui.Attribute(colorscheme.MainMem)
+	mem.LineColor["Swap"] = ui.Attribute(colorscheme.SwapMem)
+
+	proc.CursorColor = ui.Attribute(colorscheme.ProcCursor)
 
 	var keys []string
 	for key := range cpu.Data {
@@ -185,13 +193,18 @@ func widgetColors() {
 			i = 0
 		}
 		c := colorscheme.CPULines[i]
-		cpu.LineColor[v] = ui.Color(c)
+		cpu.LineColor[v] = ui.Attribute(c)
 		i++
 	}
 
 	if !minimal {
-		temp.TempLow = ui.Color(colorscheme.TempLow)
-		temp.TempHigh = ui.Color(colorscheme.TempHigh)
+		temp.TempLow = ui.Attribute(colorscheme.TempLow)
+		temp.TempHigh = ui.Attribute(colorscheme.TempHigh)
+
+		net.Lines[0].LineColor = ui.Attribute(colorscheme.Sparkline)
+		net.Lines[0].TitleColor = ui.Attribute(colorscheme.BorderLabel)
+		net.Lines[1].LineColor = ui.Attribute(colorscheme.Sparkline)
+		net.Lines[1].TitleColor = ui.Attribute(colorscheme.BorderLabel)
 	}
 }
 
@@ -246,7 +259,7 @@ func eventLoop() {
 			return
 		case <-drawTicker:
 			if !helpVisible {
-				ui.Render(ui.Body)
+				ui.Render(grid)
 			}
 		case e := <-uiEvents:
 			switch e.ID {
@@ -258,7 +271,7 @@ func eventLoop() {
 					ui.Clear()
 					ui.Render(help)
 				} else {
-					ui.Render(ui.Body)
+					ui.Render(grid)
 				}
 			case "h":
 				if !helpVisible {
@@ -279,27 +292,27 @@ func eventLoop() {
 			case "<Escape>":
 				if helpVisible {
 					helpVisible = false
-					ui.Render(ui.Body)
+					ui.Render(grid)
 				}
 			case "<Resize>":
 				payload := e.Payload.(ui.Resize)
-				ui.Body.Width, ui.Body.Height = payload.Width, payload.Height
-				ui.Body.Resize()
+				grid.SetRect(0, 0, payload.Width, payload.Height)
+				help.Resize(payload.Width, payload.Height)
 				ui.Clear()
 				if helpVisible {
 					ui.Render(help)
 				} else {
-					ui.Render(ui.Body)
+					ui.Render(grid)
 				}
 
 			case "<MouseLeft>":
 				payload := e.Payload.(ui.Mouse)
 				proc.Click(payload.X, payload.Y)
 				ui.Render(proc)
-			case "<MouseWheelUp>", "<Up>", "k":
+			case "k", "<Up>", "<MouseWheelUp>":
 				proc.Up()
 				ui.Render(proc)
-			case "<MouseWheelDown>", "<Down>", "j":
+			case "j", "<Down>", "<MouseWheelDown>":
 				proc.Down()
 				ui.Render(proc)
 			case "g", "<Home>":
@@ -373,11 +386,6 @@ func main() {
 		stderrLogger.Fatalf("failed to parse cli args: %v", err)
 	}
 
-	termuiColors() // need to do this before initializing widgets so that they can inherit the colors
-	initWidgets()
-	widgetColors()
-	help = w.NewHelpMenu()
-
 	if err := ui.Init(); err != nil {
 		stderrLogger.Fatalf("failed to initialize termui: %v", err)
 	}
@@ -385,8 +393,16 @@ func main() {
 
 	logging.StderrToLogfile(lf)
 
+	termWidth, termHeight = ui.TerminalSize()
+
+	termuiColors() // need to do this before initializing widgets so that they can inherit the colors
+	initWidgets()
+	widgetColors()
+	help = w.NewHelpMenu()
+	help.Resize(termWidth, termHeight)
+
 	setupGrid()
-	ui.Render(ui.Body)
+	ui.Render(grid)
 
 	eventLoop()
 }

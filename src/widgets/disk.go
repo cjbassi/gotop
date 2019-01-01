@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
+	ui "github.com/cjbassi/gotop/src/termui"
 	"github.com/cjbassi/gotop/src/utils"
-	ui "github.com/cjbassi/termui"
 	psDisk "github.com/shirou/gopsutil/disk"
 )
 
@@ -35,7 +35,7 @@ func NewDisk() *Disk {
 		interval:   time.Second,
 		Partitions: make(map[string]*Partition),
 	}
-	self.Label = "Disk Usage"
+	self.Title = " Disk Usage "
 	self.Header = []string{"Disk", "Mount", "Used", "Free", "R/s", "W/s"}
 	self.Gap = 2
 	self.ColResizer = self.ColResize
@@ -154,8 +154,8 @@ func (self *Disk) update() {
 // ColResize overrides the default ColResize in the termui table.
 func (self *Disk) ColResize() {
 	self.ColWidths = []int{
-		utils.Max(4, (self.X-29)/2),
-		utils.Max(5, (self.X-29)/2),
+		utils.Max(4, (self.Inner.Dx()-29)/2),
+		utils.Max(5, (self.Inner.Dx()-29)/2),
 		4, 5, 5, 5,
 	}
 
