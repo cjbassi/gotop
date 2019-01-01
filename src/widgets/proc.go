@@ -66,7 +66,9 @@ func NewProc() *Proc {
 	go func() {
 		ticker := time.NewTicker(self.interval)
 		for range ticker.C {
+			self.Lock()
 			self.update()
+			self.Unlock()
 		}
 	}()
 
