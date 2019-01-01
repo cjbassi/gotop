@@ -96,7 +96,8 @@ To make a custom colorscheme, check out the [template](./colorschemes/template.g
 `-v`, `--version` Show version.  
 `-p`, `--percpu` Show each CPU in the CPU widget.  
 `-a`, `--averagecpu` Show average CPU in the CPU widget.
-`-b`, `--battery` Show battery level (defaults to false, `minimal` turns off)
+`-b`, `--bar` Show a statusbar with the time.
+`-t`, `--battery` Show battery level (defaults to false, `minimal` turns off)
 
 ## Building deb/rpms
 
