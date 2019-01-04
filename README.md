@@ -7,6 +7,7 @@ Another terminal based graphical activity monitor, inspired by [gtop](https://gi
 
 <img src="./assets/demo.gif" />
 <img src="./assets/minimal.png" width="96%" />
+<img src="./assets/battery.png"/>
 
 </div>
 
@@ -95,6 +96,8 @@ To make a custom colorscheme, check out the [template](./colorschemes/template.g
 `-v`, `--version` Show version.  
 `-p`, `--percpu` Show each CPU in the CPU widget.  
 `-a`, `--averagecpu` Show average CPU in the CPU widget.
+`-b`, `--bar` Show a statusbar with the time.
+`-t`, `--battery` Show battery level (defaults to false, `minimal` turns off)
 
 ## Building deb/rpms
 
@@ -118,6 +121,7 @@ This will place the built packages into the `dist` folder.
 - [exrook/drawille-go](https://github.com/exrook/drawille-go)
 - [shirou/gopsutil](https://github.com/shirou/gopsutil)
 - [goreleaser/goreleaser](https://github.com/goreleaser/goreleaser)
+- [battery](https://github.com/distatus/battery)
 
 ## Stargazers over time
 

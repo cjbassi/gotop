@@ -30,6 +30,8 @@ type Colorscheme struct {
 	// should add at least 8 here
 	CPULines []int
 
+	BattLines []int
+
 	MainMem int
 	SwapMem int
 

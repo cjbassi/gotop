@@ -9,6 +9,8 @@ var Solarized = Colorscheme{
 
 	CPULines: []int{61, 33, 37, 64, 125, 160, 166, 136},
 
+	BattLines: []int{61, 33, 37, 64, 125, 160, 166, 136},
+
 	MainMem: 125,
 	SwapMem: 166,
 

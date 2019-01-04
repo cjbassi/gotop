@@ -32,8 +32,8 @@ var (
 	zoomInterval = 3
 	helpVisible  = false
 	averageLoad  = false
+	battery      = false
 	percpuLoad   = false
-	widgetCount  = 6
 	fahrenheit   = false
 	configDir    = appdir.New("gotop").UserConfig()
 	logPath      = filepath.Join(configDir, "errors.log")
@@ -43,6 +43,7 @@ var (
 	termHeight   int
 
 	cpu  *w.CPU
+	batt *w.Batt
 	mem  *w.Mem
 	proc *w.Proc
 	net  *w.Net
@@ -65,6 +66,7 @@ Options:
   -p, --percpu          Show each CPU in the CPU widget.
   -a, --averagecpu      Show average CPU in the CPU widget.
   -f, --fahrenheit      Show temperatures in fahrenheit.
+  -t, --battery         Show battery charge over time ('minimal' disables; widget updates slowly)
   -b, --bar             Show a statusbar with the time.
 
 Colorschemes:
@@ -86,11 +88,9 @@ Colorschemes:
 	}
 	averageLoad, _ = args["--averagecpu"].(bool)
 	percpuLoad, _ = args["--percpu"].(bool)
+	battery, _ = args["--battery"].(bool)
 
 	minimal, _ = args["--minimal"].(bool)
-	if minimal {
-		widgetCount = 3
-	}
 
 	statusbar, _ = args["--bar"].(bool)
 
@@ -168,8 +168,17 @@ func setupGrid() {
 			rowHeight = 50.0 / 151
 			barRow = ui.NewRow(1.0/151, w.NewStatusBar())
 		}
+		var cpuRow ui.GridItem
+		if battery {
+			cpuRow = ui.NewRow(rowHeight,
+				ui.NewCol(2.0/3, cpu),
+				ui.NewCol(1.0/3, batt),
+			)
+		} else {
+			cpuRow = ui.NewRow(rowHeight, cpu)
+		}
 		grid.Set(
-			ui.NewRow(rowHeight, cpu),
+			cpuRow,
 			ui.NewRow(rowHeight,
 				ui.NewCol(1.0/3,
 					ui.NewRow(1.0/2, disk),
@@ -215,6 +224,24 @@ func widgetColors() {
 	}
 
 	if !minimal {
+		if battery {
+			var battKeys []string
+			for key := range batt.Data {
+				battKeys = append(battKeys, key)
+			}
+			sort.Strings(battKeys)
+			i = 0 // Re-using variable from CPU
+			for _, v := range battKeys {
+				if i >= len(colorscheme.BattLines) {
+					// assuming colorscheme for battery lines is not empty
+					i = 0
+				}
+				c := colorscheme.BattLines[i]
+				batt.LineColor[v] = ui.Attribute(c)
+				i++
+			}
+		}
+
 		temp.TempLow = ui.Attribute(colorscheme.TempLow)
 		temp.TempHigh = ui.Attribute(colorscheme.TempHigh)
 
@@ -227,29 +254,41 @@ func widgetColors() {
 
 func initWidgets() {
 	var wg sync.WaitGroup
-	wg.Add(widgetCount)
 
+	wg.Add(1)
 	go func() {
 		cpu = w.NewCPU(interval, zoom, averageLoad, percpuLoad)
 		wg.Done()
 	}()
+	wg.Add(1)
 	go func() {
 		mem = w.NewMem(interval, zoom)
 		wg.Done()
 	}()
+	wg.Add(1)
 	go func() {
 		proc = w.NewProc()
 		wg.Done()
 	}()
 	if !minimal {
+		if battery {
+			wg.Add(1)
+			go func() {
+				batt = w.NewBatt(time.Minute, zoom)
+				wg.Done()
+			}()
+		}
+		wg.Add(1)
 		go func() {
 			net = w.NewNet()
 			wg.Done()
 		}()
+		wg.Add(1)
 		go func() {
 			disk = w.NewDisk()
 			wg.Done()
 		}()
+		wg.Add(1)
 		go func() {
 			temp = w.NewTemp(fahrenheit)
 			wg.Done()

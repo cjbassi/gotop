@@ -9,6 +9,8 @@ var Default = Colorscheme{
 
 	CPULines: []int{4, 3, 2, 1, 5, 6, 7, 8},
 
+	BattLines: []int{4, 3, 2, 1, 5, 6, 7, 8},
+
 	MainMem: 5,
 	SwapMem: 11,
 
