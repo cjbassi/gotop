@@ -62,12 +62,12 @@ Options:
   -h, --help            Show this screen.
   -m, --minimal         Only show CPU, Mem and Process widgets.
   -r, --rate=RATE       Number of times per second to update CPU and Mem widgets [default: 1].
-  -v, --version         Show version.
+  -v, --version         Print version and exit.
   -p, --percpu          Show each CPU in the CPU widget.
   -a, --averagecpu      Show average CPU in the CPU widget.
   -f, --fahrenheit      Show temperatures in fahrenheit.
-  -t, --battery         Show battery charge over time ('minimal' disables; widget updates slowly)
-  -b, --bar             Show a statusbar with the time.
+  -s, --statusbar       Show a statusbar with the time.
+  -b, --battery         Show battery level widget ('minimal' turns off).
 
 Colorschemes:
   default
@@ -92,7 +92,7 @@ Colorschemes:
 
 	minimal, _ = args["--minimal"].(bool)
 
-	statusbar, _ = args["--bar"].(bool)
+	statusbar, _ = args["--statusbar"].(bool)
 
 	rateStr, _ := args["--rate"].(string)
 	rate, err := strconv.ParseFloat(rateStr, 64)

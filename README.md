@@ -7,7 +7,6 @@ Another terminal based graphical activity monitor, inspired by [gtop](https://gi
 
 <img src="./assets/demo.gif" />
 <img src="./assets/minimal.png" width="96%" />
-<img src="./assets/battery.png"/>
 
 </div>
 
@@ -93,11 +92,11 @@ To make a custom colorscheme, check out the [template](./colorschemes/template.g
 `-c`, `--color=NAME` Set a colorscheme.  
 `-m`, `--minimal` Only show CPU, Mem and Process widgets.  
 `-r`, `--rate=RATE` Number of times per second to update CPU and Mem widgets [default: 1].  
-`-v`, `--version` Show version.  
+`-v`, `--version` Print version and exit.  
 `-p`, `--percpu` Show each CPU in the CPU widget.  
-`-a`, `--averagecpu` Show average CPU in the CPU widget.
-`-b`, `--bar` Show a statusbar with the time.
-`-t`, `--battery` Show battery level (defaults to false, `minimal` turns off)
+`-a`, `--averagecpu` Show average CPU in the CPU widget.  
+`-s`, `--statusbar` Show a statusbar with the time.  
+`-b`, `--battery` Show battery level widget (`minimal` turns off). [widget preview](./assets/battery.png)
 
 ## Building deb/rpms
 
@@ -121,7 +120,7 @@ This will place the built packages into the `dist` folder.
 - [exrook/drawille-go](https://github.com/exrook/drawille-go)
 - [shirou/gopsutil](https://github.com/shirou/gopsutil)
 - [goreleaser/goreleaser](https://github.com/goreleaser/goreleaser)
-- [battery](https://github.com/distatus/battery)
+- [distatus/battery](https://github.com/distatus/battery)
 
 ## Stargazers over time
 
