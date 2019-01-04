@@ -23,11 +23,11 @@ git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
 /tmp/gotop/scripts/download.sh
 ```
 
-Then move `gotop` into your \$PATH somewhere.
+Then move `gotop` into your `$PATH` somewhere.
 
 ### Arch Linux
 
-Install `gotop-bin`, `gotop`, or `gotop-git` from the AUR.
+Install `gotop`, `gotop-bin`, or `gotop-git` from the AUR.
 
 ### FreeBSD
 
