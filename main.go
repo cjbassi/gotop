@@ -323,91 +323,91 @@ func eventLoop() {
 				return
 			case "?":
 				helpVisible = !helpVisible
-				if helpVisible {
+			case "<Resize>":
+				payload := e.Payload.(ui.Resize)
+				grid.SetRect(0, 0, payload.Width, payload.Height)
+				help.Resize(payload.Width, payload.Height)
+				ui.Clear()
+			}
+
+			if helpVisible {
+				switch e.ID {
+				case "?":
 					ui.Clear()
 					ui.Render(help)
-				} else {
+				case "<Escape>":
+					helpVisible = false
 					ui.Render(grid)
+				case "<Resize>":
+					ui.Render(help)
 				}
-			case "h":
-				if !helpVisible {
+			} else {
+				switch e.ID {
+				case "?":
+					ui.Render(grid)
+				case "h":
 					zoom += zoomInterval
 					cpu.Zoom = zoom
 					mem.Zoom = zoom
 					ui.Render(cpu, mem)
-				}
-			case "l":
-				if !helpVisible {
+				case "l":
 					if zoom > zoomInterval {
 						zoom -= zoomInterval
 						cpu.Zoom = zoom
 						mem.Zoom = zoom
 						ui.Render(cpu, mem)
 					}
-				}
-			case "<Escape>":
-				if helpVisible {
-					helpVisible = false
+				case "<Resize>":
 					ui.Render(grid)
-				}
-			case "<Resize>":
-				payload := e.Payload.(ui.Resize)
-				grid.SetRect(0, 0, payload.Width, payload.Height)
-				help.Resize(payload.Width, payload.Height)
-				ui.Clear()
-				if helpVisible {
-					ui.Render(help)
-				} else {
-					ui.Render(grid)
-				}
-
-			case "<MouseLeft>":
-				payload := e.Payload.(ui.Mouse)
-				proc.Click(payload.X, payload.Y)
-				ui.Render(proc)
-			case "k", "<Up>", "<MouseWheelUp>":
-				proc.Up()
-				ui.Render(proc)
-			case "j", "<Down>", "<MouseWheelDown>":
-				proc.Down()
-				ui.Render(proc)
-			case "g", "<Home>":
-				if previousKey == "g" {
-					proc.Top()
+				case "<MouseLeft>":
+					payload := e.Payload.(ui.Mouse)
+					proc.Click(payload.X, payload.Y)
+					ui.Render(proc)
+				case "k", "<Up>", "<MouseWheelUp>":
+					proc.Up()
+					ui.Render(proc)
+				case "j", "<Down>", "<MouseWheelDown>":
+					proc.Down()
+					ui.Render(proc)
+				case "g", "<Home>":
+					if previousKey == "g" {
+						proc.Top()
+						ui.Render(proc)
+					}
+				case "G", "<End>":
+					proc.Bottom()
+					ui.Render(proc)
+				case "<C-d>":
+					proc.HalfPageDown()
+					ui.Render(proc)
+				case "<C-u>":
+					proc.HalfPageUp()
+					ui.Render(proc)
+				case "<C-f>":
+					proc.PageDown()
+					ui.Render(proc)
+				case "<C-b>":
+					proc.PageUp()
+					ui.Render(proc)
+				case "d":
+					if previousKey == "d" {
+						proc.Kill()
+					}
+				case "<Tab>":
+					proc.Tab()
+					ui.Render(proc)
+				case "m", "c", "p":
+					proc.ChangeSort(e)
 					ui.Render(proc)
 				}
-			case "G", "<End>":
-				proc.Bottom()
-				ui.Render(proc)
-			case "<C-d>":
-				proc.HalfPageDown()
-				ui.Render(proc)
-			case "<C-u>":
-				proc.HalfPageUp()
-				ui.Render(proc)
-			case "<C-f>":
-				proc.PageDown()
-				ui.Render(proc)
-			case "<C-b>":
-				proc.PageUp()
-				ui.Render(proc)
-			case "d":
-				if previousKey == "d" {
-					proc.Kill()
+
+				if previousKey == e.ID {
+					previousKey = ""
+				} else {
+					previousKey = e.ID
 				}
-			case "<Tab>":
-				proc.Tab()
-				ui.Render(proc)
-			case "m", "c", "p":
-				proc.ChangeSort(e)
-				ui.Render(proc)
 			}
 
-			if previousKey == e.ID {
-				previousKey = ""
-			} else {
-				previousKey = e.ID
-			}
 		}
 	}
 }
