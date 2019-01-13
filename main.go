@@ -139,11 +139,11 @@ func getCustomColorscheme(name string) (colorschemes.Colorscheme, error) {
 	filePath := filepath.Join(configDir, name+".json")
 	dat, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		return colorscheme, fmt.Errorf("colorscheme file not found")
+		return colorscheme, fmt.Errorf("failed to read colorscheme file: %v", err)
 	}
 	err = json.Unmarshal(dat, &colorscheme)
 	if err != nil {
-		return colorscheme, fmt.Errorf("could not parse colorscheme file")
+		return colorscheme, fmt.Errorf("failed to parse colorscheme file: %v", err)
 	}
 	return colorscheme, nil
 }
@@ -459,6 +459,7 @@ func main() {
 	termuiColors() // need to do this before initializing widgets so that they can inherit the colors
 	initWidgets()
 	widgetColors()
+
 	help = w.NewHelpMenu()
 	help.Resize(termWidth, termHeight)
 
