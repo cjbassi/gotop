@@ -10,12 +10,12 @@ Required information:
 
 - gotop version (`gotop -v`):
 - The output of `uname -a`:
-- Terminal shell (like zsh or bash):
-- Terminal emulator (like iTerm or gnome terminal):
+- Terminal shell (e.g. zsh or bash):
+- Terminal emulator (e.g. iTerm or gnome terminal):
 - Any relevenat hardware info:
 - tmux version if using tmux:
 
 Also please copy or attach the following file if it exists and contains logs:
 
-- Linux: `~/.config/gotop/errors.log`
-- OSX: `~/Library/Application Support/gotop/errors.log`
+- Linux: `~/.local/state/gotop/errors.log`
+- OSX: `~/Library/Logs/gotop/errors.log`
