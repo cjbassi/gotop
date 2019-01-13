@@ -30,7 +30,8 @@ const (
 
 var (
 	configDir = appdir.New("gotop").UserConfig()
-	logPath   = filepath.Join(configDir, "errors.log")
+	logDir    = appdir.New("gotop").UserLogs()
+	logPath   = filepath.Join(logDir, "errors.log")
 
 	stderrLogger = log.New(os.Stderr, "", 0)
 
@@ -417,9 +418,9 @@ func eventLoop() {
 }
 
 func setupLogging() (*os.File, error) {
-	// make the config directory
-	if err := os.MkdirAll(configDir, 0755); err != nil {
-		return nil, fmt.Errorf("failed to make the configuration directory: %v", err)
+	// make the log directory
+	if err := os.MkdirAll(logDir, 0755); err != nil {
+		return nil, fmt.Errorf("failed to make the log directory: %v", err)
 	}
 	// open the log file
 	lf, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0660)
