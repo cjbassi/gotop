@@ -11,10 +11,10 @@ import (
 // LineGraph implements a line graph of data points.
 type LineGraph struct {
 	*Block
-	Data      map[string][]float64
-	LineColor map[string]Attribute
-	Zoom      int
-	Labels    map[string]string
+	Data            map[string][]float64
+	LineColor       map[string]Attribute
+	HorizontalScale int
+	Labels          map[string]string
 
 	DefaultLineColor Attribute
 }
@@ -22,11 +22,11 @@ type LineGraph struct {
 // NewLineGraph returns a new LineGraph with current theme.
 func NewLineGraph() *LineGraph {
 	return &LineGraph{
-		Block:     NewBlock(),
-		Data:      make(map[string][]float64),
-		LineColor: make(map[string]Attribute),
-		Labels:    make(map[string]string),
-		Zoom:      5,
+		Block:           NewBlock(),
+		Data:            make(map[string][]float64),
+		LineColor:       make(map[string]Attribute),
+		Labels:          make(map[string]string),
+		HorizontalScale: 5,
 	}
 }
 
@@ -63,11 +63,11 @@ func (self *LineGraph) Draw(buf *Buffer) {
 		lastY, lastX := -1, -1
 		// assign colors to `colors` and lines/points to the canvas
 		for i := len(seriesData) - 1; i >= 0; i-- {
-			x := ((self.Inner.Dx() + 1) * 2) - 1 - (((len(seriesData) - 1) - i) * self.Zoom)
+			x := ((self.Inner.Dx() + 1) * 2) - 1 - (((len(seriesData) - 1) - i) * self.HorizontalScale)
 			y := ((self.Inner.Dy() + 1) * 4) - 1 - int((float64((self.Inner.Dy())*4)-1)*(seriesData[i]/100))
 			if x < 0 {
 				// render the line to the last point up to the wall
-				if x > 0-self.Zoom {
+				if x > 0-self.HorizontalScale {
 					for _, p := range drawille.Line(lastX, lastY, x, y) {
 						if p.X > 0 {
 							c.Set(p.X, p.Y)

@@ -17,7 +17,7 @@ type Batt struct {
 	interval time.Duration
 }
 
-func NewBatt(interval time.Duration, zoom int) *Batt {
+func NewBatt(interval time.Duration, horizontalScale int) *Batt {
 	batts, err := battery.GetAll()
 	self := &Batt{
 		LineGraph: ui.NewLineGraph(),
@@ -25,7 +25,7 @@ func NewBatt(interval time.Duration, zoom int) *Batt {
 		interval:  interval,
 	}
 	self.Title = "Battery Status"
-	self.Zoom = zoom
+	self.HorizontalScale = horizontalScale
 	if err != nil {
 		log.Printf("failed to get battery info from system: %v", err)
 	}

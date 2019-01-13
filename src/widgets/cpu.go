@@ -18,7 +18,7 @@ type CPU struct {
 	formatString string
 }
 
-func NewCPU(interval time.Duration, zoom int, average bool, percpu bool) *CPU {
+func NewCPU(interval time.Duration, horizontalScale int, average bool, percpu bool) *CPU {
 	count, err := psCPU.Counts(false)
 	if err != nil {
 		log.Printf("failed to get CPU count from gopsutil: %v", err)
@@ -36,7 +36,7 @@ func NewCPU(interval time.Duration, zoom int, average bool, percpu bool) *CPU {
 		formatString: formatString,
 	}
 	self.Title = " CPU Usage "
-	self.Zoom = zoom
+	self.HorizontalScale = horizontalScale
 
 	if !(self.Average || self.PerCPU) {
 		if self.Count <= 8 {

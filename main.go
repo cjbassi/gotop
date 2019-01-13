@@ -22,25 +22,29 @@ import (
 	ui "github.com/gizak/termui"
 )
 
-var version = "1.7.1"
+const (
+	version = "1.7.1"
+
+	graphHorizontalScaleDelta = 3
+)
 
 var (
-	colorscheme  = colorschemes.Default
-	minimal      = false
-	interval     = time.Second
-	zoom         = 7
-	zoomInterval = 3
-	helpVisible  = false
-	averageLoad  = false
-	battery      = false
-	percpuLoad   = false
-	fahrenheit   = false
-	configDir    = appdir.New("gotop").UserConfig()
-	logPath      = filepath.Join(configDir, "errors.log")
+	configDir = appdir.New("gotop").UserConfig()
+	logPath   = filepath.Join(configDir, "errors.log")
+
 	stderrLogger = log.New(os.Stderr, "", 0)
-	statusbar    = false
-	termWidth    int
-	termHeight   int
+
+	graphHorizontalScale = 7
+	helpVisible          = false
+
+	colorscheme    = colorschemes.Default
+	updateInterval = time.Second
+	minimalMode    = false
+	averageLoad    = false
+	percpuLoad     = false
+	fahrenheit     = false
+	battery        = false
+	statusbar      = false
 
 	cpu  *w.CPU
 	batt *w.Batt
@@ -90,7 +94,7 @@ Colorschemes:
 	percpuLoad, _ = args["--percpu"].(bool)
 	battery, _ = args["--battery"].(bool)
 
-	minimal, _ = args["--minimal"].(bool)
+	minimalMode, _ = args["--minimal"].(bool)
 
 	statusbar, _ = args["--statusbar"].(bool)
 
@@ -100,9 +104,9 @@ Colorschemes:
 		return fmt.Errorf("invalid rate parameter")
 	}
 	if rate < 1 {
-		interval = time.Second * time.Duration(1/rate)
+		updateInterval = time.Second * time.Duration(1/rate)
 	} else {
-		interval = time.Second / time.Duration(rate)
+		updateInterval = time.Second / time.Duration(rate)
 	}
 	fahrenheit, _ = args["--fahrenheit"].(bool)
 
@@ -143,12 +147,12 @@ func getCustomColorscheme(name string) (colorschemes.Colorscheme, error) {
 	return colorscheme, nil
 }
 
-func setupGrid() {
+func setupGrid(termWidth, termHeight int) {
 	grid = ui.NewGrid()
 	grid.SetRect(0, 0, termWidth, termHeight)
 
 	var barRow interface{}
-	if minimal {
+	if minimalMode {
 		rowHeight := 1.0 / 2
 		if statusbar {
 			rowHeight = 50.0 / 101
@@ -223,7 +227,7 @@ func widgetColors() {
 		i++
 	}
 
-	if !minimal {
+	if !minimalMode {
 		if battery {
 			var battKeys []string
 			for key := range batt.Data {
@@ -257,12 +261,12 @@ func initWidgets() {
 
 	wg.Add(1)
 	go func() {
-		cpu = w.NewCPU(interval, zoom, averageLoad, percpuLoad)
+		cpu = w.NewCPU(updateInterval, graphHorizontalScale, averageLoad, percpuLoad)
 		wg.Done()
 	}()
 	wg.Add(1)
 	go func() {
-		mem = w.NewMem(interval, zoom)
+		mem = w.NewMem(updateInterval, graphHorizontalScale)
 		wg.Done()
 	}()
 	wg.Add(1)
@@ -270,11 +274,11 @@ func initWidgets() {
 		proc = w.NewProc()
 		wg.Done()
 	}()
-	if !minimal {
+	if !minimalMode {
 		if battery {
 			wg.Add(1)
 			go func() {
-				batt = w.NewBatt(time.Minute, zoom)
+				batt = w.NewBatt(time.Minute, graphHorizontalScale)
 				wg.Done()
 			}()
 		}
@@ -299,7 +303,7 @@ func initWidgets() {
 }
 
 func eventLoop() {
-	drawTicker := time.NewTicker(interval).C
+	drawTicker := time.NewTicker(updateInterval).C
 
 	// handles kill signal sent to gotop
 	sigTerm := make(chan os.Signal, 2)
@@ -346,15 +350,15 @@ func eventLoop() {
 				case "?":
 					ui.Render(grid)
 				case "h":
-					zoom += zoomInterval
-					cpu.Zoom = zoom
-					mem.Zoom = zoom
+					graphHorizontalScale += graphHorizontalScaleDelta
+					cpu.HorizontalScale = graphHorizontalScale
+					mem.HorizontalScale = graphHorizontalScale
 					ui.Render(cpu, mem)
 				case "l":
-					if zoom > zoomInterval {
-						zoom -= zoomInterval
-						cpu.Zoom = zoom
-						mem.Zoom = zoom
+					if graphHorizontalScale > graphHorizontalScaleDelta {
+						graphHorizontalScale -= graphHorizontalScaleDelta
+						cpu.HorizontalScale = graphHorizontalScale
+						mem.HorizontalScale = graphHorizontalScale
 						ui.Render(cpu, mem)
 					}
 				case "<Resize>":
@@ -449,7 +453,7 @@ func main() {
 
 	logging.StderrToLogfile(lf)
 
-	termWidth, termHeight = ui.TerminalSize()
+	termWidth, termHeight := ui.TerminalSize()
 
 	termuiColors() // need to do this before initializing widgets so that they can inherit the colors
 	initWidgets()
@@ -457,7 +461,7 @@ func main() {
 	help = w.NewHelpMenu()
 	help.Resize(termWidth, termHeight)
 
-	setupGrid()
+	setupGrid(termWidth, termHeight)
 	ui.Render(grid)
 
 	eventLoop()
