@@ -1,5 +1,5 @@
 // Example json file to put in `~/.config/gotop/{name}.json` and load with
-// `gotop -c {name}`. MUST DELETE THESE COMMENTS in order to load.
+// `gotop -c {name}`. MUST DELETE THESE COMMENTS AND RENAME FILE in order to load.
 {
 	"Fg": 7,
 	"Bg": -1,

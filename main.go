@@ -125,10 +125,11 @@ func handleColorscheme(cs string) error {
 	case "default-dark":
 		colorscheme = colorschemes.DefaultDark
 	default:
-		if colorscheme, err := getCustomColorscheme(cs); err != nil {
-			colorscheme = colorscheme
+		custom, err := getCustomColorscheme(cs)
+		if err != nil {
 			return err
 		}
+		colorscheme = custom
 	}
 	return nil
 }
