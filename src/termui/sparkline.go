@@ -57,15 +57,15 @@ func (self *Sparklines) Draw(buf *Buffer) {
 		if self.Inner.Dy() > 5 {
 			buf.SetString(
 				title1,
-				image.Pt(self.Inner.Min.X, title1Y),
 				AttrPair{line.TitleColor | AttrBold, -1},
+				image.Pt(self.Inner.Min.X, title1Y),
 			)
 		}
 		if self.Inner.Dy() > 6 {
 			buf.SetString(
 				title2,
-				image.Pt(self.Inner.Min.X, title2Y),
 				AttrPair{line.TitleColor | AttrBold, -1},
+				image.Pt(self.Inner.Min.X, title2Y),
 			)
 		}
 

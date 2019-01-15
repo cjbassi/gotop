@@ -78,8 +78,8 @@ func (self *Table) Draw(buf *Buffer) {
 		}
 		buf.SetString(
 			h,
-			image.Pt(self.Inner.Min.X+self.CellXPos[i]-1, self.Inner.Min.Y),
 			AttrPair{Theme.Default.Fg | AttrBold, -1},
+			image.Pt(self.Inner.Min.X+self.CellXPos[i]-1, self.Inner.Min.Y),
 		)
 	}
 
@@ -102,8 +102,8 @@ func (self *Table) Draw(buf *Buffer) {
 					}
 					buf.SetString(
 						strings.Repeat(" ", self.Inner.Dx()),
-						image.Pt(self.Inner.Min.X, self.Inner.Min.Y+y-1),
 						AttrPair{fg, -1},
+						image.Pt(self.Inner.Min.X, self.Inner.Min.Y+y-1),
 					)
 				}
 				self.SelectedItem = row[self.UniqueCol]
@@ -123,8 +123,8 @@ func (self *Table) Draw(buf *Buffer) {
 			r := TrimString(row[i], width)
 			buf.SetString(
 				r,
-				image.Pt(self.Inner.Min.X+self.CellXPos[i]-1, self.Inner.Min.Y+y-1),
 				AttrPair{fg, -1},
+				image.Pt(self.Inner.Min.X+self.CellXPos[i]-1, self.Inner.Min.Y+y-1),
 			)
 		}
 	}

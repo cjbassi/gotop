@@ -69,20 +69,20 @@ func (self *Temp) Draw(buf *ui.Buffer) {
 
 		s := ui.TrimString(key, (self.Inner.Dx() - 4))
 		buf.SetString(s,
-			image.Pt(self.Inner.Min.X, self.Inner.Min.Y+y),
 			ui.Theme.Default,
+			image.Pt(self.Inner.Min.X, self.Inner.Min.Y+y),
 		)
 		if self.Fahrenheit {
 			buf.SetString(
 				fmt.Sprintf("%3dF", self.Data[key]),
-				image.Pt(self.Inner.Dx()-3, y+1),
 				ui.AttrPair{fg, -1},
+				image.Pt(self.Inner.Dx()-3, y+1),
 			)
 		} else {
 			buf.SetString(
 				fmt.Sprintf("%3dC", self.Data[key]),
-				image.Pt(self.Inner.Max.X-4, self.Inner.Min.Y+y),
 				ui.AttrPair{fg, -1},
+				image.Pt(self.Inner.Max.X-4, self.Inner.Min.Y+y),
 			)
 		}
 	}

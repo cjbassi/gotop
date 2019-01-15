@@ -14,6 +14,8 @@ github.com/gizak/termui v0.0.0-20181228210747-b136f68f55f1 h1:TCe+sQ3zOPa8KNePfj
 github.com/gizak/termui v0.0.0-20181228210747-b136f68f55f1/go.mod h1:W48Llfv3G9PIK3TQjqynxzC9mP4HUcAn/6vlDWekq9k=
 github.com/gizak/termui v0.0.0-20190106180445-e0cfd08b56af h1:1UzQCUneHMAfAfSkah0chOL36sJZrIYInbwhUNE8S7o=
 github.com/gizak/termui v0.0.0-20190106180445-e0cfd08b56af/go.mod h1:S3xz8JHXNDPSNFsvXCdG7bHlEGrwvUG3a0joR/xYZ5M=
+github.com/gizak/termui v0.0.0-20190114080300-043950fed066 h1:bvCoawfbeVriOaMCsYfEi159KmLKSiKhwWQiJx44c4A=
+github.com/gizak/termui v0.0.0-20190114080300-043950fed066/go.mod h1:S3xz8JHXNDPSNFsvXCdG7bHlEGrwvUG3a0joR/xYZ5M=
 github.com/gizak/termui v2.1.2-0.20161117194350-ac02ff0e7ca6+incompatible h1:S5a8Iu1VRy0aWpHO8SVSahQ6eTbWD58gY9hD1/aRRMI=
 github.com/gizak/termui v2.1.2-0.20161117194350-ac02ff0e7ca6+incompatible/go.mod h1:PkJoWUt/zacQKysNfQtcw1RW+eK2SxkieVBtl+4ovLA=
 github.com/gizak/termui v2.3.0+incompatible h1:S8wJoNumYfc/rR5UezUM4HsPEo3RJh0LKdiuDWQpjqw=

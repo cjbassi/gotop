@@ -7,7 +7,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/distatus/battery v0.0.0-20170521010419-916919eb43bd
 	github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815
-	github.com/gizak/termui v0.0.0-20190106180445-e0cfd08b56af
+	github.com/gizak/termui v0.0.0-20190114080300-043950fed066
 	github.com/go-ole/go-ole v1.2.1 // indirect
 	github.com/maruel/panicparse v1.1.1 // indirect
 	github.com/mattn/go-runewidth v0.0.4 // indirect
