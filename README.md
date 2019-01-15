@@ -44,8 +44,6 @@ brew install gotop
 
 ### Source
 
-**Note**: Requires Go 1.11+.
-
 ```bash
 go get github.com/cjbassi/gotop
 ```
