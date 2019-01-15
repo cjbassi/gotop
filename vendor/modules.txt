@@ -1,0 +1,36 @@
+# github.com/DHowett/go-plist v0.0.0-20181124034731-591f970eefbb => github.com/DHowett/go-plist v0.0.0-20180729002649-fed556ad7290
+github.com/DHowett/go-plist
+# github.com/ProtonMail/go-appdir v0.0.0-20180220133335-7c788d1b45c6
+github.com/ProtonMail/go-appdir
+# github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6
+github.com/StackExchange/wmi
+# github.com/cjbassi/drawille-go v0.0.0-20180329221028-ad535d0f92cd
+github.com/cjbassi/drawille-go
+# github.com/distatus/battery v0.0.0-20170521010419-916919eb43bd
+github.com/distatus/battery
+# github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815
+github.com/docopt/docopt.go
+# github.com/gizak/termui v0.0.0-20190114080300-043950fed066
+github.com/gizak/termui
+# github.com/go-ole/go-ole v1.2.1
+github.com/go-ole/go-ole
+github.com/go-ole/go-ole/oleutil
+# github.com/mattn/go-runewidth v0.0.4
+github.com/mattn/go-runewidth
+# github.com/mitchellh/go-wordwrap v1.0.0
+github.com/mitchellh/go-wordwrap
+# github.com/nsf/termbox-go v0.0.0-20190104133558-0938b5187e61
+github.com/nsf/termbox-go
+# github.com/shirou/gopsutil v2.18.11+incompatible
+github.com/shirou/gopsutil/cpu
+github.com/shirou/gopsutil/disk
+github.com/shirou/gopsutil/host
+github.com/shirou/gopsutil/mem
+github.com/shirou/gopsutil/net
+github.com/shirou/gopsutil/process
+github.com/shirou/gopsutil/internal/common
+# github.com/shirou/w32 v0.0.0-20160930032740-bb4de0191aa4
+github.com/shirou/w32
+# golang.org/x/sys v0.0.0-20180406135729-3b87a42e500a
+golang.org/x/sys/unix
+golang.org/x/sys/windows
