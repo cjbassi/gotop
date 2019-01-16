@@ -16,6 +16,8 @@ Working and tested on Linux, FreeBSD and OSX. Windows support is planned.
 
 ### Using Git
 
+**Note**: Doesn't require Go.
+
 Clone the repo and then run [scripts/download.sh](./scripts/download.sh) to download the correct binary for your system from the [releases tab](https://github.com/cjbassi/gotop/releases):
 
 ```bash
