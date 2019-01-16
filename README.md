@@ -14,7 +14,7 @@ Another terminal based graphical activity monitor, inspired by [gtop](https://gi
 
 Working and tested on Linux, FreeBSD and OSX. Windows support is planned.
 
-### Using Git
+### Prebuilt binaries
 
 **Note**: Doesn't require Go.
 
