@@ -14,6 +14,12 @@ Another terminal based graphical activity monitor, inspired by [gtop](https://gi
 
 Working and tested on Linux, FreeBSD and OSX. Windows support is planned.
 
+### Source
+
+```bash
+go get github.com/cjbassi/gotop
+```
+
 ### Prebuilt binaries
 
 **Note**: Doesn't require Go.
@@ -42,12 +48,6 @@ pkg install gotop
 ```
 brew tap cjbassi/gotop
 brew install gotop
-```
-
-### Source
-
-```bash
-go get github.com/cjbassi/gotop
 ```
 
 ## Usage
