@@ -10,7 +10,6 @@ import (
 	"path/filepath"
 	"sort"
 	"strconv"
-	"sync"
 	"syscall"
 	"time"
 
@@ -149,9 +148,8 @@ func getCustomColorscheme(name string) (colorschemes.Colorscheme, error) {
 	return colorscheme, nil
 }
 
-func setupGrid(termWidth, termHeight int) {
+func setupGrid() {
 	grid = ui.NewGrid()
-	grid.SetRect(0, 0, termWidth, termHeight)
 
 	var barRow interface{}
 	if minimalMode {
@@ -259,49 +257,18 @@ func widgetColors() {
 }
 
 func initWidgets() {
-	var wg sync.WaitGroup
-
-	wg.Add(1)
-	go func() {
-		cpu = w.NewCPU(updateInterval, graphHorizontalScale, averageLoad, percpuLoad)
-		wg.Done()
-	}()
-	wg.Add(1)
-	go func() {
-		mem = w.NewMem(updateInterval, graphHorizontalScale)
-		wg.Done()
-	}()
-	wg.Add(1)
-	go func() {
-		proc = w.NewProc()
-		wg.Done()
-	}()
+	cpu = w.NewCPU(updateInterval, graphHorizontalScale, averageLoad, percpuLoad)
+	mem = w.NewMem(updateInterval, graphHorizontalScale)
+	proc = w.NewProc()
+	help = w.NewHelpMenu()
 	if !minimalMode {
 		if battery {
-			wg.Add(1)
-			go func() {
-				batt = w.NewBatt(time.Minute, graphHorizontalScale)
-				wg.Done()
-			}()
+			batt = w.NewBatt(graphHorizontalScale)
 		}
-		wg.Add(1)
-		go func() {
-			net = w.NewNet()
-			wg.Done()
-		}()
-		wg.Add(1)
-		go func() {
-			disk = w.NewDisk()
-			wg.Done()
-		}()
-		wg.Add(1)
-		go func() {
-			temp = w.NewTemp(fahrenheit)
-			wg.Done()
-		}()
+		net = w.NewNet()
+		disk = w.NewDisk()
+		temp = w.NewTemp(fahrenheit)
 	}
-
-	wg.Wait()
 }
 
 func eventLoop() {
@@ -418,7 +385,7 @@ func eventLoop() {
 	}
 }
 
-func setupLogging() (*os.File, error) {
+func setupLogFile() (*os.File, error) {
 	// make the log directory
 	if err := os.MkdirAll(logDir, 0755); err != nil {
 		return nil, fmt.Errorf("failed to make the log directory: %v", err)
@@ -438,15 +405,15 @@ func setupLogging() (*os.File, error) {
 }
 
 func main() {
-	lf, err := setupLogging()
-	if err != nil {
-		stderrLogger.Fatalf("failed to setup logging: %v", err)
-	}
-	defer lf.Close()
-
 	if err := cliArguments(); err != nil {
 		stderrLogger.Fatalf("failed to parse cli args: %v", err)
 	}
+
+	lf, err := setupLogFile()
+	if err != nil {
+		stderrLogger.Fatalf("failed to setup log file: %v", err)
+	}
+	defer lf.Close()
 
 	if err := ui.Init(); err != nil {
 		stderrLogger.Fatalf("failed to initialize termui: %v", err)
@@ -455,16 +422,16 @@ func main() {
 
 	logging.StderrToLogfile(lf)
 
-	termWidth, termHeight := ui.TerminalSize()
-
 	termuiColors() // need to do this before initializing widgets so that they can inherit the colors
 	initWidgets()
 	widgetColors()
 
-	help = w.NewHelpMenu()
+	setupGrid()
+
+	termWidth, termHeight := ui.TerminalSize()
+	grid.SetRect(0, 0, termWidth, termHeight)
 	help.Resize(termWidth, termHeight)
 
-	setupGrid(termWidth, termHeight)
 	ui.Render(grid)
 
 	eventLoop()

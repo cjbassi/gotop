@@ -17,12 +17,12 @@ type Batt struct {
 	interval time.Duration
 }
 
-func NewBatt(interval time.Duration, horizontalScale int) *Batt {
+func NewBatt(horizontalScale int) *Batt {
 	batts, err := battery.GetAll()
 	self := &Batt{
 		LineGraph: ui.NewLineGraph(),
 		Count:     len(batts),
-		interval:  interval,
+		interval:  time.Minute,
 	}
 	self.Title = "Battery Status"
 	self.HorizontalScale = horizontalScale
