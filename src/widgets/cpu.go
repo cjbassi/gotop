@@ -17,6 +17,7 @@ type CPU struct {
 	PerCPU       bool // show per-core load
 	interval     time.Duration
 	formatString string
+	renderLock   *sync.RWMutex
 }
 
 func NewCPU(renderLock *sync.RWMutex, interval time.Duration, horizontalScale int, average bool, percpu bool) *CPU {
@@ -35,6 +36,7 @@ func NewCPU(renderLock *sync.RWMutex, interval time.Duration, horizontalScale in
 		Average:      average,
 		PerCPU:       percpu,
 		formatString: formatString,
+		renderLock:   renderLock,
 	}
 	self.Title = " CPU Usage "
 	self.HorizontalScale = horizontalScale
@@ -63,9 +65,7 @@ func NewCPU(renderLock *sync.RWMutex, interval time.Duration, horizontalScale in
 	go func() {
 		ticker := time.NewTicker(self.interval)
 		for range ticker.C {
-			renderLock.RLock()
 			self.update()
-			renderLock.RUnlock()
 		}
 	}()
 
@@ -76,6 +76,8 @@ func (self *CPU) update() {
 	if self.Average {
 		go func() {
 			percent, err := psCPU.Percent(self.interval, false)
+			self.renderLock.RLock()
+			defer self.renderLock.RUnlock()
 			if err != nil {
 				log.Printf("failed to get average CPU usage percent from gopsutil: %v. self.interval: %v. percpu: %v", err, self.interval, false)
 			} else {
@@ -88,6 +90,8 @@ func (self *CPU) update() {
 	if self.PerCPU {
 		go func() {
 			percents, err := psCPU.Percent(self.interval, true)
+			self.renderLock.RLock()
+			defer self.renderLock.RUnlock()
 			if err != nil {
 				log.Printf("failed to get CPU usage percents from gopsutil: %v. self.interval: %v. percpu: %v", err, self.interval, true)
 			} else {
