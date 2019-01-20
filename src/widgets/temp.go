@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"image"
 	"sort"
+	"sync"
 	"time"
 
 	ui "github.com/gizak/termui"
@@ -22,7 +23,7 @@ type Temp struct {
 	Fahrenheit bool
 }
 
-func NewTemp(fahrenheit bool) *Temp {
+func NewTemp(renderLock *sync.RWMutex, fahrenheit bool) *Temp {
 	self := &Temp{
 		Block:     ui.NewBlock(),
 		interval:  time.Second * 5,
@@ -41,7 +42,9 @@ func NewTemp(fahrenheit bool) *Temp {
 	go func() {
 		ticker := time.NewTicker(self.interval)
 		for range ticker.C {
+			renderLock.RLock()
 			self.update()
+			renderLock.RUnlock()
 		}
 	}()
 

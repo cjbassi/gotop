@@ -3,7 +3,6 @@ package termui
 import (
 	"image"
 	"strings"
-	"sync"
 
 	. "github.com/gizak/termui"
 )
@@ -11,8 +10,6 @@ import (
 // Table tracks all the attributes of a Table instance
 type Table struct {
 	*Block
-
-	sync.Mutex
 
 	Header []string
 	Rows   [][]string
@@ -51,8 +48,6 @@ func (self *Table) ColResize() {
 }
 
 func (self *Table) Draw(buf *Buffer) {
-	self.Lock()
-
 	self.Block.Draw(buf)
 
 	self.ColResizer()
@@ -128,7 +123,6 @@ func (self *Table) Draw(buf *Buffer) {
 			)
 		}
 	}
-	self.Unlock()
 }
 
 /////////////////////////////////////////////////////////////////////////////////

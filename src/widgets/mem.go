@@ -3,6 +3,7 @@ package widgets
 import (
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	ui "github.com/cjbassi/gotop/src/termui"
@@ -15,7 +16,7 @@ type Mem struct {
 	interval time.Duration
 }
 
-func NewMem(interval time.Duration, horizontalScale int) *Mem {
+func NewMem(renderLock *sync.RWMutex, interval time.Duration, horizontalScale int) *Mem {
 	self := &Mem{
 		LineGraph: ui.NewLineGraph(),
 		interval:  interval,
@@ -30,7 +31,9 @@ func NewMem(interval time.Duration, horizontalScale int) *Mem {
 	go func() {
 		ticker := time.NewTicker(self.interval)
 		for range ticker.C {
+			renderLock.RLock()
 			self.update()
+			renderLock.RUnlock()
 		}
 	}()
 

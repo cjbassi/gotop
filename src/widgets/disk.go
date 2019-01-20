@@ -5,6 +5,7 @@ import (
 	"log"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	ui "github.com/cjbassi/gotop/src/termui"
@@ -29,7 +30,7 @@ type Disk struct {
 	Partitions map[string]*Partition
 }
 
-func NewDisk() *Disk {
+func NewDisk(renderLock *sync.RWMutex) *Disk {
 	self := &Disk{
 		Table:      ui.NewTable(),
 		interval:   time.Second,
@@ -45,7 +46,9 @@ func NewDisk() *Disk {
 	go func() {
 		ticker := time.NewTicker(self.interval)
 		for range ticker.C {
+			renderLock.RLock()
 			self.update()
+			renderLock.RUnlock()
 		}
 	}()
 

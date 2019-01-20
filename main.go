@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strconv"
+	"sync"
 	"syscall"
 	"time"
 
@@ -45,6 +46,8 @@ var (
 	fahrenheit     = false
 	battery        = false
 	statusbar      = false
+
+	renderLock sync.RWMutex
 
 	cpu  *w.CPU
 	batt *w.Batt
@@ -257,18 +260,24 @@ func widgetColors() {
 }
 
 func initWidgets() {
-	cpu = w.NewCPU(updateInterval, graphHorizontalScale, averageLoad, percpuLoad)
-	mem = w.NewMem(updateInterval, graphHorizontalScale)
-	proc = w.NewProc()
+	cpu = w.NewCPU(&renderLock, updateInterval, graphHorizontalScale, averageLoad, percpuLoad)
+	mem = w.NewMem(&renderLock, updateInterval, graphHorizontalScale)
+	proc = w.NewProc(&renderLock)
 	help = w.NewHelpMenu()
 	if !minimalMode {
 		if battery {
-			batt = w.NewBatt(graphHorizontalScale)
+			batt = w.NewBatt(&renderLock, graphHorizontalScale)
 		}
-		net = w.NewNet()
-		disk = w.NewDisk()
-		temp = w.NewTemp(fahrenheit)
+		net = w.NewNet(&renderLock)
+		disk = w.NewDisk(&renderLock)
+		temp = w.NewTemp(&renderLock, fahrenheit)
 	}
+}
+
+func render(drawable ...ui.Drawable) {
+	renderLock.Lock()
+	ui.Render(drawable...)
+	renderLock.Unlock()
 }
 
 func eventLoop() {
@@ -288,7 +297,7 @@ func eventLoop() {
 			return
 		case <-drawTicker:
 			if !helpVisible {
-				ui.Render(grid)
+				render(grid)
 			}
 		case e := <-uiEvents:
 			switch e.ID {
@@ -310,68 +319,68 @@ func eventLoop() {
 					ui.Render(help)
 				case "<Escape>":
 					helpVisible = false
-					ui.Render(grid)
+					render(grid)
 				case "<Resize>":
 					ui.Render(help)
 				}
 			} else {
 				switch e.ID {
 				case "?":
-					ui.Render(grid)
+					render(grid)
 				case "h":
 					graphHorizontalScale += graphHorizontalScaleDelta
 					cpu.HorizontalScale = graphHorizontalScale
 					mem.HorizontalScale = graphHorizontalScale
-					ui.Render(cpu, mem)
+					render(cpu, mem)
 				case "l":
 					if graphHorizontalScale > graphHorizontalScaleDelta {
 						graphHorizontalScale -= graphHorizontalScaleDelta
 						cpu.HorizontalScale = graphHorizontalScale
 						mem.HorizontalScale = graphHorizontalScale
-						ui.Render(cpu, mem)
+						render(cpu, mem)
 					}
 				case "<Resize>":
-					ui.Render(grid)
+					render(grid)
 				case "<MouseLeft>":
 					payload := e.Payload.(ui.Mouse)
 					proc.Click(payload.X, payload.Y)
-					ui.Render(proc)
+					render(proc)
 				case "k", "<Up>", "<MouseWheelUp>":
 					proc.Up()
-					ui.Render(proc)
+					render(proc)
 				case "j", "<Down>", "<MouseWheelDown>":
 					proc.Down()
-					ui.Render(proc)
+					render(proc)
 				case "g", "<Home>":
 					if previousKey == "g" {
 						proc.Top()
-						ui.Render(proc)
+						render(proc)
 					}
 				case "G", "<End>":
 					proc.Bottom()
-					ui.Render(proc)
+					render(proc)
 				case "<C-d>":
 					proc.HalfPageDown()
-					ui.Render(proc)
+					render(proc)
 				case "<C-u>":
 					proc.HalfPageUp()
-					ui.Render(proc)
+					render(proc)
 				case "<C-f>":
 					proc.PageDown()
-					ui.Render(proc)
+					render(proc)
 				case "<C-b>":
 					proc.PageUp()
-					ui.Render(proc)
+					render(proc)
 				case "d":
 					if previousKey == "d" {
 						proc.Kill()
 					}
 				case "<Tab>":
 					proc.Tab()
-					ui.Render(proc)
+					render(proc)
 				case "m", "c", "p":
 					proc.ChangeSort(e)
-					ui.Render(proc)
+					render(proc)
 				}
 
 				if previousKey == e.ID {

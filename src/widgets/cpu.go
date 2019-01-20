@@ -3,6 +3,7 @@ package widgets
 import (
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	ui "github.com/cjbassi/gotop/src/termui"
@@ -18,7 +19,7 @@ type CPU struct {
 	formatString string
 }
 
-func NewCPU(interval time.Duration, horizontalScale int, average bool, percpu bool) *CPU {
+func NewCPU(renderLock *sync.RWMutex, interval time.Duration, horizontalScale int, average bool, percpu bool) *CPU {
 	count, err := psCPU.Counts(false)
 	if err != nil {
 		log.Printf("failed to get CPU count from gopsutil: %v", err)
@@ -62,7 +63,9 @@ func NewCPU(interval time.Duration, horizontalScale int, average bool, percpu bo
 	go func() {
 		ticker := time.NewTicker(self.interval)
 		for range ticker.C {
+			renderLock.RLock()
 			self.update()
+			renderLock.RUnlock()
 		}
 	}()
 

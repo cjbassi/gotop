@@ -3,6 +3,7 @@ package widgets
 import (
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	ui "github.com/cjbassi/gotop/src/termui"
@@ -18,7 +19,7 @@ type Net struct {
 	prevSentTotal uint64
 }
 
-func NewNet() *Net {
+func NewNet(renderLock *sync.RWMutex) *Net {
 	recv := ui.NewSparkline()
 	recv.Data = []int{0}
 
@@ -37,7 +38,9 @@ func NewNet() *Net {
 	go func() {
 		ticker := time.NewTicker(self.interval)
 		for range ticker.C {
+			renderLock.RLock()
 			self.update()
+			renderLock.RUnlock()
 		}
 	}()
 

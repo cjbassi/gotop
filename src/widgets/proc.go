@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"sort"
 	"strconv"
+	"sync"
 	"time"
 
 	ui "github.com/cjbassi/gotop/src/termui"
@@ -38,7 +39,7 @@ type Proc struct {
 	group          bool
 }
 
-func NewProc() *Proc {
+func NewProc(renderLock *sync.RWMutex) *Proc {
 	cpuCount, err := psCPU.Counts(false)
 	if err != nil {
 		log.Printf("failed to get CPU count from gopsutil: %v", err)
@@ -66,9 +67,9 @@ func NewProc() *Proc {
 	go func() {
 		ticker := time.NewTicker(self.interval)
 		for range ticker.C {
-			self.Lock()
+			renderLock.RLock()
 			self.update()
-			self.Unlock()
+			renderLock.RUnlock()
 		}
 	}()
 

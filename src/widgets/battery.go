@@ -5,6 +5,7 @@ import (
 	"log"
 	"math"
 	"strconv"
+	"sync"
 	"time"
 
 	ui "github.com/cjbassi/gotop/src/termui"
@@ -17,7 +18,7 @@ type Batt struct {
 	interval time.Duration
 }
 
-func NewBatt(horizontalScale int) *Batt {
+func NewBatt(renderLock *sync.RWMutex, horizontalScale int) *Batt {
 	batts, err := battery.GetAll()
 	self := &Batt{
 		LineGraph: ui.NewLineGraph(),
@@ -39,7 +40,9 @@ func NewBatt(horizontalScale int) *Batt {
 	go func() {
 		ticker := time.NewTicker(self.interval)
 		for range ticker.C {
+			renderLock.RLock()
 			self.update()
+			renderLock.RUnlock()
 		}
 	}()
 
