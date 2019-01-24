@@ -19,7 +19,6 @@ type LineGraph struct {
 	DefaultLineColor Color
 }
 
-// NewLineGraph returns a new LineGraph with current theme.
 func NewLineGraph() *LineGraph {
 	return &LineGraph{
 		Block:           NewBlock(),

@@ -7,7 +7,6 @@ import (
 	. "github.com/gizak/termui"
 )
 
-// Table tracks all the Colors of a Table instance
 type Table struct {
 	*Block
 
