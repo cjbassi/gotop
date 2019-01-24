@@ -4,7 +4,7 @@
 
 package termui
 
-type gridItemType int
+type gridItemType uint
 
 const (
 	col gridItemType = 0
@@ -66,18 +66,19 @@ func NewRow(ratio float64, i ...interface{}) GridItem {
 	}
 }
 
-// Set recursively searches the GridItems, adding leaves to the grid and calculating the dimensions of the leaves.
-func (g *Grid) Set(entries ...interface{}) {
+// Set is used to add Columns and Rows to the grid.
+// It recursively searches the GridItems, adding leaves to the grid and calculating the dimensions of the leaves.
+func (self *Grid) Set(entries ...interface{}) {
 	entry := GridItem{
 		Type:   row,
 		Entry:  entries,
 		IsLeaf: false,
 		ratio:  1.0,
 	}
-	g.setHelper(entry, 1.0, 1.0)
+	self.setHelper(entry, 1.0, 1.0)
 }
 
-func (g *Grid) setHelper(item GridItem, parentWidthRatio, parentHeightRatio float64) {
+func (self *Grid) setHelper(item GridItem, parentWidthRatio, parentHeightRatio float64) {
 	var HeightRatio float64
 	var WidthRatio float64
 	switch item.Type {
@@ -92,7 +93,7 @@ func (g *Grid) setHelper(item GridItem, parentWidthRatio, parentHeightRatio floa
 	item.HeightRatio = parentHeightRatio * HeightRatio
 
 	if item.IsLeaf {
-		g.Items = append(g.Items, &item)
+		self.Items = append(self.Items, &item)
 	} else {
 		XRatio := 0.0
 		YRatio := 0.0
@@ -125,27 +126,27 @@ func (g *Grid) setHelper(item GridItem, parentWidthRatio, parentHeightRatio floa
 				}
 			}
 
-			g.setHelper(child, item.WidthRatio, item.HeightRatio)
+			self.setHelper(child, item.WidthRatio, item.HeightRatio)
 		}
 	}
 }
 
-func (g *Grid) Draw(buf *Buffer) {
-	width := float64(g.Dx()) + 1
-	height := float64(g.Dy()) + 1
+func (self *Grid) Draw(buf *Buffer) {
+	width := float64(self.Dx()) + 1
+	height := float64(self.Dy()) + 1
 
-	for _, item := range g.Items {
+	for _, item := range self.Items {
 		entry, _ := item.Entry.(Drawable)
 
-		x := int(width*item.XRatio) + g.Min.X
-		y := int(height*item.YRatio) + g.Min.Y
+		x := int(width*item.XRatio) + self.Min.X
+		y := int(height*item.YRatio) + self.Min.Y
 		w := int(width * item.WidthRatio)
 		h := int(height * item.HeightRatio)
 
-		if x+w > g.Dx() {
+		if x+w > self.Dx() {
 			w--
 		}
-		if y+h > g.Dy() {
+		if y+h > self.Dy() {
 			h--
 		}
 

@@ -12,11 +12,11 @@ import (
 type LineGraph struct {
 	*Block
 	Data            map[string][]float64
-	LineColor       map[string]Attribute
+	LineColor       map[string]Color
 	HorizontalScale int
 	Labels          map[string]string
 
-	DefaultLineColor Attribute
+	DefaultLineColor Color
 }
 
 // NewLineGraph returns a new LineGraph with current theme.
@@ -24,7 +24,7 @@ func NewLineGraph() *LineGraph {
 	return &LineGraph{
 		Block:           NewBlock(),
 		Data:            make(map[string][]float64),
-		LineColor:       make(map[string]Attribute),
+		LineColor:       make(map[string]Color),
 		Labels:          make(map[string]string),
 		HorizontalScale: 5,
 	}
@@ -36,9 +36,9 @@ func (self *LineGraph) Draw(buf *Buffer) {
 	// fyi braille characters have 2x4 dots for each character
 	c := drawille.NewCanvas()
 	// used to keep track of the braille colors until the end when we render the braille to the buffer
-	colors := make([][]Attribute, self.Inner.Dx()+2)
+	colors := make([][]Color, self.Inner.Dx()+2)
 	for i := range colors {
-		colors[i] = make([]Attribute, self.Inner.Dy()+2)
+		colors[i] = make([]Color, self.Inner.Dy()+2)
 	}
 
 	// sort the series so that overlapping data will overlap the same way each time
@@ -98,7 +98,7 @@ func (self *LineGraph) Draw(buf *Buffer) {
 				}
 				if char != 10240 { // empty braille character
 					buf.SetCell(
-						Cell{char, AttrPair{colors[x][y], -1}},
+						Cell{char, NewStyle(colors[x][y])},
 						image.Pt(self.Inner.Min.X+x-1, self.Inner.Min.Y+y-1),
 					)
 				}
@@ -121,7 +121,7 @@ func (self *LineGraph) Draw(buf *Buffer) {
 		for k, char := range str {
 			if char != ' ' {
 				buf.SetCell(
-					Cell{char, AttrPair{seriesLineColor, -1}},
+					Cell{char, NewStyle(seriesLineColor)},
 					image.Pt(self.Inner.Min.X+2+k, self.Inner.Min.Y+i+1),
 				)
 			}

@@ -8,13 +8,32 @@ import (
 	"image"
 )
 
-// Cell represents a terminal cell and is a rune with Fg and Bg Attributes
+// Cell represents a viewable terminal cell
 type Cell struct {
 	Rune  rune
-	Attrs AttrPair
+	Style Style
 }
 
-// Buffer represents a section of a terminal and is a renderable rectangle cell data container.
+var CellClear = Cell{
+	Rune:  ' ',
+	Style: StyleClear,
+}
+
+// NewCell takes 1 to 2 arguments
+// 1st argument = rune
+// 2nd argument = optional style
+func NewCell(rune rune, args ...interface{}) Cell {
+	style := StyleClear
+	if len(args) == 1 {
+		style = args[0].(Style)
+	}
+	return Cell{
+		Rune:  rune,
+		Style: style,
+	}
+}
+
+// Buffer represents a section of a terminal and is a renderable rectangle of cells.
 type Buffer struct {
 	image.Rectangle
 	CellMap map[image.Point]Cell
@@ -25,28 +44,28 @@ func NewBuffer(r image.Rectangle) *Buffer {
 		Rectangle: r,
 		CellMap:   make(map[image.Point]Cell),
 	}
-	buf.Fill(Cell{' ', AttrPair{ColorDefault, ColorDefault}}, r) // clears out area
+	buf.Fill(CellClear, r) // clears out area
 	return buf
 }
 
-func (b *Buffer) GetCell(p image.Point) Cell {
-	return b.CellMap[p]
+func (self *Buffer) GetCell(p image.Point) Cell {
+	return self.CellMap[p]
 }
 
-func (b *Buffer) SetCell(c Cell, p image.Point) {
-	b.CellMap[p] = c
+func (self *Buffer) SetCell(c Cell, p image.Point) {
+	self.CellMap[p] = c
 }
 
-func (b *Buffer) Fill(c Cell, rect image.Rectangle) {
+func (self *Buffer) Fill(c Cell, rect image.Rectangle) {
 	for x := rect.Min.X; x < rect.Max.X; x++ {
 		for y := rect.Min.Y; y < rect.Max.Y; y++ {
-			b.SetCell(c, image.Pt(x, y))
+			self.SetCell(c, image.Pt(x, y))
 		}
 	}
 }
 
-func (b *Buffer) SetString(s string, pair AttrPair, p image.Point) {
+func (self *Buffer) SetString(s string, style Style, p image.Point) {
 	for i, char := range s {
-		b.SetCell(Cell{char, pair}, image.Pt(p.X+i, p.Y))
+		self.SetCell(Cell{char, style}, image.Pt(p.X+i, p.Y))
 	}
 }

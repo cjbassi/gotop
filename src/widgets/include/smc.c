@@ -171,7 +171,7 @@ Defined by AppleSMC.kext. See SMCParamStruct.
 typedef struct {
     IOByteCount dataSize;
     uint32_t    dataType;
-    uint8_t     dataAttributes;
+    uint8_t     dataColors;
 } SMCKeyInfoData;
 
 

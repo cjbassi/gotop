@@ -1,6 +1,6 @@
 package termui
 
-type Alignment int
+type Alignment uint
 
 const (
 	AlignLeft Alignment = iota

@@ -203,16 +203,16 @@ func setupGrid() {
 }
 
 func termuiColors() {
-	ui.Theme.Default = ui.AttrPair{ui.Attribute(colorscheme.Fg), ui.Attribute(colorscheme.Bg)}
-	ui.Theme.Block.Title = ui.AttrPair{ui.Attribute(colorscheme.BorderLabel), ui.Attribute(colorscheme.Bg)}
-	ui.Theme.Block.Border = ui.AttrPair{ui.Attribute(colorscheme.BorderLine), ui.Attribute(colorscheme.Bg)}
+	ui.Theme.Default = ui.NewStyle(ui.Color(colorscheme.Fg), ui.Color(colorscheme.Bg))
+	ui.Theme.Block.Title = ui.NewStyle(ui.Color(colorscheme.BorderLabel), ui.Color(colorscheme.Bg))
+	ui.Theme.Block.Border = ui.NewStyle(ui.Color(colorscheme.BorderLine), ui.Color(colorscheme.Bg))
 }
 
 func widgetColors() {
-	mem.LineColor["Main"] = ui.Attribute(colorscheme.MainMem)
-	mem.LineColor["Swap"] = ui.Attribute(colorscheme.SwapMem)
+	mem.LineColor["Main"] = ui.Color(colorscheme.MainMem)
+	mem.LineColor["Swap"] = ui.Color(colorscheme.SwapMem)
 
-	proc.CursorColor = ui.Attribute(colorscheme.ProcCursor)
+	proc.CursorColor = ui.Color(colorscheme.ProcCursor)
 
 	var keys []string
 	for key := range cpu.Data {
@@ -226,7 +226,7 @@ func widgetColors() {
 			i = 0
 		}
 		c := colorscheme.CPULines[i]
-		cpu.LineColor[v] = ui.Attribute(c)
+		cpu.LineColor[v] = ui.Color(c)
 		i++
 	}
 
@@ -244,18 +244,18 @@ func widgetColors() {
 					i = 0
 				}
 				c := colorscheme.BattLines[i]
-				batt.LineColor[v] = ui.Attribute(c)
+				batt.LineColor[v] = ui.Color(c)
 				i++
 			}
 		}
 
-		temp.TempLow = ui.Attribute(colorscheme.TempLow)
-		temp.TempHigh = ui.Attribute(colorscheme.TempHigh)
+		temp.TempLow = ui.Color(colorscheme.TempLow)
+		temp.TempHigh = ui.Color(colorscheme.TempHigh)
 
-		net.Lines[0].LineColor = ui.Attribute(colorscheme.Sparkline)
-		net.Lines[0].TitleColor = ui.Attribute(colorscheme.BorderLabel)
-		net.Lines[1].LineColor = ui.Attribute(colorscheme.Sparkline)
-		net.Lines[1].TitleColor = ui.Attribute(colorscheme.BorderLabel)
+		net.Lines[0].LineColor = ui.Color(colorscheme.Sparkline)
+		net.Lines[0].TitleColor = ui.Color(colorscheme.BorderLabel)
+		net.Lines[1].LineColor = ui.Color(colorscheme.Sparkline)
+		net.Lines[1].TitleColor = ui.Color(colorscheme.BorderLabel)
 	}
 }
 
@@ -437,7 +437,7 @@ func main() {
 
 	setupGrid()
 
-	termWidth, termHeight := ui.TerminalSize()
+	termWidth, termHeight := ui.TerminalDimensions()
 	grid.SetRect(0, 0, termWidth, termHeight)
 	help.Resize(termWidth, termHeight)
 

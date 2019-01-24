@@ -59,7 +59,7 @@ func (self *HelpMenu) Draw(buf *ui.Buffer) {
 	for y, line := range strings.Split(KEYBINDS, "\n") {
 		for x, char := range line {
 			buf.SetCell(
-				ui.Cell{char, ui.AttrPair{ui.Attribute(7), -1}},
+				ui.NewCell(char, ui.NewStyle(7)),
 				image.Pt(self.Inner.Min.X+x, self.Inner.Min.Y+y-1),
 			)
 		}

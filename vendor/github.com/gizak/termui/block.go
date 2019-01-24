@@ -8,9 +8,12 @@ import (
 	"image"
 )
 
+// Block is the base struct inherited by all widgets.
+// Block manages size, border, and title.
+// It implements 2 of the 3 methods needed for `Drawable` interface: `GetRect` and `SetRect`.
 type Block struct {
 	Border       bool
-	BorderAttrs  AttrPair
+	BorderStyle  Style
 	BorderLeft   bool
 	BorderRight  bool
 	BorderTop    bool
@@ -20,74 +23,73 @@ type Block struct {
 	Inner image.Rectangle
 
 	Title      string
-	TitleAttrs AttrPair
+	TitleStyle Style
 }
 
-// NewBlock returns a *Block which inherits styles from current theme.
 func NewBlock() *Block {
 	return &Block{
 		Border:       true,
-		BorderAttrs:  Theme.Block.Border,
+		BorderStyle:  Theme.Block.Border,
 		BorderLeft:   true,
 		BorderRight:  true,
 		BorderTop:    true,
 		BorderBottom: true,
 
-		TitleAttrs: Theme.Block.Title,
+		TitleStyle: Theme.Block.Title,
 	}
 }
 
-func (b *Block) drawBorder(buf *Buffer) {
-	if !b.Border {
+func (self *Block) drawBorder(buf *Buffer) {
+	if !self.Border {
 		return
 	}
 
-	verticalCell := Cell{VERTICAL_LINE, b.BorderAttrs}
-	horizontalCell := Cell{HORIZONTAL_LINE, b.BorderAttrs}
+	verticalCell := Cell{VERTICAL_LINE, self.BorderStyle}
+	horizontalCell := Cell{HORIZONTAL_LINE, self.BorderStyle}
 
 	// draw lines
-	if b.BorderTop {
-		buf.Fill(horizontalCell, image.Rect(b.Min.X, b.Min.Y, b.Max.X, b.Min.Y+1))
+	if self.BorderTop {
+		buf.Fill(horizontalCell, image.Rect(self.Min.X, self.Min.Y, self.Max.X, self.Min.Y+1))
 	}
-	if b.BorderBottom {
-		buf.Fill(horizontalCell, image.Rect(b.Min.X, b.Max.Y-1, b.Max.X, b.Max.Y))
+	if self.BorderBottom {
+		buf.Fill(horizontalCell, image.Rect(self.Min.X, self.Max.Y-1, self.Max.X, self.Max.Y))
 	}
-	if b.BorderLeft {
-		buf.Fill(verticalCell, image.Rect(b.Min.X, b.Min.Y, b.Min.X+1, b.Max.Y))
+	if self.BorderLeft {
+		buf.Fill(verticalCell, image.Rect(self.Min.X, self.Min.Y, self.Min.X+1, self.Max.Y))
 	}
-	if b.BorderRight {
-		buf.Fill(verticalCell, image.Rect(b.Max.X-1, b.Min.Y, b.Max.X, b.Max.Y))
+	if self.BorderRight {
+		buf.Fill(verticalCell, image.Rect(self.Max.X-1, self.Min.Y, self.Max.X, self.Max.Y))
 	}
 
 	// draw corners
-	if b.BorderTop && b.BorderLeft {
-		buf.SetCell(Cell{TOP_LEFT, b.BorderAttrs}, b.Min)
+	if self.BorderTop && self.BorderLeft {
+		buf.SetCell(Cell{TOP_LEFT, self.BorderStyle}, self.Min)
 	}
-	if b.BorderTop && b.BorderRight {
-		buf.SetCell(Cell{TOP_RIGHT, b.BorderAttrs}, image.Pt(b.Max.X-1, b.Min.Y))
+	if self.BorderTop && self.BorderRight {
+		buf.SetCell(Cell{TOP_RIGHT, self.BorderStyle}, image.Pt(self.Max.X-1, self.Min.Y))
 	}
-	if b.BorderBottom && b.BorderLeft {
-		buf.SetCell(Cell{BOTTOM_LEFT, b.BorderAttrs}, image.Pt(b.Min.X, b.Max.Y-1))
+	if self.BorderBottom && self.BorderLeft {
+		buf.SetCell(Cell{BOTTOM_LEFT, self.BorderStyle}, image.Pt(self.Min.X, self.Max.Y-1))
 	}
-	if b.BorderBottom && b.BorderRight {
-		buf.SetCell(Cell{BOTTOM_RIGHT, b.BorderAttrs}, b.Max.Sub(image.Pt(1, 1)))
+	if self.BorderBottom && self.BorderRight {
+		buf.SetCell(Cell{BOTTOM_RIGHT, self.BorderStyle}, self.Max.Sub(image.Pt(1, 1)))
 	}
 }
 
-func (b *Block) Draw(buf *Buffer) {
-	b.drawBorder(buf)
+func (self *Block) Draw(buf *Buffer) {
+	self.drawBorder(buf)
 	buf.SetString(
-		b.Title,
-		b.TitleAttrs,
-		image.Pt(b.Min.X+2, b.Min.Y),
+		self.Title,
+		self.TitleStyle,
+		image.Pt(self.Min.X+2, self.Min.Y),
 	)
 }
 
-func (b *Block) SetRect(x1, y1, x2, y2 int) {
-	b.Rectangle = image.Rect(x1, y1, x2, y2)
-	b.Inner = image.Rect(b.Min.X+1, b.Min.Y+1, b.Max.X-1, b.Max.Y-1)
+func (self *Block) SetRect(x1, y1, x2, y2 int) {
+	self.Rectangle = image.Rect(x1, y1, x2, y2)
+	self.Inner = image.Rect(self.Min.X+1, self.Min.Y+1, self.Max.X-1, self.Max.Y-1)
 }
 
-func (b *Block) GetRect() image.Rectangle {
-	return b.Rectangle
+func (self *Block) GetRect() image.Rectangle {
+	return self.Rectangle
 }

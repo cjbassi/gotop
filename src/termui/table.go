@@ -7,7 +7,7 @@ import (
 	. "github.com/gizak/termui"
 )
 
-// Table tracks all the attributes of a Table instance
+// Table tracks all the Colors of a Table instance
 type Table struct {
 	*Block
 
@@ -21,7 +21,7 @@ type Table struct {
 	PadLeft    int
 
 	Cursor      bool
-	CursorColor Attribute
+	CursorColor Color
 
 	UniqueCol    int    // the column used to identify the selected item
 	SelectedItem string // used to keep the cursor on the correct item if the data changes
@@ -73,7 +73,7 @@ func (self *Table) Draw(buf *Buffer) {
 		}
 		buf.SetString(
 			h,
-			AttrPair{Theme.Default.Fg | AttrBold, -1},
+			NewStyle(Theme.Default.Fg, ColorClear, ModifierBold),
 			image.Pt(self.Inner.Min.X+self.CellXPos[i]-1, self.Inner.Min.Y),
 		)
 	}
@@ -87,17 +87,18 @@ func (self *Table) Draw(buf *Buffer) {
 		y := (rowNum + 2) - self.TopRow
 
 		// prints cursor
-		fg := Theme.Default.Fg
+		style := NewStyle(Theme.Default.Fg)
 		if self.Cursor {
 			if (self.SelectedItem == "" && rowNum == self.SelectedRow) || (self.SelectedItem != "" && self.SelectedItem == row[self.UniqueCol]) {
-				fg = self.CursorColor | AttrReverse
+				style.Fg = self.CursorColor
+				style.Modifier = ModifierReverse
 				for _, width := range self.ColWidths {
 					if width == 0 {
 						continue
 					}
 					buf.SetString(
 						strings.Repeat(" ", self.Inner.Dx()),
-						AttrPair{fg, -1},
+						style,
 						image.Pt(self.Inner.Min.X, self.Inner.Min.Y+y-1),
 					)
 				}
@@ -118,7 +119,7 @@ func (self *Table) Draw(buf *Buffer) {
 			r := TrimString(row[i], width)
 			buf.SetString(
 				r,
-				AttrPair{fg, -1},
+				style,
 				image.Pt(self.Inner.Min.X+self.CellXPos[i]-1, self.Inner.Min.Y+y-1),
 			)
 		}

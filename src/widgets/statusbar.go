@@ -24,7 +24,7 @@ func (self *StatusBar) Draw(buf *ui.Buffer) {
 	hostname, _ := os.Hostname()
 	buf.SetString(
 		hostname,
-		ui.AttrPair{ui.Attribute(7), -1},
+		ui.NewStyle(7),
 		image.Pt(self.Inner.Min.X, self.Inner.Min.Y+(self.Inner.Dy()/2)),
 	)
 
@@ -32,7 +32,7 @@ func (self *StatusBar) Draw(buf *ui.Buffer) {
 	_time := t.Format("15:04:05")
 	buf.SetString(
 		_time,
-		ui.AttrPair{7, -1},
+		ui.NewStyle(7),
 		image.Pt(
 			self.Inner.Min.X+(self.Inner.Dx()/2)-len(_time)/2,
 			self.Inner.Min.Y+(self.Inner.Dy()/2),
@@ -41,7 +41,7 @@ func (self *StatusBar) Draw(buf *ui.Buffer) {
 
 	buf.SetString(
 		"gotop",
-		ui.AttrPair{7, -1},
+		ui.NewStyle(7),
 		image.Pt(
 			self.Inner.Max.X-6,
 			self.Inner.Min.Y+(self.Inner.Dy()/2),

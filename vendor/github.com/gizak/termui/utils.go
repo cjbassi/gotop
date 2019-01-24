@@ -10,6 +10,7 @@ import (
 	"reflect"
 
 	rw "github.com/mattn/go-runewidth"
+	wordwrap "github.com/mitchellh/go-wordwrap"
 )
 
 // https://stackoverflow.com/questions/12753805/type-converting-slices-of-interfaces-in-go
@@ -65,6 +66,19 @@ func GetMaxIntFromSlice(slice []int) (int, error) {
 	return max, nil
 }
 
+func GetMaxFloat64FromSlice(slice []float64) (float64, error) {
+	if len(slice) == 0 {
+		return 0, fmt.Errorf("cannot get max value from empty slice")
+	}
+	var max float64
+	for _, val := range slice {
+		if val > max {
+			max = val
+		}
+	}
+	return max, nil
+}
+
 func GetMaxFloat64From2dSlice(slices [][]float64) (float64, error) {
 	if len(slices) == 0 {
 		return 0, fmt.Errorf("cannot get max value from empty slice")
@@ -80,16 +94,12 @@ func GetMaxFloat64From2dSlice(slices [][]float64) (float64, error) {
 	return max, nil
 }
 
-func SumIntSlice(slice []int) int {
-	sum := 0
-	for _, val := range slice {
-		sum += val
-	}
-	return sum
+func SelectColor(colors []Color, index int) Color {
+	return colors[index%len(colors)]
 }
 
-func SelectAttr(attrs []Attribute, index int) Attribute {
-	return attrs[index%len(attrs)]
+func SelectStyle(styles []Style, index int) Style {
+	return styles[index%len(styles)]
 }
 
 func CellsToString(cells []Cell) string {
@@ -104,7 +114,15 @@ func RoundFloat64(x float64) float64 {
 	return math.Floor(x + 0.5)
 }
 
-func SumSliceFloat64(data []float64) float64 {
+func SumIntSlice(slice []int) int {
+	sum := 0
+	for _, val := range slice {
+		sum += val
+	}
+	return sum
+}
+
+func SumFloat64Slice(data []float64) float64 {
 	sum := 0.0
 	for _, v := range data {
 		sum += v
@@ -124,4 +142,35 @@ func MinFloat64(x, y float64) float64 {
 		return x
 	}
 	return y
+}
+
+func MaxFloat64(x, y float64) float64 {
+	if x > y {
+		return x
+	}
+	return y
+}
+
+func WrapCells(cells []Cell, width uint) []Cell {
+	str := CellsToString(cells)
+	wrapped := wordwrap.WrapString(str, width)
+	wrappedCells := []Cell{}
+	i := 0
+	for _, _rune := range wrapped {
+		if _rune == '\n' {
+			wrappedCells = append(wrappedCells, Cell{_rune, StyleClear})
+		} else {
+			wrappedCells = append(wrappedCells, Cell{_rune, cells[i].Style})
+		}
+		i++
+	}
+	return wrappedCells
+}
+
+func RunesToStyledCells(runes []rune, style Style) []Cell {
+	cells := []Cell{}
+	for _, _rune := range runes {
+		cells = append(cells, Cell{_rune, style})
+	}
+	return cells
 }

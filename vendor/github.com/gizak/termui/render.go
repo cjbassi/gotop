@@ -25,14 +25,10 @@ func Render(items ...Drawable) {
 				tb.SetCell(
 					point.X, point.Y,
 					cell.Rune,
-					tb.Attribute(cell.Attrs.Fg)+1, tb.Attribute(cell.Attrs.Bg)+1,
+					tb.Attribute(cell.Style.Fg+1)|tb.Attribute(cell.Style.Modifier), tb.Attribute(cell.Style.Bg+1),
 				)
 			}
 		}
 	}
 	tb.Flush()
-}
-
-func Clear() {
-	tb.Clear(tb.ColorDefault, tb.Attribute(Theme.Default.Bg+1))
 }

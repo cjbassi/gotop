@@ -6,15 +6,13 @@ import (
 	. "github.com/gizak/termui"
 )
 
-var SPARKS = [8]rune{'▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'}
-
 // Sparkline is like: ▅▆▂▂▅▇▂▂▃▆▆▆▅▃. The data points should be non-negative integers.
 type Sparkline struct {
 	Data       []int
 	Title1     string
 	Title2     string
-	TitleColor Attribute
-	LineColor  Attribute
+	TitleColor Color
+	LineColor  Color
 }
 
 // Sparklines is a renderable widget which groups together the given sparklines.
@@ -57,14 +55,14 @@ func (self *Sparklines) Draw(buf *Buffer) {
 		if self.Inner.Dy() > 5 {
 			buf.SetString(
 				title1,
-				AttrPair{line.TitleColor | AttrBold, -1},
+				NewStyle(line.TitleColor, ColorClear, ModifierBold),
 				image.Pt(self.Inner.Min.X, title1Y),
 			)
 		}
 		if self.Inner.Dy() > 6 {
 			buf.SetString(
 				title2,
-				AttrPair{line.TitleColor | AttrBold, -1},
+				NewStyle(line.TitleColor, ColorClear, ModifierBold),
 				image.Pt(self.Inner.Min.X, title2Y),
 			)
 		}
@@ -79,19 +77,19 @@ func (self *Sparklines) Draw(buf *Buffer) {
 		}
 		// prints sparkline
 		for x := self.Inner.Dx(); x >= 1; x-- {
-			char := SPARKS[0]
+			char := BARS[0]
 			if (self.Inner.Dx() - x) < len(line.Data) {
 				offset := self.Inner.Dx() - x
-				cur_item := line.Data[(len(line.Data)-1)-offset]
-				percent := float64(cur_item) / float64(max)
+				curItem := line.Data[(len(line.Data)-1)-offset]
+				percent := float64(curItem) / float64(max)
 				index := int(percent * 7)
-				if index < 0 || index >= len(SPARKS) {
+				if index < 0 || index >= len(BARS) {
 					panic("TODO")
 				}
-				char = SPARKS[index]
+				char = BARS[index]
 			}
 			buf.SetCell(
-				Cell{char, AttrPair{line.LineColor, -1}},
+				Cell{char, NewStyle(line.LineColor)},
 				image.Pt(self.Inner.Min.X+x-1, self.Inner.Min.Y+sparkY-1),
 			)
 		}

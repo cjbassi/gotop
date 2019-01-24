@@ -8,26 +8,28 @@ import (
 	tb "github.com/nsf/termbox-go"
 )
 
-// Init initializes termui library. This function should be called before any others.
-// After initialization, the library must be finalized by 'Close' function.
+// Init initializes termbox-go and is required to render anything.
+// After initialization, the library must be finalized with `Close`.
 func Init() error {
 	if err := tb.Init(); err != nil {
 		return err
 	}
 	tb.SetInputMode(tb.InputEsc | tb.InputMouse)
 	tb.SetOutputMode(tb.Output256)
-
 	return nil
 }
 
-// Close finalizes termui library.
-// It should be called after successful initialization when termui's functionality isn't required anymore.
+// Close closes termbox-go.
 func Close() {
 	tb.Close()
 }
 
-func TerminalSize() (int, int) {
+func TerminalDimensions() (int, int) {
 	tb.Sync()
 	width, height := tb.Size()
 	return width, height
+}
+
+func Clear() {
+	tb.Clear(tb.ColorDefault, tb.Attribute(Theme.Default.Bg+1))
 }

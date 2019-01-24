@@ -18,8 +18,8 @@ type Temp struct {
 	interval   time.Duration
 	Data       map[string]int
 	Threshold  int
-	TempLow    ui.Attribute
-	TempHigh   ui.Attribute
+	TempLow    ui.Color
+	TempHigh   ui.Color
 	Fahrenheit bool
 }
 
@@ -78,13 +78,13 @@ func (self *Temp) Draw(buf *ui.Buffer) {
 		if self.Fahrenheit {
 			buf.SetString(
 				fmt.Sprintf("%3dF", self.Data[key]),
-				ui.AttrPair{fg, -1},
+				ui.NewStyle(fg),
 				image.Pt(self.Inner.Dx()-3, y+1),
 			)
 		} else {
 			buf.SetString(
 				fmt.Sprintf("%3dC", self.Data[key]),
-				ui.AttrPair{fg, -1},
+				ui.NewStyle(fg),
 				image.Pt(self.Inner.Max.X-4, self.Inner.Min.Y+y),
 			)
 		}

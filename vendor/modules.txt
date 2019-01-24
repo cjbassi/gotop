@@ -10,7 +10,7 @@ github.com/cjbassi/drawille-go
 github.com/distatus/battery
 # github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815
 github.com/docopt/docopt.go
-# github.com/gizak/termui v0.0.0-20190114080300-043950fed066
+# github.com/gizak/termui v0.0.0-20190124041613-958a28575d74
 github.com/gizak/termui
 # github.com/go-ole/go-ole v1.2.1
 github.com/go-ole/go-ole
@@ -31,6 +31,6 @@ github.com/shirou/gopsutil/process
 github.com/shirou/gopsutil/internal/common
 # github.com/shirou/w32 v0.0.0-20160930032740-bb4de0191aa4
 github.com/shirou/w32
-# golang.org/x/sys v0.0.0-20180406135729-3b87a42e500a
+# golang.org/x/sys v0.0.0-20190116161447-11f53e031339
 golang.org/x/sys/unix
 golang.org/x/sys/windows
