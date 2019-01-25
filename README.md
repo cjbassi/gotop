@@ -42,7 +42,10 @@ Install `gotop`, `gotop-bin`, or `gotop-git` from the AUR.
 ```
 pkg install gotop
 ```
-
+### Ubuntu 18
+```
+sudo snap install gotop
+```
 ### Homebrew
 
 ```
