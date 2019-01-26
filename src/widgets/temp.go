@@ -79,7 +79,7 @@ func (self *Temp) Draw(buf *ui.Buffer) {
 			buf.SetString(
 				fmt.Sprintf("%3dF", self.Data[key]),
 				ui.NewStyle(fg),
-				image.Pt(self.Inner.Dx()-3, y+1),
+				image.Pt(self.Inner.Max.X-4, self.Inner.Min.Y+y),
 			)
 		} else {
 			buf.SetString(
