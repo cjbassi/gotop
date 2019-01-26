@@ -89,9 +89,9 @@ func (self *Sparklines) Draw(buf *Buffer) {
 						"invalid sparkline data value. index: %v, percent: %v, curItem: %v, offset: %v",
 						index, percent, curItem, offset,
 					)
-					continue
+				} else {
+					char = BARS[index]
 				}
-				char = BARS[index]
 			}
 			buf.SetCell(
 				NewCell(char, NewStyle(line.LineColor)),
