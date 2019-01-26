@@ -2,6 +2,7 @@ package termui
 
 import (
 	"image"
+	"log"
 	"strings"
 
 	. "github.com/gizak/termui"
@@ -77,11 +78,13 @@ func (self *Table) Draw(buf *Buffer) {
 		)
 	}
 
+	if self.TopRow < 0 {
+		log.Printf("table widget TopRow value less than 0. TopRow: %v", self.TopRow)
+		return
+	}
+
 	// prints each row
 	for rowNum := self.TopRow; rowNum < self.TopRow+self.Inner.Dy()-1 && rowNum < len(self.Rows); rowNum++ {
-		if rowNum < 0 || rowNum >= len(self.Rows) {
-			panic("TODO")
-		}
 		row := self.Rows[rowNum]
 		y := (rowNum + 2) - self.TopRow
 
@@ -149,12 +152,12 @@ func (self *Table) calcPos() {
 }
 
 func (self *Table) Up() {
-	self.SelectedRow -= 1
+	self.SelectedRow--
 	self.calcPos()
 }
 
 func (self *Table) Down() {
-	self.SelectedRow += 1
+	self.SelectedRow++
 	self.calcPos()
 }
 

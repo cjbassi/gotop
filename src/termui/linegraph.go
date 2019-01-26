@@ -97,7 +97,7 @@ func (self *LineGraph) Draw(buf *Buffer) {
 				}
 				if char != 10240 { // empty braille character
 					buf.SetCell(
-						Cell{char, NewStyle(colors[x][y])},
+						NewCell(char, NewStyle(colors[x][y])),
 						image.Pt(self.Inner.Min.X+x-1, self.Inner.Min.Y+y-1),
 					)
 				}
@@ -120,7 +120,7 @@ func (self *LineGraph) Draw(buf *Buffer) {
 		for k, char := range str {
 			if char != ' ' {
 				buf.SetCell(
-					Cell{char, NewStyle(seriesLineColor)},
+					NewCell(char, NewStyle(seriesLineColor)),
 					image.Pt(self.Inner.Min.X+2+k, self.Inner.Min.Y+i+1),
 				)
 			}

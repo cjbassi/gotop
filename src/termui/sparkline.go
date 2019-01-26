@@ -2,6 +2,7 @@ package termui
 
 import (
 	"image"
+	"log"
 
 	. "github.com/gizak/termui"
 )
@@ -84,12 +85,16 @@ func (self *Sparklines) Draw(buf *Buffer) {
 				percent := float64(curItem) / float64(max)
 				index := int(percent * 7)
 				if index < 0 || index >= len(BARS) {
-					panic("TODO")
+					log.Printf(
+						"invalid sparkline data value. index: %v, percent: %v, curItem: %v, offset: %v",
+						index, percent, curItem, offset,
+					)
+					continue
 				}
 				char = BARS[index]
 			}
 			buf.SetCell(
-				Cell{char, NewStyle(line.LineColor)},
+				NewCell(char, NewStyle(line.LineColor)),
 				image.Pt(self.Inner.Min.X+x-1, self.Inner.Min.Y+sparkY-1),
 			)
 		}
