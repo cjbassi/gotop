@@ -8,38 +8,30 @@ import (
 	"sync"
 	"time"
 
-	ui "github.com/cjbassi/gotop/src/termui"
 	"github.com/distatus/battery"
+
+	ui "github.com/cjbassi/gotop/src/termui"
 )
 
 type Batt struct {
 	*ui.LineGraph
-	Count    int // number of batteries
 	interval time.Duration
 }
 
 func NewBatt(renderLock *sync.RWMutex, horizontalScale int) *Batt {
-	batts, err := battery.GetAll()
 	self := &Batt{
 		LineGraph: ui.NewLineGraph(),
-		Count:     len(batts),
 		interval:  time.Minute,
 	}
-	self.Title = "Battery Status"
+	self.Title = " Battery Status "
 	self.HorizontalScale = horizontalScale
-	if err != nil {
-		log.Printf("failed to get battery info from system: %v", err)
-	}
-	for i, b := range batts {
-		pc := math.Abs(b.Current/b.Full) * 100.0
-		self.Data[mkId(i)] = []float64{pc}
-	}
 
+	// intentional duplicate
+	self.update()
 	self.update()
 
 	go func() {
-		ticker := time.NewTicker(self.interval)
-		for range ticker.C {
+		for range time.NewTicker(self.interval).C {
 			renderLock.RLock()
 			self.update()
 			renderLock.RUnlock()
@@ -57,6 +49,7 @@ func (self *Batt) update() {
 	batts, err := battery.GetAll()
 	if err != nil {
 		log.Printf("failed to get battery info from system: %v", err)
+		return
 	}
 	for i, b := range batts {
 		n := mkId(i)

@@ -40,8 +40,7 @@ func NewTemp(renderLock *sync.RWMutex, fahrenheit bool) *Temp {
 	self.update()
 
 	go func() {
-		ticker := time.NewTicker(self.interval)
-		for range ticker.C {
+		for range time.NewTicker(self.interval).C {
 			renderLock.RLock()
 			self.update()
 			renderLock.RUnlock()

@@ -6,8 +6,9 @@ import (
 	"sync"
 	"time"
 
-	ui "github.com/cjbassi/gotop/src/termui"
 	psCPU "github.com/shirou/gopsutil/cpu"
+
+	ui "github.com/cjbassi/gotop/src/termui"
 )
 
 type CPU struct {
@@ -64,8 +65,7 @@ func NewCPU(renderLock *sync.RWMutex, interval time.Duration, horizontalScale in
 	self.update()
 
 	go func() {
-		ticker := time.NewTicker(self.interval)
-		for range ticker.C {
+		for range time.NewTicker(self.interval).C {
 			self.update()
 		}
 	}()

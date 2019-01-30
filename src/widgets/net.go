@@ -6,14 +6,16 @@ import (
 	"sync"
 	"time"
 
+	psNet "github.com/shirou/gopsutil/net"
+
 	ui "github.com/cjbassi/gotop/src/termui"
 	"github.com/cjbassi/gotop/src/utils"
-	psNet "github.com/shirou/gopsutil/net"
 )
 
 type Net struct {
 	*ui.Sparklines
 	interval time.Duration
+
 	// used to calculate recent network activity
 	prevRecvTotal uint64
 	prevSentTotal uint64
@@ -21,10 +23,10 @@ type Net struct {
 
 func NewNet(renderLock *sync.RWMutex) *Net {
 	recv := ui.NewSparkline()
-	recv.Data = []int{0}
+	recv.Data = []int{}
 
 	sent := ui.NewSparkline()
-	sent.Data = []int{0}
+	sent.Data = []int{}
 
 	spark := ui.NewSparklines(recv, sent)
 	self := &Net{
@@ -36,8 +38,7 @@ func NewNet(renderLock *sync.RWMutex) *Net {
 	self.update()
 
 	go func() {
-		ticker := time.NewTicker(self.interval)
-		for range ticker.C {
+		for range time.NewTicker(self.interval).C {
 			renderLock.RLock()
 			self.update()
 			renderLock.RUnlock()

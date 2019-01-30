@@ -8,9 +8,10 @@ import (
 	"sync"
 	"time"
 
+	psDisk "github.com/shirou/gopsutil/disk"
+
 	ui "github.com/cjbassi/gotop/src/termui"
 	"github.com/cjbassi/gotop/src/utils"
-	psDisk "github.com/shirou/gopsutil/disk"
 )
 
 type Partition struct {
@@ -44,8 +45,7 @@ func NewDisk(renderLock *sync.RWMutex) *Disk {
 	self.update()
 
 	go func() {
-		ticker := time.NewTicker(self.interval)
-		for range ticker.C {
+		for range time.NewTicker(self.interval).C {
 			renderLock.RLock()
 			self.update()
 			renderLock.RUnlock()

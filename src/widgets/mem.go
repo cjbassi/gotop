@@ -6,9 +6,10 @@ import (
 	"sync"
 	"time"
 
+	psMem "github.com/shirou/gopsutil/mem"
+
 	ui "github.com/cjbassi/gotop/src/termui"
 	"github.com/cjbassi/gotop/src/utils"
-	psMem "github.com/shirou/gopsutil/mem"
 )
 
 type Mem struct {
@@ -29,8 +30,7 @@ func NewMem(renderLock *sync.RWMutex, interval time.Duration, horizontalScale in
 	self.update()
 
 	go func() {
-		ticker := time.NewTicker(self.interval)
-		for range ticker.C {
+		for range time.NewTicker(self.interval).C {
 			renderLock.RLock()
 			self.update()
 			renderLock.RUnlock()
