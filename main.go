@@ -351,7 +351,10 @@ func eventLoop() {
 				case "j", "<Down>", "<MouseWheelDown>":
 					proc.Down()
 					render(proc)
-				case "g", "<Home>":
+                case "<Home>":
+                    proc.Top()
+                    render(proc)
+				case "g":
 					if previousKey == "g" {
 						proc.Top()
 						render(proc)
