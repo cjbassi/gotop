@@ -58,6 +58,7 @@ var (
 	temp *w.Temp
 	help *w.HelpMenu
 	grid *ui.Grid
+	bar  *w.StatusBar
 )
 
 func cliArguments() error {
@@ -154,50 +155,37 @@ func getCustomColorscheme(name string) (colorschemes.Colorscheme, error) {
 func setupGrid() {
 	grid = ui.NewGrid()
 
-	var barRow interface{}
 	if minimalMode {
-		rowHeight := 1.0 / 2
-		if statusbar {
-			rowHeight = 50.0 / 101
-			barRow = ui.NewRow(1.0/101, w.NewStatusBar())
-		}
 		grid.Set(
-			ui.NewRow(rowHeight, cpu),
-			ui.NewRow(rowHeight,
+			ui.NewRow(1.0/2, cpu),
+			ui.NewRow(1.0/2,
 				ui.NewCol(1.0/2, mem),
 				ui.NewCol(1.0/2, proc),
 			),
-			barRow,
 		)
 	} else {
-		rowHeight := 1.0 / 3
-		if statusbar {
-			rowHeight = 50.0 / 151
-			barRow = ui.NewRow(1.0/151, w.NewStatusBar())
-		}
 		var cpuRow ui.GridItem
 		if battery {
-			cpuRow = ui.NewRow(rowHeight,
+			cpuRow = ui.NewRow(1.0/3,
 				ui.NewCol(2.0/3, cpu),
 				ui.NewCol(1.0/3, batt),
 			)
 		} else {
-			cpuRow = ui.NewRow(rowHeight, cpu)
+			cpuRow = ui.NewRow(1.0/3, cpu)
 		}
 		grid.Set(
 			cpuRow,
-			ui.NewRow(rowHeight,
+			ui.NewRow(1.0/3,
 				ui.NewCol(1.0/3,
 					ui.NewRow(1.0/2, disk),
 					ui.NewRow(1.0/2, temp),
 				),
 				ui.NewCol(2.0/3, mem),
 			),
-			ui.NewRow(rowHeight,
+			ui.NewRow(1.0/3,
 				ui.NewCol(1.0/2, net),
 				ui.NewCol(1.0/2, proc),
 			),
-			barRow,
 		)
 	}
 }
@@ -272,6 +260,9 @@ func initWidgets() {
 		disk = w.NewDisk(&renderLock)
 		temp = w.NewTemp(&renderLock, fahrenheit)
 	}
+	if statusbar {
+		bar = w.NewStatusBar()
+	}
 }
 
 func render(drawable ...ui.Drawable) {
@@ -307,8 +298,13 @@ func eventLoop() {
 				helpVisible = !helpVisible
 			case "<Resize>":
 				payload := e.Payload.(ui.Resize)
-				grid.SetRect(0, 0, payload.Width, payload.Height)
+				if statusbar {
+					grid.SetRect(0, 0, payload.Width, payload.Height-1)
+				} else {
+					grid.SetRect(0, 0, payload.Width, payload.Height)
+				}
 				help.Resize(payload.Width, payload.Height)
+				bar.SetRect(0, payload.Height-1, payload.Width, payload.Height)
 				ui.Clear()
 			}
 
@@ -341,6 +337,7 @@ func eventLoop() {
 					}
 				case "<Resize>":
 					render(grid)
+					render(bar)
 				case "<MouseLeft>":
 					payload := e.Payload.(ui.Mouse)
 					proc.Click(payload.X, payload.Y)
@@ -351,9 +348,9 @@ func eventLoop() {
 				case "j", "<Down>", "<MouseWheelDown>":
 					proc.Down()
 					render(proc)
-                case "<Home>":
-                    proc.Top()
-                    render(proc)
+				case "<Home>":
+					proc.Top()
+					render(proc)
 				case "g":
 					if previousKey == "g" {
 						proc.Top()
@@ -441,10 +438,18 @@ func main() {
 	setupGrid()
 
 	termWidth, termHeight := ui.TerminalDimensions()
-	grid.SetRect(0, 0, termWidth, termHeight)
+	if statusbar {
+		grid.SetRect(0, 0, termWidth, termHeight-1)
+	} else {
+		grid.SetRect(0, 0, termWidth, termHeight)
+	}
 	help.Resize(termWidth, termHeight)
 
 	ui.Render(grid)
+	if statusbar {
+		bar.SetRect(0, termHeight-1, termWidth, termHeight)
+		ui.Render(bar)
+	}
 
 	eventLoop()
 }
