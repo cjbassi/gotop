@@ -13,8 +13,7 @@ import (
 func (self *Temp) update() {
 	sensors, err := psHost.SensorsTemperatures()
 	if err != nil {
-		log.Printf("failed to get sensors from gopsutil: %v", err)
-		return
+		log.Printf("error recieved from gopsutil: %v", err)
 	}
 	for _, sensor := range sensors {
 		// only sensors with input in their name are giving us live temp info
