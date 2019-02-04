@@ -9,10 +9,11 @@ import (
 	"sync"
 	"time"
 
-	ui "github.com/cjbassi/gotop/src/termui"
-	"github.com/cjbassi/gotop/src/utils"
 	"github.com/gizak/termui"
 	psCPU "github.com/shirou/gopsutil/cpu"
+
+	ui "github.com/cjbassi/gotop/src/termui"
+	"github.com/cjbassi/gotop/src/utils"
 )
 
 const (

@@ -3,8 +3,9 @@ package widgets
 import (
 	"log"
 
-	"github.com/cjbassi/gotop/src/utils"
 	psHost "github.com/shirou/gopsutil/host"
+
+	"github.com/cjbassi/gotop/src/utils"
 )
 
 func (self *Temp) update() {

@@ -1,8 +1,5 @@
 package widgets
 
-// Temp is too customized to inherit from a generic widget so we create a customized one here.
-// Temp defines its own Buffer method directly.
-
 import (
 	"fmt"
 	"image"
@@ -14,7 +11,7 @@ import (
 )
 
 type Temp struct {
-	*ui.Block
+	*ui.Block  // inherits from Block instead of a premade Widget
 	interval   time.Duration
 	Data       map[string]int
 	Threshold  int
@@ -50,6 +47,7 @@ func NewTemp(renderLock *sync.RWMutex, fahrenheit bool) *Temp {
 	return self
 }
 
+// We implement a custom Draw method instead of inheriting from a generic Widget.
 func (self *Temp) Draw(buf *ui.Buffer) {
 	self.Block.Draw(buf)
 
