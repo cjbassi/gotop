@@ -29,7 +29,7 @@ func (self *Proc) update() {
 }
 
 func Processes() ([]Process, error) {
-	output, err := exec.Command("ps", "-caxo", "pid,comm,pcpu,pmem,args").Output()
+	output, err := exec.Command("ps", "-wwcaxo", "pid,comm,pcpu,pmem,args").Output()
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute 'ps' command: %v", err)
 	}
