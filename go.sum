@@ -8,8 +8,6 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815 h1:HMAfwOa33y82IaQEKQDfUCiwNlxtM1iw7HLM9ru0RNc=
 github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:l7JNRynTRuqe45tpIyItHNqZWTxywYjp87MWTOnU5cg=
-github.com/exrook/drawille-go v0.0.0-20180329221028-ad535d0f92cd h1:fTiHrg5luzQAnrvAf/moQez84sPr6h0zOnCXTHPzx4U=
-github.com/exrook/drawille-go v0.0.0-20180329221028-ad535d0f92cd/go.mod h1:PttwnPNwT0bEDftn684HBM62kdAwQYKPlSZVNppFQEA=
 github.com/gizak/termui v0.0.0-20190124041613-958a28575d74 h1:gQbT+IgWIflxp7EQaxWGgGoHAxEFzvP36DyxiBGEV9g=
 github.com/gizak/termui v0.0.0-20190124041613-958a28575d74/go.mod h1:hJmkzz29zwvMdxina9wLc5fWN7bZuougH5YR93VrJtA=
 github.com/go-ole/go-ole v1.2.1 h1:2lOsA72HgjxAuMlKpFiCbHTvu44PIVkZ5hqm3RSdI/E=

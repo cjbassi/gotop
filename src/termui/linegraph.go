@@ -4,7 +4,7 @@ import (
 	"image"
 	"sort"
 
-	drawille "github.com/exrook/drawille-go"
+	drawille "github.com/cjbassi/gotop/src/termui/drawille-go"
 	. "github.com/gizak/termui"
 )
 

@@ -6,8 +6,6 @@ github.com/StackExchange/wmi
 github.com/cjbassi/battery
 # github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815
 github.com/docopt/docopt.go
-# github.com/exrook/drawille-go v0.0.0-20180329221028-ad535d0f92cd
-github.com/exrook/drawille-go
 # github.com/gizak/termui v0.0.0-20190124041613-958a28575d74
 github.com/gizak/termui
 # github.com/go-ole/go-ole v1.2.1
