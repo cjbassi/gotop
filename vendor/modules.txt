@@ -1,13 +1,11 @@
-# github.com/DHowett/go-plist v0.0.0-20181124034731-591f970eefbb => github.com/DHowett/go-plist v0.0.0-20180729002649-fed556ad7290
-github.com/DHowett/go-plist
 # github.com/ProtonMail/go-appdir v0.0.0-20180220133335-7c788d1b45c6
 github.com/ProtonMail/go-appdir
 # github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6
 github.com/StackExchange/wmi
+# github.com/cjbassi/battery v0.0.0-20190206091651-451cd0de3f6f
+github.com/cjbassi/battery
 # github.com/cjbassi/drawille-go v0.0.0-20180329221028-ad535d0f92cd
 github.com/cjbassi/drawille-go
-# github.com/distatus/battery v0.0.0-20170521010419-916919eb43bd
-github.com/distatus/battery
 # github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815
 github.com/docopt/docopt.go
 # github.com/gizak/termui v0.0.0-20190124041613-958a28575d74
@@ -34,3 +32,5 @@ github.com/shirou/w32
 # golang.org/x/sys v0.0.0-20190116161447-11f53e031339
 golang.org/x/sys/unix
 golang.org/x/sys/windows
+# howett.net/plist v0.0.0-20181124034731-591f970eefbb
+howett.net/plist
