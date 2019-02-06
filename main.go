@@ -300,11 +300,11 @@ func eventLoop() {
 				payload := e.Payload.(ui.Resize)
 				if statusbar {
 					grid.SetRect(0, 0, payload.Width, payload.Height-1)
+					bar.SetRect(0, payload.Height-1, payload.Width, payload.Height)
 				} else {
 					grid.SetRect(0, 0, payload.Width, payload.Height)
 				}
 				help.Resize(payload.Width, payload.Height)
-				bar.SetRect(0, payload.Height-1, payload.Width, payload.Height)
 				ui.Clear()
 			}
 
@@ -337,7 +337,9 @@ func eventLoop() {
 					}
 				case "<Resize>":
 					render(grid)
-					render(bar)
+					if statusbar {
+						render(bar)
+					}
 				case "<MouseLeft>":
 					payload := e.Payload.(ui.Mouse)
 					proc.Click(payload.X, payload.Y)
