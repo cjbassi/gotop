@@ -4,9 +4,9 @@ require (
 	github.com/ProtonMail/go-appdir v0.0.0-20180220133335-7c788d1b45c6
 	github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6 // indirect
 	github.com/cjbassi/battery v0.0.0-20190206091651-451cd0de3f6f
-	github.com/cjbassi/drawille-go v0.0.0-20180329221028-ad535d0f92cd
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815
+	github.com/exrook/drawille-go v0.0.0-20180329221028-ad535d0f92cd
 	github.com/gizak/termui v0.0.0-20190124041613-958a28575d74
 	github.com/go-ole/go-ole v1.2.1 // indirect
 	github.com/mattn/go-runewidth v0.0.4 // indirect
