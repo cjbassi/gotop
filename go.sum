@@ -1,14 +1,13 @@
-github.com/DHowett/go-plist v0.0.0-20180729002649-fed556ad7290/go.mod h1:5paT5ZDrOm8eAJPem2Bd+q3FTi3Gxm/U4tb2tH8YIUQ=
 github.com/ProtonMail/go-appdir v0.0.0-20180220133335-7c788d1b45c6 h1:de/SvQsi6Oou9TJYp6Kp17S+JjXGn1w8XVYWFlE0z/U=
 github.com/ProtonMail/go-appdir v0.0.0-20180220133335-7c788d1b45c6/go.mod h1:3d8Y9F5mbEUjrYbcJ3rcDxcWbqbttF+011nVZmdRdzc=
 github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6 h1:fLjPD/aNc3UIOA6tDi6QXUemppXK3P9BI7mr2hd6gx8=
 github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
+github.com/cjbassi/battery v0.0.0-20190206091651-451cd0de3f6f h1:XtDkrKpWZomFY5YY7vjj/n024Ei/cpLrnrKvXrHI+2s=
+github.com/cjbassi/battery v0.0.0-20190206091651-451cd0de3f6f/go.mod h1:2n8ndIjf01nC3TA2E53AuA1fERGEwTEp/g354pR1T/I=
 github.com/cjbassi/drawille-go v0.0.0-20180329221028-ad535d0f92cd h1:nSJpATLVvFa19BEHX4ys+VGNWfI4FUGMweEI6QXs8wg=
 github.com/cjbassi/drawille-go v0.0.0-20180329221028-ad535d0f92cd/go.mod h1:vjcQJUZJYD3MeVGhtZXSMnCHfUNZxsyYzJt90eCYxK4=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/distatus/battery v0.0.0-20170521010419-916919eb43bd h1:rxw7AZpSwNgPPFdxDNSwQ+TfvOjmSGDK6tlpY7vw9bw=
-github.com/distatus/battery v0.0.0-20170521010419-916919eb43bd/go.mod h1:gGO7GxHTi1zlRT+cAj8uGG0/8HFiqAeH0TJvoipnuPs=
 github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815 h1:HMAfwOa33y82IaQEKQDfUCiwNlxtM1iw7HLM9ru0RNc=
 github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:l7JNRynTRuqe45tpIyItHNqZWTxywYjp87MWTOnU5cg=
 github.com/gizak/termui v0.0.0-20190124041613-958a28575d74 h1:gQbT+IgWIflxp7EQaxWGgGoHAxEFzvP36DyxiBGEV9g=
