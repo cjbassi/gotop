@@ -98,16 +98,6 @@ To make a custom colorscheme, check out the [template](./colorschemes/template.g
 `-s`, `--statusbar` Show a statusbar with the time.  
 `-b`, `--battery` Show battery level widget (`minimal` turns off). [widget preview](./assets/battery.png)
 
-## Building deb/rpms
-
-To build dep/rpms using [nfpm](https://github.com/goreleaser/nfpm):
-
-```bash
-make all
-```
-
-This will place the built packages into the `dist` folder.
-
 ## Credits
 
 - [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771) for the [logo](./assets/logo.png)
@@ -119,7 +109,7 @@ This will place the built packages into the `dist` folder.
   - [nsf/termbox](https://github.com/nsf/termbox-go)
 - [exrook/drawille-go](https://github.com/exrook/drawille-go)
 - [shirou/gopsutil](https://github.com/shirou/gopsutil)
-- [goreleaser/goreleaser](https://github.com/goreleaser/goreleaser)
+- [goreleaser/nfpm](https://github.com/goreleaser/nfpm)
 - [distatus/battery](https://github.com/distatus/battery)
 
 ## Stargazers over time
