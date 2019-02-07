@@ -15,11 +15,12 @@ import (
 	"time"
 
 	appdir "github.com/ProtonMail/go-appdir"
+	docopt "github.com/docopt/docopt.go"
+	ui "github.com/gizak/termui"
+
 	"github.com/cjbassi/gotop/colorschemes"
 	"github.com/cjbassi/gotop/src/logging"
 	w "github.com/cjbassi/gotop/src/widgets"
-	docopt "github.com/docopt/docopt.go"
-	ui "github.com/gizak/termui"
 )
 
 const (
@@ -61,7 +62,7 @@ var (
 	bar  *w.StatusBar
 )
 
-func cliArguments() error {
+func parseArgs() error {
 	usage := `
 Usage: gotop [options]
 
@@ -137,7 +138,7 @@ func handleColorscheme(cs string) error {
 	return nil
 }
 
-// getCustomColorscheme	tries to read a custom json colorscheme from {configDir}/{name}.json
+// getCustomColorscheme	tries to read a custom json colorscheme from <configDir>/<name>.json
 func getCustomColorscheme(name string) (colorschemes.Colorscheme, error) {
 	var colorscheme colorschemes.Colorscheme
 	filePath := filepath.Join(configDir, name+".json")
@@ -190,13 +191,13 @@ func setupGrid() {
 	}
 }
 
-func termuiColors() {
+func setDefaultTermuiColors() {
 	ui.Theme.Default = ui.NewStyle(ui.Color(colorscheme.Fg), ui.Color(colorscheme.Bg))
 	ui.Theme.Block.Title = ui.NewStyle(ui.Color(colorscheme.BorderLabel), ui.Color(colorscheme.Bg))
 	ui.Theme.Block.Border = ui.NewStyle(ui.Color(colorscheme.BorderLine), ui.Color(colorscheme.Bg))
 }
 
-func widgetColors() {
+func setWidgetColors() {
 	mem.LineColor["Main"] = ui.Color(colorscheme.MainMem)
 	mem.LineColor["Swap"] = ui.Color(colorscheme.SwapMem)
 
@@ -298,9 +299,10 @@ func eventLoop() {
 				helpVisible = !helpVisible
 			case "<Resize>":
 				payload := e.Payload.(ui.Resize)
+				termWidth, termHeight := payload.Width, payload.Height
 				if statusbar {
-					grid.SetRect(0, 0, payload.Width, payload.Height-1)
-					bar.SetRect(0, payload.Height-1, payload.Width, payload.Height)
+					grid.SetRect(0, 0, termWidth, termHeight-1)
+					bar.SetRect(0, termHeight-1, termWidth, termHeight)
 				} else {
 					grid.SetRect(0, 0, payload.Width, payload.Height)
 				}
@@ -396,13 +398,13 @@ func eventLoop() {
 	}
 }
 
-func setupLogFile() (*os.File, error) {
-	// make the log directory
+func setupLogfile() (*os.File, error) {
+	// create the log directory
 	if err := os.MkdirAll(logDir, 0755); err != nil {
 		return nil, fmt.Errorf("failed to make the log directory: %v", err)
 	}
 	// open the log file
-	lf, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0660)
+	logfile, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0660)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open log file: %v", err)
 	}
@@ -410,32 +412,32 @@ func setupLogFile() (*os.File, error) {
 	// log time, filename, and line number
 	log.SetFlags(log.Ltime | log.Lshortfile)
 	// log to file
-	log.SetOutput(lf)
+	log.SetOutput(logfile)
 
-	return lf, nil
+	return logfile, nil
 }
 
 func main() {
-	if err := cliArguments(); err != nil {
+	if err := parseArgs(); err != nil {
 		stderrLogger.Fatalf("failed to parse cli args: %v", err)
 	}
 
-	lf, err := setupLogFile()
+	logfile, err := setupLogfile()
 	if err != nil {
 		stderrLogger.Fatalf("failed to setup log file: %v", err)
 	}
-	defer lf.Close()
+	defer logfile.Close()
 
 	if err := ui.Init(); err != nil {
 		stderrLogger.Fatalf("failed to initialize termui: %v", err)
 	}
 	defer ui.Close()
 
-	logging.StderrToLogfile(lf)
+	logging.StderrToLogfile(logfile)
 
-	termuiColors() // need to do this before initializing widgets so that they can inherit the colors
+	setDefaultTermuiColors() // done before initializing widgets to allow inheriting colors
 	initWidgets()
-	widgetColors()
+	setWidgetColors()
 
 	setupGrid()
 
