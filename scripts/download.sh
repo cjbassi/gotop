@@ -3,11 +3,12 @@
 # https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c
 function get_latest_release {
     curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
-    grep '"tag_name":' |                                            # Get tag line
-    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
+        grep '"tag_name":' |                                          # Get tag line
+        sed -E 's/.*"([^"]+)".*/\1/'                                  # Pluck JSON value
 }
 
 function download {
+    RELEASE=$(get_latest_release 'cjbassi/gotop')
     ARCHIVE=gotop_${RELEASE}_${1}.tgz
     curl -LO https://github.com/cjbassi/gotop/releases/download/${RELEASE}/${ARCHIVE}
     tar xf ${ARCHIVE}
@@ -16,8 +17,6 @@ function download {
 
 function main {
     ARCH=$(uname -sm)
-    RELEASE=$(get_latest_release 'cjbassi/gotop')
-
     case "${ARCH}" in
         # order matters
         Darwin\ *64)        download darwin_amd64   ;;
