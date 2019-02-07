@@ -47,6 +47,8 @@ deploy:
   on:
     tags: true
 
+if: tag IS present
+
 notifications:
   email:
     on_success: never
