@@ -23,19 +23,8 @@ fi
 tar -czf dist/${FILE}.tgz ${NAME} || ERROR=true
 
 if [[ ${GOOS} == "linux" && ${GOARCH} == "amd64" ]]; then
-    VERSION=$(go run main.go -v) # used by nfpm
-    docker run --rm \
-        -v $PWD:/tmp/pkg \
-        -e VERSION=${VERSION} \
-        goreleaser/nfpm pkg \
-            --config /tmp/pkg/ci/nfpm.yml \
-            --target /tmp/pkg/dist/${FILE}.deb || ERROR=true
-    docker run --rm \
-        -v $PWD:/tmp/pkg \
-        -e VERSION=${VERSION} \
-        goreleaser/nfpm pkg \
-            --config /tmp/pkg/ci/nfpm.yml \
-            --target /tmp/pkg/dist/${FILE}.rpm || ERROR=true
+    make all || ERROR=true
+    rm dist/gotop
 fi
 
 if [ ${ERROR} == "true" ]; then
