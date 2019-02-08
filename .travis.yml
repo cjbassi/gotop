@@ -10,10 +10,6 @@ env:
   global:
     - NAME=gotop
 
-install: true
-script:
-  - ./ci/script.sh
-
 matrix:
   include:
     # Linux
@@ -33,6 +29,9 @@ matrix:
     # OSX
     - env: _GOOS=darwin _GOARCH=amd64
       os: osx
+
+install: true
+script: ./ci/script.sh
 
 deploy:
   provider: releases
