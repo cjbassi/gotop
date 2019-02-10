@@ -37,7 +37,7 @@ func (self *Proc) update() {
 
 func Processes() ([]Process, error) {
 	keywords := fmt.Sprintf("pid=%s,comm=%s,pcpu=%s,pmem=%s,args", ten, fifty, five, five)
-	output, err := exec.Command("ps", "-wwcaxo", keywords).Output()
+	output, err := exec.Command("ps", "-caxo", keywords).Output()
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute 'ps' command: %v", err)
 	}
