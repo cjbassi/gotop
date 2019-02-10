@@ -10,7 +10,6 @@ Required information:
 
 - gotop version (`gotop -v`):
 - The output of `uname -a`:
-- Terminal shell (e.g. zsh or bash):
 - Terminal emulator (e.g. iTerm or gnome terminal):
 - Any relevenat hardware info:
 - tmux version if using tmux:
