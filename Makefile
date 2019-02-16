@@ -2,7 +2,7 @@
 # requires dockerd to be running
 # builds the packages for amd64
 
-VERSION=$(shell go run main.go -v)
+VERSION=$(shell go run main.go -V)
 ARCHIVE="gotop_$(VERSION)_linux_amd64"
 
 .PHONY: all

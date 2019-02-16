@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add vice colorscheme [#115]
 
+### Changed
+
+- Change `-v` cli option to `-V` for version
+
 ### Fixed
 
 - Fix disk I/O [#114] [#116]

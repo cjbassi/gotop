@@ -8,7 +8,7 @@ about: Template to report bugs.
 
 Required information:
 
-- gotop version (`gotop -v`):
+- gotop version (`gotop -V`):
 - The output of `uname -a`:
 - Terminal emulator (e.g. iTerm or gnome terminal):
 - Any relevenat hardware info:

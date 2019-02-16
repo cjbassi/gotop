@@ -71,7 +71,7 @@ Options:
   -h, --help            Show this screen.
   -m, --minimal         Only show CPU, Mem and Process widgets.
   -r, --rate=RATE       Number of times per second to update CPU and Mem widgets [default: 1].
-  -v, --version         Print version and exit.
+  -V, --version         Print version and exit.
   -p, --percpu          Show each CPU in the CPU widget.
   -a, --averagecpu      Show average CPU in the CPU widget.
   -f, --fahrenheit      Show temperatures in fahrenheit.
