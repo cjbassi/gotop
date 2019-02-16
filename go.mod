@@ -1,7 +1,6 @@
 module github.com/cjbassi/gotop
 
 require (
-	github.com/ProtonMail/go-appdir v0.0.0-20180220133335-7c788d1b45c6
 	github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6 // indirect
 	github.com/cjbassi/battery v0.0.0-20190206091651-451cd0de3f6f
 	github.com/davecgh/go-spew v1.1.1 // indirect

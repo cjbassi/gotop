@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Change `-v` cli option to `-V` for version
+- Revert back to using the XDG spec on macOS
 
 ### Fixed
 
