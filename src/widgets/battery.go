@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cjbassi/battery"
+	"github.com/distatus/battery"
 
 	ui "github.com/cjbassi/gotop/src/termui"
 )
