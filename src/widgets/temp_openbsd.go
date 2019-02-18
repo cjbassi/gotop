@@ -6,9 +6,9 @@ package widgets
 import "C"
 
 import (
-	"unsafe"
-	"syscall"
 	"strconv"
+	"syscall"
+	"unsafe"
 
 	"github.com/cjbassi/gotop/src/utils"
 )
@@ -17,7 +17,7 @@ func gettemp(t *Temp, mib []C.int, mlen int, snsrdev *C.struct_sensordev, index 
 	if mlen == 4 {
 		k := mib[3]
 		var numt C.int
-		for numt = 0; numt < snsrdev.maxnumt[k]; numt += 1 {
+		for numt = 0; numt < snsrdev.maxnumt[k]; numt++ {
 			mib[4] = numt
 			gettemp(t, mib, mlen+1, snsrdev, int(numt))
 		}
@@ -32,7 +32,7 @@ func gettemp(t *Temp, mib []C.int, mlen int, snsrdev *C.struct_sensordev, index 
 			return
 		}
 
-		if slen > 0 && (snsr.flags & C.SENSOR_FINVALID) == 0 {
+		if slen > 0 && (snsr.flags&C.SENSOR_FINVALID) == 0 {
 			key := C.GoString(&snsrdev.xname[0]) + ".temp" + strconv.Itoa(index)
 			temp := int((snsr.value - 273150000.0) / 1000000.0)
 
@@ -58,7 +58,7 @@ func (self *Temp) update() {
 	mib[3] = C.SENSOR_TEMP
 
 	var i C.int
-	for i = 0; ; i += 1 {
+	for i = 0; ; i++ {
 		mib[2] = i
 
 		if v, e := C.sysctl(&mib[0], 3, unsafe.Pointer(&snsrdev), &len, nil, 0); v == -1 {
@@ -67,7 +67,7 @@ func (self *Temp) update() {
 			}
 
 			if e == syscall.ENOENT {
-				break;
+				break
 			}
 		}
 
