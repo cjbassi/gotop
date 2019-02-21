@@ -83,6 +83,7 @@ Colorschemes:
   default-dark (for white background)
   solarized
   monokai
+  vice
 `
 
 	args, err := docopt.ParseArgs(usage, os.Args[1:], version)
@@ -126,6 +127,8 @@ func handleColorscheme(cs string) error {
 		colorscheme = colorschemes.Solarized
 	case "monokai":
 		colorscheme = colorschemes.Monokai
+	case "vice":
+		colorscheme = colorschemes.Vice
 	case "default-dark":
 		colorscheme = colorschemes.DefaultDark
 	default:
