@@ -116,7 +116,7 @@ func (self *Disk) update() {
 			log.Printf("failed to get partition read/write info from gopsutil: %v. Part: %v", err, Part)
 			continue
 		}
-		data := ret[Part.Device]
+		data := ret[strings.Replace(Part.Device, "/dev/", "", -1)]
 		curRead, curWrite := data.ReadBytes, data.WriteBytes
 		if Part.TotalRead != 0 { // if this isn't the first update
 			readRecent := curRead - Part.TotalRead
