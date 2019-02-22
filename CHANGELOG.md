@@ -34,5 +34,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#115]: https://github.com/cjbassi/gotop/pull/115
 [#116]: https://github.com/cjbassi/gotop/pull/116
 
-[Unreleased]: https://github.com/cjbassi/gotop/compare/2.0.2...HEAD
+[Unreleased]: https://github.com/cjbassi/gotop/compare/3.0.0...HEAD
+[3.0.0]: https://github.com/cjbassi/gotop/compare/2.0.2...3.0.0
 [2.0.2]: https://github.com/cjbassi/gotop/compare/2.0.1...2.0.2
