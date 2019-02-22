@@ -13,18 +13,16 @@ import (
 	"github.com/cjbassi/gotop/src/utils"
 )
 
-func gettemp(t *Temp, mib []C.int, mlen int, snsrdev *C.struct_sensordev, index int) {
-	if mlen == 4 {
+func getTemp(t *Temp, mib []C.int, mlen int, snsrdev *C.struct_sensordev, index int) {
+	switch mlen {
+	case 4:
 		k := mib[3]
 		var numt C.int
 		for numt = 0; numt < snsrdev.maxnumt[k]; numt++ {
 			mib[4] = numt
-			gettemp(t, mib, mlen+1, snsrdev, int(numt))
+			getTemp(t, mib, mlen+1, snsrdev, int(numt))
 		}
-		return
-	}
-
-	if mlen == 5 {
+	case 5:
 		var snsr C.struct_sensor
 		var slen C.size_t = C.sizeof_struct_sensor
 
@@ -42,8 +40,6 @@ func gettemp(t *Temp, mib []C.int, mlen int, snsrdev *C.struct_sensordev, index 
 				t.Data[key] = temp
 			}
 		}
-
-		return
 	}
 }
 
@@ -71,6 +67,6 @@ func (self *Temp) update() {
 			}
 		}
 
-		gettemp(self, mib, 4, &snsrdev, 0)
+		getTemp(self, mib, 4, &snsrdev, 0)
 	}
 }
