@@ -17,7 +17,7 @@ Working and tested on Linux, FreeBSD and OSX. Windows support is planned.
 ### Source
 
 ```bash
-go get github.com/cjbassi/gotop
+go get -u github.com/cjbassi/gotop
 ```
 
 ### Prebuilt binaries
