@@ -2,6 +2,7 @@ package widgets
 
 import (
 	"image"
+	"log"
 	"os"
 	"time"
 
@@ -21,27 +22,31 @@ func NewStatusBar() *StatusBar {
 func (self *StatusBar) Draw(buf *ui.Buffer) {
 	self.Block.Draw(buf)
 
-	hostname, _ := os.Hostname()
+	hostname, err := os.Hostname()
+	if err != nil {
+		log.Printf("could not get hostname: %v", err)
+		return
+	}
 	buf.SetString(
 		hostname,
-		ui.NewStyle(7),
+		ui.NewStyle(ui.ColorWhite),
 		image.Pt(self.Inner.Min.X, self.Inner.Min.Y+(self.Inner.Dy()/2)),
 	)
 
-	t := time.Now()
-	_time := t.Format("15:04:05")
+	currentTime := time.Now()
+	formattedTime := currentTime.Format("15:04:05")
 	buf.SetString(
-		_time,
-		ui.NewStyle(7),
+		formattedTime,
+		ui.NewStyle(ui.ColorWhite),
 		image.Pt(
-			self.Inner.Min.X+(self.Inner.Dx()/2)-len(_time)/2,
+			self.Inner.Min.X+(self.Inner.Dx()/2)-len(formattedTime)/2,
 			self.Inner.Min.Y+(self.Inner.Dy()/2),
 		),
 	)
 
 	buf.SetString(
 		"gotop",
-		ui.NewStyle(7),
+		ui.NewStyle(ui.ColorWhite),
 		image.Pt(
 			self.Inner.Max.X-6,
 			self.Inner.Min.Y+(self.Inner.Dy()/2),

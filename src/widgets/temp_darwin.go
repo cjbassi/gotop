@@ -53,7 +53,7 @@ func SensorsTemperatures() ([]TemperatureStat, error) {
 	return temperatures, nil
 }
 
-func (self *Temp) update() {
+func (self *TempWidget) update() {
 	sensors, err := SensorsTemperatures()
 	if err != nil {
 		log.Printf("failed to get sensors from CGO: %v", err)
@@ -61,9 +61,10 @@ func (self *Temp) update() {
 	}
 	for _, sensor := range sensors {
 		if sensor.Temperature != 0 {
-			if self.Fahrenheit {
+			switch self.TempScale {
+			case Fahrenheit:
 				self.Data[sensor.SensorKey] = utils.CelsiusToFahrenheit(int(sensor.Temperature))
-			} else {
+			case Celcius:
 				self.Data[sensor.SensorKey] = int(sensor.Temperature)
 			}
 		}

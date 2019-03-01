@@ -1,5 +1,7 @@
 package widgets
 
+// loosely based on https://github.com/openbsd/src/blob/master/sbin/sysctl/sysctl.c#L2517
+
 // #include <sys/time.h>
 // #include <sys/sysctl.h>
 // #include <sys/sensors.h>
@@ -13,14 +15,14 @@ import (
 	"github.com/cjbassi/gotop/src/utils"
 )
 
-func getTemp(t *Temp, mib []C.int, mlen int, snsrdev *C.struct_sensordev, index int) {
+func (self *TempWidget) getTemp(mib []C.int, mlen int, snsrdev *C.struct_sensordev, index int) {
 	switch mlen {
 	case 4:
 		k := mib[3]
 		var numt C.int
 		for numt = 0; numt < snsrdev.maxnumt[k]; numt++ {
 			mib[4] = numt
-			getTemp(t, mib, mlen+1, snsrdev, int(numt))
+			self.getTemp(mib, mlen+1, snsrdev, int(numt))
 		}
 	case 5:
 		var snsr C.struct_sensor
@@ -34,16 +36,17 @@ func getTemp(t *Temp, mib []C.int, mlen int, snsrdev *C.struct_sensordev, index 
 			key := C.GoString(&snsrdev.xname[0]) + ".temp" + strconv.Itoa(index)
 			temp := int((snsr.value - 273150000.0) / 1000000.0)
 
-			if t.Fahrenheit {
-				t.Data[key] = utils.CelsiusToFahrenheit(temp)
-			} else {
-				t.Data[key] = temp
+			switch self.TempScale {
+			case Fahrenheit:
+				self.Data[key] = utils.CelsiusToFahrenheit(temp)
+			case Celcius:
+				self.Data[key] = temp
 			}
 		}
 	}
 }
 
-func (self *Temp) update() {
+func (self *TempWidget) update() {
 	mib := []C.int{0, 1, 2, 3, 4}
 
 	var snsrdev C.struct_sensordev
@@ -56,17 +59,14 @@ func (self *Temp) update() {
 	var i C.int
 	for i = 0; ; i++ {
 		mib[2] = i
-
 		if v, e := C.sysctl(&mib[0], 3, unsafe.Pointer(&snsrdev), &len, nil, 0); v == -1 {
 			if e == syscall.ENXIO {
 				continue
 			}
-
 			if e == syscall.ENOENT {
 				break
 			}
 		}
-
-		getTemp(self, mib, 4, &snsrdev, 0)
+		self.getTemp(mib, 4, &snsrdev, 0)
 	}
 }

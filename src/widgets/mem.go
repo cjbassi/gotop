@@ -12,15 +12,15 @@ import (
 	"github.com/cjbassi/gotop/src/utils"
 )
 
-type Mem struct {
+type MemWidget struct {
 	*ui.LineGraph
-	interval time.Duration
+	updateInterval time.Duration
 }
 
-func NewMem(renderLock *sync.RWMutex, interval time.Duration, horizontalScale int) *Mem {
-	self := &Mem{
-		LineGraph: ui.NewLineGraph(),
-		interval:  interval,
+func NewMemWidget(renderLock *sync.RWMutex, updateInterval time.Duration, horizontalScale int) *MemWidget {
+	self := &MemWidget{
+		LineGraph:      ui.NewLineGraph(),
+		updateInterval: updateInterval,
 	}
 	self.Title = " Memory Usage "
 	self.HorizontalScale = horizontalScale
@@ -30,7 +30,7 @@ func NewMem(renderLock *sync.RWMutex, interval time.Duration, horizontalScale in
 	self.update()
 
 	go func() {
-		for range time.NewTicker(self.interval).C {
+		for range time.NewTicker(self.updateInterval).C {
 			renderLock.RLock()
 			self.update()
 			renderLock.RUnlock()
@@ -40,24 +40,36 @@ func NewMem(renderLock *sync.RWMutex, interval time.Duration, horizontalScale in
 	return self
 }
 
-func (self *Mem) update() {
-	main, err := psMem.VirtualMemory()
+func (self *MemWidget) update() {
+	mainMemory, err := psMem.VirtualMemory()
 	if err != nil {
 		log.Printf("failed to get main memory info from gopsutil: %v", err)
 	} else {
-		self.Data["Main"] = append(self.Data["Main"], main.UsedPercent)
-		mainTotalBytes, mainTotalMagnitude := utils.ConvertBytes(main.Total)
-		mainUsedBytes, mainUsedMagnitude := utils.ConvertBytes(main.Used)
-		self.Labels["Main"] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s", main.UsedPercent, mainUsedBytes, mainUsedMagnitude, mainTotalBytes, mainTotalMagnitude)
+		self.Data["Main"] = append(self.Data["Main"], mainMemory.UsedPercent)
+		mainMemoryTotalBytes, mainMemoryTotalMagnitude := utils.ConvertBytes(mainMemory.Total)
+		mainMemoryUsedBytes, mainMemoryUsedMagnitude := utils.ConvertBytes(mainMemory.Used)
+		self.Labels["Main"] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s",
+			mainMemory.UsedPercent,
+			mainMemoryUsedBytes,
+			mainMemoryUsedMagnitude,
+			mainMemoryTotalBytes,
+			mainMemoryTotalMagnitude,
+		)
 	}
 
-	swap, err := psMem.SwapMemory()
+	swapMemory, err := psMem.SwapMemory()
 	if err != nil {
 		log.Printf("failed to get swap memory info from gopsutil: %v", err)
 	} else {
-		self.Data["Swap"] = append(self.Data["Swap"], swap.UsedPercent)
-		swapTotalBytes, swapTotalMagnitude := utils.ConvertBytes(swap.Total)
-		swapUsedBytes, swapUsedMagnitude := utils.ConvertBytes(swap.Used)
-		self.Labels["Swap"] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s", swap.UsedPercent, swapUsedBytes, swapUsedMagnitude, swapTotalBytes, swapTotalMagnitude)
+		self.Data["Swap"] = append(self.Data["Swap"], swapMemory.UsedPercent)
+		swapMemoryTotalBytes, swapMemoryTotalMagnitude := utils.ConvertBytes(swapMemory.Total)
+		swapMemoryUsedBytes, swapMemoryUsedMagnitude := utils.ConvertBytes(swapMemory.Used)
+		self.Labels["Swap"] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s",
+			swapMemory.UsedPercent,
+			swapMemoryUsedBytes,
+			swapMemoryUsedMagnitude,
+			swapMemoryTotalBytes,
+			swapMemoryTotalMagnitude,
+		)
 	}
 }

@@ -13,25 +13,26 @@ import (
 	ui "github.com/cjbassi/gotop/src/termui"
 )
 
-type Batt struct {
+type BatteryWidget struct {
 	*ui.LineGraph
-	interval time.Duration
+	updateInterval time.Duration
 }
 
-func NewBatt(renderLock *sync.RWMutex, horizontalScale int) *Batt {
-	self := &Batt{
-		LineGraph: ui.NewLineGraph(),
-		interval:  time.Minute,
+func NewBatteryWidget(renderLock *sync.RWMutex, horizontalScale int) *BatteryWidget {
+	self := &BatteryWidget{
+		LineGraph:      ui.NewLineGraph(),
+		updateInterval: time.Minute,
 	}
 	self.Title = " Battery Status "
 	self.HorizontalScale = horizontalScale
 
 	// intentional duplicate
+	// adds 2 datapoints to the graph, otherwise the dot is difficult to see
 	self.update()
 	self.update()
 
 	go func() {
-		for range time.NewTicker(self.interval).C {
+		for range time.NewTicker(self.updateInterval).C {
 			renderLock.RLock()
 			self.update()
 			renderLock.RUnlock()
@@ -41,20 +42,20 @@ func NewBatt(renderLock *sync.RWMutex, horizontalScale int) *Batt {
 	return self
 }
 
-func mkId(i int) string {
+func makeId(i int) string {
 	return "Batt" + strconv.Itoa(i)
 }
 
-func (self *Batt) update() {
-	batts, err := battery.GetAll()
+func (self *BatteryWidget) update() {
+	batteries, err := battery.GetAll()
 	if err != nil {
-		log.Printf("failed to get battery info from system: %v", err)
+		log.Printf("failed to get battery info: %v", err)
 		return
 	}
-	for i, b := range batts {
-		n := mkId(i)
-		pc := math.Abs(b.Current/b.Full) * 100.0
-		self.Data[n] = append(self.Data[n], pc)
-		self.Labels[n] = fmt.Sprintf("%3.0f%% %.0f/%.0f", pc, math.Abs(b.Current), math.Abs(b.Full))
+	for i, battery := range batteries {
+		id := makeId(i)
+		percentFull := math.Abs(battery.Current/battery.Full) * 100.0
+		self.Data[id] = append(self.Data[id], percentFull)
+		self.Labels[id] = fmt.Sprintf("%3.0f%% %.0f/%.0f", percentFull, math.Abs(battery.Current), math.Abs(battery.Full))
 	}
 }

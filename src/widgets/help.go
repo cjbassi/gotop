@@ -57,9 +57,9 @@ func (self *HelpMenu) Draw(buf *ui.Buffer) {
 	self.Block.Draw(buf)
 
 	for y, line := range strings.Split(KEYBINDS, "\n") {
-		for x, char := range line {
+		for x, rune := range line {
 			buf.SetCell(
-				ui.NewCell(char, ui.NewStyle(7)),
+				ui.NewCell(rune, ui.NewStyle(7)),
 				image.Pt(self.Inner.Min.X+x, self.Inner.Min.Y+y-1),
 			)
 		}

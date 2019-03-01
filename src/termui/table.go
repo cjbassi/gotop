@@ -14,37 +14,30 @@ type Table struct {
 	Header []string
 	Rows   [][]string
 
-	ColWidths  []int
-	CellXPos   []int  // column position
-	ColResizer func() // for widgets that inherit a Table and want to overload the ColResize method
-	Gap        int    // gap between columns
-	PadLeft    int
+	ColWidths []int
+	ColGap    int
+	PadLeft   int
 
-	Cursor      bool
+	ShowCursor  bool
 	CursorColor Color
 
-	UniqueCol    int    // the column used to identify the selected item
+	UniqueCol    int    // the column used to uniquely identify each table row
 	SelectedItem string // used to keep the cursor on the correct item if the data changes
 	SelectedRow  int
 	TopRow       int // used to indicate where in the table we are scrolled at
+
+	ColResizer func()
 }
 
 // NewTable returns a new Table instance
 func NewTable() *Table {
-	self := &Table{
-		Block: NewBlock(),
-		// CursorColor: Theme.TableCursor,
+	return &Table{
+		Block:       NewBlock(),
 		SelectedRow: 0,
 		TopRow:      0,
 		UniqueCol:   0,
+		ColResizer:  func() {},
 	}
-	self.ColResizer = self.ColResize
-	return self
-}
-
-// ColResize is the default column resizer, but can be overriden.
-// ColResize calculates the width of each column.
-func (self *Table) ColResize() {
 }
 
 func (self *Table) Draw(buf *Buffer) {
@@ -53,12 +46,12 @@ func (self *Table) Draw(buf *Buffer) {
 	self.ColResizer()
 
 	// finds exact column starting position
-	self.CellXPos = []int{}
+	colXPos := []int{}
 	cur := 1 + self.PadLeft
 	for _, w := range self.ColWidths {
-		self.CellXPos = append(self.CellXPos, cur)
+		colXPos = append(colXPos, cur)
 		cur += w
-		cur += self.Gap
+		cur += self.ColGap
 	}
 
 	// prints header
@@ -68,13 +61,13 @@ func (self *Table) Draw(buf *Buffer) {
 			continue
 		}
 		// don't render column if it doesn't fit in widget
-		if width > (self.Inner.Dx()-self.CellXPos[i])+1 {
+		if width > (self.Inner.Dx()-colXPos[i])+1 {
 			continue
 		}
 		buf.SetString(
 			h,
 			NewStyle(Theme.Default.Fg, ColorClear, ModifierBold),
-			image.Pt(self.Inner.Min.X+self.CellXPos[i]-1, self.Inner.Min.Y),
+			image.Pt(self.Inner.Min.X+colXPos[i]-1, self.Inner.Min.Y),
 		)
 	}
 
@@ -90,7 +83,7 @@ func (self *Table) Draw(buf *Buffer) {
 
 		// prints cursor
 		style := NewStyle(Theme.Default.Fg)
-		if self.Cursor {
+		if self.ShowCursor {
 			if (self.SelectedItem == "" && rowNum == self.SelectedRow) || (self.SelectedItem != "" && self.SelectedItem == row[self.UniqueCol]) {
 				style.Fg = self.CursorColor
 				style.Modifier = ModifierReverse
@@ -115,24 +108,22 @@ func (self *Table) Draw(buf *Buffer) {
 				continue
 			}
 			// don't render column if width is greater than distance to end of widget
-			if width > (self.Inner.Dx()-self.CellXPos[i])+1 {
+			if width > (self.Inner.Dx()-colXPos[i])+1 {
 				continue
 			}
 			r := TrimString(row[i], width)
 			buf.SetString(
 				r,
 				style,
-				image.Pt(self.Inner.Min.X+self.CellXPos[i]-1, self.Inner.Min.Y+y-1),
+				image.Pt(self.Inner.Min.X+colXPos[i]-1, self.Inner.Min.Y+y-1),
 			)
 		}
 	}
 }
 
-/////////////////////////////////////////////////////////////////////////////////
-//                               Cursor Movement                               //
-/////////////////////////////////////////////////////////////////////////////////
+// Scrolling ///////////////////////////////////////////////////////////////////
 
-// calcPos is used to calculate the cursor position and the current view.
+// calcPos is used to calculate the cursor position and the current view into the table.
 func (self *Table) calcPos() {
 	self.SelectedItem = ""
 
@@ -151,49 +142,47 @@ func (self *Table) calcPos() {
 	}
 }
 
-func (self *Table) Up() {
+func (self *Table) ScrollUp() {
 	self.SelectedRow--
 	self.calcPos()
 }
 
-func (self *Table) Down() {
+func (self *Table) ScrollDown() {
 	self.SelectedRow++
 	self.calcPos()
 }
 
-func (self *Table) Top() {
+func (self *Table) ScrollTop() {
 	self.SelectedRow = 0
 	self.calcPos()
 }
 
-func (self *Table) Bottom() {
+func (self *Table) ScrollBottom() {
 	self.SelectedRow = len(self.Rows) - 1
 	self.calcPos()
 }
 
-// The number of lines in a page is equal to the height of the widgeself.
-
-func (self *Table) HalfPageUp() {
+func (self *Table) ScrollHalfPageUp() {
 	self.SelectedRow = self.SelectedRow - (self.Inner.Dy()-2)/2
 	self.calcPos()
 }
 
-func (self *Table) HalfPageDown() {
+func (self *Table) ScrollHalfPageDown() {
 	self.SelectedRow = self.SelectedRow + (self.Inner.Dy()-2)/2
 	self.calcPos()
 }
 
-func (self *Table) PageUp() {
+func (self *Table) ScrollPageUp() {
 	self.SelectedRow -= (self.Inner.Dy() - 2)
 	self.calcPos()
 }
 
-func (self *Table) PageDown() {
+func (self *Table) ScrollPageDown() {
 	self.SelectedRow += (self.Inner.Dy() - 2)
 	self.calcPos()
 }
 
-func (self *Table) Click(x, y int) {
+func (self *Table) HandleClick(x, y int) {
 	x = x - self.Min.X
 	y = y - self.Min.Y
 	if (x > 0 && x <= self.Inner.Dx()) && (y > 0 && y <= self.Inner.Dy()) {

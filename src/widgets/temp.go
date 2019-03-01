@@ -8,36 +8,45 @@ import (
 	"time"
 
 	ui "github.com/gizak/termui"
+
+	"github.com/cjbassi/gotop/src/utils"
 )
 
-type Temp struct {
-	*ui.Block  // inherits from Block instead of a premade Widget
-	interval   time.Duration
-	Data       map[string]int
-	Threshold  int
-	TempLow    ui.Color
-	TempHigh   ui.Color
-	Fahrenheit bool
+type TempScale int
+
+const (
+	Celcius    TempScale = 0
+	Fahrenheit           = 1
+)
+
+type TempWidget struct {
+	*ui.Block      // inherits from Block instead of a premade Widget
+	updateInterval time.Duration
+	Data           map[string]int
+	TempThreshold  int
+	TempLowColor   ui.Color
+	TempHighColor  ui.Color
+	TempScale      TempScale
 }
 
-func NewTemp(renderLock *sync.RWMutex, fahrenheit bool) *Temp {
-	self := &Temp{
-		Block:     ui.NewBlock(),
-		interval:  time.Second * 5,
-		Data:      make(map[string]int),
-		Threshold: 80, // temp at which color should change
+func NewTempWidget(renderLock *sync.RWMutex, tempScale TempScale) *TempWidget {
+	self := &TempWidget{
+		Block:          ui.NewBlock(),
+		updateInterval: time.Second * 5,
+		Data:           make(map[string]int),
+		TempThreshold:  80,
+		TempScale:      tempScale,
 	}
 	self.Title = " Temperatures "
 
-	if fahrenheit {
-		self.Fahrenheit = true
-		self.Threshold = int(self.Threshold*9/5 + 32)
+	if tempScale == Fahrenheit {
+		self.TempThreshold = utils.CelsiusToFahrenheit(self.TempThreshold)
 	}
 
 	self.update()
 
 	go func() {
-		for range time.NewTicker(self.interval).C {
+		for range time.NewTicker(self.updateInterval).C {
 			renderLock.RLock()
 			self.update()
 			renderLock.RUnlock()
@@ -47,8 +56,8 @@ func NewTemp(renderLock *sync.RWMutex, fahrenheit bool) *Temp {
 	return self
 }
 
-// We implement a custom Draw method instead of inheriting from a generic Widget.
-func (self *Temp) Draw(buf *ui.Buffer) {
+// Custom Draw method instead of inheriting from a generic Widget.
+func (self *TempWidget) Draw(buf *ui.Buffer) {
 	self.Block.Draw(buf)
 
 	var keys []string
@@ -62,9 +71,11 @@ func (self *Temp) Draw(buf *ui.Buffer) {
 			break
 		}
 
-		fg := self.TempLow
-		if self.Data[key] >= self.Threshold {
-			fg = self.TempHigh
+		var fg ui.Color
+		if self.Data[key] < self.TempThreshold {
+			fg = self.TempLowColor
+		} else {
+			fg = self.TempHighColor
 		}
 
 		s := ui.TrimString(key, (self.Inner.Dx() - 4))
@@ -72,13 +83,15 @@ func (self *Temp) Draw(buf *ui.Buffer) {
 			ui.Theme.Default,
 			image.Pt(self.Inner.Min.X, self.Inner.Min.Y+y),
 		)
-		if self.Fahrenheit {
+
+		switch self.TempScale {
+		case Fahrenheit:
 			buf.SetString(
 				fmt.Sprintf("%3dF", self.Data[key]),
 				ui.NewStyle(fg),
 				image.Pt(self.Inner.Max.X-4, self.Inner.Min.Y+y),
 			)
-		} else {
+		case Celcius:
 			buf.SetString(
 				fmt.Sprintf("%3dC", self.Data[key]),
 				ui.NewStyle(fg),

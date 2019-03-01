@@ -16,31 +16,31 @@ type Sparkline struct {
 	LineColor  Color
 }
 
-// Sparklines is a renderable widget which groups together the given sparklines.
-type Sparklines struct {
+// SparklineGroup is a renderable widget which groups together the given sparklines.
+type SparklineGroup struct {
 	*Block
 	Lines []*Sparkline
 }
 
-// Add appends a given Sparkline to the *Sparklines.
-func (self *Sparklines) Add(sl Sparkline) {
+// Add appends a given Sparkline to the *SparklineGroup.
+func (self *SparklineGroup) Add(sl Sparkline) {
 	self.Lines = append(self.Lines, &sl)
 }
 
-// NewSparkline returns an unrenderable single sparkline that intended to be added into a Sparklines.
+// NewSparkline returns an unrenderable single sparkline that intended to be added into a SparklineGroup.
 func NewSparkline() *Sparkline {
 	return &Sparkline{}
 }
 
-// NewSparklines return a new *Sparklines with given Sparklines, you can always add a new Sparkline later.
-func NewSparklines(ss ...*Sparkline) *Sparklines {
-	return &Sparklines{
+// NewSparklineGroup return a new *SparklineGroup with given Sparklines, you can always add a new Sparkline later.
+func NewSparklineGroup(ss ...*Sparkline) *SparklineGroup {
+	return &SparklineGroup{
 		Block: NewBlock(),
 		Lines: ss,
 	}
 }
 
-func (self *Sparklines) Draw(buf *Buffer) {
+func (self *SparklineGroup) Draw(buf *Buffer) {
 	self.Block.Draw(buf)
 
 	lc := len(self.Lines) // lineCount

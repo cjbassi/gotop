@@ -15,37 +15,43 @@ import (
 )
 
 type Partition struct {
-	Device      string
-	Mount       string
-	TotalRead   uint64
-	TotalWrite  uint64
-	CurRead     string
-	CurWrite    string
-	UsedPercent int
-	Free        string
+	Device               string
+	MountPoint           string
+	BytesRead            uint64
+	BytesWritten         uint64
+	BytesReadRecently    string
+	BytesWrittenRecently string
+	UsedPercent          uint32
+	Free                 string
 }
 
-type Disk struct {
+type DiskWidget struct {
 	*ui.Table
-	interval   time.Duration
-	Partitions map[string]*Partition
+	updateInterval time.Duration
+	Partitions     map[string]*Partition
 }
 
-func NewDisk(renderLock *sync.RWMutex) *Disk {
-	self := &Disk{
-		Table:      ui.NewTable(),
-		interval:   time.Second,
-		Partitions: make(map[string]*Partition),
+func NewDiskWidget(renderLock *sync.RWMutex) *DiskWidget {
+	self := &DiskWidget{
+		Table:          ui.NewTable(),
+		updateInterval: time.Second,
+		Partitions:     make(map[string]*Partition),
 	}
 	self.Title = " Disk Usage "
 	self.Header = []string{"Disk", "Mount", "Used", "Free", "R/s", "W/s"}
-	self.Gap = 2
-	self.ColResizer = self.ColResize
+	self.ColGap = 2
+	self.ColResizer = func() {
+		self.ColWidths = []int{
+			utils.MaxInt(4, (self.Inner.Dx()-29)/2),
+			utils.MaxInt(5, (self.Inner.Dx()-29)/2),
+			4, 5, 5, 5,
+		}
+	}
 
 	self.update()
 
 	go func() {
-		for range time.NewTicker(self.interval).C {
+		for range time.NewTicker(self.updateInterval).C {
 			renderLock.RLock()
 			self.update()
 			renderLock.RUnlock()
@@ -55,86 +61,87 @@ func NewDisk(renderLock *sync.RWMutex) *Disk {
 	return self
 }
 
-func (self *Disk) update() {
-	Partitions, err := psDisk.Partitions(false)
+func (self *DiskWidget) update() {
+	partitions, err := psDisk.Partitions(false)
 	if err != nil {
 		log.Printf("failed to get disk partitions from gopsutil: %v", err)
 		return
 	}
 
 	// add partition if it's new
-	for _, Part := range Partitions {
+	for _, partition := range partitions {
 		// don't show loop devices
-		if strings.HasPrefix(Part.Device, "/dev/loop") {
+		if strings.HasPrefix(partition.Device, "/dev/loop") {
 			continue
 		}
 		// don't show docker container filesystems
-		if strings.HasPrefix(Part.Mountpoint, "/var/lib/docker/") {
+		if strings.HasPrefix(partition.Mountpoint, "/var/lib/docker/") {
 			continue
 		}
 		// check if partition doesn't already exist in our list
-		if _, ok := self.Partitions[Part.Device]; !ok {
-			self.Partitions[Part.Device] = &Partition{
-				Device: Part.Device,
-				Mount:  Part.Mountpoint,
+		if _, ok := self.Partitions[partition.Device]; !ok {
+			self.Partitions[partition.Device] = &Partition{
+				Device:     partition.Device,
+				MountPoint: partition.Mountpoint,
 			}
 		}
 	}
 
 	// delete a partition if it no longer exists
-	todelete := []string{}
-	for key := range self.Partitions {
+	toDelete := []string{}
+	for device := range self.Partitions {
 		exists := false
-		for _, Part := range Partitions {
-			if key == Part.Device {
+		for _, partition := range partitions {
+			if device == partition.Device {
 				exists = true
 				break
 			}
 		}
 		if !exists {
-			todelete = append(todelete, key)
+			toDelete = append(toDelete, device)
 		}
 	}
-	for _, val := range todelete {
-		delete(self.Partitions, val)
+	for _, device := range toDelete {
+		delete(self.Partitions, device)
 	}
 
 	// updates partition info
-	for _, Part := range self.Partitions {
-		usage, err := psDisk.Usage(Part.Mount)
+	for _, partition := range self.Partitions {
+		usage, err := psDisk.Usage(partition.MountPoint)
 		if err != nil {
-			log.Printf("failed to get partition usage statistics from gopsutil: %v. Part: %v", err, Part)
+			log.Printf("failed to get partition usage statistics from gopsutil: %v. partition: %v", err, partition)
 			continue
 		}
-		Part.UsedPercent = int(usage.UsedPercent)
+		partition.UsedPercent = uint32(usage.UsedPercent)
 
-		Free, Mag := utils.ConvertBytes(usage.Free)
-		Part.Free = fmt.Sprintf("%3d%s", uint64(Free), Mag)
+		bytesFree, magnitudeFree := utils.ConvertBytes(usage.Free)
+		partition.Free = fmt.Sprintf("%3d%s", uint64(bytesFree), magnitudeFree)
 
-		ret, err := psDisk.IOCounters(Part.Device)
+		ioCounters, err := psDisk.IOCounters(partition.Device)
 		if err != nil {
-			log.Printf("failed to get partition read/write info from gopsutil: %v. Part: %v", err, Part)
+			log.Printf("failed to get partition read/write info from gopsutil: %v. partition: %v", err, partition)
 			continue
 		}
-		data := ret[strings.Replace(Part.Device, "/dev/", "", -1)]
-		curRead, curWrite := data.ReadBytes, data.WriteBytes
-		if Part.TotalRead != 0 { // if this isn't the first update
-			readRecent := curRead - Part.TotalRead
-			writeRecent := curWrite - Part.TotalWrite
+		ioCounter := ioCounters[strings.Replace(partition.Device, "/dev/", "", -1)]
+		bytesRead, bytesWritten := ioCounter.ReadBytes, ioCounter.WriteBytes
+		if partition.BytesRead != 0 { // if this isn't the first update
+			bytesReadRecently := bytesRead - partition.BytesRead
+			bytesWrittenRecently := bytesWritten - partition.BytesWritten
 
-			readFloat, unitRead := utils.ConvertBytes(readRecent)
-			writeFloat, unitWrite := utils.ConvertBytes(writeRecent)
-			readRecent, writeRecent = uint64(readFloat), uint64(writeFloat)
-			Part.CurRead = fmt.Sprintf("%d%s", readRecent, unitRead)
-			Part.CurWrite = fmt.Sprintf("%d%s", writeRecent, unitWrite)
+			readFloat, readMagnitude := utils.ConvertBytes(bytesReadRecently)
+			writeFloat, writeMagnitude := utils.ConvertBytes(bytesWrittenRecently)
+			bytesReadRecently, bytesWrittenRecently = uint64(readFloat), uint64(writeFloat)
+			partition.BytesReadRecently = fmt.Sprintf("%d%s", bytesReadRecently, readMagnitude)
+			partition.BytesWrittenRecently = fmt.Sprintf("%d%s", bytesWrittenRecently, writeMagnitude)
 		} else {
-			Part.CurRead = fmt.Sprintf("%d%s", 0, "B")
-			Part.CurWrite = fmt.Sprintf("%d%s", 0, "B")
+			partition.BytesReadRecently = fmt.Sprintf("%d%s", 0, "B")
+			partition.BytesWrittenRecently = fmt.Sprintf("%d%s", 0, "B")
 		}
-		Part.TotalRead, Part.TotalWrite = curRead, curWrite
+		partition.BytesRead, partition.BytesWritten = bytesRead, bytesWritten
 	}
 
 	// converts self.Partitions into self.Rows which is a [][]String
+
 	sortedPartitions := []string{}
 	for seriesName := range self.Partitions {
 		sortedPartitions = append(sortedPartitions, seriesName)
@@ -142,31 +149,15 @@ func (self *Disk) update() {
 	sort.Strings(sortedPartitions)
 
 	self.Rows = make([][]string, len(self.Partitions))
+
 	for i, key := range sortedPartitions {
-		Part := self.Partitions[key]
+		partition := self.Partitions[key]
 		self.Rows[i] = make([]string, 6)
-		self.Rows[i][0] = strings.Replace(strings.Replace(Part.Device, "/dev/", "", -1), "mapper/", "", -1)
-		self.Rows[i][1] = Part.Mount
-		self.Rows[i][2] = fmt.Sprintf("%d%%", Part.UsedPercent)
-		self.Rows[i][3] = Part.Free
-		self.Rows[i][4] = Part.CurRead
-		self.Rows[i][5] = Part.CurWrite
-	}
-}
-
-// ColResize overrides the default ColResize in the termui table.
-func (self *Disk) ColResize() {
-	self.ColWidths = []int{
-		utils.Max(4, (self.Inner.Dx()-29)/2),
-		utils.Max(5, (self.Inner.Dx()-29)/2),
-		4, 5, 5, 5,
-	}
-
-	self.CellXPos = []int{}
-	cur := 1
-	for _, w := range self.ColWidths {
-		self.CellXPos = append(self.CellXPos, cur)
-		cur += w
-		cur += self.Gap
+		self.Rows[i][0] = strings.Replace(strings.Replace(partition.Device, "/dev/", "", -1), "mapper/", "", -1)
+		self.Rows[i][1] = partition.MountPoint
+		self.Rows[i][2] = fmt.Sprintf("%d%%", partition.UsedPercent)
+		self.Rows[i][3] = partition.Free
+		self.Rows[i][4] = partition.BytesReadRecently
+		self.Rows[i][5] = partition.BytesWrittenRecently
 	}
 }

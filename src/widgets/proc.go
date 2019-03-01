@@ -9,7 +9,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gizak/termui"
 	psCPU "github.com/shirou/gopsutil/cpu"
 
 	ui "github.com/cjbassi/gotop/src/termui"
@@ -17,56 +16,67 @@ import (
 )
 
 const (
-	UP   = "▲"
-	DOWN = "▼"
+	UP_ARROW   = "▲"
+	DOWN_ARROW = "▼"
 )
 
-// Process represents each process.
-type Process struct {
-	PID     int
-	Command string
-	CPU     float64
-	Mem     float64
-	Args    string
-}
+type ProcSortMethod string
+
+const (
+	ProcSortCpu ProcSortMethod = "c"
+	ProcSortMem                = "m"
+	ProcSortPid                = "p"
+)
 
 type Proc struct {
-	*ui.Table
-	cpuCount       float64
-	interval       time.Duration
-	sortMethod     string
-	groupedProcs   []Process
-	ungroupedProcs []Process
-	group          bool
+	Pid         int
+	CommandName string
+	FullCommand string
+	Cpu         float64
+	Mem         float64
 }
 
-func NewProc(renderLock *sync.RWMutex) *Proc {
+type ProcWidget struct {
+	*ui.Table
+	cpuCount         float64
+	updateInterval   time.Duration
+	sortMethod       ProcSortMethod
+	groupedProcs     []Proc
+	ungroupedProcs   []Proc
+	showGroupedProcs bool
+}
+
+func NewProcWidget(renderLock *sync.RWMutex) *ProcWidget {
 	cpuCount, err := psCPU.Counts(false)
 	if err != nil {
 		log.Printf("failed to get CPU count from gopsutil: %v", err)
 	}
-	self := &Proc{
-		Table:      ui.NewTable(),
-		interval:   time.Second,
-		cpuCount:   float64(cpuCount),
-		sortMethod: "c",
-		group:      true,
+	self := &ProcWidget{
+		Table:            ui.NewTable(),
+		updateInterval:   time.Second,
+		cpuCount:         float64(cpuCount),
+		sortMethod:       ProcSortCpu,
+		showGroupedProcs: true,
 	}
 	self.Title = " Processes "
-	self.ColResizer = self.ColResize
-	self.Cursor = true
-	self.Gap = 3
+	self.ShowCursor = true
+	self.ColGap = 3
 	self.PadLeft = 2
+	self.ColResizer = func() {
+		self.ColWidths = []int{
+			5, utils.MaxInt(self.Inner.Dx()-26, 10), 4, 4,
+		}
+	}
 
 	self.UniqueCol = 0
-	if self.group {
+	if self.showGroupedProcs {
 		self.UniqueCol = 1
 	}
 
 	self.update()
 
 	go func() {
-		for range time.NewTicker(self.interval).C {
+		for range time.NewTicker(self.updateInterval).C {
 			renderLock.RLock()
 			self.update()
 			renderLock.RUnlock()
@@ -76,120 +86,104 @@ func NewProc(renderLock *sync.RWMutex) *Proc {
 	return self
 }
 
-// Sort sorts either the grouped or ungrouped []Process based on the sortMethod.
+func (self *ProcWidget) update() {
+	procs, err := getProcs()
+	if err != nil {
+		log.Printf("failed to retrieve processes: %v", err)
+		return
+	}
+
+	// can't iterate on the entries directly since we can't modify them that way
+	for i := range procs {
+		procs[i].Cpu /= self.cpuCount
+	}
+
+	self.ungroupedProcs = procs
+	self.groupedProcs = groupProcs(procs)
+
+	self.sortProcs()
+	self.convertProcsToTableRows()
+}
+
+// sortProcs sorts either the grouped or ungrouped []Process based on the sortMethod.
 // Called with every update, when the sort method is changed, and when processes are grouped and ungrouped.
-func (self *Proc) Sort() {
+func (self *ProcWidget) sortProcs() {
 	self.Header = []string{"Count", "Command", "CPU%", "Mem%"}
 
-	if !self.group {
+	if !self.showGroupedProcs {
 		self.Header[0] = "PID"
 	}
 
-	processes := &self.ungroupedProcs
-	if self.group {
-		processes = &self.groupedProcs
+	var procs *[]Proc
+	if self.showGroupedProcs {
+		procs = &self.groupedProcs
+	} else {
+		procs = &self.ungroupedProcs
 	}
 
 	switch self.sortMethod {
-	case "c":
-		sort.Sort(sort.Reverse(ProcessByCPU(*processes)))
-		self.Header[2] += DOWN
-	case "p":
-		if self.group {
-			sort.Sort(sort.Reverse(ProcessByPID(*processes)))
+	case ProcSortCpu:
+		sort.Sort(sort.Reverse(SortProcsByCpu(*procs)))
+		self.Header[2] += DOWN_ARROW
+	case ProcSortPid:
+		if self.showGroupedProcs {
+			sort.Sort(sort.Reverse(SortProcsByPid(*procs)))
 		} else {
-			sort.Sort(ProcessByPID(*processes))
+			sort.Sort(SortProcsByPid(*procs))
 		}
-		self.Header[0] += DOWN
-	case "m":
-		sort.Sort(sort.Reverse(ProcessByMem(*processes)))
-		self.Header[3] += DOWN
-	}
-
-	self.Rows = FieldsToStrings(*processes, self.group)
-}
-
-// ColResize overrides the default ColResize in the termui table.
-func (self *Proc) ColResize() {
-	self.ColWidths = []int{
-		5, utils.Max(self.Inner.Dx()-26, 10), 4, 4,
+		self.Header[0] += DOWN_ARROW
+	case ProcSortMem:
+		sort.Sort(sort.Reverse(SortProcsByMem(*procs)))
+		self.Header[3] += DOWN_ARROW
 	}
 }
 
-func (self *Proc) ChangeSort(e termui.Event) {
-	if self.sortMethod != e.ID {
-		self.sortMethod = e.ID
-		self.Top()
-		self.Sort()
+// convertProcsToTableRows converts a []Proc to a [][]string and sets it to the table Rows
+func (self *ProcWidget) convertProcsToTableRows() {
+	var procs *[]Proc
+	if self.showGroupedProcs {
+		procs = &self.groupedProcs
+	} else {
+		procs = &self.ungroupedProcs
+	}
+	strings := make([][]string, len(*procs))
+	for i := range *procs {
+		strings[i] = make([]string, 4)
+		strings[i][0] = strconv.Itoa(int((*procs)[i].Pid))
+		if self.showGroupedProcs {
+			strings[i][1] = (*procs)[i].CommandName
+		} else {
+			strings[i][1] = (*procs)[i].FullCommand
+		}
+		strings[i][2] = fmt.Sprintf("%4s", strconv.FormatFloat((*procs)[i].Cpu, 'f', 1, 64))
+		strings[i][3] = fmt.Sprintf("%4s", strconv.FormatFloat(float64((*procs)[i].Mem), 'f', 1, 64))
+	}
+	self.Rows = strings
+}
+
+func (self *ProcWidget) ChangeProcSortMethod(method ProcSortMethod) {
+	if self.sortMethod != method {
+		self.sortMethod = method
+		self.ScrollTop()
+		self.sortProcs()
+		self.convertProcsToTableRows()
 	}
 }
 
-func (self *Proc) Tab() {
-	self.group = !self.group
-	if self.group {
+func (self *ProcWidget) ToggleShowingGroupedProcs() {
+	self.showGroupedProcs = !self.showGroupedProcs
+	if self.showGroupedProcs {
 		self.UniqueCol = 1
 	} else {
 		self.UniqueCol = 0
 	}
-	self.Sort()
-	self.Top()
+	self.ScrollTop()
+	self.sortProcs()
+	self.convertProcsToTableRows()
 }
 
-// Group groupes a []Process based on command name.
-// The first field changes from PID to count.
-// CPU and Mem are added together for each Process.
-func Group(P []Process) []Process {
-	groupedP := make(map[string]Process)
-	for _, process := range P {
-		val, ok := groupedP[process.Command]
-		if ok {
-			groupedP[process.Command] = Process{
-				val.PID + 1,
-				val.Command,
-				val.CPU + process.CPU,
-				val.Mem + process.Mem,
-				"",
-			}
-		} else {
-			groupedP[process.Command] = Process{
-				1,
-				process.Command,
-				process.CPU,
-				process.Mem,
-				"",
-			}
-		}
-	}
-
-	groupList := make([]Process, len(groupedP))
-	var i int
-	for _, val := range groupedP {
-		groupList[i] = val
-		i++
-	}
-
-	return groupList
-}
-
-// FieldsToStrings converts a []Process to a [][]string
-func FieldsToStrings(P []Process, grouped bool) [][]string {
-	strings := make([][]string, len(P))
-	for i, p := range P {
-		strings[i] = make([]string, 4)
-		strings[i][0] = strconv.Itoa(int(p.PID))
-		if grouped {
-			strings[i][1] = p.Command
-		} else {
-			strings[i][1] = p.Args
-		}
-		strings[i][2] = fmt.Sprintf("%4s", strconv.FormatFloat(p.CPU, 'f', 1, 64))
-		strings[i][3] = fmt.Sprintf("%4s", strconv.FormatFloat(float64(p.Mem), 'f', 1, 64))
-	}
-	return strings
-}
-
-// Kill kills process or group of processes.
-func (self *Proc) Kill() {
+// KillProc kills a process or group of processes depending on if we're displaying the processes grouped or not.
+func (self *ProcWidget) KillProc() {
 	self.SelectedItem = ""
 	command := "kill"
 	if self.UniqueCol == 1 {
@@ -200,57 +194,91 @@ func (self *Proc) Kill() {
 	cmd.Wait()
 }
 
-/////////////////////////////////////////////////////////////////////////////////
-//                              []Process Sorting                              //
-/////////////////////////////////////////////////////////////////////////////////
+// groupProcs groupes a []Proc based on command name.
+// The first field changes from PID to count.
+// Cpu and Mem are added together for each Proc.
+func groupProcs(procs []Proc) []Proc {
+	groupedProcsMap := make(map[string]Proc)
+	for _, proc := range procs {
+		val, ok := groupedProcsMap[proc.CommandName]
+		if ok {
+			groupedProcsMap[proc.CommandName] = Proc{
+				val.Pid + 1,
+				val.CommandName,
+				"",
+				val.Cpu + proc.Cpu,
+				val.Mem + proc.Mem,
+			}
+		} else {
+			groupedProcsMap[proc.CommandName] = Proc{
+				1,
+				proc.CommandName,
+				"",
+				proc.Cpu,
+				proc.Mem,
+			}
+		}
+	}
 
-type ProcessByCPU []Process
+	groupedProcsList := make([]Proc, len(groupedProcsMap))
+	i := 0
+	for _, val := range groupedProcsMap {
+		groupedProcsList[i] = val
+		i++
+	}
+
+	return groupedProcsList
+}
+
+// []Proc Sorting //////////////////////////////////////////////////////////////
+
+type SortProcsByCpu []Proc
 
 // Len implements Sort interface
-func (P ProcessByCPU) Len() int {
-	return len(P)
+func (self SortProcsByCpu) Len() int {
+	return len(self)
 }
 
 // Swap implements Sort interface
-func (P ProcessByCPU) Swap(i, j int) {
-	P[i], P[j] = P[j], P[i]
+func (self SortProcsByCpu) Swap(i, j int) {
+	self[i], self[j] = self[j], self[i]
 }
 
 // Less implements Sort interface
-func (P ProcessByCPU) Less(i, j int) bool {
-	return P[i].CPU < P[j].CPU
+func (self SortProcsByCpu) Less(i, j int) bool {
+	return self[i].Cpu < self[j].Cpu
 }
 
-type ProcessByPID []Process
+type SortProcsByPid []Proc
 
 // Len implements Sort interface
-func (P ProcessByPID) Len() int {
-	return len(P)
+func (self SortProcsByPid) Len() int {
+	return len(self)
 }
 
 // Swap implements Sort interface
-func (P ProcessByPID) Swap(i, j int) {
-	P[i], P[j] = P[j], P[i]
+func (self SortProcsByPid) Swap(i, j int) {
+	self[i], self[j] = self[j], self[i]
 }
 
 // Less implements Sort interface
-func (P ProcessByPID) Less(i, j int) bool {
-	return P[i].PID < P[j].PID
+func (self SortProcsByPid) Less(i, j int) bool {
+	return self[i].Pid < self[j].Pid
 }
 
-type ProcessByMem []Process
+type SortProcsByMem []Proc
 
 // Len implements Sort interface
-func (P ProcessByMem) Len() int {
-	return len(P)
+func (self SortProcsByMem) Len() int {
+	return len(self)
 }
 
 // Swap implements Sort interface
-func (P ProcessByMem) Swap(i, j int) {
-	P[i], P[j] = P[j], P[i]
+func (self SortProcsByMem) Swap(i, j int) {
+	self[i], self[j] = self[j], self[i]
 }
 
 // Less implements Sort interface
-func (P ProcessByMem) Less(i, j int) bool {
-	return P[i].Mem < P[j].Mem
+func (self SortProcsByMem) Less(i, j int) bool {
+	return self[i].Mem < self[j].Mem
 }

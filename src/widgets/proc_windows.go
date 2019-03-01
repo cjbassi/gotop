@@ -1,34 +1,35 @@
 package widgets
 
 import (
+	"fmt"
 	"log"
 
 	psProc "github.com/shirou/gopsutil/process"
 )
 
-func (self *Proc) update() {
-	psProcesses, err := psProc.Processes()
+func getProcs() ([]Proc, error) {
+	psProcs, err := psProc.Processes()
 	if err != nil {
-		log.Printf("failed to get processes from gopsutil: %v", err)
-		return
+		return nil, fmt.Errorf("failed to get processes from gopsutil: %v", err)
 	}
-	processes := make([]Process, len(psProcesses))
-	for i, psProcess := range psProcesses {
-		pid := psProcess.Pid
-		command, err := psProcess.Name()
+
+	procs := make([]Proc, len(psProcs))
+	for i, psProc := range psProcs {
+		pid := psProc.Pid
+		command, err := psProc.Name()
 		if err != nil {
-			log.Printf("failed to get process command from gopsutil: %v. psProcess: %v. i: %v. pid: %v", err, psProcess, i, pid)
+			log.Printf("failed to get process command from gopsutil: %v. psProc: %v. i: %v. pid: %v", err, psProc, i, pid)
 		}
-		cpu, err := psProcess.CPUPercent()
+		cpu, err := psProc.CPUPercent()
 		if err != nil {
-			log.Printf("failed to get process cpu usage from gopsutil: %v. psProcess: %v. i: %v. pid: %v", err, psProcess, i, pid)
+			log.Printf("failed to get process cpu usage from gopsutil: %v. psProc: %v. i: %v. pid: %v", err, psProc, i, pid)
 		}
-		mem, err := psProcess.MemoryPercent()
+		mem, err := psProc.MemoryPercent()
 		if err != nil {
-			log.Printf("failed to get process memeory usage from gopsutil: %v. psProcess: %v. i: %v. pid: %v", err, psProcess, i, pid)
+			log.Printf("failed to get process memeory usage from gopsutil: %v. psProc: %v. i: %v. pid: %v", err, psProc, i, pid)
 		}
 
-		processes[i] = Process{
+		procs[i] = Proc{
 			int(pid),
 			command,
 			cpu / self.cpuCount,
@@ -39,8 +40,5 @@ func (self *Proc) update() {
 		}
 	}
 
-	self.ungroupedProcs = processes
-	self.groupedProcs = Group(processes)
-
-	self.Sort()
+	return procs, nil
 }

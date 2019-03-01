@@ -11,21 +11,26 @@ import (
 // LineGraph implements a line graph of data points.
 type LineGraph struct {
 	*Block
-	Data            map[string][]float64
-	LineColor       map[string]Color
-	HorizontalScale int
-	Labels          map[string]string
 
+	Data   map[string][]float64
+	Labels map[string]string
+
+	HorizontalScale int
+
+	LineColors       map[string]Color
 	DefaultLineColor Color
 }
 
 func NewLineGraph() *LineGraph {
 	return &LineGraph{
-		Block:           NewBlock(),
-		Data:            make(map[string][]float64),
-		LineColor:       make(map[string]Color),
-		Labels:          make(map[string]string),
+		Block: NewBlock(),
+
+		Data:   make(map[string][]float64),
+		Labels: make(map[string]string),
+
 		HorizontalScale: 5,
+
+		LineColors: make(map[string]Color),
 	}
 }
 
@@ -53,7 +58,7 @@ func (self *LineGraph) Draw(buf *Buffer) {
 	for i := len(seriesList) - 1; i >= 0; i-- {
 		seriesName := seriesList[i]
 		seriesData := self.Data[seriesName]
-		seriesLineColor, ok := self.LineColor[seriesName]
+		seriesLineColor, ok := self.LineColors[seriesName]
 		if !ok {
 			seriesLineColor = self.DefaultLineColor
 		}
@@ -110,7 +115,7 @@ func (self *LineGraph) Draw(buf *Buffer) {
 		if i+2 > self.Inner.Dy() {
 			continue
 		}
-		seriesLineColor, ok := self.LineColor[seriesName]
+		seriesLineColor, ok := self.LineColors[seriesName]
 		if !ok {
 			seriesLineColor = self.DefaultLineColor
 		}

@@ -44,19 +44,19 @@ var (
 	minimalMode    = false
 	averageLoad    = false
 	percpuLoad     = false
-	fahrenheit     = false
+	tempScale      = w.Celcius
 	battery        = false
 	statusbar      = false
 
 	renderLock sync.RWMutex
 
-	cpu  *w.CPU
-	batt *w.Batt
-	mem  *w.Mem
-	proc *w.Proc
-	net  *w.Net
-	disk *w.Disk
-	temp *w.Temp
+	cpu  *w.CpuWidget
+	batt *w.BatteryWidget
+	mem  *w.MemWidget
+	proc *w.ProcWidget
+	net  *w.NetWidget
+	disk *w.DiskWidget
+	temp *w.TempWidget
 	help *w.HelpMenu
 	grid *ui.Grid
 	bar  *w.StatusBar
@@ -134,7 +134,10 @@ Colorschemes:
 	} else {
 		updateInterval = time.Second / time.Duration(rate)
 	}
-	fahrenheit, _ = args["--fahrenheit"].(bool)
+	fahrenheit, _ := args["--fahrenheit"].(bool)
+	if fahrenheit {
+		tempScale = w.Fahrenheit
+	}
 
 	return nil
 }
@@ -221,8 +224,8 @@ func setDefaultTermuiColors() {
 }
 
 func setWidgetColors() {
-	mem.LineColor["Main"] = ui.Color(colorscheme.MainMem)
-	mem.LineColor["Swap"] = ui.Color(colorscheme.SwapMem)
+	mem.LineColors["Main"] = ui.Color(colorscheme.MainMem)
+	mem.LineColors["Swap"] = ui.Color(colorscheme.SwapMem)
 
 	proc.CursorColor = ui.Color(colorscheme.ProcCursor)
 
@@ -238,7 +241,7 @@ func setWidgetColors() {
 			i = 0
 		}
 		c := colorscheme.CPULines[i]
-		cpu.LineColor[v] = ui.Color(c)
+		cpu.LineColors[v] = ui.Color(c)
 		i++
 	}
 
@@ -256,13 +259,13 @@ func setWidgetColors() {
 					i = 0
 				}
 				c := colorscheme.BattLines[i]
-				batt.LineColor[v] = ui.Color(c)
+				batt.LineColors[v] = ui.Color(c)
 				i++
 			}
 		}
 
-		temp.TempLow = ui.Color(colorscheme.TempLow)
-		temp.TempHigh = ui.Color(colorscheme.TempHigh)
+		temp.TempLowColor = ui.Color(colorscheme.TempLow)
+		temp.TempHighColor = ui.Color(colorscheme.TempHigh)
 
 		net.Lines[0].LineColor = ui.Color(colorscheme.Sparkline)
 		net.Lines[0].TitleColor = ui.Color(colorscheme.BorderLabel)
@@ -272,17 +275,17 @@ func setWidgetColors() {
 }
 
 func initWidgets() {
-	cpu = w.NewCPU(&renderLock, updateInterval, graphHorizontalScale, averageLoad, percpuLoad)
-	mem = w.NewMem(&renderLock, updateInterval, graphHorizontalScale)
-	proc = w.NewProc(&renderLock)
+	cpu = w.NewCpuWidget(&renderLock, updateInterval, graphHorizontalScale, averageLoad, percpuLoad)
+	mem = w.NewMemWidget(&renderLock, updateInterval, graphHorizontalScale)
+	proc = w.NewProcWidget(&renderLock)
 	help = w.NewHelpMenu()
 	if !minimalMode {
 		if battery {
-			batt = w.NewBatt(&renderLock, graphHorizontalScale)
+			batt = w.NewBatteryWidget(&renderLock, graphHorizontalScale)
 		}
-		net = w.NewNet(&renderLock)
-		disk = w.NewDisk(&renderLock)
-		temp = w.NewTemp(&renderLock, fahrenheit)
+		net = w.NewNetWidget(&renderLock)
+		disk = w.NewDiskWidget(&renderLock)
+		temp = w.NewTempWidget(&renderLock, tempScale)
 	}
 	if statusbar {
 		bar = w.NewStatusBar()
@@ -367,46 +370,46 @@ func eventLoop() {
 					}
 				case "<MouseLeft>":
 					payload := e.Payload.(ui.Mouse)
-					proc.Click(payload.X, payload.Y)
+					proc.HandleClick(payload.X, payload.Y)
 					render(proc)
 				case "k", "<Up>", "<MouseWheelUp>":
-					proc.Up()
+					proc.ScrollUp()
 					render(proc)
 				case "j", "<Down>", "<MouseWheelDown>":
-					proc.Down()
+					proc.ScrollDown()
 					render(proc)
 				case "<Home>":
-					proc.Top()
+					proc.ScrollTop()
 					render(proc)
 				case "g":
 					if previousKey == "g" {
-						proc.Top()
+						proc.ScrollTop()
 						render(proc)
 					}
 				case "G", "<End>":
-					proc.Bottom()
+					proc.ScrollBottom()
 					render(proc)
 				case "<C-d>":
-					proc.HalfPageDown()
+					proc.ScrollHalfPageDown()
 					render(proc)
 				case "<C-u>":
-					proc.HalfPageUp()
+					proc.ScrollHalfPageUp()
 					render(proc)
 				case "<C-f>":
-					proc.PageDown()
+					proc.ScrollPageDown()
 					render(proc)
 				case "<C-b>":
-					proc.PageUp()
+					proc.ScrollPageUp()
 					render(proc)
 				case "d":
 					if previousKey == "d" {
-						proc.Kill()
+						proc.KillProc()
 					}
 				case "<Tab>":
-					proc.Tab()
+					proc.ToggleShowingGroupedProcs()
 					render(proc)
 				case "m", "c", "p":
-					proc.ChangeSort(e)
+					proc.ChangeProcSortMethod(w.ProcSortMethod(e.ID))
 					render(proc)
 				}
 

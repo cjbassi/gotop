@@ -12,33 +12,33 @@ import (
 	"github.com/cjbassi/gotop/src/utils"
 )
 
-type Net struct {
-	*ui.Sparklines
-	interval time.Duration
+type NetWidget struct {
+	*ui.SparklineGroup
+	updateInterval time.Duration
 
 	// used to calculate recent network activity
-	prevRecvTotal uint64
-	prevSentTotal uint64
+	totalBytesRecv uint64
+	totalBytesSent uint64
 }
 
-func NewNet(renderLock *sync.RWMutex) *Net {
-	recv := ui.NewSparkline()
-	recv.Data = []int{}
+func NewNetWidget(renderLock *sync.RWMutex) *NetWidget {
+	recvSparkline := ui.NewSparkline()
+	recvSparkline.Data = []int{}
 
-	sent := ui.NewSparkline()
-	sent.Data = []int{}
+	sentSparkline := ui.NewSparkline()
+	sentSparkline.Data = []int{}
 
-	spark := ui.NewSparklines(recv, sent)
-	self := &Net{
-		Sparklines: spark,
-		interval:   time.Second,
+	spark := ui.NewSparklineGroup(recvSparkline, sentSparkline)
+	self := &NetWidget{
+		SparklineGroup: spark,
+		updateInterval: time.Second,
 	}
 	self.Title = " Network Usage "
 
 	self.update()
 
 	go func() {
-		for range time.NewTicker(self.interval).C {
+		for range time.NewTicker(self.updateInterval).C {
 			renderLock.RLock()
 			self.update()
 			renderLock.RUnlock()
@@ -48,60 +48,62 @@ func NewNet(renderLock *sync.RWMutex) *Net {
 	return self
 }
 
-func (self *Net) update() {
+func (self *NetWidget) update() {
 	interfaces, err := psNet.IOCounters(true)
 	if err != nil {
 		log.Printf("failed to get network activity from gopsutil: %v", err)
 		return
 	}
-	var curRecvTotal uint64
-	var curSentTotal uint64
+
+	var totalBytesRecv uint64
+	var totalBytesSent uint64
 	for _, _interface := range interfaces {
 		// ignore VPN interface
 		if _interface.Name != "tun0" {
-			curRecvTotal += _interface.BytesRecv
-			curSentTotal += _interface.BytesSent
+			totalBytesRecv += _interface.BytesRecv
+			totalBytesSent += _interface.BytesSent
 		}
 	}
-	var recvRecent uint64
-	var sentRecent uint64
 
-	if self.prevRecvTotal != 0 { // if this isn't the first update
-		recvRecent = curRecvTotal - self.prevRecvTotal
-		sentRecent = curSentTotal - self.prevSentTotal
+	var recentBytesRecv uint64
+	var recentBytesSent uint64
 
-		if int(recvRecent) < 0 {
-			log.Printf("error: negative value for recently received network data from gopsutil. recvRecent: %v", recvRecent)
+	if self.totalBytesRecv != 0 { // if this isn't the first update
+		recentBytesRecv = totalBytesRecv - self.totalBytesRecv
+		recentBytesSent = totalBytesSent - self.totalBytesSent
+
+		if int(recentBytesRecv) < 0 {
+			log.Printf("error: negative value for recently received network data from gopsutil. recentBytesRecv: %v", recentBytesRecv)
 			// recover from error
-			recvRecent = 0
+			recentBytesRecv = 0
 		}
-		if int(sentRecent) < 0 {
-			log.Printf("error: negative value for recently sent network data from gopsutil. sentRecent: %v", sentRecent)
+		if int(recentBytesSent) < 0 {
+			log.Printf("error: negative value for recently sent network data from gopsutil. recentBytesSent: %v", recentBytesSent)
 			// recover from error
-			sentRecent = 0
+			recentBytesSent = 0
 		}
 
-		self.Lines[0].Data = append(self.Lines[0].Data, int(recvRecent))
-		self.Lines[1].Data = append(self.Lines[1].Data, int(sentRecent))
+		self.Lines[0].Data = append(self.Lines[0].Data, int(recentBytesRecv))
+		self.Lines[1].Data = append(self.Lines[1].Data, int(recentBytesSent))
 	}
 
 	// used in later calls to update
-	self.prevRecvTotal = curRecvTotal
-	self.prevSentTotal = curSentTotal
+	self.totalBytesRecv = totalBytesRecv
+	self.totalBytesSent = totalBytesSent
 
 	// render widget titles
 	for i := 0; i < 2; i++ {
 		total, label, recent := func() (uint64, string, uint64) {
 			if i == 0 {
-				return curRecvTotal, "RX", recvRecent
+				return totalBytesRecv, "RX", recentBytesRecv
 			}
-			return curSentTotal, "Tx", sentRecent
+			return totalBytesSent, "Tx", recentBytesSent
 		}()
 
-		recentConv, unitRecent := utils.ConvertBytes(uint64(recent))
-		totalConv, unitTotal := utils.ConvertBytes(uint64(total))
+		recentConverted, unitRecent := utils.ConvertBytes(uint64(recent))
+		totalConverted, unitTotal := utils.ConvertBytes(uint64(total))
 
-		self.Lines[i].Title1 = fmt.Sprintf(" Total %s: %5.1f %s", label, totalConv, unitTotal)
-		self.Lines[i].Title2 = fmt.Sprintf(" %s/s: %9.1f %2s/s", label, recentConv, unitRecent)
+		self.Lines[i].Title1 = fmt.Sprintf(" Total %s: %5.1f %s", label, totalConverted, unitTotal)
+		self.Lines[i].Title2 = fmt.Sprintf(" %s/s: %9.1f %2s/s", label, recentConverted, unitRecent)
 	}
 }
