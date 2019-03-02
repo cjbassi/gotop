@@ -1,0 +1,38 @@
+name: gotop-cjbassi
+base: core18
+version: determined-by-version-script
+version-script: git describe --always --tags --dirty
+summary: A terminal based graphical activity monitor inspired by gtop and vtop
+description: |
+    Another terminal based graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!
+
+grade: stable
+confinement: strict
+icon: assets/logo.png
+license: AGPL-3.0
+
+parts:
+    gotop:
+        source: .
+        plugin: go
+        go-importpath: github.com/cjbassi/gotop
+        build-packages:
+        - git-core
+        - gcc
+
+plugs:
+    # Required by the "Temperatures" widget
+    hardware-observe:
+
+    # Required by the "Disk Usage" widget
+    mount-observe:
+
+    # Required by the "Processes" widget
+    system-observe:
+
+apps:
+    gotop-cjbassi:
+        command: bin/gotop
+        environment:
+            LANG: C.UTF-8
+            LC_ALL: C.UTF-8
