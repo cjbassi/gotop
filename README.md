@@ -50,6 +50,23 @@ brew tap cjbassi/gotop
 brew install gotop
 ```
 
+### Snaps
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/gotop-cjbassi)
+
+Make sure you have toggled all the necessary permissions on.
+
+Or in a terminal:
+
+```
+# Install the snap
+snap install gotop-cjbassi
+
+# Connect the snap to required confinement interfaces
+snap connect gotop-cjbassi:hardware-observe
+snap connect gotop-cjbassi:mount-observe
+snap connect gotop-cjbassi:system-observe
+```
+
 ## Usage
 
 ### Keybinds
