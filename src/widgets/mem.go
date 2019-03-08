@@ -3,7 +3,6 @@ package widgets
 import (
 	"fmt"
 	"log"
-	"sync"
 	"time"
 
 	psMem "github.com/shirou/gopsutil/mem"
@@ -17,7 +16,7 @@ type MemWidget struct {
 	updateInterval time.Duration
 }
 
-func NewMemWidget(renderLock *sync.RWMutex, updateInterval time.Duration, horizontalScale int) *MemWidget {
+func NewMemWidget(updateInterval time.Duration, horizontalScale int) *MemWidget {
 	self := &MemWidget{
 		LineGraph:      ui.NewLineGraph(),
 		updateInterval: updateInterval,
@@ -31,9 +30,9 @@ func NewMemWidget(renderLock *sync.RWMutex, updateInterval time.Duration, horizo
 
 	go func() {
 		for range time.NewTicker(self.updateInterval).C {
-			renderLock.RLock()
+			self.Lock()
 			self.update()
-			renderLock.RUnlock()
+			self.Unlock()
 		}
 	}()
 

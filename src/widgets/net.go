@@ -3,7 +3,6 @@ package widgets
 import (
 	"fmt"
 	"log"
-	"sync"
 	"time"
 
 	psNet "github.com/shirou/gopsutil/net"
@@ -21,7 +20,7 @@ type NetWidget struct {
 	totalBytesSent uint64
 }
 
-func NewNetWidget(renderLock *sync.RWMutex) *NetWidget {
+func NewNetWidget() *NetWidget {
 	recvSparkline := ui.NewSparkline()
 	recvSparkline.Data = []int{}
 
@@ -39,9 +38,9 @@ func NewNetWidget(renderLock *sync.RWMutex) *NetWidget {
 
 	go func() {
 		for range time.NewTicker(self.updateInterval).C {
-			renderLock.RLock()
+			self.Lock()
 			self.update()
-			renderLock.RUnlock()
+			self.Unlock()
 		}
 	}()
 

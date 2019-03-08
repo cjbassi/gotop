@@ -18,11 +18,10 @@ type CpuWidget struct {
 	ShowPerCpuLoad  bool
 	updateInterval  time.Duration
 	formatString    string
-	renderLock      *sync.RWMutex
 	updateLock      sync.Mutex
 }
 
-func NewCpuWidget(renderLock *sync.RWMutex, updateInterval time.Duration, horizontalScale int, showAverageLoad bool, showPerCpuLoad bool) *CpuWidget {
+func NewCpuWidget(updateInterval time.Duration, horizontalScale int, showAverageLoad bool, showPerCpuLoad bool) *CpuWidget {
 	cpuCount, err := psCpu.Counts(false)
 	if err != nil {
 		log.Printf("failed to get CPU count from gopsutil: %v", err)
@@ -38,7 +37,6 @@ func NewCpuWidget(renderLock *sync.RWMutex, updateInterval time.Duration, horizo
 		ShowAverageLoad: showAverageLoad,
 		ShowPerCpuLoad:  showPerCpuLoad,
 		formatString:    formatString,
-		renderLock:      renderLock,
 	}
 	self.Title = " CPU Usage "
 	self.HorizontalScale = horizontalScale
@@ -80,8 +78,8 @@ func (self *CpuWidget) update() {
 			if err != nil {
 				log.Printf("failed to get average CPU usage percent from gopsutil: %v. self.updateInterval: %v. percpu: %v", err, self.updateInterval, false)
 			} else {
-				self.renderLock.RLock()
-				defer self.renderLock.RUnlock()
+				self.Lock()
+				defer self.Unlock()
 				self.updateLock.Lock()
 				defer self.updateLock.Unlock()
 				self.Data["AVRG"] = append(self.Data["AVRG"], percent[0])
@@ -99,8 +97,8 @@ func (self *CpuWidget) update() {
 				if len(percents) != int(self.CpuCount) {
 					log.Printf("error: number of CPU usage percents from gopsutil doesn't match CPU count. percents: %v. self.Count: %v", percents, self.CpuCount)
 				} else {
-					self.renderLock.RLock()
-					defer self.renderLock.RUnlock()
+					self.Lock()
+					defer self.Unlock()
 					self.updateLock.Lock()
 					defer self.updateLock.Unlock()
 					for i, percent := range percents {

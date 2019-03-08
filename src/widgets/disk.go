@@ -5,7 +5,6 @@ import (
 	"log"
 	"sort"
 	"strings"
-	"sync"
 	"time"
 
 	psDisk "github.com/shirou/gopsutil/disk"
@@ -31,7 +30,7 @@ type DiskWidget struct {
 	Partitions     map[string]*Partition
 }
 
-func NewDiskWidget(renderLock *sync.RWMutex) *DiskWidget {
+func NewDiskWidget() *DiskWidget {
 	self := &DiskWidget{
 		Table:          ui.NewTable(),
 		updateInterval: time.Second,
@@ -52,9 +51,9 @@ func NewDiskWidget(renderLock *sync.RWMutex) *DiskWidget {
 
 	go func() {
 		for range time.NewTicker(self.updateInterval).C {
-			renderLock.RLock()
+			self.Lock()
 			self.update()
-			renderLock.RUnlock()
+			self.Unlock()
 		}
 	}()
 

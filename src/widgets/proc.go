@@ -6,7 +6,6 @@ import (
 	"os/exec"
 	"sort"
 	"strconv"
-	"sync"
 	"time"
 
 	psCPU "github.com/shirou/gopsutil/cpu"
@@ -46,7 +45,7 @@ type ProcWidget struct {
 	showGroupedProcs bool
 }
 
-func NewProcWidget(renderLock *sync.RWMutex) *ProcWidget {
+func NewProcWidget() *ProcWidget {
 	cpuCount, err := psCPU.Counts(false)
 	if err != nil {
 		log.Printf("failed to get CPU count from gopsutil: %v", err)
@@ -77,9 +76,9 @@ func NewProcWidget(renderLock *sync.RWMutex) *ProcWidget {
 
 	go func() {
 		for range time.NewTicker(self.updateInterval).C {
-			renderLock.RLock()
+			self.Lock()
 			self.update()
-			renderLock.RUnlock()
+			self.Unlock()
 		}
 	}()
 

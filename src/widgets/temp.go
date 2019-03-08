@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"image"
 	"sort"
-	"sync"
 	"time"
 
 	ui "github.com/gizak/termui/v3"
@@ -29,7 +28,7 @@ type TempWidget struct {
 	TempScale      TempScale
 }
 
-func NewTempWidget(renderLock *sync.RWMutex, tempScale TempScale) *TempWidget {
+func NewTempWidget(tempScale TempScale) *TempWidget {
 	self := &TempWidget{
 		Block:          ui.NewBlock(),
 		updateInterval: time.Second * 5,
@@ -47,9 +46,9 @@ func NewTempWidget(renderLock *sync.RWMutex, tempScale TempScale) *TempWidget {
 
 	go func() {
 		for range time.NewTicker(self.updateInterval).C {
-			renderLock.RLock()
+			self.Lock()
 			self.update()
-			renderLock.RUnlock()
+			self.Unlock()
 		}
 	}()
 

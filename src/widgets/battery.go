@@ -5,7 +5,6 @@ import (
 	"log"
 	"math"
 	"strconv"
-	"sync"
 	"time"
 
 	"github.com/distatus/battery"
@@ -18,7 +17,7 @@ type BatteryWidget struct {
 	updateInterval time.Duration
 }
 
-func NewBatteryWidget(renderLock *sync.RWMutex, horizontalScale int) *BatteryWidget {
+func NewBatteryWidget(horizontalScale int) *BatteryWidget {
 	self := &BatteryWidget{
 		LineGraph:      ui.NewLineGraph(),
 		updateInterval: time.Minute,
@@ -33,9 +32,9 @@ func NewBatteryWidget(renderLock *sync.RWMutex, horizontalScale int) *BatteryWid
 
 	go func() {
 		for range time.NewTicker(self.updateInterval).C {
-			renderLock.RLock()
+			self.Lock()
 			self.update()
-			renderLock.RUnlock()
+			self.Unlock()
 		}
 	}()
 
