@@ -78,13 +78,13 @@ func (self *SparklineGroup) Draw(buf *Buffer) {
 		}
 		// prints sparkline
 		for x := self.Inner.Dx(); x >= 1; x-- {
-			char := BARS[0]
+			char := BARS[1]
 			if (self.Inner.Dx() - x) < len(line.Data) {
 				offset := self.Inner.Dx() - x
 				curItem := line.Data[(len(line.Data)-1)-offset]
 				percent := float64(curItem) / float64(max)
-				index := int(percent * 7)
-				if index < 0 || index >= len(BARS) {
+				index := int(percent*float64(len(BARS)-2)) + 1
+				if index < 1 || index >= len(BARS) {
 					log.Printf(
 						"invalid sparkline data value. index: %v, percent: %v, curItem: %v, offset: %v",
 						index, percent, curItem, offset,
