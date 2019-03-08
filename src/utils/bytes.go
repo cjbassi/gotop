@@ -45,10 +45,3 @@ func ConvertBytes(b uint64) (float64, string) {
 		return BytesToTB(b), "TB"
 	}
 }
-
-func MaxInt(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}

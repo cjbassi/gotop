@@ -18,6 +18,7 @@ import (
 
 	"github.com/cjbassi/gotop/colorschemes"
 	"github.com/cjbassi/gotop/src/logging"
+	"github.com/cjbassi/gotop/src/utils"
 	w "github.com/cjbassi/gotop/src/widgets"
 )
 
@@ -29,8 +30,8 @@ const (
 )
 
 var (
-	configDir = getConfigDir(appName)
-	logDir    = getLogDir(appName)
+	configDir = utils.GetConfigDir(appName)
+	logDir    = utils.GetLogDir(appName)
 	logPath   = filepath.Join(logDir, "errors.log")
 
 	stderrLogger = log.New(os.Stderr, "", 0)
@@ -58,26 +59,6 @@ var (
 	grid *ui.Grid
 	bar  *w.StatusBar
 )
-
-func getConfigDir(name string) string {
-	var basedir string
-	if env := os.Getenv("XDG_CONFIG_HOME"); env != "" {
-		basedir = env
-	} else {
-		basedir = filepath.Join(os.Getenv("HOME"), ".config")
-	}
-	return filepath.Join(basedir, name)
-}
-
-func getLogDir(name string) string {
-	var basedir string
-	if env := os.Getenv("XDG_STATE_HOME"); env != "" {
-		basedir = env
-	} else {
-		basedir = filepath.Join(os.Getenv("HOME"), ".local", "state")
-	}
-	return filepath.Join(basedir, name)
-}
 
 func parseArgs() error {
 	usage := `
