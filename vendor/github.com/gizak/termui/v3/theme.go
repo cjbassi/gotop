@@ -31,7 +31,7 @@ type RootTheme struct {
 
 	BarChart        BarChartTheme
 	Gauge           GaugeTheme
-	LineChart       LineChartTheme
+	Plot            PlotTheme
 	List            ListTheme
 	Paragraph       ParagraphTheme
 	PieChart        PieChartTheme
@@ -57,7 +57,7 @@ type GaugeTheme struct {
 	Label Style
 }
 
-type LineChartTheme struct {
+type PlotTheme struct {
 	Lines []Color
 	Axes  Color
 }
@@ -94,6 +94,8 @@ type TableTheme struct {
 	Text Style
 }
 
+// Theme holds the default Styles and Colors for all widgets.
+// You can set default widget Styles by modifying the Theme before creating the widgets.
 var Theme = RootTheme{
 	Default: NewStyle(ColorWhite),
 
@@ -132,13 +134,13 @@ var Theme = RootTheme{
 	},
 
 	Sparkline: SparklineTheme{
-		Line:  ColorBlack,
-		Title: NewStyle(ColorBlue),
+		Title: NewStyle(ColorWhite),
+		Line:  ColorWhite,
 	},
 
-	LineChart: LineChartTheme{
+	Plot: PlotTheme{
 		Lines: StandardColors,
-		Axes:  ColorBlue,
+		Axes:  ColorWhite,
 	},
 
 	Table: TableTheme{

@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	ui "github.com/gizak/termui"
+	ui "github.com/gizak/termui/v3"
 
 	"github.com/cjbassi/gotop/src/utils"
 )

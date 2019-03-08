@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	ui "github.com/gizak/termui"
+	ui "github.com/gizak/termui/v3"
 )
 
 type StatusBar struct {

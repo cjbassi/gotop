@@ -15,7 +15,7 @@ import (
 	"time"
 
 	docopt "github.com/docopt/docopt.go"
-	ui "github.com/gizak/termui"
+	ui "github.com/gizak/termui/v3"
 
 	"github.com/cjbassi/gotop/colorschemes"
 	"github.com/cjbassi/gotop/src/logging"
