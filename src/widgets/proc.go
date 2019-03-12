@@ -37,7 +37,7 @@ type Proc struct {
 
 type ProcWidget struct {
 	*ui.Table
-	cpuCount         float64
+	cpuCount         int
 	updateInterval   time.Duration
 	sortMethod       ProcSortMethod
 	groupedProcs     []Proc
@@ -53,7 +53,7 @@ func NewProcWidget() *ProcWidget {
 	self := &ProcWidget{
 		Table:            ui.NewTable(),
 		updateInterval:   time.Second,
-		cpuCount:         float64(cpuCount),
+		cpuCount:         cpuCount,
 		sortMethod:       ProcSortCpu,
 		showGroupedProcs: true,
 	}
@@ -92,9 +92,9 @@ func (self *ProcWidget) update() {
 		return
 	}
 
-	// can't iterate on the entries directly since we can't modify them that way
+	// have to iterate over the entry number in order to modify the array in place
 	for i := range procs {
-		procs[i].Cpu /= self.cpuCount
+		procs[i].Cpu /= float64(self.cpuCount)
 	}
 
 	self.ungroupedProcs = procs
