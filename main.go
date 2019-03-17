@@ -288,6 +288,9 @@ func eventLoop() {
 		case <-drawTicker:
 			if !helpVisible {
 				ui.Render(grid)
+				if statusbar {
+					ui.Render(bar)
+				}
 			}
 		case e := <-uiEvents:
 			switch e.ID {
