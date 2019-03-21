@@ -96,7 +96,7 @@ func (self *NetWidget) update() {
 			if i == 0 {
 				return totalBytesRecv, "RX", recentBytesRecv
 			}
-			return totalBytesSent, "Tx", recentBytesSent
+			return totalBytesSent, "TX", recentBytesSent
 		}()
 
 		recentConverted, unitRecent := utils.ConvertBytes(uint64(recent))
