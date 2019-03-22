@@ -59,6 +59,7 @@ func NewProcWidget() *ProcWidget {
 	}
 	self.Title = " Processes "
 	self.ShowCursor = true
+	self.ShowLocation = true
 	self.ColGap = 3
 	self.PadLeft = 2
 	self.ColResizer = func() {

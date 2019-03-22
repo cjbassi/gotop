@@ -1,6 +1,7 @@
 package termui
 
 import (
+	"fmt"
 	"image"
 	"log"
 	"strings"
@@ -20,6 +21,8 @@ type Table struct {
 
 	ShowCursor  bool
 	CursorColor Color
+
+	ShowLocation bool
 
 	UniqueCol    int    // the column used to uniquely identify each table row
 	SelectedItem string // used to keep the cursor on the correct item if the data changes
@@ -42,6 +45,10 @@ func NewTable() *Table {
 
 func (self *Table) Draw(buf *Buffer) {
 	self.Block.Draw(buf)
+
+	if self.ShowLocation {
+		self.drawLocation(buf)
+	}
 
 	self.ColResizer()
 
@@ -119,6 +126,21 @@ func (self *Table) Draw(buf *Buffer) {
 			)
 		}
 	}
+}
+
+// drawLoca
+func (self *Table) drawLocation(buf *Buffer) {
+	total := len(self.Rows)
+	topRow := self.TopRow + 1
+	bottomRow := self.TopRow + self.Inner.Dy() - 1
+	if bottomRow > total {
+		bottomRow = total
+	}
+
+	loc := fmt.Sprintf(" %d - %d of %d ", topRow, bottomRow, total)
+
+	width := len(loc)
+	buf.SetString(loc, self.TitleStyle, image.Pt(self.Max.X-width-2, self.Min.Y))
 }
 
 // Scrolling ///////////////////////////////////////////////////////////////////
