@@ -128,7 +128,6 @@ func (self *Table) Draw(buf *Buffer) {
 	}
 }
 
-// drawLoca
 func (self *Table) drawLocation(buf *Buffer) {
 	total := len(self.Rows)
 	topRow := self.TopRow + 1
