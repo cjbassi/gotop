@@ -39,15 +39,29 @@ Install `gotop`, `gotop-bin`, or `gotop-git` from the AUR.
 
 ### FreeBSD
 
-```
+```bash
 pkg install gotop
 ```
 
 ### Homebrew
 
-```
+```bash
 brew tap cjbassi/gotop
 brew install gotop
+```
+
+### Snap
+
+```bash
+snap install gotop-cjbassi
+```
+
+**Note**: You may need to enable certain permissions for all of the widgets to work:
+
+```bash
+snap connect gotop-cjbassi:hardware-observe
+snap connect gotop-cjbassi:mount-observe
+snap connect gotop-cjbassi:system-observe
 ```
 
 ## Usage
