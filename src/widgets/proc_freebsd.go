@@ -11,16 +11,16 @@ import (
 	"strings"
 )
 
-type Keywords struct {
+type processList struct {
 	ProcessInformation struct {
 		Process []struct {
-			Pid  string `json: pid`
-			Comm string `json: command`
-			Cpu  string `json: percent-cpu`
-			Mem  string `json: percent-memory`
-			Args string `json: arguments`
-		} `json: process`
-	} `json: process-information`
+			Pid  string `json:"pid"`
+			Comm string `json:"command"`
+			Cpu  string `json:"percent-cpu" `
+			Mem  string `json:"percent-memory" `
+			Args string `json:"arguments" `
+		} `json:"process"`
+	} `json:"process-information"`
 }
 
 func getProcs() ([]Proc, error) {
@@ -29,17 +29,17 @@ func getProcs() ([]Proc, error) {
 		return nil, fmt.Errorf("failed to execute 'ps' command: %v", err)
 	}
 
-	processList := Keywords{}
-	err = json.Unmarshal(output, &processList)
+	list := processList{}
+	err = json.Unmarshal(output, &list)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unmarshal json. %s", err)
-	} else {
-		return nil, fmt.Errorf("Success to unmarshal json. %s", output)
 	}
-
 	procs := []Proc{}
 
-	for _, process := range processList.ProcessInformation.Process {
+	for _, process := range list.ProcessInformation.Process {
+		if process.Comm == "idle" {
+			continue
+		}
 		pid, err := strconv.Atoi(strings.TrimSpace(process.Pid))
 		if err != nil {
 			log.Printf("failed to convert first field to int: %v. split: %v", err, process)
