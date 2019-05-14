@@ -38,7 +38,7 @@ func NewNetWidget(netInterface string) *NetWidget {
 	}
 	self.Title = " Network Usage "
 	if netInterface != "all" {
-	        self.Title = fmt.Sprintf(" %s Usage ", netInterface)
+		self.Title = fmt.Sprintf(" %s Usage ", netInterface)
 	}
 
 	self.update()
@@ -64,11 +64,8 @@ func (self *NetWidget) update() {
 	var totalBytesRecv uint64
 	var totalBytesSent uint64
 	for _, _interface := range interfaces {
-		// ignore VPN interface
-		if _interface.Name != "tun0" && self.NetInterface == "all" {
-			totalBytesRecv += _interface.BytesRecv
-			totalBytesSent += _interface.BytesSent
-		} else if _interface.Name == self.NetInterface {
+		// ignore VPN interface or filter interface by name
+		if (_interface.Name != "tun0" && self.NetInterface == "all") || (_interface.Name == self.NetInterface) {
 			totalBytesRecv += _interface.BytesRecv
 			totalBytesSent += _interface.BytesSent
 		}
