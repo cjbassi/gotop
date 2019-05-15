@@ -1,4 +1,4 @@
-// +build freebsd darwin openbsd
+// +build darwin openbsd
 
 package widgets
 
