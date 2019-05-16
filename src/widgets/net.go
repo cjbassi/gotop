@@ -38,7 +38,7 @@ func NewNetWidget(netInterface string) *NetWidget {
 	}
 	self.Title = " Network Usage "
 	if netInterface != "all" {
-		self.Title = fmt.Sprintf(" %s Usage ", netInterface)
+		self.Title = fmt.Sprintf(" Network Usage: %s ", netInterface)
 	}
 
 	self.update()
