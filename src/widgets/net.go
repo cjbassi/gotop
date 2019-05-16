@@ -11,6 +11,8 @@ import (
 	"github.com/cjbassi/gotop/src/utils"
 )
 
+type NetInterface string
+
 type NetWidget struct {
 	*ui.SparklineGroup
 	updateInterval time.Duration
@@ -18,9 +20,10 @@ type NetWidget struct {
 	// used to calculate recent network activity
 	totalBytesRecv uint64
 	totalBytesSent uint64
+	NetInterface   string
 }
 
-func NewNetWidget() *NetWidget {
+func NewNetWidget(netInterface string) *NetWidget {
 	recvSparkline := ui.NewSparkline()
 	recvSparkline.Data = []int{}
 
@@ -31,8 +34,12 @@ func NewNetWidget() *NetWidget {
 	self := &NetWidget{
 		SparklineGroup: spark,
 		updateInterval: time.Second,
+		NetInterface:   netInterface,
 	}
 	self.Title = " Network Usage "
+	if netInterface != "all" {
+		self.Title = fmt.Sprintf(" Network Usage: %s ", netInterface)
+	}
 
 	self.update()
 
@@ -57,8 +64,8 @@ func (self *NetWidget) update() {
 	var totalBytesRecv uint64
 	var totalBytesSent uint64
 	for _, _interface := range interfaces {
-		// ignore VPN interface
-		if _interface.Name != "tun0" {
+		// ignore VPN interface or filter interface by name
+		if (_interface.Name != "tun0" && self.NetInterface == "all") || (_interface.Name == self.NetInterface) {
 			totalBytesRecv += _interface.BytesRecv
 			totalBytesSent += _interface.BytesSent
 		}

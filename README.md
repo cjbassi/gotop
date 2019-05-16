@@ -111,6 +111,7 @@ To make a custom colorscheme, check out the [template](./colorschemes/template.g
 `-a`, `--averagecpu` Show average CPU in the CPU widget.  
 `-s`, `--statusbar` Show a statusbar with the time.  
 `-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/battery.png)
+`-i`, `--interface=NAME` Select network interface [default: all].
 
 ## Credits
 

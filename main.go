@@ -47,6 +47,7 @@ var (
 	tempScale      = w.Celcius
 	battery        = false
 	statusbar      = false
+	netInterface   = "all"
 
 	cpu  *w.CpuWidget
 	batt *w.BatteryWidget
@@ -75,6 +76,7 @@ Options:
   -f, --fahrenheit      Show temperatures in fahrenheit.
   -s, --statusbar       Show a statusbar with the time.
   -b, --battery         Show battery level widget ('minimal' turns off).
+  -i, --interface=NAME  Select network interface [default: all].
 
 Colorschemes:
   default
@@ -116,6 +118,7 @@ Colorschemes:
 	if fahrenheit {
 		tempScale = w.Fahrenheit
 	}
+	netInterface, _ = args["--interface"].(string)
 
 	return nil
 }
@@ -261,7 +264,7 @@ func initWidgets() {
 		if battery {
 			batt = w.NewBatteryWidget(graphHorizontalScale)
 		}
-		net = w.NewNetWidget()
+		net = w.NewNetWidget(netInterface)
 		disk = w.NewDiskWidget()
 		temp = w.NewTempWidget(tempScale)
 	}
