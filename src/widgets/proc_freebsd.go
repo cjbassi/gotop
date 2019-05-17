@@ -5,6 +5,7 @@ package widgets
 import (
 	"encoding/json"
 	"fmt"
+	u "github.com/cjbassi/gotop/src/utils"
 	"log"
 	"os/exec"
 	"strconv"
@@ -44,11 +45,11 @@ func getProcs() ([]Proc, error) {
 		if err != nil {
 			log.Printf("failed to convert first field to int: %v. split: %v", err, process)
 		}
-		cpu, err := strconv.ParseFloat(process.Cpu, 64)
+		cpu, err := strconv.ParseFloat(u.ConvertLocalizedString(process.Cpu), 32)
 		if err != nil {
 			log.Printf("failed to convert third field to float: %v. split: %v", err, process)
 		}
-		mem, err := strconv.ParseFloat(process.Mem, 64)
+		mem, err := strconv.ParseFloat(u.ConvertLocalizedString(process.Mem), 32)
 		if err != nil {
 			log.Printf("failed to convert fourth field to float: %v. split: %v", err, process)
 		}
