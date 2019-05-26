@@ -1,4 +1,3 @@
-// +build freebsd
 package widgets
 
 import (
@@ -8,8 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cjbassi/gotop/src/utils"
 	psMem "github.com/shirou/gopsutil/mem"
+
+	"github.com/cjbassi/gotop/src/utils"
 )
 
 type SwapInfo struct {
