@@ -15,21 +15,35 @@ type MemWidget struct {
 	updateInterval time.Duration
 }
 
+type MemoryInfo struct {
+	Total       uint64
+	Used        uint64
+	UsedPercent float64
+}
+
+func (self *MemWidget) renderMemInfo(line string, memoryInfo MemoryInfo) {
+	self.Data[line] = append(self.Data[line], memoryInfo.UsedPercent)
+	memoryTotalBytes, memoryTotalMagnitude := utils.ConvertBytes(memoryInfo.Total)
+	memoryUsedBytes, memoryUsedMagnitude := utils.ConvertBytes(memoryInfo.Used)
+	self.Labels[line] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s",
+		memoryInfo.UsedPercent,
+		memoryUsedBytes,
+		memoryUsedMagnitude,
+		memoryTotalBytes,
+		memoryTotalMagnitude,
+	)
+}
+
 func (self *MemWidget) updateMainMemory() {
 	mainMemory, err := psMem.VirtualMemory()
 	if err != nil {
 		log.Printf("failed to get main memory info from gopsutil: %v", err)
 	} else {
-		self.Data["Main"] = append(self.Data["Main"], mainMemory.UsedPercent)
-		mainMemoryTotalBytes, mainMemoryTotalMagnitude := utils.ConvertBytes(mainMemory.Total)
-		mainMemoryUsedBytes, mainMemoryUsedMagnitude := utils.ConvertBytes(mainMemory.Used)
-		self.Labels["Main"] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s",
-			mainMemory.UsedPercent,
-			mainMemoryUsedBytes,
-			mainMemoryUsedMagnitude,
-			mainMemoryTotalBytes,
-			mainMemoryTotalMagnitude,
-		)
+		self.renderMemInfo("Main", MemoryInfo{
+			Total:       mainMemory.Total,
+			Used:        mainMemory.Used,
+			UsedPercent: mainMemory.UsedPercent,
+		})
 	}
 }
 
