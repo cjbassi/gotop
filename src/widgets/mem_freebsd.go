@@ -27,7 +27,7 @@ func convert(s []string) (SwapInfo, error) {
 		return SwapInfo{}, fmt.Errorf("int converion failed %v", err)
 	}
 
-	percentage, err := strconv.ParseFloat(s[2], 64)
+	percentage, err := strconv.ParseFloat(strings.TrimSuffix(s[2], "%"), 64)
 	if err != nil {
 		return SwapInfo{}, fmt.Errorf("float converion failed %v", err)
 	}
