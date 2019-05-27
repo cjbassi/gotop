@@ -10,12 +10,12 @@ import (
 	"github.com/cjbassi/gotop/src/utils"
 )
 
-var sensorOIDS = []string{
-	"dev.cpu.0.temperature",
-	"hw.acpi.thermal.tz0.temperature",
+var sensorOIDS = map[string]string{
+	"dev.cpu.0.temperature":           "CPU 0 ",
+	"hw.acpi.thermal.tz0.temperature": "Thermal zone 0",
 }
 
-type sensor struct {
+type sensorMeasurement struct {
 	name        string
 	temperature float64
 }
@@ -35,10 +35,10 @@ func refineOutput(output []byte) (float64, error) {
 	return value, nil
 }
 
-func collectSensors() ([]sensor, error) {
-	sensorData := []sensor{}
-	for _, v := range sensorOIDS {
-		output, err := exec.Command("sysctl", "-n", v).Output()
+func collectSensors() ([]sensorMeasurement, error) {
+	var measurements []sensorMeasurement
+	for k, v := range sensorOIDS {
+		output, err := exec.Command("sysctl", "-n", k).Output()
 		if err != nil {
 			return nil, fmt.Errorf("failed to execute 'sysctl' command: %v", err)
 		}
@@ -48,10 +48,10 @@ func collectSensors() ([]sensor, error) {
 			return nil, fmt.Errorf("failed to execute 'sysctl' command: %v", err)
 		}
 
-		sensorData = append(sensorData, sensor{v, value})
+		measurements = append(measurements, sensorMeasurement{v, value})
 
 	}
-	return sensorData, nil
+	return measurements, nil
 
 }
 
