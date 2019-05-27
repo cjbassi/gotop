@@ -7,8 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	psMem "github.com/shirou/gopsutil/mem"
-
 	"github.com/cjbassi/gotop/src/utils"
 )
 
@@ -55,23 +53,8 @@ func GatherSwapInfo() (SwapInfo, error) {
 	return convert(ss)
 }
 
-func (self *MemWidget) update() {
-	mainMemory, err := psMem.VirtualMemory()
-	if err != nil {
-		log.Printf("failed to get main memory info from gopsutil: %v", err)
-	} else {
-		self.Data["Main"] = append(self.Data["Main"], mainMemory.UsedPercent)
-		mainMemoryTotalBytes, mainMemoryTotalMagnitude := utils.ConvertBytes(mainMemory.Total)
-		mainMemoryUsedBytes, mainMemoryUsedMagnitude := utils.ConvertBytes(mainMemory.Used)
-		self.Labels["Main"] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s",
-			mainMemory.UsedPercent,
-			mainMemoryUsedBytes,
-			mainMemoryUsedMagnitude,
-			mainMemoryTotalBytes,
-			mainMemoryTotalMagnitude,
-		)
-	}
-
+//TODO This can be DRYed more
+func (self *MemWidget) updateSwapMemory() {
 	swapMemory, err := GatherSwapInfo()
 	if err != nil {
 		log.Printf("failed to get swap memory info from gopsutil: %v", err)
