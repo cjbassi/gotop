@@ -8,6 +8,8 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+
+	"github.com/cjbassi/gotop/src/utils"
 )
 
 const (
@@ -33,11 +35,11 @@ func getProcs() ([]Proc, error) {
 		if err != nil {
 			log.Printf("failed to convert first field to int: %v. split: %v", err, line)
 		}
-		cpu, err := strconv.ParseFloat(strings.TrimSpace(line[63:68]), 64)
+		cpu, err := strconv.ParseFloat(utils.ConvertLocalizedString(strings.TrimSpace(line[63:68])), 64)
 		if err != nil {
 			log.Printf("failed to convert third field to float: %v. split: %v", err, line)
 		}
-		mem, err := strconv.ParseFloat(strings.TrimSpace(line[69:74]), 64)
+		mem, err := strconv.ParseFloat(utils.ConvertLocalizedString(strings.TrimSpace(line[69:74])), 64)
 		if err != nil {
 			log.Printf("failed to convert fourth field to float: %v. split: %v", err, line)
 		}
