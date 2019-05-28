@@ -2,12 +2,13 @@ package widgets
 
 import (
 	"fmt"
-	"github.com/cjbassi/gotop/src/utils"
 	"log"
 	"time"
 
-	ui "github.com/cjbassi/gotop/src/termui"
 	psMem "github.com/shirou/gopsutil/mem"
+
+	ui "github.com/cjbassi/gotop/src/termui"
+	"github.com/cjbassi/gotop/src/utils"
 )
 
 type MemWidget struct {
