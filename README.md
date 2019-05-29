@@ -1,23 +1,25 @@
 <div align="center">
 
-<img src="./assets/logo.png" width="20%" />
+<a href="./assets/logo">
+    <img src="./assets/logo/logo.png" width="20%" />
+</a>
 <br><br>
 
 Another terminal based graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!
 
-<img src="./assets/demo.gif" />
-<img src="./assets/minimal.png" width="96%" />
+<img src="./assets/demos/demo.gif" />
+<img src="./assets/screenshots/minimal.png" width="96%" />
 
 </div>
 
 ## Installation
 
-Working and tested on Linux, FreeBSD and OSX. Windows support is planned.
+Working and tested on Linux, FreeBSD and macOS. Windows support is planned. OpenBSD works with some caveats.
 
 ### Source
 
 ```bash
-go get -u github.com/cjbassi/gotop
+go get github.com/cjbassi/gotop
 ```
 
 ### Prebuilt binaries
@@ -110,13 +112,8 @@ To make a custom colorscheme, check out the [template](./colorschemes/template.g
 `-p`, `--percpu` Show each CPU in the CPU widget.  
 `-a`, `--averagecpu` Show average CPU in the CPU widget.  
 `-s`, `--statusbar` Show a statusbar with the time.  
-`-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/battery.png)
+`-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/screenshots/battery.png)
 `-i`, `--interface=NAME` Select network interface [default: all].
-
-## Credits
-
-- [mdnazmulhasan27771](https://github.com/mdnazmulhasan27771) for the [logo](./assets/logo.png)
-- [f1337](https://github.com/f1337) for helping port gotop to OSX
 
 ## Built With
 
