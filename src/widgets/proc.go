@@ -2,21 +2,26 @@ package widgets
 
 import (
 	"fmt"
+	"image"
 	"log"
 	"os/exec"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
+	"unicode/utf8"
 
 	psCPU "github.com/shirou/gopsutil/cpu"
 
 	ui "github.com/cjbassi/gotop/src/termui"
 	"github.com/cjbassi/gotop/src/utils"
+	tui "github.com/gizak/termui/v3"
 )
 
 const (
 	UP_ARROW   = "▲"
 	DOWN_ARROW = "▼"
+	ELLIPSIS   = "…"
 )
 
 type ProcSortMethod string
@@ -40,6 +45,8 @@ type ProcWidget struct {
 	cpuCount         int
 	updateInterval   time.Duration
 	sortMethod       ProcSortMethod
+	filter           string
+	editingFilter    bool
 	groupedProcs     []Proc
 	ungroupedProcs   []Proc
 	showGroupedProcs bool
@@ -56,6 +63,8 @@ func NewProcWidget() *ProcWidget {
 		cpuCount:         cpuCount,
 		sortMethod:       ProcSortCpu,
 		showGroupedProcs: true,
+		filter:           "",
+		editingFilter:    false,
 	}
 	self.Title = " Processes "
 	self.ShowCursor = true
@@ -86,6 +95,71 @@ func NewProcWidget() *ProcWidget {
 	return self
 }
 
+func (self *ProcWidget) Filter() string {
+	return self.filter
+}
+
+func (self *ProcWidget) SetFilter(filter string) {
+	self.filter = filter
+}
+
+func (self *ProcWidget) EditingFilter() bool {
+	return self.editingFilter
+}
+
+func (self *ProcWidget) SetEditingFilter(editing bool) {
+	self.editingFilter = editing
+	if !editing {
+		self.update()
+	}
+}
+
+func (self *ProcWidget) Draw(buf *tui.Buffer) {
+	self.Table.Draw(buf)
+	if self.filter != "" || self.editingFilter {
+		self.drawFilter(buf)
+	}
+}
+
+func (self *ProcWidget) drawFilter(buf *tui.Buffer) {
+	style := self.TitleStyle
+	label := "Filter: "
+	if self.editingFilter {
+		label = "[ Filter: "
+		style = tui.NewStyle(style.Fg, style.Bg, tui.ModifierBold)
+	}
+
+	p := image.Pt(self.Min.X+2, self.Max.Y-1)
+	buf.SetString(label, style, p)
+	p.X += utf8.RuneCountInString(label)
+
+	maxLen := self.Max.X - p.X - 4
+	filter := self.filter
+	if l := utf8.RuneCountInString(filter); l > maxLen {
+		filter = ELLIPSIS + filter[l-maxLen+1:]
+	}
+	buf.SetString(filter, self.TitleStyle, p)
+	p.X += utf8.RuneCountInString(filter)
+
+	if self.editingFilter {
+		remaining := self.Max.X - 2 - p.X
+		buf.SetString(fmt.Sprintf("%*s", remaining, "]"), style, p)
+	}
+}
+
+func (self *ProcWidget) filterProcs(procs []Proc) []Proc {
+	if self.filter == "" {
+		return procs
+	}
+	var filtered []Proc
+	for _, proc := range procs {
+		if strings.Contains(proc.FullCommand, self.filter) || strings.Contains(fmt.Sprintf("%d", proc.Pid), self.filter) {
+			filtered = append(filtered, proc)
+		}
+	}
+	return filtered
+}
+
 func (self *ProcWidget) update() {
 	procs, err := getProcs()
 	if err != nil {
@@ -98,6 +172,7 @@ func (self *ProcWidget) update() {
 		procs[i].Cpu /= float64(self.cpuCount)
 	}
 
+	procs = self.filterProcs(procs)
 	self.ungroupedProcs = procs
 	self.groupedProcs = groupProcs(procs)
 

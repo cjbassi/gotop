@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"syscall"
 	"time"
+	"unicode/utf8"
 
 	docopt "github.com/docopt/docopt.go"
 	ui "github.com/gizak/termui/v3"
@@ -296,12 +297,8 @@ func eventLoop() {
 				}
 			}
 		case e := <-uiEvents:
-			switch e.ID {
-			case "q", "<C-c>":
-				return
-			case "?":
-				helpVisible = !helpVisible
-			case "<Resize>":
+			// Handle resize event always.
+			if e.ID == "<Resize>" {
 				payload := e.Payload.(ui.Resize)
 				termWidth, termHeight := payload.Width, payload.Height
 				if statusbar {
@@ -312,23 +309,55 @@ func eventLoop() {
 				}
 				help.Resize(payload.Width, payload.Height)
 				ui.Clear()
+
+				if helpVisible {
+					ui.Render(help)
+				} else {
+					ui.Render(grid)
+					if statusbar {
+						ui.Render(bar)
+					}
+				}
 			}
 
-			if helpVisible {
+			if proc.EditingFilter() {
+				if utf8.RuneCountInString(e.ID) == 1 {
+					proc.SetFilter(proc.Filter() + e.ID)
+					ui.Render(proc)
+				}
 				switch e.ID {
+				case "<C-c>":
+					proc.SetFilter("")
+					proc.SetEditingFilter(false)
+					ui.Render(proc)
+				case "<Enter>":
+					proc.SetEditingFilter(false)
+					ui.Render(proc)
+				case "<Backspace>":
+					if filter := proc.Filter(); filter != "" {
+						proc.SetFilter(filter[:len(filter)-1])
+					}
+					ui.Render(proc)
+				}
+			} else if helpVisible {
+				switch e.ID {
+				case "q", "<C-c>":
+					return
 				case "?":
-					ui.Clear()
-					ui.Render(help)
+					helpVisible = false
+					ui.Render(grid)
 				case "<Escape>":
 					helpVisible = false
 					ui.Render(grid)
-				case "<Resize>":
-					ui.Render(help)
 				}
 			} else {
 				switch e.ID {
+				case "q", "<C-c>":
+					return
 				case "?":
-					ui.Render(grid)
+					helpVisible = true
+					ui.Clear()
+					ui.Render(help)
 				case "h":
 					graphHorizontalScale += graphHorizontalScaleDelta
 					cpu.HorizontalScale = graphHorizontalScale
@@ -340,11 +369,6 @@ func eventLoop() {
 						cpu.HorizontalScale = graphHorizontalScale
 						mem.HorizontalScale = graphHorizontalScale
 						ui.Render(cpu, mem)
-					}
-				case "<Resize>":
-					ui.Render(grid)
-					if statusbar {
-						ui.Render(bar)
 					}
 				case "<MouseLeft>":
 					payload := e.Payload.(ui.Mouse)
@@ -388,6 +412,10 @@ func eventLoop() {
 					ui.Render(proc)
 				case "m", "c", "p":
 					proc.ChangeProcSortMethod(w.ProcSortMethod(e.ID))
+					ui.Render(proc)
+				case "/":
+					proc.SetFilter("")
+					proc.SetEditingFilter(true)
 					ui.Render(proc)
 				}
 
