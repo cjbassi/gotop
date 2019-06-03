@@ -22,6 +22,7 @@ const (
 	UP_ARROW   = "▲"
 	DOWN_ARROW = "▼"
 	ELLIPSIS   = "…"
+	CURSOR     = " "
 )
 
 type ProcSortMethod string
@@ -126,9 +127,10 @@ func (self *ProcWidget) drawFilter(buf *tui.Buffer) {
 	style := self.TitleStyle
 	label := "Filter: "
 	if self.editingFilter {
-		label = "[ Filter: "
+		label = "Filter: ["
 		style = tui.NewStyle(style.Fg, style.Bg, tui.ModifierBold)
 	}
+	cursorStyle := tui.NewStyle(style.Bg, style.Fg, tui.ModifierClear)
 
 	p := image.Pt(self.Min.X+2, self.Max.Y-1)
 	buf.SetString(label, style, p)
@@ -143,6 +145,8 @@ func (self *ProcWidget) drawFilter(buf *tui.Buffer) {
 	p.X += utf8.RuneCountInString(filter)
 
 	if self.editingFilter {
+		buf.SetString(CURSOR, cursorStyle, p)
+		p.X += 1
 		remaining := self.Max.X - 2 - p.X
 		buf.SetString(fmt.Sprintf("%*s", remaining, "]"), style, p)
 	}
