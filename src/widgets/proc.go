@@ -125,9 +125,9 @@ func (self *ProcWidget) Draw(buf *tui.Buffer) {
 
 func (self *ProcWidget) drawFilter(buf *tui.Buffer) {
 	style := self.TitleStyle
-	label := "Filter: "
+	label := " Filter: "
 	if self.editingFilter {
-		label = "Filter: ["
+		label += "["
 		style = tui.NewStyle(style.Fg, style.Bg, tui.ModifierBold)
 	}
 	cursorStyle := tui.NewStyle(style.Bg, style.Fg, tui.ModifierClear)
@@ -136,7 +136,7 @@ func (self *ProcWidget) drawFilter(buf *tui.Buffer) {
 	buf.SetString(label, style, p)
 	p.X += utf8.RuneCountInString(label)
 
-	maxLen := self.Max.X - p.X - 4
+	maxLen := self.Max.X - p.X - 5
 	filter := self.filter
 	if l := utf8.RuneCountInString(filter); l > maxLen {
 		filter = ELLIPSIS + filter[l-maxLen+1:]
@@ -148,7 +148,7 @@ func (self *ProcWidget) drawFilter(buf *tui.Buffer) {
 		buf.SetString(CURSOR, cursorStyle, p)
 		p.X += 1
 		remaining := self.Max.X - 2 - p.X
-		buf.SetString(fmt.Sprintf("%*s", remaining, "]"), style, p)
+		buf.SetString(fmt.Sprintf("%*s", remaining, "] "), style, p)
 	}
 }
 
