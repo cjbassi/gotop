@@ -96,24 +96,43 @@ func NewProcWidget() *ProcWidget {
 	return self
 }
 
-func (self *ProcWidget) Filter() string {
-	return self.filter
-}
-
-func (self *ProcWidget) SetFilter(filter string) {
-	self.filter = filter
-	self.update()
-}
-
-func (self *ProcWidget) EditingFilter() bool {
-	return self.editingFilter
-}
-
 func (self *ProcWidget) SetEditingFilter(editing bool) {
 	self.editingFilter = editing
 	if !editing {
 		self.update()
 	}
+}
+
+// handleEditFilterEvents handles events while editing the proc filter.
+// Returns true if the event was handled.
+func (self *ProcWidget) HandleEvent(e tui.Event) bool {
+	if !self.editingFilter {
+		return false
+	}
+	if utf8.RuneCountInString(e.ID) == 1 {
+		self.filter += e.ID
+		self.update()
+		return true
+	}
+	switch e.ID {
+	case "<C-c>", "<Escape>":
+		self.filter = ""
+		self.update()
+		self.SetEditingFilter(false)
+	case "<Enter>":
+		self.SetEditingFilter(false)
+	case "<Backspace>":
+		if self.filter != "" {
+			self.filter = self.filter[:len(self.filter)-1]
+			self.update()
+		}
+	case "<Space>":
+		self.filter += " "
+		self.update()
+	default:
+		return false
+	}
+	return true
 }
 
 func (self *ProcWidget) Draw(buf *tui.Buffer) {

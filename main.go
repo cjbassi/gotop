@@ -12,7 +12,6 @@ import (
 	"strconv"
 	"syscall"
 	"time"
-	"unicode/utf8"
 
 	docopt "github.com/docopt/docopt.go"
 	ui "github.com/gizak/termui/v3"
@@ -274,36 +273,6 @@ func initWidgets() {
 	}
 }
 
-// handleEditFilterEvents handles events while editing the proc filter.
-// Returns true if the event was handled.
-func handleEditFilterEvents(e ui.Event) bool {
-	if utf8.RuneCountInString(e.ID) == 1 {
-		proc.SetFilter(proc.Filter() + e.ID)
-		ui.Render(proc)
-		return true
-	}
-	switch e.ID {
-	case "<C-c>", "<Escape>":
-		proc.SetFilter("")
-		proc.SetEditingFilter(false)
-		ui.Render(proc)
-	case "<Enter>":
-		proc.SetEditingFilter(false)
-		ui.Render(proc)
-	case "<Backspace>":
-		if filter := proc.Filter(); filter != "" {
-			proc.SetFilter(filter[:len(filter)-1])
-		}
-		ui.Render(proc)
-	case "<Space>":
-		proc.SetFilter(proc.Filter() + " ")
-		ui.Render(proc)
-	default:
-		return false
-	}
-	return true
-}
-
 func eventLoop() {
 	drawTicker := time.NewTicker(updateInterval).C
 
@@ -327,8 +296,8 @@ func eventLoop() {
 				}
 			}
 		case e := <-uiEvents:
-
-			if proc.EditingFilter() && handleEditFilterEvents(e) {
+			if proc.HandleEvent(e) {
+				ui.Render(proc)
 				break
 			}
 			switch e.ID {
