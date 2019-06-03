@@ -33,7 +33,7 @@ Process filtering:
   - /: start editing filter
   - (while editing):
     - <Enter>: accept filter
-    - <C-c> clear filter
+    - <C-c> and <Escape>: clear filter
 
 CPU and Mem graph scaling:
   - h: scale in

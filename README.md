@@ -73,7 +73,7 @@ snap connect gotop-cjbassi:system-observe
 - Quit: `q` or `<C-c>`
 - Process navigation:
   - `k` and `<Up>`: up
-  - `j` and `<Down`: down
+  - `j` and `<Down>`: down
   - `<C-u>`: half page up
   - `<C-d>`: half page down
   - `<C-b>`: full page up
@@ -88,10 +88,10 @@ snap connect gotop-cjbassi:system-observe
   - `m`: Mem
   - `p`: PID
 - Process filtering:
-  - /: start editing filter
+  - `/`: start editing filter
 	- (while editing):
-		- <Enter> accept filter
-		- <C-c>: clear filter
+		- `<Enter>` accept filter
+		- `<C-c>` and `<Escape>`: clear filter
 - CPU and Mem graph scaling:
   - `h`: scale in
   - `l`: scale out
