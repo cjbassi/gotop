@@ -89,9 +89,9 @@ snap connect gotop-cjbassi:system-observe
   - `p`: PID
 - Process filtering:
   - `/`: start editing filter
-	- (while editing):
-		- `<Enter>` accept filter
-		- `<C-c>` and `<Escape>`: clear filter
+  - (while editing):
+    - `<Enter>` accept filter
+    - `<C-c>` and `<Escape>`: clear filter
 - CPU and Mem graph scaling:
   - `h`: scale in
   - `l`: scale out
