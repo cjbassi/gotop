@@ -295,6 +295,9 @@ func handleEditFilterEvents(e ui.Event) bool {
 			proc.SetFilter(filter[:len(filter)-1])
 		}
 		ui.Render(proc)
+	case "<Space>":
+		proc.SetFilter(proc.Filter() + " ")
+		ui.Render(proc)
 	default:
 		return false
 	}
