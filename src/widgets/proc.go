@@ -101,6 +101,7 @@ func (self *ProcWidget) Filter() string {
 
 func (self *ProcWidget) SetFilter(filter string) {
 	self.filter = filter
+	self.update()
 }
 
 func (self *ProcWidget) EditingFilter() bool {
