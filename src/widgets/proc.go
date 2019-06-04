@@ -2,28 +2,23 @@ package widgets
 
 import (
 	"fmt"
-	"image"
 	"log"
 	"os/exec"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
-	"unicode/utf8"
 
 	psCPU "github.com/shirou/gopsutil/cpu"
 
 	ui "github.com/cjbassi/gotop/src/termui"
 	"github.com/cjbassi/gotop/src/utils"
 	tui "github.com/gizak/termui/v3"
-	rw "github.com/mattn/go-runewidth"
 )
 
 const (
 	UP_ARROW   = "▲"
 	DOWN_ARROW = "▼"
-	ELLIPSIS   = "…"
-	CURSOR     = " "
 )
 
 type ProcSortMethod string
@@ -44,11 +39,11 @@ type Proc struct {
 
 type ProcWidget struct {
 	*ui.Table
+	entry            *ui.Entry
 	cpuCount         int
 	updateInterval   time.Duration
 	sortMethod       ProcSortMethod
 	filter           string
-	editingFilter    bool
 	groupedProcs     []Proc
 	ungroupedProcs   []Proc
 	showGroupedProcs bool
@@ -66,7 +61,15 @@ func NewProcWidget() *ProcWidget {
 		sortMethod:       ProcSortCpu,
 		showGroupedProcs: true,
 		filter:           "",
-		editingFilter:    false,
+	}
+	self.entry = &ui.Entry{
+		Style: self.TitleStyle,
+		Label: " Filter: ",
+		Value: "foobar",
+		UpdateCallback: func(val string) {
+			self.filter = val
+			self.update()
+		},
 	}
 	self.Title = " Processes "
 	self.ShowCursor = true
@@ -98,91 +101,21 @@ func NewProcWidget() *ProcWidget {
 }
 
 func (self *ProcWidget) SetEditingFilter(editing bool) {
-	self.editingFilter = editing
-	if !editing {
-		self.update()
-	}
+	self.entry.SetEditing(editing)
 }
 
-// handleEditFilterEvents handles events while editing the proc filter.
-// Returns true if the event was handled.
 func (self *ProcWidget) HandleEvent(e tui.Event) bool {
-	if !self.editingFilter {
-		return false
-	}
-	if utf8.RuneCountInString(e.ID) == 1 {
-		self.filter += e.ID
-		self.update()
-		return true
-	}
-	switch e.ID {
-	case "<C-c>", "<Escape>":
-		self.filter = ""
-		self.update()
-		self.SetEditingFilter(false)
-	case "<Enter>":
-		self.SetEditingFilter(false)
-	case "<Backspace>":
-		if self.filter != "" {
-			r := []rune(self.filter)
-			self.filter = string(r[:len(r)-1])
-			self.update()
-		}
-	case "<Space>":
-		self.filter += " "
-		self.update()
-	default:
-		return false
-	}
-	return true
+	return self.entry.HandleEvent(e)
+}
+
+func (self *ProcWidget) SetRect(x1, y1, x2, y2 int) {
+	self.Table.SetRect(x1, y1, x2, y2)
+	self.entry.SetRect(x1+2, y2-1, x2-2, y2)
 }
 
 func (self *ProcWidget) Draw(buf *tui.Buffer) {
 	self.Table.Draw(buf)
-	if self.filter != "" || self.editingFilter {
-		self.drawFilter(buf)
-	}
-}
-
-func (self *ProcWidget) drawFilter(buf *tui.Buffer) {
-	padding := 2
-
-	style := self.TitleStyle
-	label := " Filter: "
-	if self.editingFilter {
-		label += "["
-		style = tui.NewStyle(style.Fg, style.Bg, tui.ModifierBold)
-	}
-	cursorStyle := tui.NewStyle(style.Bg, style.Fg, tui.ModifierClear)
-
-	p := image.Pt(self.Min.X+padding, self.Max.Y-1)
-	buf.SetString(label, style, p)
-	p.X += rw.StringWidth(label)
-
-	tail := " "
-	if self.editingFilter {
-		tail = "] "
-	}
-
-	maxLen := self.Max.X - p.X - padding - rw.StringWidth(tail)
-	if self.editingFilter {
-		maxLen -= 1 // for cursor
-	}
-
-	filter := utils.TruncateFront(self.filter, maxLen, ELLIPSIS)
-	buf.SetString(filter, self.TitleStyle, p)
-	p.X += rw.StringWidth(filter)
-
-	if self.editingFilter {
-		buf.SetString(CURSOR, cursorStyle, p)
-		p.X += rw.StringWidth(CURSOR)
-
-		if remaining := maxLen - rw.StringWidth(filter); remaining > 0 {
-			buf.SetString(strings.Repeat(" ", remaining), self.TitleStyle, p)
-			p.X += remaining
-		}
-	}
-	buf.SetString(tail, style, p)
+	self.entry.Draw(buf)
 }
 
 func (self *ProcWidget) filterProcs(procs []Proc) []Proc {
