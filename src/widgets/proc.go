@@ -16,6 +16,7 @@ import (
 	ui "github.com/cjbassi/gotop/src/termui"
 	"github.com/cjbassi/gotop/src/utils"
 	tui "github.com/gizak/termui/v3"
+	rw "github.com/mattn/go-runewidth"
 )
 
 const (
@@ -123,7 +124,8 @@ func (self *ProcWidget) HandleEvent(e tui.Event) bool {
 		self.SetEditingFilter(false)
 	case "<Backspace>":
 		if self.filter != "" {
-			self.filter = self.filter[:len(self.filter)-1]
+			r := []rune(self.filter)
+			self.filter = string(r[:len(r)-1])
 			self.update()
 		}
 	case "<Space>":
@@ -143,6 +145,8 @@ func (self *ProcWidget) Draw(buf *tui.Buffer) {
 }
 
 func (self *ProcWidget) drawFilter(buf *tui.Buffer) {
+	padding := 2
+
 	style := self.TitleStyle
 	label := " Filter: "
 	if self.editingFilter {
@@ -151,24 +155,34 @@ func (self *ProcWidget) drawFilter(buf *tui.Buffer) {
 	}
 	cursorStyle := tui.NewStyle(style.Bg, style.Fg, tui.ModifierClear)
 
-	p := image.Pt(self.Min.X+2, self.Max.Y-1)
+	p := image.Pt(self.Min.X+padding, self.Max.Y-1)
 	buf.SetString(label, style, p)
-	p.X += utf8.RuneCountInString(label)
+	p.X += rw.StringWidth(label)
 
-	maxLen := self.Max.X - p.X - 5
-	filter := self.filter
-	if l := utf8.RuneCountInString(filter); l > maxLen {
-		filter = ELLIPSIS + filter[l-maxLen+1:]
+	tail := " "
+	if self.editingFilter {
+		tail = "] "
 	}
+
+	maxLen := self.Max.X - p.X - padding - rw.StringWidth(tail)
+	if self.editingFilter {
+		maxLen -= 1 // for cursor
+	}
+
+	filter := utils.TruncateFront(self.filter, maxLen, ELLIPSIS)
 	buf.SetString(filter, self.TitleStyle, p)
-	p.X += utf8.RuneCountInString(filter)
+	p.X += rw.StringWidth(filter)
 
 	if self.editingFilter {
 		buf.SetString(CURSOR, cursorStyle, p)
-		p.X += 1
-		remaining := self.Max.X - 2 - p.X
-		buf.SetString(fmt.Sprintf("%*s", remaining, "] "), style, p)
+		p.X += rw.StringWidth(CURSOR)
+
+		if remaining := maxLen - rw.StringWidth(filter); remaining > 0 {
+			buf.SetString(strings.Repeat(" ", remaining), self.TitleStyle, p)
+			p.X += remaining
+		}
 	}
+	buf.SetString(tail, style, p)
 }
 
 func (self *ProcWidget) filterProcs(procs []Proc) []Proc {
