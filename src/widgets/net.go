@@ -11,6 +11,11 @@ import (
 	"github.com/cjbassi/gotop/src/utils"
 )
 
+const (
+	NET_INTERFACE_ALL = "all"
+	NET_INTERFACE_VPN = "tun0"
+)
+
 type NetInterface string
 
 type NetWidget struct {
@@ -65,7 +70,7 @@ func (self *NetWidget) update() {
 	var totalBytesSent uint64
 	for _, _interface := range interfaces {
 		// ignore VPN interface or filter interface by name
-		if (_interface.Name != "tun0" && self.NetInterface == "all") || (_interface.Name == self.NetInterface) {
+		if ((self.NetInterface == NET_INTERFACE_ALL) && (_interface.Name != NET_INTERFACE_VPN)) || (_interface.Name == self.NetInterface) {
 			totalBytesRecv += _interface.BytesRecv
 			totalBytesSent += _interface.BytesSent
 		}

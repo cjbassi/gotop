@@ -47,7 +47,7 @@ var (
 	tempScale      = w.Celcius
 	battery        = false
 	statusbar      = false
-	netInterface   = "all"
+	netInterface   = w.NET_INTERFACE_ALL
 
 	cpu  *w.CpuWidget
 	batt *w.BatteryWidget
