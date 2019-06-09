@@ -71,9 +71,9 @@ snap connect gotop-cjbassi:system-observe
 ### Keybinds
 
 - Quit: `q` or `<C-c>`
-- Process navigation
+- Process navigation:
   - `k` and `<Up>`: up
-  - `j` and `<Down`: down
+  - `j` and `<Down>`: down
   - `<C-u>`: half page up
   - `<C-d>`: half page down
   - `<C-b>`: full page up
@@ -83,10 +83,15 @@ snap connect gotop-cjbassi:system-observe
 - Process actions:
   - `<Tab>`: toggle process grouping
   - `dd`: kill selected process or group of processes
-- Process sorting
+- Process sorting:
   - `c`: CPU
   - `m`: Mem
   - `p`: PID
+- Process filtering:
+  - `/`: start editing filter
+  - (while editing):
+    - `<Enter>` accept filter
+    - `<C-c>` and `<Escape>`: clear filter
 - CPU and Mem graph scaling:
   - `h`: scale in
   - `l`: scale out

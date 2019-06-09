@@ -296,6 +296,10 @@ func eventLoop() {
 				}
 			}
 		case e := <-uiEvents:
+			if proc.HandleEvent(e) {
+				ui.Render(proc)
+				break
+			}
 			switch e.ID {
 			case "q", "<C-c>":
 				return
@@ -388,6 +392,9 @@ func eventLoop() {
 					ui.Render(proc)
 				case "m", "c", "p":
 					proc.ChangeProcSortMethod(w.ProcSortMethod(e.ID))
+					ui.Render(proc)
+				case "/":
+					proc.SetEditingFilter(true)
 					ui.Render(proc)
 				}
 

@@ -10,7 +10,7 @@ import (
 const KEYBINDS = `
 Quit: q or <C-c>
 
-Process navigation
+Process navigation:
   - k and <Up>: up
   - j and <Down>: down
   - <C-u>: half page up
@@ -24,10 +24,16 @@ Process actions:
   - <Tab>: toggle process grouping
   - dd: kill selected process or group of processes
 
-Process sorting
+Process sorting:
   - c: CPU
   - m: Mem
   - p: PID
+
+Process filtering:
+  - /: start editing filter
+  - (while editing):
+    - <Enter>: accept filter
+    - <C-c> and <Escape>: clear filter
 
 CPU and Mem graph scaling:
   - h: scale in
@@ -46,7 +52,7 @@ func NewHelpMenu() *HelpMenu {
 
 func (self *HelpMenu) Resize(termWidth, termHeight int) {
 	textWidth := 53
-	textHeight := 22
+	textHeight := strings.Count(KEYBINDS, "\n") + 1
 	x := (termWidth - textWidth) / 2
 	y := (termHeight - textHeight) / 2
 
