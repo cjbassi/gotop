@@ -61,7 +61,7 @@ func collectNvidiaSensors() []sensorMeasurement {
 		for i := range info.GPUS {
 			gpu := info.GPUS[i]
 			var s sensorMeasurement
-			s.name = strings.ReplaceAll(strings.ToLower(gpu.ProductName), " ", "_") + "_" + strconv.Itoa(i) + "_input"
+			s.name = gpu.ProductName + " " + strconv.Itoa(i)
 			s.temperature, _ = strconv.ParseFloat(strings.ReplaceAll(gpu.GpuTemp, " C", ""), 10)
 			measurements = append(measurements, s)
 		}
