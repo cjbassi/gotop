@@ -45,7 +45,11 @@ func NewHelpMenu() *HelpMenu {
 }
 
 func (self *HelpMenu) Resize(termWidth, termHeight int) {
-	textWidth := 53
+	var textWidth = 0
+	for _, line := range strings.Split(KEYBINDS, "\n") {
+		textWidth = maxInt(len(line), textWidth)
+	}
+	textWidth += 2
 	textHeight := 22
 	x := (termWidth - textWidth) / 2
 	y := (termHeight - textHeight) / 2
@@ -64,4 +68,11 @@ func (self *HelpMenu) Draw(buf *ui.Buffer) {
 			)
 		}
 	}
+}
+
+func maxInt(a int, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
