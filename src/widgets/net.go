@@ -17,8 +17,6 @@ const (
 	NET_INTERFACE_VPN = "tun0"
 )
 
-type NetInterface string
-
 type NetWidget struct {
 	*ui.SparklineGroup
 	updateInterval time.Duration

@@ -78,6 +78,10 @@ Options:
   -b, --battery         Show battery level widget ('minimal' turns off).
   -i, --interface=NAME  Select network interface [default: all].
 
+Several interfaces can be defined using comma separated values.
+
+Interfaces can also be ignored using !
+
 Colorschemes:
   default
   default-dark (for white background)

@@ -115,6 +115,10 @@ To make a custom colorscheme, check out the [template](./colorschemes/template.g
 `-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/screenshots/battery.png)  
 `-i`, `--interface=NAME` Select network interface [default: all].
 
+Several interfaces can be defined using comma separated values.
+
+Interfaces can also be ignored using `!`
+
 ## Built With
 
 - [gizak/termui](https://github.com/gizak/termui)
