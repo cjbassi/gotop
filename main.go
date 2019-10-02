@@ -135,6 +135,8 @@ func handleColorscheme(cs string) error {
 		colorscheme = colorschemes.Vice
 	case "default-dark":
 		colorscheme = colorschemes.DefaultDark
+	case "nord":
+		colorscheme = colorschemes.Nord
 	default:
 		custom, err := getCustomColorscheme(cs)
 		if err != nil {
