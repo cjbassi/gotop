@@ -1,0 +1,11 @@
+{
+  "colorscheme": "monokai",
+  "updateInterval": 1,
+  "minimalMode": false,
+  "averageLoad": false,
+  "percpuLoad": false,
+  "isFahrenheit": false,
+  "battery": false,
+  "statusbar": false,
+  "netInterface": "NET_INTERFACE_ALL"
+}
