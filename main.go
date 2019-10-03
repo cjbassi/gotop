@@ -140,6 +140,10 @@ Colorschemes:
 // parseConfig convert the config.json and sets the appropriate variables
 // for customization in place of using the terminal arguments.
 func parseConfig() error {
+	// if user enters shell arguments skif the config file.
+	if len(os.Args) > 1 {
+		return nil
+	}
 
 	jsonBytes, err := ioutil.ReadFile("config.json")
 	if err != nil {
