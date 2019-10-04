@@ -22,7 +22,9 @@ Process navigation
 
 Process actions:
   - <Tab>: toggle process grouping
-  - dd: kill selected process or group of processes
+  - dd: kill selected process or group of processes with SIGTERM (15)
+  - d3: kill selected process or group of processes with SIGQUIT (3)
+  - d9: kill selected process or group of processes with SIGKILL (9)
 
 Process sorting
   - c: CPU
@@ -50,7 +52,7 @@ func (self *HelpMenu) Resize(termWidth, termHeight int) {
 		textWidth = maxInt(len(line), textWidth)
 	}
 	textWidth += 2
-	textHeight := 22
+	textHeight := 28
 	x := (termWidth - textWidth) / 2
 	y := (termHeight - textHeight) / 2
 

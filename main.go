@@ -381,7 +381,15 @@ func eventLoop() {
 					ui.Render(proc)
 				case "d":
 					if previousKey == "d" {
-						proc.KillProc()
+						proc.KillProc("SIGTERM")
+					}
+				case "3":
+					if previousKey == "d" {
+						proc.KillProc("SIGQUIT")
+					}
+				case "9":
+					if previousKey == "d" {
+						proc.KillProc("SIGKILL")
 					}
 				case "<Tab>":
 					proc.ToggleShowingGroupedProcs()
