@@ -86,15 +86,15 @@ func (self *TempWidget) Draw(buf *ui.Buffer) {
 		switch self.TempScale {
 		case Fahrenheit:
 			buf.SetString(
-				fmt.Sprintf("%3dF", self.Data[key]),
+				fmt.Sprintf("%3d°F", self.Data[key]),
 				ui.NewStyle(fg),
-				image.Pt(self.Inner.Max.X-4, self.Inner.Min.Y+y),
+				image.Pt(self.Inner.Max.X-5, self.Inner.Min.Y+y),
 			)
 		case Celcius:
 			buf.SetString(
-				fmt.Sprintf("%3dC", self.Data[key]),
+				fmt.Sprintf("%3d°C", self.Data[key]),
 				ui.NewStyle(fg),
-				image.Pt(self.Inner.Max.X-4, self.Inner.Min.Y+y),
+				image.Pt(self.Inner.Max.X-5, self.Inner.Min.Y+y),
 			)
 		}
 	}
