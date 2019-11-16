@@ -1,5 +1,5 @@
 dist/
-gotop
+/gotop
 
 # snap packaging specific
 /parts/

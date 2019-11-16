@@ -64,6 +64,8 @@ Colorschemes:
   default
   default-dark (for white background)
   solarized
+  solarized16-dark
+  solarized16-light
   monokai
   vice
 `
@@ -147,6 +149,10 @@ func handleColorscheme(c string) (colorschemes.Colorscheme, error) {
 		cs = colorschemes.Default
 	case "solarized":
 		cs = colorschemes.Solarized
+	case "solarized16-light":
+		cs = colorschemes.Solarized16Light
+	case "solarized16-dark":
+		cs = colorschemes.Solarized16Dark
 	case "monokai":
 		cs = colorschemes.Monokai
 	case "vice":
