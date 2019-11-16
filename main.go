@@ -129,6 +129,10 @@ func handleColorscheme(cs string) error {
 		colorscheme = colorschemes.Default
 	case "solarized":
 		colorscheme = colorschemes.Solarized
+	case "solarized16-light":
+		colorscheme = colorschemes.Solarized16Light
+	case "solarized16-dark":
+		colorscheme = colorschemes.Solarized16Dark
 	case "monokai":
 		colorscheme = colorschemes.Monokai
 	case "vice":
