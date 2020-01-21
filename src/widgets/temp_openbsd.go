@@ -39,7 +39,7 @@ func (self *TempWidget) getTemp(mib []C.int, mlen int, snsrdev *C.struct_sensord
 			switch self.TempScale {
 			case Fahrenheit:
 				self.Data[key] = utils.CelsiusToFahrenheit(temp)
-			case Celcius:
+			case Celsius:
 				self.Data[key] = temp
 			}
 		}

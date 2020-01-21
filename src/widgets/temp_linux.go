@@ -12,7 +12,7 @@ import (
 func (self *TempWidget) update() {
 	sensors, err := psHost.SensorsTemperatures()
 	if err != nil {
-		log.Printf("error recieved from gopsutil: %v", err)
+		log.Printf("error received from gopsutil: %v", err)
 	}
 	for _, sensor := range sensors {
 		// only sensors with input in their name are giving us live temp info
@@ -22,7 +22,7 @@ func (self *TempWidget) update() {
 			switch self.TempScale {
 			case Fahrenheit:
 				self.Data[label] = utils.CelsiusToFahrenheit(int(sensor.Temperature))
-			case Celcius:
+			case Celsius:
 				self.Data[label] = int(sensor.Temperature)
 			}
 		}

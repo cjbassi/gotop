@@ -19,7 +19,7 @@ func (self *TempWidget) update() {
 			switch self.TempScale {
 			case Fahrenheit:
 				self.Data[sensor.SensorKey] = utils.CelsiusToFahrenheit(int(sensor.Temperature))
-			case Celcius:
+			case Celsius:
 				self.Data[sensor.SensorKey] = int(sensor.Temperature)
 			}
 		}
