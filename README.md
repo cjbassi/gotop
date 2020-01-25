@@ -1,3 +1,5 @@
+### **NO LONGER MAINTAINED.** Future development has moved to [ytop](https://github.com/cjbassi/ytop), a Rust port of gotop. 
+
 <div align="center">
 
 <a href="./assets/logo">
