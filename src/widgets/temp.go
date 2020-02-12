@@ -16,6 +16,7 @@ type TempScale int
 const (
 	Celcius    TempScale = 0
 	Fahrenheit           = 1
+	Disabled             = 2
 )
 
 type TempWidget struct {

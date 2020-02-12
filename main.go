@@ -77,6 +77,7 @@ Options:
   -s, --statusbar       Show a statusbar with the time.
   -b, --battery         Show battery level widget ('minimal' turns off).
   -i, --interface=NAME  Select network interface [default: all].
+      --no-temps        Disable temperature widget
 
 Colorschemes:
   default
@@ -104,6 +105,8 @@ Colorschemes:
 
 	statusbar, _ = args["--statusbar"].(bool)
 
+	notemps, _ := args["--no-temps"].(bool)
+
 	rateStr, _ := args["--rate"].(string)
 	rate, err := strconv.ParseFloat(rateStr, 64)
 	if err != nil {
@@ -117,6 +120,9 @@ Colorschemes:
 	fahrenheit, _ := args["--fahrenheit"].(bool)
 	if fahrenheit {
 		tempScale = w.Fahrenheit
+	}
+	if notemps {
+		tempScale = w.Disabled
 	}
 	netInterface, _ = args["--interface"].(string)
 
@@ -181,13 +187,19 @@ func setupGrid() {
 		} else {
 			cpuRow = ui.NewRow(1.0/3, cpu)
 		}
+		var diskRow ui.GridItem
+		if tempScale == w.Disabled {
+			diskRow = ui.NewCol(1.0/3, ui.NewRow(1.0, disk))
+		} else {
+			diskRow = ui.NewCol(1.0/3,
+				ui.NewRow(1.0/2, disk),
+				ui.NewRow(1.0/2, temp),
+			)
+		}
 		grid.Set(
 			cpuRow,
 			ui.NewRow(1.0/3,
-				ui.NewCol(1.0/3,
-					ui.NewRow(1.0/2, disk),
-					ui.NewRow(1.0/2, temp),
-				),
+				diskRow,
 				ui.NewCol(2.0/3, mem),
 			),
 			ui.NewRow(1.0/3,
@@ -245,8 +257,10 @@ func setWidgetColors() {
 			}
 		}
 
-		temp.TempLowColor = ui.Color(colorscheme.TempLow)
-		temp.TempHighColor = ui.Color(colorscheme.TempHigh)
+		if tempScale != w.Disabled {
+			temp.TempLowColor = ui.Color(colorscheme.TempLow)
+			temp.TempHighColor = ui.Color(colorscheme.TempHigh)
+		}
 
 		net.Lines[0].LineColor = ui.Color(colorscheme.Sparkline)
 		net.Lines[0].TitleColor = ui.Color(colorscheme.BorderLabel)
@@ -266,7 +280,9 @@ func initWidgets() {
 		}
 		net = w.NewNetWidget(netInterface)
 		disk = w.NewDiskWidget()
-		temp = w.NewTempWidget(tempScale)
+		if tempScale != w.Disabled {
+			temp = w.NewTempWidget(tempScale)
+		}
 	}
 	if statusbar {
 		bar = w.NewStatusBar()
