@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -31,6 +30,7 @@ const (
 
 	graphHorizontalScaleDelta = 3
 	defaultUI                 = "cpu\ndisk/1 2:mem/2\ntemp\nnet procs"
+	minimalUI                 = "cpu\nmem procs"
 )
 
 var (
@@ -48,7 +48,7 @@ Usage: gotop [options]
 Options:
   -c, --color=NAME        Set a colorscheme.
   -h, --help              Show this screen.
-  -m, --minimal           Only show CPU, Mem and Process widgets.
+  -m, --minimal           Only show CPU, Mem and Process widgets. Overrides -l
   -r, --rate=RATE         Number of times per second to update CPU and Mem widgets [default: 1].
   -V, --version           Print version and exit.
   -p, --percpu            Show each CPU in the CPU widget.
@@ -57,8 +57,8 @@ Options:
   -s, --statusbar         Show a statusbar with the time.
   -b, --battery           Show battery level widget ('minimal' turns off).
   -i, --interface=NAME    Select network interface [default: all].
-  -l, --layout=NAME       Name of layout spec file for the UI
-      --layout-file=NAME  Path to a layout file
+  -B, --bandwidth=bits	  Specify the number of bits per seconds.
+  -l, --layout=NAME       Name of layout spec file for the UI.  Looks first in $XDG_CONFIG_HOME/gotop, then as a path.  Use "-" to pipe.
 
 Colorschemes:
   default
@@ -80,7 +80,6 @@ Colorschemes:
 		HelpVisible:          false,
 		Colorscheme:          colorschemes.Default,
 		UpdateInterval:       time.Second,
-		MinimalMode:          false,
 		AverageLoad:          false,
 		PercpuLoad:           false,
 		TempScale:            w.Celsius,
@@ -95,20 +94,21 @@ Colorschemes:
 	}
 
 	if val, _ := args["--layout"]; val != nil {
-		fp := filepath.Join(cd, val.(string))
-		if _, err := os.Stat(fp); err == nil {
-			conf.LayoutFile = fp
+		s := val.(string)
+		if s == "-" {
+			conf.Layout = os.Stdin
 		} else {
-			conf.LayoutFile = ""
+			fp := filepath.Join(cd, s)
+			conf.Layout, err = os.Open(fp)
+			if err != nil {
+				conf.Layout, err = os.Open(s)
+				if err != nil {
+					stderrLogger.Fatalf("Unable to open layout file %s", fp)
+				}
+			}
 		}
-	}
-	if val, _ := args["--layout-file"]; val != nil {
-		fp := val.(string)
-		if _, err := os.Stat(fp); err == nil {
-			conf.LayoutFile = fp
-		} else {
-			conf.LayoutFile = ""
-		}
+	} else {
+		conf.Layout = strings.NewReader(defaultUI)
 	}
 	if val, _ := args["--color"]; val != nil {
 		cs, err := handleColorscheme(val.(string))
@@ -120,9 +120,11 @@ Colorschemes:
 	conf.AverageLoad, _ = args["--averagecpu"].(bool)
 	conf.PercpuLoad, _ = args["--percpu"].(bool)
 	conf.Battery, _ = args["--battery"].(bool)
-	conf.MinimalMode, _ = args["--minimal"].(bool)
 	statusbar, _ = args["--statusbar"].(bool)
 
+	if args["--minimal"].(bool) {
+		conf.Layout = strings.NewReader(minimalUI)
+	}
 	rateStr, _ := args["--rate"].(string)
 	rate, err := strconv.ParseFloat(rateStr, 64)
 	if err != nil {
@@ -137,7 +139,6 @@ Colorschemes:
 	if fahrenheit {
 		conf.TempScale = w.Fahrenheit
 	}
-	conf.NetInterface, _ = args["--interface"].(string)
 
 	return conf, nil
 }
@@ -391,17 +392,7 @@ func main() {
 		bar = w.NewStatusBar()
 	}
 
-	var lin io.Reader
-	lin = strings.NewReader(defaultUI)
-	if conf.LayoutFile != "" {
-		fin, err := os.Open(conf.LayoutFile)
-		defer fin.Close()
-		if err != nil {
-			stderrLogger.Fatalf("Layout %s not found.", conf.LayoutFile)
-		}
-		lin = fin
-	}
-	ly := layout.ParseLayout(lin)
+	ly := layout.ParseLayout(conf.Layout)
 	grid, err := layout.Layout(ly, conf)
 	if err != nil {
 		stderrLogger.Fatalf("failed to initialize termui: %v", err)

@@ -1,6 +1,7 @@
 package gotop
 
 import (
+	"io"
 	"time"
 
 	"github.com/cjbassi/gotop/colorschemes"
@@ -17,12 +18,11 @@ type Config struct {
 	Colorscheme          colorschemes.Colorscheme
 
 	UpdateInterval time.Duration
-	MinimalMode    bool
 	AverageLoad    bool
 	PercpuLoad     bool
 	TempScale      widgets.TempScale
 	Battery        bool
 	Statusbar      bool
 	NetInterface   string
-	LayoutFile     string
+	Layout         io.Reader
 }
