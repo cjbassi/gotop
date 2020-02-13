@@ -24,4 +24,5 @@ type Config struct {
 	Battery        bool
 	Statusbar      bool
 	NetInterface   string
+	LayoutFile     string
 }

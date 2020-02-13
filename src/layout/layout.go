@@ -2,14 +2,8 @@
 package layout
 
 import (
-	"bufio"
-	"errors"
-	"fmt"
-	"io"
 	"log"
 	"sort"
-	"strconv"
-	"strings"
 
 	"github.com/cjbassi/gotop/src/config"
 	"github.com/cjbassi/gotop/src/widgets"
@@ -34,205 +28,255 @@ type MyGrid struct {
 
 var widgetNames []string = []string{"cpu", "disk", "mem", "temp", "net", "procs", "batt"}
 
-// The syntax for the layout specification is:
-// ```
-// (rowspan:)?widget(/weight)?
-// ```
-// 1. Each line is a row
-// 2. Empty lines are skipped
-// 3. Spaces are compressed
-// 4. Legal widget names are: cpu, disk, mem, temp, batt, net, procs
-// 5. Names are not case sensitive
-// 4. The simplest row is a single widget, by name, e.g.
-//    ```
-//    cpu
-//    ```
-// 5. Widgets with no weights have a weight of 1.
-// 6. If multiple widgets are put on a row with no weights, they will all have
-//    the same width.
-// 7. Weights are integers
-// 8. A widget will have a width proportional to its weight divided by the
-//    total weight count of the row. E.g.,
-//    ```
-//    cpu      net
-//    disk/2   mem/4
-//    ```
-//    The first row will have two widgets: the CPU and network widgets; each
-//    will be 50% of the total width wide.  The second row will have two
-//    widgets: disk and memory; the first will be 2/6 ~= 33% wide, and the
-//    second will be 5/7 ~= 67% wide (or, memory will be twice as wide as disk).
-// 9. If prefixed by a number and colon, the widget will span that number of
-//    rows downward. E.g.
-//    ```
-//    2:cpu
-//    mem
-//    ```
-//    The CPU widget will be twice as high as the memory widget.  Similarly,
-//    ```
-//    mem   2:cpu
-//    net
-//    ```
-//    memory and network will be in the same row as CPU, one over the other,
-//    and each half as high as CPU.
-// 10. Negative, 0, or non-integer weights will be recorded as "1".  Same for row spans.
-// 11. Unrecognized widgets will cause the application to abort.
-// 12. In rows with multi-row spanning widgets **and** weights, weights in
-//     lower rows are ignored.  Put the weight on the widgets in that row, not
-//     in later (spanned) rows.
-func ParseLayout(i io.Reader) layout {
-	r := bufio.NewScanner(i)
-	rv := layout{Rows: make([][]widgetRule, 0)}
-	var lineNo int
-	for r.Scan() {
-		l := strings.TrimSpace(r.Text())
-		if l == "" {
-			continue
-		}
-		row := make([]widgetRule, 0)
-		ws := strings.Fields(l)
-		weightTotal := 0
-		for _, w := range ws {
-			wr := widgetRule{Weight: 1}
-			ks := strings.Split(w, "/")
-			rs := strings.Split(ks[0], ":")
-			var wid string
-			if len(rs) > 1 {
-				v, e := strconv.Atoi(rs[0])
-				if e != nil {
-					log.Printf("Layout error on line %d: format must be INT:STRING/INT. Error parsing %s as a int. Word was %s. Using a row height of 1.", lineNo, rs[0], w)
-					v = 1
-				}
-				if v < 1 {
-					v = 1
-				}
-				wr.Height = v
-				wid = rs[1]
-			} else {
-				wr.Height = 1
-				wid = rs[0]
-			}
-			wr.Widget = strings.ToLower(wid)
-			if len(ks) > 1 {
-				weight, e := strconv.Atoi(ks[1])
-				if e != nil {
-					log.Printf("Layout error on line %d: format must be STRING/INT. Error parsing %s as a int. Word was %s. Using a weight of 1 for widget.", lineNo, ks[1], w)
-					weight = 1
-				}
-				if weight < 1 {
-					weight = 1
-				}
-				wr.Weight = float64(weight)
-				if len(ks) > 2 {
-					log.Printf("Layout warning on line %d: too many '/' in word %s; ignoring extra junk.", lineNo, w)
-				}
-				weightTotal += weight
-			} else {
-				weightTotal += 1
-			}
-			row = append(row, wr)
-		}
-		// Prevent tricksy users from breaking their own computers
-		if weightTotal <= 1 {
-			weightTotal = 1
-		}
-		for i, w := range row {
-			row[i].Weight = w.Weight / float64(weightTotal)
-		}
-		rv.Rows = append(rv.Rows, row)
+func Layout(wl layout, c config.Config) (*MyGrid, error) {
+	rowDefs := wl.Rows
+	uiRows := make([]ui.GridItem, 0)
+	numRows := countNumRows(wl.Rows)
+	var uiRow ui.GridItem
+	for len(rowDefs) > 0 {
+		uiRow, rowDefs = processRow(c, numRows, rowDefs)
+		uiRows = append(uiRows, uiRow)
 	}
-	return rv
+	rgs := make([]interface{}, 0)
+	for _, ur := range uiRows {
+		ur.HeightRatio = ur.HeightRatio / float64(numRows)
+		rgs = append(rgs, ur)
+	}
+	grid := &MyGrid{ui.NewGrid(), nil, nil}
+	grid.Set(rgs...)
+	grid.Lines = deepFindScalable(rgs)
+	grid.Proc = deepFindProc(uiRows)
+	return grid, nil
 }
 
-func Layout(wl layout, c config.Config) (*MyGrid, error) {
-	log.Printf("laying out %v", wl)
-	var rows [][]interface{}
-	var lines []widgets.Scalable
-	var mouser *widgets.ProcWidget
-	for _, rowDef := range wl.Rows {
-		var gi []interface{}
-		var w interface{}
-		for _, widRule := range rowDef {
-			switch widRule.Widget {
-			case "cpu":
-				cpu := widgets.NewCpuWidget(c.UpdateInterval, c.GraphHorizontalScale, c.AverageLoad, c.PercpuLoad)
-				var keys []string
-				for key := range cpu.Data {
-					keys = append(keys, key)
-				}
-				sort.Strings(keys)
-				i := 0
-				for _, v := range keys {
-					if i >= len(c.Colorscheme.CPULines) {
-						// assuming colorscheme for CPU lines is not empty
-						i = 0
-					}
-					color := c.Colorscheme.CPULines[i]
-					cpu.LineColors[v] = ui.Color(color)
-					i++
-				}
-				lines = append(lines, cpu)
-				w = cpu
-			case "disk":
-				w = widgets.NewDiskWidget()
-			case "mem":
-				m := widgets.NewMemWidget(c.UpdateInterval, c.GraphHorizontalScale)
-				m.LineColors["Main"] = ui.Color(c.Colorscheme.MainMem)
-				m.LineColors["Swap"] = ui.Color(c.Colorscheme.SwapMem)
-				lines = append(lines, m)
-				w = m
-			case "temp":
-				t := widgets.NewTempWidget(c.TempScale)
-				t.TempLowColor = ui.Color(c.Colorscheme.TempLow)
-				t.TempHighColor = ui.Color(c.Colorscheme.TempHigh)
-				w = t
-			case "net":
-				n := widgets.NewNetWidget(c.NetInterface)
-				n.Lines[0].LineColor = ui.Color(c.Colorscheme.Sparkline)
-				n.Lines[0].TitleColor = ui.Color(c.Colorscheme.BorderLabel)
-				n.Lines[1].LineColor = ui.Color(c.Colorscheme.Sparkline)
-				n.Lines[1].TitleColor = ui.Color(c.Colorscheme.BorderLabel)
-				w = n
-			case "procs":
-				p := widgets.NewProcWidget()
-				p.CursorColor = ui.Color(c.Colorscheme.ProcCursor)
-				mouser = p
-				w = p
-			case "batt":
-				b := widgets.NewBatteryWidget(c.GraphHorizontalScale)
-				var battKeys []string
-				for key := range b.Data {
-					battKeys = append(battKeys, key)
-				}
-				sort.Strings(battKeys)
-				i := 0 // Re-using variable from CPU
-				for _, v := range battKeys {
-					if i >= len(c.Colorscheme.BattLines) {
-						// assuming colorscheme for battery lines is not empty
-						i = 0
-					}
-					color := c.Colorscheme.BattLines[i]
-					b.LineColors[v] = ui.Color(color)
-					i++
-				}
-				w = b
-			default:
-				return nil, errors.New(fmt.Sprintf("Invalid widget name %s.  Must be one of %v", widRule.Widget, widgetNames))
+// processRow eats a single row from the input list of rows and returns a UI
+// row (GridItem) representation of the specification, along with a slice
+// without that row.
+//
+// It does more than that, actually, because it may consume more than one row
+// if there's a row span widget in the row; in this case, it'll consume as many
+// rows as the largest row span object in the row, and produce an uber-row
+// containing all that stuff. It returns a slice without the consumed elements.
+func processRow(c config.Config, numRows int, rowDefs [][]widgetRule) (ui.GridItem, [][]widgetRule) {
+	// Recursive function #3.  See the comment in deepFindProc.
+	if len(rowDefs) < 1 {
+		return ui.GridItem{}, [][]widgetRule{}
+	}
+	// The height of the tallest widget in this row; the number of rows that
+	// will be consumed, and the overall height of the row that will be
+	// produced.
+	maxHeight := countMaxHeight([][]widgetRule{rowDefs[0]})
+	var processing [][]widgetRule
+	if maxHeight < len(rowDefs) {
+		processing = rowDefs[0:maxHeight]
+		rowDefs = rowDefs[maxHeight:]
+	} else {
+		processing = rowDefs[0:]
+		rowDefs = [][]widgetRule{}
+	}
+	var colWeights []float64
+	var columns [][]interface{}
+	numCols := len(processing[0])
+	if numCols < 1 {
+		numCols = 1
+	}
+	for _, rd := range processing[0] {
+		colWeights = append(colWeights, rd.Weight)
+		columns = append(columns, make([]interface{}, 0))
+	}
+	colHeights := make([]int, numCols)
+	for _, rds := range processing {
+		for i, rd := range rds {
+			if colHeights[i]+rd.Height <= maxHeight {
+				widget := makeWidget(c, rd)
+				columns[i] = append(columns[i], ui.NewRow(float64(rd.Height)/float64(maxHeight), widget))
+				colHeights[i] += rd.Height
 			}
-			gi = append(gi, ui.NewCol(widRule.Weight, w))
 		}
-		if len(gi) > 0 {
-			rows = append(rows, gi)
+	}
+	var uiColumns []interface{}
+	for i, widgets := range columns {
+		if len(widgets) > 0 {
+			uiColumns = append(uiColumns, ui.NewCol(float64(colWeights[i]), widgets...))
+		}
+	}
+
+	return ui.NewRow(1.0/float64(numRows), uiColumns...), rowDefs
+}
+
+func makeWidget(c config.Config, widRule widgetRule) interface{} {
+	var w interface{}
+	switch widRule.Widget {
+	case "cpu":
+		cpu := widgets.NewCpuWidget(c.UpdateInterval, c.GraphHorizontalScale, c.AverageLoad, c.PercpuLoad)
+		var keys []string
+		for key := range cpu.Data {
+			keys = append(keys, key)
+		}
+		sort.Strings(keys)
+		i := 0
+		for _, v := range keys {
+			if i >= len(c.Colorscheme.CPULines) {
+				// assuming colorscheme for CPU lines is not empty
+				i = 0
+			}
+			color := c.Colorscheme.CPULines[i]
+			cpu.LineColors[v] = ui.Color(color)
+			i++
+		}
+		w = cpu
+	case "disk":
+		w = widgets.NewDiskWidget()
+	case "mem":
+		m := widgets.NewMemWidget(c.UpdateInterval, c.GraphHorizontalScale)
+		m.LineColors["Main"] = ui.Color(c.Colorscheme.MainMem)
+		m.LineColors["Swap"] = ui.Color(c.Colorscheme.SwapMem)
+		w = m
+	case "temp":
+		t := widgets.NewTempWidget(c.TempScale)
+		t.TempLowColor = ui.Color(c.Colorscheme.TempLow)
+		t.TempHighColor = ui.Color(c.Colorscheme.TempHigh)
+		w = t
+	case "net":
+		n := widgets.NewNetWidget(c.NetInterface)
+		n.Lines[0].LineColor = ui.Color(c.Colorscheme.Sparkline)
+		n.Lines[0].TitleColor = ui.Color(c.Colorscheme.BorderLabel)
+		n.Lines[1].LineColor = ui.Color(c.Colorscheme.Sparkline)
+		n.Lines[1].TitleColor = ui.Color(c.Colorscheme.BorderLabel)
+		w = n
+	case "procs":
+		p := widgets.NewProcWidget()
+		p.CursorColor = ui.Color(c.Colorscheme.ProcCursor)
+		w = p
+	case "batt":
+		b := widgets.NewBatteryWidget(c.GraphHorizontalScale)
+		var battKeys []string
+		for key := range b.Data {
+			battKeys = append(battKeys, key)
+		}
+		sort.Strings(battKeys)
+		i := 0 // Re-using variable from CPU
+		for _, v := range battKeys {
+			if i >= len(c.Colorscheme.BattLines) {
+				// assuming colorscheme for battery lines is not empty
+				i = 0
+			}
+			color := c.Colorscheme.BattLines[i]
+			b.LineColors[v] = ui.Color(color)
+			i++
+		}
+		w = b
+	default:
+		log.Printf("Invalid widget name %s.  Must be one of %v", widRule.Widget, widgetNames)
+		return ui.NewBlock()
+	}
+	return w
+}
+
+func countNumRows(rs [][]widgetRule) int {
+	var ttl int
+	for len(rs) > 0 {
+		ttl += 1
+		line := rs[0]
+		h := 1
+		for _, c := range line {
+			if c.Height > h {
+				h = c.Height
+			}
+		}
+		if h < len(rs) {
+			rs = rs[h:]
 		} else {
-			log.Printf("WARN: no rows created from %v", rowDef)
+			break
 		}
 	}
-	var rgs []interface{}
-	rowHeight := 1.0 / float64(len(rows))
-	for _, r := range rows {
-		rgs = append(rgs, ui.NewRow(rowHeight, r...))
+	return ttl
+}
+
+// Counts the height of the window so rows can be proportionally scaled.
+func countMaxHeight(rs [][]widgetRule) int {
+	var ttl int
+	for len(rs) > 0 {
+		line := rs[0]
+		h := 1
+		for _, c := range line {
+			if c.Height > h {
+				h = c.Height
+			}
+		}
+		ttl += h
+		if h < len(rs) {
+			rs = rs[h:]
+		} else {
+			break
+		}
 	}
-	grid := &MyGrid{ui.NewGrid(), make([]widgets.Scalable, 0), mouser}
-	grid.Set(rgs...)
-	grid.Lines = lines
-	return grid, nil
+	return ttl
+}
+
+// deepFindProc looks in the UI widget tree for the ProcWidget,
+// and returns it if found or nil if not.
+func deepFindProc(gs interface{}) *widgets.ProcWidget {
+	// Recursive function #1.  Recursion is OK here because the number
+	// of UI elements, even in a very complex UI, is going to be
+	// relatively small.
+	t, ok := gs.(ui.GridItem)
+	if ok {
+		return deepFindProc(t.Entry)
+	}
+	es, ok := gs.([]ui.GridItem)
+	if ok {
+		for _, g := range es {
+			v := deepFindProc(g)
+			if v != nil {
+				return v
+			}
+		}
+	}
+	fs, ok := gs.([]interface{})
+	if ok {
+		for _, g := range fs {
+			v := deepFindProc(g)
+			if v != nil {
+				return v
+			}
+		}
+	}
+	p, ok := gs.(*widgets.ProcWidget)
+	if ok {
+		return p
+	}
+	return nil
+}
+
+// deepFindScalable looks in the UI widget tree for Scalable widgets,
+// and returns them if found or an empty slice if not.
+func deepFindScalable(gs interface{}) []widgets.Scalable {
+	// Recursive function #1.  See the comment in deepFindProc.
+	t, ok := gs.(ui.GridItem)
+	if ok {
+		return deepFindScalable(t.Entry)
+	}
+	es, ok := gs.([]ui.GridItem)
+	rvs := make([]widgets.Scalable, 0)
+	if ok {
+		for _, g := range es {
+			vs := deepFindScalable(g)
+			rvs = append(rvs, vs...)
+		}
+		return rvs
+	}
+	fs, ok := gs.([]interface{})
+	if ok {
+		for _, g := range fs {
+			vs := deepFindScalable(g)
+			rvs = append(rvs, vs...)
+		}
+		return rvs
+	}
+	p, ok := gs.(widgets.Scalable)
+	if ok {
+		rvs = append(rvs, p)
+	}
+	return rvs
 }

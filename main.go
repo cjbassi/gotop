@@ -3,12 +3,14 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"syscall"
 	"time"
 
@@ -28,6 +30,7 @@ const (
 	version = "3.0.0"
 
 	graphHorizontalScaleDelta = 3
+	defaultUI                 = "cpu\ndisk/1 2:mem/2\ntemp\nnet procs"
 )
 
 var (
@@ -43,18 +46,19 @@ func parseArgs() (config.Config, error) {
 Usage: gotop [options]
 
 Options:
-  -c, --color=NAME      Set a colorscheme.
-  -h, --help            Show this screen.
-  -m, --minimal         Only show CPU, Mem and Process widgets.
-  -r, --rate=RATE       Number of times per second to update CPU and Mem widgets [default: 1].
-  -V, --version         Print version and exit.
-  -p, --percpu          Show each CPU in the CPU widget.
-  -a, --averagecpu      Show average CPU in the CPU widget.
-  -f, --fahrenheit      Show temperatures in fahrenheit.
-  -s, --statusbar       Show a statusbar with the time.
-  -b, --battery         Show battery level widget ('minimal' turns off).
-  -i, --interface=NAME  Select network interface [default: all].
-      --no-temps        Disable temperature widget
+  -c, --color=NAME        Set a colorscheme.
+  -h, --help              Show this screen.
+  -m, --minimal           Only show CPU, Mem and Process widgets.
+  -r, --rate=RATE         Number of times per second to update CPU and Mem widgets [default: 1].
+  -V, --version           Print version and exit.
+  -p, --percpu            Show each CPU in the CPU widget.
+  -a, --averagecpu        Show average CPU in the CPU widget.
+  -f, --fahrenheit        Show temperatures in fahrenheit.
+  -s, --statusbar         Show a statusbar with the time.
+  -b, --battery           Show battery level widget ('minimal' turns off).
+  -i, --interface=NAME    Select network interface [default: all].
+  -l, --layout=NAME       Name of layout spec file for the UI
+      --layout-file=NAME  Path to a layout file
 
 Colorschemes:
   default
@@ -65,8 +69,9 @@ Colorschemes:
 `
 
 	ld := utils.GetLogDir(appName)
+	cd := utils.GetConfigDir(appName)
 	conf = config.Config{
-		ConfigDir:            utils.GetConfigDir(appName),
+		ConfigDir:            cd,
 		LogDir:               ld,
 		LogPath:              filepath.Join(ld, "errors.log"),
 		GraphHorizontalScale: 7,
@@ -87,6 +92,22 @@ Colorschemes:
 		return conf, err
 	}
 
+	if val, _ := args["--layout"]; val != nil {
+		fp := filepath.Join(cd, val.(string))
+		if _, err := os.Stat(fp); err == nil {
+			conf.LayoutFile = fp
+		} else {
+			conf.LayoutFile = ""
+		}
+	}
+	if val, _ := args["--layout-file"]; val != nil {
+		fp := val.(string)
+		if _, err := os.Stat(fp); err == nil {
+			conf.LayoutFile = fp
+		} else {
+			conf.LayoutFile = ""
+		}
+	}
 	if val, _ := args["--color"]; val != nil {
 		cs, err := handleColorscheme(val.(string))
 		if err != nil {
@@ -99,8 +120,6 @@ Colorschemes:
 	conf.Battery, _ = args["--battery"].(bool)
 	conf.MinimalMode, _ = args["--minimal"].(bool)
 	statusbar, _ = args["--statusbar"].(bool)
-
-	notemps, _ := args["--no-temps"].(bool)
 
 	rateStr, _ := args["--rate"].(string)
 	rate, err := strconv.ParseFloat(rateStr, 64)
@@ -115,9 +134,6 @@ Colorschemes:
 	fahrenheit, _ := args["--fahrenheit"].(bool)
 	if fahrenheit {
 		conf.TempScale = w.Fahrenheit
-	}
-	if notemps {
-		conf.TempScale = w.Disabled
 	}
 	conf.NetInterface, _ = args["--interface"].(string)
 
@@ -369,8 +385,17 @@ func main() {
 		bar = w.NewStatusBar()
 	}
 
-	lf, _ := os.Open("layout.txt")
-	ly := layout.ParseLayout(lf)
+	var lin io.Reader
+	lin = strings.NewReader(defaultUI)
+	if conf.LayoutFile != "" {
+		fin, err := os.Open(conf.LayoutFile)
+		defer fin.Close()
+		if err != nil {
+			stderrLogger.Fatalf("Layout %s not found.", conf.LayoutFile)
+		}
+		lin = fin
+	}
+	ly := layout.ParseLayout(lin)
 	grid, err := layout.Layout(ly, conf)
 	if err != nil {
 		stderrLogger.Fatalf("failed to initialize termui: %v", err)
