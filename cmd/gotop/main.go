@@ -322,7 +322,19 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 				case "d":
 					if grid.Proc != nil {
 						if previousKey == "d" {
-							grid.Proc.KillProc()
+							grid.Proc.KillProc("SIGTERM")
+						}
+					}
+				case "3":
+					if grid.Proc != nil {
+						if previousKey == "d" {
+							grid.Proc.KillProc("SIGQUIT")
+						}
+					}
+				case "9":
+					if grid.Proc != nil {
+						if previousKey == "d" {
+							grid.Proc.KillProc("SIGKILL")
 						}
 					}
 				case "<Tab>":
