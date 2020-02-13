@@ -184,8 +184,7 @@ build massive edifices, you're in for disappointment.
 `-s`, `--statusbar` Show a statusbar with the time.  
 `-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/screenshots/battery.png)
 `-i`, `--interface=NAME` Select network interface [default: all].
-`-l`, `--layout=NAME` Choose a layout from definitions in the \$XDG_CONFIG_HOME/gotop directory 
-`--layout-file=NAME` Provide a path to a layout file to use (useful for mucking about with layouts)
+`-l`, `--layout=NAME` Choose a layout. gotop searches for a file by NAME in \$XDG_CONFIG_HOME/gotop, then relative to the current path. "-" reads a layout from stdin, allowing for simple, one-off layouts such as `echo net | gotop -l -`
 
 ## Built With
 
