@@ -45,6 +45,10 @@ func makeId(i int) string {
 	return "Batt" + strconv.Itoa(i)
 }
 
+func (b *BatteryWidget) Scale(i int) {
+	b.LineGraph.HorizontalScale = i
+}
+
 func (self *BatteryWidget) update() {
 	batteries, err := battery.GetAll()
 	if err != nil {

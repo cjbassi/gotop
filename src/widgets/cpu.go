@@ -71,6 +71,10 @@ func NewCpuWidget(updateInterval time.Duration, horizontalScale int, showAverage
 	return self
 }
 
+func (b *CpuWidget) Scale(i int) {
+	b.LineGraph.HorizontalScale = i
+}
+
 func (self *CpuWidget) update() {
 	if self.ShowAverageLoad {
 		go func() {

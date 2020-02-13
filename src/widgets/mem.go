@@ -72,3 +72,7 @@ func NewMemWidget(updateInterval time.Duration, horizontalScale int) *MemWidget 
 
 	return self
 }
+
+func (b *MemWidget) Scale(i int) {
+	b.LineGraph.HorizontalScale = i
+}

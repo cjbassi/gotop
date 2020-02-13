@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
-	"sort"
 	"strconv"
 	"syscall"
 	"time"
@@ -17,6 +16,8 @@ import (
 	ui "github.com/gizak/termui/v3"
 
 	"github.com/cjbassi/gotop/colorschemes"
+	"github.com/cjbassi/gotop/src/config"
+	"github.com/cjbassi/gotop/src/layout"
 	"github.com/cjbassi/gotop/src/logging"
 	"github.com/cjbassi/gotop/src/utils"
 	w "github.com/cjbassi/gotop/src/widgets"
@@ -30,38 +31,14 @@ const (
 )
 
 var (
-	configDir = utils.GetConfigDir(appName)
-	logDir    = utils.GetLogDir(appName)
-	logPath   = filepath.Join(logDir, "errors.log")
-
+	conf         config.Config
+	help         *w.HelpMenu
+	bar          *w.StatusBar
+	statusbar    bool
 	stderrLogger = log.New(os.Stderr, "", 0)
-
-	graphHorizontalScale = 7
-	helpVisible          = false
-
-	colorscheme    = colorschemes.Default
-	updateInterval = time.Second
-	minimalMode    = false
-	averageLoad    = false
-	percpuLoad     = false
-	tempScale      = w.Celcius
-	battery        = false
-	statusbar      = false
-	netInterface   = w.NET_INTERFACE_ALL
-
-	cpu  *w.CpuWidget
-	batt *w.BatteryWidget
-	mem  *w.MemWidget
-	proc *w.ProcWidget
-	net  *w.NetWidget
-	disk *w.DiskWidget
-	temp *w.TempWidget
-	help *w.HelpMenu
-	grid *ui.Grid
-	bar  *w.StatusBar
 )
 
-func parseArgs() error {
+func parseArgs() (config.Config, error) {
 	usage := `
 Usage: gotop [options]
 
@@ -87,22 +64,40 @@ Colorschemes:
   vice
 `
 
+	ld := utils.GetLogDir(appName)
+	conf = config.Config{
+		ConfigDir:            utils.GetConfigDir(appName),
+		LogDir:               ld,
+		LogPath:              filepath.Join(ld, "errors.log"),
+		GraphHorizontalScale: 7,
+		HelpVisible:          false,
+		Colorscheme:          colorschemes.Default,
+		UpdateInterval:       time.Second,
+		MinimalMode:          false,
+		AverageLoad:          false,
+		PercpuLoad:           false,
+		TempScale:            w.Celcius,
+		Battery:              false,
+		Statusbar:            false,
+		NetInterface:         w.NET_INTERFACE_ALL,
+	}
+
 	args, err := docopt.ParseArgs(usage, os.Args[1:], version)
 	if err != nil {
-		return err
+		return conf, err
 	}
 
 	if val, _ := args["--color"]; val != nil {
-		if err := handleColorscheme(val.(string)); err != nil {
-			return err
+		cs, err := handleColorscheme(val.(string))
+		if err != nil {
+			return conf, err
 		}
+		conf.Colorscheme = cs
 	}
-	averageLoad, _ = args["--averagecpu"].(bool)
-	percpuLoad, _ = args["--percpu"].(bool)
-	battery, _ = args["--battery"].(bool)
-
-	minimalMode, _ = args["--minimal"].(bool)
-
+	conf.AverageLoad, _ = args["--averagecpu"].(bool)
+	conf.PercpuLoad, _ = args["--percpu"].(bool)
+	conf.Battery, _ = args["--battery"].(bool)
+	conf.MinimalMode, _ = args["--minimal"].(bool)
 	statusbar, _ = args["--statusbar"].(bool)
 
 	notemps, _ := args["--no-temps"].(bool)
@@ -110,187 +105,71 @@ Colorschemes:
 	rateStr, _ := args["--rate"].(string)
 	rate, err := strconv.ParseFloat(rateStr, 64)
 	if err != nil {
-		return fmt.Errorf("invalid rate parameter")
+		return conf, fmt.Errorf("invalid rate parameter")
 	}
 	if rate < 1 {
-		updateInterval = time.Second * time.Duration(1/rate)
+		conf.UpdateInterval = time.Second * time.Duration(1/rate)
 	} else {
-		updateInterval = time.Second / time.Duration(rate)
+		conf.UpdateInterval = time.Second / time.Duration(rate)
 	}
 	fahrenheit, _ := args["--fahrenheit"].(bool)
 	if fahrenheit {
-		tempScale = w.Fahrenheit
+		conf.TempScale = w.Fahrenheit
 	}
 	if notemps {
-		tempScale = w.Disabled
+		conf.TempScale = w.Disabled
 	}
-	netInterface, _ = args["--interface"].(string)
+	conf.NetInterface, _ = args["--interface"].(string)
 
-	return nil
+	return conf, nil
 }
 
-func handleColorscheme(cs string) error {
-	switch cs {
+func handleColorscheme(c string) (colorschemes.Colorscheme, error) {
+	var cs colorschemes.Colorscheme
+	switch c {
 	case "default":
-		colorscheme = colorschemes.Default
+		cs = colorschemes.Default
 	case "solarized":
-		colorscheme = colorschemes.Solarized
+		cs = colorschemes.Solarized
 	case "monokai":
-		colorscheme = colorschemes.Monokai
+		cs = colorschemes.Monokai
 	case "vice":
-		colorscheme = colorschemes.Vice
+		cs = colorschemes.Vice
 	case "default-dark":
-		colorscheme = colorschemes.DefaultDark
+		cs = colorschemes.DefaultDark
 	default:
-		custom, err := getCustomColorscheme(cs)
+		custom, err := getCustomColorscheme(conf, c)
 		if err != nil {
-			return err
+			return cs, err
 		}
-		colorscheme = custom
+		cs = custom
 	}
-	return nil
+	return cs, nil
 }
 
 // getCustomColorscheme	tries to read a custom json colorscheme from <configDir>/<name>.json
-func getCustomColorscheme(name string) (colorschemes.Colorscheme, error) {
-	var colorscheme colorschemes.Colorscheme
-	filePath := filepath.Join(configDir, name+".json")
+func getCustomColorscheme(c config.Config, name string) (colorschemes.Colorscheme, error) {
+	var cs colorschemes.Colorscheme
+	filePath := filepath.Join(c.ConfigDir, name+".json")
 	dat, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		return colorscheme, fmt.Errorf("failed to read colorscheme file: %v", err)
+		return cs, fmt.Errorf("failed to read colorscheme file: %v", err)
 	}
-	err = json.Unmarshal(dat, &colorscheme)
+	err = json.Unmarshal(dat, &cs)
 	if err != nil {
-		return colorscheme, fmt.Errorf("failed to parse colorscheme file: %v", err)
+		return cs, fmt.Errorf("failed to parse colorscheme file: %v", err)
 	}
-	return colorscheme, nil
+	return cs, nil
 }
 
-func setupGrid() {
-	grid = ui.NewGrid()
-
-	if minimalMode {
-		grid.Set(
-			ui.NewRow(1.0/2, cpu),
-			ui.NewRow(1.0/2,
-				ui.NewCol(1.0/2, mem),
-				ui.NewCol(1.0/2, proc),
-			),
-		)
-	} else {
-		var cpuRow ui.GridItem
-		if battery {
-			cpuRow = ui.NewRow(1.0/3,
-				ui.NewCol(2.0/3, cpu),
-				ui.NewCol(1.0/3, batt),
-			)
-		} else {
-			cpuRow = ui.NewRow(1.0/3, cpu)
-		}
-		var diskRow ui.GridItem
-		if tempScale == w.Disabled {
-			diskRow = ui.NewCol(1.0/3, ui.NewRow(1.0, disk))
-		} else {
-			diskRow = ui.NewCol(1.0/3,
-				ui.NewRow(1.0/2, disk),
-				ui.NewRow(1.0/2, temp),
-			)
-		}
-		grid.Set(
-			cpuRow,
-			ui.NewRow(1.0/3,
-				diskRow,
-				ui.NewCol(2.0/3, mem),
-			),
-			ui.NewRow(1.0/3,
-				ui.NewCol(1.0/2, net),
-				ui.NewCol(1.0/2, proc),
-			),
-		)
-	}
+func setDefaultTermuiColors(c config.Config) {
+	ui.Theme.Default = ui.NewStyle(ui.Color(c.Colorscheme.Fg), ui.Color(c.Colorscheme.Bg))
+	ui.Theme.Block.Title = ui.NewStyle(ui.Color(c.Colorscheme.BorderLabel), ui.Color(c.Colorscheme.Bg))
+	ui.Theme.Block.Border = ui.NewStyle(ui.Color(c.Colorscheme.BorderLine), ui.Color(c.Colorscheme.Bg))
 }
 
-func setDefaultTermuiColors() {
-	ui.Theme.Default = ui.NewStyle(ui.Color(colorscheme.Fg), ui.Color(colorscheme.Bg))
-	ui.Theme.Block.Title = ui.NewStyle(ui.Color(colorscheme.BorderLabel), ui.Color(colorscheme.Bg))
-	ui.Theme.Block.Border = ui.NewStyle(ui.Color(colorscheme.BorderLine), ui.Color(colorscheme.Bg))
-}
-
-func setWidgetColors() {
-	mem.LineColors["Main"] = ui.Color(colorscheme.MainMem)
-	mem.LineColors["Swap"] = ui.Color(colorscheme.SwapMem)
-
-	proc.CursorColor = ui.Color(colorscheme.ProcCursor)
-
-	var keys []string
-	for key := range cpu.Data {
-		keys = append(keys, key)
-	}
-	sort.Strings(keys)
-	i := 0
-	for _, v := range keys {
-		if i >= len(colorscheme.CPULines) {
-			// assuming colorscheme for CPU lines is not empty
-			i = 0
-		}
-		c := colorscheme.CPULines[i]
-		cpu.LineColors[v] = ui.Color(c)
-		i++
-	}
-
-	if !minimalMode {
-		if battery {
-			var battKeys []string
-			for key := range batt.Data {
-				battKeys = append(battKeys, key)
-			}
-			sort.Strings(battKeys)
-			i = 0 // Re-using variable from CPU
-			for _, v := range battKeys {
-				if i >= len(colorscheme.BattLines) {
-					// assuming colorscheme for battery lines is not empty
-					i = 0
-				}
-				c := colorscheme.BattLines[i]
-				batt.LineColors[v] = ui.Color(c)
-				i++
-			}
-		}
-
-		if tempScale != w.Disabled {
-			temp.TempLowColor = ui.Color(colorscheme.TempLow)
-			temp.TempHighColor = ui.Color(colorscheme.TempHigh)
-		}
-
-		net.Lines[0].LineColor = ui.Color(colorscheme.Sparkline)
-		net.Lines[0].TitleColor = ui.Color(colorscheme.BorderLabel)
-		net.Lines[1].LineColor = ui.Color(colorscheme.Sparkline)
-		net.Lines[1].TitleColor = ui.Color(colorscheme.BorderLabel)
-	}
-}
-
-func initWidgets() {
-	cpu = w.NewCpuWidget(updateInterval, graphHorizontalScale, averageLoad, percpuLoad)
-	mem = w.NewMemWidget(updateInterval, graphHorizontalScale)
-	proc = w.NewProcWidget()
-	help = w.NewHelpMenu()
-	if !minimalMode {
-		if battery {
-			batt = w.NewBatteryWidget(graphHorizontalScale)
-		}
-		net = w.NewNetWidget(netInterface)
-		disk = w.NewDiskWidget()
-		if tempScale != w.Disabled {
-			temp = w.NewTempWidget(tempScale)
-		}
-	}
-	if statusbar {
-		bar = w.NewStatusBar()
-	}
-}
-
-func eventLoop() {
-	drawTicker := time.NewTicker(updateInterval).C
+func eventLoop(c config.Config, grid *layout.MyGrid) {
+	drawTicker := time.NewTicker(c.UpdateInterval).C
 
 	// handles kill signal sent to gotop
 	sigTerm := make(chan os.Signal, 2)
@@ -305,7 +184,7 @@ func eventLoop() {
 		case <-sigTerm:
 			return
 		case <-drawTicker:
-			if !helpVisible {
+			if !c.HelpVisible {
 				ui.Render(grid)
 				if statusbar {
 					ui.Render(bar)
@@ -316,7 +195,7 @@ func eventLoop() {
 			case "q", "<C-c>":
 				return
 			case "?":
-				helpVisible = !helpVisible
+				c.HelpVisible = !c.HelpVisible
 			case "<Resize>":
 				payload := e.Payload.(ui.Resize)
 				termWidth, termHeight := payload.Width, payload.Height
@@ -330,13 +209,13 @@ func eventLoop() {
 				ui.Clear()
 			}
 
-			if helpVisible {
+			if c.HelpVisible {
 				switch e.ID {
 				case "?":
 					ui.Clear()
 					ui.Render(help)
 				case "<Escape>":
-					helpVisible = false
+					c.HelpVisible = false
 					ui.Render(grid)
 				case "<Resize>":
 					ui.Render(help)
@@ -346,16 +225,18 @@ func eventLoop() {
 				case "?":
 					ui.Render(grid)
 				case "h":
-					graphHorizontalScale += graphHorizontalScaleDelta
-					cpu.HorizontalScale = graphHorizontalScale
-					mem.HorizontalScale = graphHorizontalScale
-					ui.Render(cpu, mem)
+					c.GraphHorizontalScale += graphHorizontalScaleDelta
+					for _, item := range grid.Lines {
+						item.Scale(c.GraphHorizontalScale)
+					}
+					ui.Render(grid)
 				case "l":
-					if graphHorizontalScale > graphHorizontalScaleDelta {
-						graphHorizontalScale -= graphHorizontalScaleDelta
-						cpu.HorizontalScale = graphHorizontalScale
-						mem.HorizontalScale = graphHorizontalScale
-						ui.Render(cpu, mem)
+					if c.GraphHorizontalScale > graphHorizontalScaleDelta {
+						c.GraphHorizontalScale -= graphHorizontalScaleDelta
+						for _, item := range grid.Lines {
+							item.Scale(c.GraphHorizontalScale)
+							ui.Render(item)
+						}
 					}
 				case "<Resize>":
 					ui.Render(grid)
@@ -363,48 +244,74 @@ func eventLoop() {
 						ui.Render(bar)
 					}
 				case "<MouseLeft>":
-					payload := e.Payload.(ui.Mouse)
-					proc.HandleClick(payload.X, payload.Y)
-					ui.Render(proc)
+					if grid.Proc != nil {
+						payload := e.Payload.(ui.Mouse)
+						grid.Proc.HandleClick(payload.X, payload.Y)
+						ui.Render(grid.Proc)
+					}
 				case "k", "<Up>", "<MouseWheelUp>":
-					proc.ScrollUp()
-					ui.Render(proc)
+					if grid.Proc != nil {
+						grid.Proc.ScrollUp()
+						ui.Render(grid.Proc)
+					}
 				case "j", "<Down>", "<MouseWheelDown>":
-					proc.ScrollDown()
-					ui.Render(proc)
+					if grid.Proc != nil {
+						grid.Proc.ScrollDown()
+						ui.Render(grid.Proc)
+					}
 				case "<Home>":
-					proc.ScrollTop()
-					ui.Render(proc)
+					if grid.Proc != nil {
+						grid.Proc.ScrollTop()
+						ui.Render(grid.Proc)
+					}
 				case "g":
-					if previousKey == "g" {
-						proc.ScrollTop()
-						ui.Render(proc)
+					if grid.Proc != nil {
+						if previousKey == "g" {
+							grid.Proc.ScrollTop()
+							ui.Render(grid.Proc)
+						}
 					}
 				case "G", "<End>":
-					proc.ScrollBottom()
-					ui.Render(proc)
+					if grid.Proc != nil {
+						grid.Proc.ScrollBottom()
+						ui.Render(grid.Proc)
+					}
 				case "<C-d>":
-					proc.ScrollHalfPageDown()
-					ui.Render(proc)
+					if grid.Proc != nil {
+						grid.Proc.ScrollHalfPageDown()
+						ui.Render(grid.Proc)
+					}
 				case "<C-u>":
-					proc.ScrollHalfPageUp()
-					ui.Render(proc)
+					if grid.Proc != nil {
+						grid.Proc.ScrollHalfPageUp()
+						ui.Render(grid.Proc)
+					}
 				case "<C-f>":
-					proc.ScrollPageDown()
-					ui.Render(proc)
+					if grid.Proc != nil {
+						grid.Proc.ScrollPageDown()
+						ui.Render(grid.Proc)
+					}
 				case "<C-b>":
-					proc.ScrollPageUp()
-					ui.Render(proc)
+					if grid.Proc != nil {
+						grid.Proc.ScrollPageUp()
+						ui.Render(grid.Proc)
+					}
 				case "d":
-					if previousKey == "d" {
-						proc.KillProc()
+					if grid.Proc != nil {
+						if previousKey == "d" {
+							grid.Proc.KillProc()
+						}
 					}
 				case "<Tab>":
-					proc.ToggleShowingGroupedProcs()
-					ui.Render(proc)
+					if grid.Proc != nil {
+						grid.Proc.ToggleShowingGroupedProcs()
+						ui.Render(grid.Proc)
+					}
 				case "m", "c", "p":
-					proc.ChangeProcSortMethod(w.ProcSortMethod(e.ID))
-					ui.Render(proc)
+					if grid.Proc != nil {
+						grid.Proc.ChangeProcSortMethod(w.ProcSortMethod(e.ID))
+						ui.Render(grid.Proc)
+					}
 				}
 
 				if previousKey == e.ID {
@@ -418,13 +325,13 @@ func eventLoop() {
 	}
 }
 
-func setupLogfile() (*os.File, error) {
+func setupLogfile(c config.Config) (*os.File, error) {
 	// create the log directory
-	if err := os.MkdirAll(logDir, 0755); err != nil {
+	if err := os.MkdirAll(c.LogDir, 0755); err != nil {
 		return nil, fmt.Errorf("failed to make the log directory: %v", err)
 	}
 	// open the log file
-	logfile, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0660)
+	logfile, err := os.OpenFile(c.LogPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0660)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open log file: %v", err)
 	}
@@ -438,11 +345,12 @@ func setupLogfile() (*os.File, error) {
 }
 
 func main() {
-	if err := parseArgs(); err != nil {
+	conf, err := parseArgs()
+	if err != nil {
 		stderrLogger.Fatalf("failed to parse cli args: %v", err)
 	}
 
-	logfile, err := setupLogfile()
+	logfile, err := setupLogfile(conf)
 	if err != nil {
 		stderrLogger.Fatalf("failed to setup log file: %v", err)
 	}
@@ -455,11 +363,18 @@ func main() {
 
 	logging.StderrToLogfile(logfile)
 
-	setDefaultTermuiColors() // done before initializing widgets to allow inheriting colors
-	initWidgets()
-	setWidgetColors()
+	setDefaultTermuiColors(conf) // done before initializing widgets to allow inheriting colors
+	help = w.NewHelpMenu()
+	if statusbar {
+		bar = w.NewStatusBar()
+	}
 
-	setupGrid()
+	lf, _ := os.Open("layout.txt")
+	ly := layout.ParseLayout(lf)
+	grid, err := layout.Layout(ly, conf)
+	if err != nil {
+		stderrLogger.Fatalf("failed to initialize termui: %v", err)
+	}
 
 	termWidth, termHeight := ui.TerminalDimensions()
 	if statusbar {
@@ -475,5 +390,5 @@ func main() {
 		ui.Render(bar)
 	}
 
-	eventLoop()
+	eventLoop(conf, grid)
 }
