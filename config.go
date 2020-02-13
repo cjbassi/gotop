@@ -1,10 +1,10 @@
-package config
+package gotop
 
 import (
 	"time"
 
 	"github.com/cjbassi/gotop/colorschemes"
-	"github.com/cjbassi/gotop/src/widgets"
+	"github.com/cjbassi/gotop/widgets"
 )
 
 type Config struct {

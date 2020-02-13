@@ -5,7 +5,7 @@ import (
 
 	psHost "github.com/shirou/gopsutil/host"
 
-	"github.com/cjbassi/gotop/src/utils"
+	"github.com/cjbassi/gotop/utils"
 )
 
 func (self *TempWidget) update() {

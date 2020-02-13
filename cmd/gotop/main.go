@@ -17,12 +17,12 @@ import (
 	docopt "github.com/docopt/docopt.go"
 	ui "github.com/gizak/termui/v3"
 
+	"github.com/cjbassi/gotop"
 	"github.com/cjbassi/gotop/colorschemes"
-	"github.com/cjbassi/gotop/src/config"
-	"github.com/cjbassi/gotop/src/layout"
-	"github.com/cjbassi/gotop/src/logging"
-	"github.com/cjbassi/gotop/src/utils"
-	w "github.com/cjbassi/gotop/src/widgets"
+	"github.com/cjbassi/gotop/layout"
+	"github.com/cjbassi/gotop/logging"
+	"github.com/cjbassi/gotop/utils"
+	w "github.com/cjbassi/gotop/widgets"
 )
 
 const (
@@ -34,14 +34,14 @@ const (
 )
 
 var (
-	conf         config.Config
+	conf         gotop.Config
 	help         *w.HelpMenu
 	bar          *w.StatusBar
 	statusbar    bool
 	stderrLogger = log.New(os.Stderr, "", 0)
 )
 
-func parseArgs() (config.Config, error) {
+func parseArgs() (gotop.Config, error) {
 	usage := `
 Usage: gotop [options]
 
@@ -70,7 +70,7 @@ Colorschemes:
 
 	ld := utils.GetLogDir(appName)
 	cd := utils.GetConfigDir(appName)
-	conf = config.Config{
+	conf = gotop.Config{
 		ConfigDir:            cd,
 		LogDir:               ld,
 		LogPath:              filepath.Join(ld, "errors.log"),
@@ -164,7 +164,7 @@ func handleColorscheme(c string) (colorschemes.Colorscheme, error) {
 }
 
 // getCustomColorscheme	tries to read a custom json colorscheme from <configDir>/<name>.json
-func getCustomColorscheme(c config.Config, name string) (colorschemes.Colorscheme, error) {
+func getCustomColorscheme(c gotop.Config, name string) (colorschemes.Colorscheme, error) {
 	var cs colorschemes.Colorscheme
 	filePath := filepath.Join(c.ConfigDir, name+".json")
 	dat, err := ioutil.ReadFile(filePath)
@@ -178,13 +178,13 @@ func getCustomColorscheme(c config.Config, name string) (colorschemes.Colorschem
 	return cs, nil
 }
 
-func setDefaultTermuiColors(c config.Config) {
+func setDefaultTermuiColors(c gotop.Config) {
 	ui.Theme.Default = ui.NewStyle(ui.Color(c.Colorscheme.Fg), ui.Color(c.Colorscheme.Bg))
 	ui.Theme.Block.Title = ui.NewStyle(ui.Color(c.Colorscheme.BorderLabel), ui.Color(c.Colorscheme.Bg))
 	ui.Theme.Block.Border = ui.NewStyle(ui.Color(c.Colorscheme.BorderLine), ui.Color(c.Colorscheme.Bg))
 }
 
-func eventLoop(c config.Config, grid *layout.MyGrid) {
+func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 	drawTicker := time.NewTicker(c.UpdateInterval).C
 
 	// handles kill signal sent to gotop
@@ -341,7 +341,7 @@ func eventLoop(c config.Config, grid *layout.MyGrid) {
 	}
 }
 
-func setupLogfile(c config.Config) (*os.File, error) {
+func setupLogfile(c gotop.Config) (*os.File, error) {
 	// create the log directory
 	if err := os.MkdirAll(c.LogDir, 0755); err != nil {
 		return nil, fmt.Errorf("failed to make the log directory: %v", err)

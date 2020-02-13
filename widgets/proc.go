@@ -10,8 +10,8 @@ import (
 
 	psCPU "github.com/shirou/gopsutil/cpu"
 
-	ui "github.com/cjbassi/gotop/src/termui"
-	"github.com/cjbassi/gotop/src/utils"
+	ui "github.com/cjbassi/gotop/termui"
+	"github.com/cjbassi/gotop/utils"
 )
 
 const (

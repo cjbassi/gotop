@@ -7,8 +7,8 @@ import (
 
 	psNet "github.com/shirou/gopsutil/net"
 
-	ui "github.com/cjbassi/gotop/src/termui"
-	"github.com/cjbassi/gotop/src/utils"
+	ui "github.com/cjbassi/gotop/termui"
+	"github.com/cjbassi/gotop/utils"
 )
 
 const (

@@ -5,8 +5,9 @@ import (
 	"log"
 	"sort"
 
-	"github.com/cjbassi/gotop/src/config"
-	"github.com/cjbassi/gotop/src/widgets"
+	"github.com/cjbassi/gotop"
+	"github.com/cjbassi/gotop/widgets"
+
 	ui "github.com/gizak/termui/v3"
 )
 
@@ -28,7 +29,7 @@ type MyGrid struct {
 
 var widgetNames []string = []string{"cpu", "disk", "mem", "temp", "net", "procs", "batt"}
 
-func Layout(wl layout, c config.Config) (*MyGrid, error) {
+func Layout(wl layout, c gotop.Config) (*MyGrid, error) {
 	rowDefs := wl.Rows
 	uiRows := make([]ui.GridItem, 0)
 	numRows := countNumRows(wl.Rows)
@@ -57,7 +58,7 @@ func Layout(wl layout, c config.Config) (*MyGrid, error) {
 // if there's a row span widget in the row; in this case, it'll consume as many
 // rows as the largest row span object in the row, and produce an uber-row
 // containing all that stuff. It returns a slice without the consumed elements.
-func processRow(c config.Config, numRows int, rowDefs [][]widgetRule) (ui.GridItem, [][]widgetRule) {
+func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) (ui.GridItem, [][]widgetRule) {
 	// Recursive function #3.  See the comment in deepFindProc.
 	if len(rowDefs) < 1 {
 		return ui.GridItem{}, [][]widgetRule{}
@@ -104,7 +105,7 @@ func processRow(c config.Config, numRows int, rowDefs [][]widgetRule) (ui.GridIt
 	return ui.NewRow(1.0/float64(numRows), uiColumns...), rowDefs
 }
 
-func makeWidget(c config.Config, widRule widgetRule) interface{} {
+func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 	var w interface{}
 	switch widRule.Widget {
 	case "cpu":

@@ -6,7 +6,7 @@ import "C"
 import (
 	"log"
 
-	"github.com/cjbassi/gotop/src/utils"
+	"github.com/cjbassi/gotop/utils"
 )
 
 type TemperatureStat struct {

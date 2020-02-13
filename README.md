@@ -1,5 +1,3 @@
-### **NO LONGER MAINTAINED.** Future development has moved to [ytop](https://github.com/cjbassi/ytop), a Rust port of gotop. 
-
 <div align="center">
 
 <a href="./assets/logo">
@@ -116,6 +114,8 @@ To make a custom colorscheme, check out the [template](./colorschemes/template.g
 `-s`, `--statusbar` Show a statusbar with the time.  
 `-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/screenshots/battery.png)
 `-i`, `--interface=NAME` Select network interface [default: all].
+`-l`, `--layout=NAME` Choose a layout from definitions in the \$XDG_CONFIG_HOME/gotop directory 
+`--layout-file=NAME` Provide a path to a layout file to use (useful for mucking about with layouts)
 
 ## Built With
 
