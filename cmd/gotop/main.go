@@ -81,7 +81,7 @@ Colorschemes:
 		MinimalMode:          false,
 		AverageLoad:          false,
 		PercpuLoad:           false,
-		TempScale:            w.Celcius,
+		TempScale:            w.Celsius,
 		Battery:              false,
 		Statusbar:            false,
 		NetInterface:         w.NET_INTERFACE_ALL,

@@ -14,7 +14,7 @@ import (
 type TempScale int
 
 const (
-	Celcius    TempScale = 0
+	Celsius    TempScale = 0
 	Fahrenheit           = 1
 	Disabled             = 2
 )
@@ -91,7 +91,7 @@ func (self *TempWidget) Draw(buf *ui.Buffer) {
 				ui.NewStyle(fg),
 				image.Pt(self.Inner.Max.X-4, self.Inner.Min.Y+y),
 			)
-		case Celcius:
+		case Celsius:
 			buf.SetString(
 				fmt.Sprintf("%3dC", self.Data[key]),
 				ui.NewStyle(fg),
