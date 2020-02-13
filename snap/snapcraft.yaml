@@ -1,4 +1,4 @@
-name: gotop-cjbassi
+name: gotop-xxxserxxx
 base: core18
 version: determined-by-version-script
 version-script: git describe --always --tags --dirty
@@ -15,7 +15,7 @@ parts:
     gotop:
         source: .
         plugin: go
-        go-importpath: github.com/cjbassi/gotop
+        go-importpath: github.com/xxxserxxx/gotop
         build-packages:
         - git-core
         - gcc
@@ -31,7 +31,7 @@ plugs:
     system-observe:
 
 apps:
-    gotop-cjbassi:
+    gotop-xxxserxxx:
         command: bin/gotop
         environment:
             LANG: C.UTF-8

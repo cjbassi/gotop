@@ -8,7 +8,7 @@ import (
 
 	psCpu "github.com/shirou/gopsutil/cpu"
 
-	ui "github.com/cjbassi/gotop/termui"
+	ui "github.com/xxxserxxx/gotop/termui"
 )
 
 type CpuWidget struct {

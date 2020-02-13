@@ -4,12 +4,12 @@ platform: "linux"
 version: "v${VERSION}"
 section: "default"
 priority: "extra"
-maintainer: "Caleb Bassi <calebjbassi@gmail.com>"
+maintainer: "Sean Russell <ser@ser1.net>"
 description: |
   A terminal based graphical activity monitor inspired by gtop and vtop
-vendor: "Caleb Bassi"
-homepage: "https://github.com/cjbassi/gotop"
+vendor: "Sean Russell"
+homepage: "https://github.com/xxxserxxx/gotop"
 license: "GNU Affero General Public License v3.0"
 bindir: "/usr/local/bin"
 files:
-  /tmp/dist/gotop: "/usr/local/bin/gotop"
+  dist/gotop: "/usr/local/bin/gotop"

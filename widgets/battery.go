@@ -9,7 +9,7 @@ import (
 
 	"github.com/distatus/battery"
 
-	ui "github.com/cjbassi/gotop/termui"
+	ui "github.com/xxxserxxx/gotop/termui"
 )
 
 type BatteryWidget struct {

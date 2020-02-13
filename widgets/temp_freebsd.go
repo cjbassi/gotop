@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cjbassi/gotop/utils"
+	"github.com/xxxserxxx/gotop/utils"
 )
 
 var sensorOIDS = map[string]string{

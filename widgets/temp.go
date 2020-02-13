@@ -8,7 +8,7 @@ import (
 
 	ui "github.com/gizak/termui/v3"
 
-	"github.com/cjbassi/gotop/utils"
+	"github.com/xxxserxxx/gotop/utils"
 )
 
 type TempScale int

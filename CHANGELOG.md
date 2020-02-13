@@ -13,6 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
+## [3.1.0] - 2020-02-13
+
+Re-homed the project after the original fork (trunk?) was marked as
+unmaintained by cjbassi.
+
+-  Merges @HowJMay spelling fixes
+-  Merges @markuspeloquin solarized themes
+-  Merges @jrswab additional kill terms
+-  Adds the ability to lay out the UI using a text file
+-  Changed the project filesystem layout to be more idiomatic
+
 ## [Unreleased]
 
 ### Added

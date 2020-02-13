@@ -1,4 +1,4 @@
-module github.com/cjbassi/gotop
+module github.com/xxxserxxx/gotop
 
 require (
 	github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6 // indirect

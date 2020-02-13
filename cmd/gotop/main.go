@@ -16,12 +16,12 @@ import (
 	docopt "github.com/docopt/docopt.go"
 	ui "github.com/gizak/termui/v3"
 
-	"github.com/cjbassi/gotop"
-	"github.com/cjbassi/gotop/colorschemes"
-	"github.com/cjbassi/gotop/layout"
-	"github.com/cjbassi/gotop/logging"
-	"github.com/cjbassi/gotop/utils"
-	w "github.com/cjbassi/gotop/widgets"
+	"github.com/xxxserxxx/gotop"
+	"github.com/xxxserxxx/gotop/colorschemes"
+	"github.com/xxxserxxx/gotop/layout"
+	"github.com/xxxserxxx/gotop/logging"
+	"github.com/xxxserxxx/gotop/utils"
+	w "github.com/xxxserxxx/gotop/widgets"
 )
 
 const (

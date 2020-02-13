@@ -5,8 +5,8 @@ import (
 	"log"
 	"sort"
 
-	"github.com/cjbassi/gotop"
-	"github.com/cjbassi/gotop/widgets"
+	"github.com/xxxserxxx/gotop"
+	"github.com/xxxserxxx/gotop/widgets"
 
 	ui "github.com/gizak/termui/v3"
 )
@@ -29,7 +29,7 @@ type MyGrid struct {
 
 var widgetNames []string = []string{"cpu", "disk", "mem", "temp", "net", "procs", "batt"}
 
-// BUG 2:disk mem\nnet loses the widget from the second line
+// FIXME 2:disk mem\nnet loses the widget from the second line
 func Layout(wl layout, c gotop.Config) (*MyGrid, error) {
 	rowDefs := wl.Rows
 	uiRows := make([]ui.GridItem, 0)

@@ -4,10 +4,11 @@ import (
 	"io"
 	"time"
 
-	"github.com/cjbassi/gotop/colorschemes"
-	"github.com/cjbassi/gotop/widgets"
+	"github.com/xxxserxxx/gotop/colorschemes"
+	"github.com/xxxserxxx/gotop/widgets"
 )
 
+// TODO: Cross-compiling for darwin, openbsd requiring native procs & temps
 type Config struct {
 	ConfigDir string
 	LogDir    string

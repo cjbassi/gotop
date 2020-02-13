@@ -7,6 +7,8 @@
 
 Another terminal based graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!
 
+The original author of gotop has re-implemented the application in Rust, as [ytop](https://github.com/cjbassi/ytop).  This is a fork of original gotop project with a new maintainer.
+
 <img src="./assets/demos/demo.gif" />
 <img src="./assets/screenshots/minimal.png" width="96%" />
 
@@ -19,52 +21,16 @@ Working and tested on Linux, FreeBSD and macOS. Windows support is planned. Open
 ### Source
 
 ```bash
-go get github.com/cjbassi/gotop
+go get github.com/xxxserxxx/gotop/...
 ```
 
 ### Prebuilt binaries
 
 **Note**: Doesn't require Go.
 
-Clone the repo and then run [scripts/download.sh](./scripts/download.sh) to download the correct binary for your system from the [releases tab](https://github.com/cjbassi/gotop/releases):
+Visit [here](https://github.com/xxxserxxx/gotop/releases) with your web browser and download a version that works for you.
 
-```bash
-git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
-/tmp/gotop/scripts/download.sh
-```
-
-Then move `gotop` into your `$PATH` somewhere.
-
-### Arch Linux
-
-Install `gotop`, `gotop-bin`, or `gotop-git` from the AUR.
-
-### FreeBSD
-
-```bash
-pkg install gotop
-```
-
-### Homebrew
-
-```bash
-brew tap cjbassi/gotop
-brew install gotop
-```
-
-### Snap
-
-```bash
-snap install gotop-cjbassi
-```
-
-**Note**: You may need to enable certain permissions for all of the widgets to work:
-
-```bash
-snap connect gotop-cjbassi:hardware-observe
-snap connect gotop-cjbassi:mount-observe
-snap connect gotop-cjbassi:system-observe
-```
+Unzip it and then move `gotop` into your `$PATH` somewhere.  If you're on a Debian or Redhat derivative, you can download an `.rpm` or `.deb` to install.
 
 ## Usage
 
@@ -82,7 +48,9 @@ snap connect gotop-cjbassi:system-observe
   - `G` and `<End>`: jump to bottom
 - Process actions:
   - `<Tab>`: toggle process grouping
-  - `dd`: kill selected process or group of processes
+  - `dd`: kill selected process or group of processes with SIGTERM
+  - `d3`: kill selected process or group of processes with SIGQUIT
+  - `d9`: kill selected process or group of processes with SIGKILL
 - Process sorting
   - `c`: CPU
   - `m`: Mem
@@ -194,7 +162,3 @@ build massive edifices, you're in for disappointment.
 - [shirou/gopsutil](https://github.com/shirou/gopsutil)
 - [goreleaser/nfpm](https://github.com/goreleaser/nfpm)
 - [distatus/battery](https://github.com/distatus/battery)
-
-## Stargazers over time
-
-[![Stargazers over time](https://starcharts.herokuapp.com/cjbassi/gotop.svg)](https://starcharts.herokuapp.com/cjbassi/gotop)

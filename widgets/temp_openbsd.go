@@ -12,7 +12,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/cjbassi/gotop/utils"
+	"github.com/xxxserxxx/gotop/utils"
 )
 
 func (self *TempWidget) getTemp(mib []C.int, mlen int, snsrdev *C.struct_sensordev, index int) {
