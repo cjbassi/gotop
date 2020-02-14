@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
-## [3.2.0] - 
+## [3.2.0] - 2020-02-14
 
 Bug fixes & pull requests
 
@@ -38,7 +38,6 @@ unmaintained by cjbassi.
 
 ### Added
 
-- Add cli option to select network interface [#20] [#144]
 - Add snap package [#119] [#120] [#121]
 - Process list scroll indicator [#127] [#130]
 - Preliminary OpenBSD support [#112] [#117] [#118]

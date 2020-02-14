@@ -14,7 +14,6 @@ import (
 // TODO: Merge #167 configuration file (jrswab:configFile111)
 // TODO: Merge #157 FreeBSD fixes & Nvidia GPU support (kraust:master)
 // TODO: Merge #156 Added temperatures for NVidia GPUs (azak-azkaran:master)
-// TODO: Merge #140 color-related fix (Tazer:master)
 // TODO: Merge #135 linux console font (cmatsuoka:console-font)
 type Config struct {
 	ConfigDir string
