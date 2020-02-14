@@ -29,7 +29,6 @@ type MyGrid struct {
 
 var widgetNames []string = []string{"cpu", "disk", "mem", "temp", "net", "procs", "batt"}
 
-// FIXME 2:disk mem\nnet loses the widget from the second line
 func Layout(wl layout, c gotop.Config) (*MyGrid, error) {
 	rowDefs := wl.Rows
 	uiRows := make([]ui.GridItem, 0)
@@ -88,11 +87,14 @@ func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) (ui.GridIte
 	}
 	colHeights := make([]int, numCols)
 	for _, rds := range processing {
-		for i, rd := range rds {
-			if colHeights[i]+rd.Height <= maxHeight {
-				widget := makeWidget(c, rd)
-				columns[i] = append(columns[i], ui.NewRow(float64(rd.Height)/float64(maxHeight), widget))
-				colHeights[i] += rd.Height
+		for _, rd := range rds {
+			for j, ch := range colHeights {
+				if ch+rd.Height <= maxHeight {
+					widget := makeWidget(c, rd)
+					columns[j] = append(columns[j], ui.NewRow(float64(rd.Height)/float64(maxHeight), widget))
+					colHeights[j] += rd.Height
+					break
+				}
 			}
 		}
 	}

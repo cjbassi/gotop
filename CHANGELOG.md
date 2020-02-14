@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
+## [3.2.0] - 
+
+Bug fixes & pull requests
+
+- FIX Rowspan in a column loses widgets in later columns
+
 ## [3.1.0] - 2020-02-13
 
 Re-homed the project after the original fork (trunk?) was marked as
