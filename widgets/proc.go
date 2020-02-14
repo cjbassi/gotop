@@ -6,10 +6,12 @@ import (
 	"os/exec"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	psCPU "github.com/shirou/gopsutil/cpu"
 
+	tui "github.com/gizak/termui/v3"
 	ui "github.com/xxxserxxx/gotop/termui"
 	"github.com/xxxserxxx/gotop/utils"
 )
@@ -37,9 +39,11 @@ type Proc struct {
 
 type ProcWidget struct {
 	*ui.Table
+	entry            *ui.Entry
 	cpuCount         int
 	updateInterval   time.Duration
 	sortMethod       ProcSortMethod
+	filter           string
 	groupedProcs     []Proc
 	ungroupedProcs   []Proc
 	showGroupedProcs bool
@@ -56,6 +60,16 @@ func NewProcWidget() *ProcWidget {
 		cpuCount:         cpuCount,
 		sortMethod:       ProcSortCpu,
 		showGroupedProcs: true,
+		filter:           "",
+	}
+	self.entry = &ui.Entry{
+		Style: self.TitleStyle,
+		Label: " Filter: ",
+		Value: "",
+		UpdateCallback: func(val string) {
+			self.filter = val
+			self.update()
+		},
 	}
 	self.Title = " Processes "
 	self.ShowCursor = true
@@ -86,6 +100,37 @@ func NewProcWidget() *ProcWidget {
 	return self
 }
 
+func (self *ProcWidget) SetEditingFilter(editing bool) {
+	self.entry.SetEditing(editing)
+}
+
+func (self *ProcWidget) HandleEvent(e tui.Event) bool {
+	return self.entry.HandleEvent(e)
+}
+
+func (self *ProcWidget) SetRect(x1, y1, x2, y2 int) {
+	self.Table.SetRect(x1, y1, x2, y2)
+	self.entry.SetRect(x1+2, y2-1, x2-2, y2)
+}
+
+func (self *ProcWidget) Draw(buf *tui.Buffer) {
+	self.Table.Draw(buf)
+	self.entry.Draw(buf)
+}
+
+func (self *ProcWidget) filterProcs(procs []Proc) []Proc {
+	if self.filter == "" {
+		return procs
+	}
+	var filtered []Proc
+	for _, proc := range procs {
+		if strings.Contains(proc.FullCommand, self.filter) || strings.Contains(fmt.Sprintf("%d", proc.Pid), self.filter) {
+			filtered = append(filtered, proc)
+		}
+	}
+	return filtered
+}
+
 func (self *ProcWidget) update() {
 	procs, err := getProcs()
 	if err != nil {
@@ -98,6 +143,7 @@ func (self *ProcWidget) update() {
 		procs[i].Cpu /= float64(self.cpuCount)
 	}
 
+	procs = self.filterProcs(procs)
 	self.ungroupedProcs = procs
 	self.groupedProcs = groupProcs(procs)
 

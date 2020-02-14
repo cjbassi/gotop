@@ -21,6 +21,7 @@ Bug fixes & pull requests
 - Merged pull request for README clean-ups (theverything:add-missing-option-to-readme)
 - Merge Nord color scheme (jrswab:nordColorScheme)
 - Merge support for multiple (and filtering) network interfaces (mattLLVW:feature/network_interface_list)
+- Merge filtering subprocesses by substring (rephorm:filter)
 
 ## [3.1.0] - 2020-02-13
 

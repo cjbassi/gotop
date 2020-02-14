@@ -131,6 +131,9 @@ func (self *Table) Draw(buf *Buffer) {
 func (self *Table) drawLocation(buf *Buffer) {
 	total := len(self.Rows)
 	topRow := self.TopRow + 1
+	if topRow > total {
+		topRow = total
+	}
 	bottomRow := self.TopRow + self.Inner.Dy() - 1
 	if bottomRow > total {
 		bottomRow = total

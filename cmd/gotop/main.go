@@ -221,6 +221,10 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 				}
 			}
 		case e := <-uiEvents:
+			if grid.Proc != nil && grid.Proc.HandleEvent(e) {
+				ui.Render(grid.Proc)
+				break
+			}
 			switch e.ID {
 			case "q", "<C-c>":
 				return
@@ -352,6 +356,11 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 				case "m", "c", "p":
 					if grid.Proc != nil {
 						grid.Proc.ChangeProcSortMethod(w.ProcSortMethod(e.ID))
+						ui.Render(grid.Proc)
+					}
+				case "/":
+					if grid.Proc != nil {
+						grid.Proc.SetEditingFilter(true)
 						ui.Render(grid.Proc)
 					}
 				}
