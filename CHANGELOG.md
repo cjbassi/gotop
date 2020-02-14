@@ -18,7 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Bug fixes & pull requests
 
 - FIX Rowspan in a column loses widgets in later columns
-- Merged pull request for README clean-ups
+- Merged pull request for README clean-ups (theverything:add-missing-option-to-readme)
+- Merge Nord color scheme (jrswab:nordColorScheme)
 
 ## [3.1.0] - 2020-02-13
 
