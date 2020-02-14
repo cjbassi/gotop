@@ -149,15 +149,16 @@ build massive edifices, you're in for disappointment.
 `-V`, `--version` Print version and exit.  
 `-p`, `--percpu` Show each CPU in the CPU widget.  
 `-a`, `--averagecpu` Show average CPU in the CPU widget.  
+`-f`, `--fahrenheit` Show temperatures in fahrenheit.  
 `-s`, `--statusbar` Show a statusbar with the time.  
-`-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/screenshots/battery.png)
+`-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/screenshots/battery.png)  
 `-i`, `--interface=NAME` Select network interface [default: all].
 `-l`, `--layout=NAME` Choose a layout. gotop searches for a file by NAME in \$XDG_CONFIG_HOME/gotop, then relative to the current path. "-" reads a layout from stdin, allowing for simple, one-off layouts such as `echo net | gotop -l -`
 
 ## Built With
 
 - [gizak/termui](https://github.com/gizak/termui)
-  - [nsf/termbox](https://github.com/nsf/termbox-go)
+- [nsf/termbox](https://github.com/nsf/termbox-go)
 - [exrook/drawille-go](https://github.com/exrook/drawille-go)
 - [shirou/gopsutil](https://github.com/shirou/gopsutil)
 - [goreleaser/nfpm](https://github.com/goreleaser/nfpm)
