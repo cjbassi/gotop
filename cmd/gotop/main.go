@@ -56,9 +56,13 @@ Options:
   -f, --fahrenheit        Show temperatures in fahrenheit.
   -s, --statusbar         Show a statusbar with the time.
   -b, --battery           Show battery level widget ('minimal' turns off).
-  -i, --interface=NAME    Select network interface [default: all].
   -B, --bandwidth=bits	  Specify the number of bits per seconds.
   -l, --layout=NAME       Name of layout spec file for the UI.  Looks first in $XDG_CONFIG_HOME/gotop, then as a path.  Use "-" to pipe.
+  -i, --interface=NAME    Select network interface [default: all].
+
+Several interfaces can be defined using comma separated values.
+
+Interfaces can also be ignored using !
 
 Colorschemes:
   default
@@ -139,6 +143,7 @@ Colorschemes:
 	if fahrenheit {
 		conf.TempScale = w.Fahrenheit
 	}
+	conf.NetInterface, _ = args["--interface"].(string)
 
 	return conf, nil
 }

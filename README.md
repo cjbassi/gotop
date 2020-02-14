@@ -155,6 +155,10 @@ build massive edifices, you're in for disappointment.
 `-i`, `--interface=NAME` Select network interface [default: all].
 `-l`, `--layout=NAME` Choose a layout. gotop searches for a file by NAME in \$XDG_CONFIG_HOME/gotop, then relative to the current path. "-" reads a layout from stdin, allowing for simple, one-off layouts such as `echo net | gotop -l -`
 
+Several interfaces can be defined using comma separated values.
+
+Interfaces can also be ignored using `!`
+
 ## Built With
 
 - [gizak/termui](https://github.com/gizak/termui)

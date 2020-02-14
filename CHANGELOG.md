@@ -20,6 +20,7 @@ Bug fixes & pull requests
 - FIX Rowspan in a column loses widgets in later columns
 - Merged pull request for README clean-ups (theverything:add-missing-option-to-readme)
 - Merge Nord color scheme (jrswab:nordColorScheme)
+- Merge support for multiple (and filtering) network interfaces (mattLLVW:feature/network_interface_list)
 
 ## [3.1.0] - 2020-02-13
 

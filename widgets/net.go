@@ -3,6 +3,7 @@ package widgets
 import (
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	psNet "github.com/shirou/gopsutil/net"
@@ -16,8 +17,6 @@ const (
 	NET_INTERFACE_VPN = "tun0"
 )
 
-type NetInterface string
-
 type NetWidget struct {
 	*ui.SparklineGroup
 	updateInterval time.Duration
@@ -25,7 +24,7 @@ type NetWidget struct {
 	// used to calculate recent network activity
 	totalBytesRecv uint64
 	totalBytesSent uint64
-	NetInterface   string
+	NetInterface   []string
 }
 
 func NewNetWidget(netInterface string) *NetWidget {
@@ -39,7 +38,7 @@ func NewNetWidget(netInterface string) *NetWidget {
 	self := &NetWidget{
 		SparklineGroup: spark,
 		updateInterval: time.Second,
-		NetInterface:   netInterface,
+		NetInterface:   strings.Split(netInterface, ","),
 	}
 	self.Title = " Network Usage "
 	if netInterface != "all" {
@@ -68,9 +67,28 @@ func (self *NetWidget) update() {
 
 	var totalBytesRecv uint64
 	var totalBytesSent uint64
+	interfaceMap := make(map[string]bool)
+	// Default behaviour
+	interfaceMap[NET_INTERFACE_ALL] = true
+	interfaceMap[NET_INTERFACE_VPN] = false
+	// Build a map with wanted status for each interfaces.
+	for _, iface := range self.NetInterface {
+		if strings.HasPrefix(iface, "!") {
+			interfaceMap[strings.TrimPrefix(iface, "!")] = false
+		} else {
+			// if we specify a wanted interface, remove capture on all.
+			delete(interfaceMap, NET_INTERFACE_ALL)
+			interfaceMap[iface] = true
+		}
+	}
 	for _, _interface := range interfaces {
-		// ignore VPN interface or filter interface by name
-		if ((self.NetInterface == NET_INTERFACE_ALL) && (_interface.Name != NET_INTERFACE_VPN)) || (_interface.Name == self.NetInterface) {
+		wanted, ok := interfaceMap[_interface.Name]
+		if wanted && ok { // Simple case
+			totalBytesRecv += _interface.BytesRecv
+			totalBytesSent += _interface.BytesSent
+		} else if ok { // Present but unwanted
+			continue
+		} else if interfaceMap[NET_INTERFACE_ALL] { // Capture other
 			totalBytesRecv += _interface.BytesRecv
 			totalBytesSent += _interface.BytesSent
 		}
