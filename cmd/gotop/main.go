@@ -31,6 +31,7 @@ const (
 	graphHorizontalScaleDelta = 3
 	defaultUI                 = "cpu\ndisk/1 2:mem/2\ntemp\nnet procs"
 	minimalUI                 = "cpu\nmem procs"
+	batteryUI                 = "cpu/2 batt/1\ndisk/1 2:mem/2\ntemp\nnet procs"
 )
 
 var (
@@ -48,14 +49,14 @@ Usage: gotop [options]
 Options:
   -c, --color=NAME        Set a colorscheme.
   -h, --help              Show this screen.
-  -m, --minimal           Only show CPU, Mem and Process widgets. Overrides -l
+  -m, --minimal           Only show CPU, Mem and Process widgets. Overrides -l. (DEPRECATED, use -l minimal)
   -r, --rate=RATE         Number of times per second to update CPU and Mem widgets [default: 1].
   -V, --version           Print version and exit.
   -p, --percpu            Show each CPU in the CPU widget.
   -a, --averagecpu        Show average CPU in the CPU widget.
   -f, --fahrenheit        Show temperatures in fahrenheit.
   -s, --statusbar         Show a statusbar with the time.
-  -b, --battery           Show battery level widget ('minimal' turns off).
+  -b, --battery           Show battery level widget ('minimal' turns off). (DEPRECATED, use -l battery)
   -B, --bandwidth=bits	  Specify the number of bits per seconds.
   -l, --layout=NAME       Name of layout spec file for the UI.  Looks first in $XDG_CONFIG_HOME/gotop, then as a path.  Use "-" to pipe.
   -i, --interface=NAME    Select network interface [default: all].
@@ -87,7 +88,6 @@ Colorschemes:
 		AverageLoad:          false,
 		PercpuLoad:           false,
 		TempScale:            w.Celsius,
-		Battery:              false,
 		Statusbar:            false,
 		NetInterface:         w.NET_INTERFACE_ALL,
 		MaxLogSize:           5000000,
@@ -100,21 +100,29 @@ Colorschemes:
 
 	if val, _ := args["--layout"]; val != nil {
 		s := val.(string)
-		if s == "-" {
+		switch s {
+		case "-":
 			conf.Layout = os.Stdin
-		} else {
+		case "default":
+			conf.Layout = strings.NewReader(defaultUI)
+		case "minimal":
+			conf.Layout = strings.NewReader(minimalUI)
+		case "battery":
+			conf.Layout = strings.NewReader(batteryUI)
+		default:
 			fp := filepath.Join(cd, s)
 			conf.Layout, err = os.Open(fp)
 			if err != nil {
 				conf.Layout, err = os.Open(s)
 				if err != nil {
-					stderrLogger.Fatalf("Unable to open layout file %s", fp)
+					stderrLogger.Fatalf("Unable to open layout file %s or ./%s", fp, s)
 				}
 			}
 		}
 	} else {
 		conf.Layout = strings.NewReader(defaultUI)
 	}
+
 	if val, _ := args["--color"]; val != nil {
 		cs, err := handleColorscheme(val.(string))
 		if err != nil {
@@ -124,9 +132,12 @@ Colorschemes:
 	}
 	conf.AverageLoad, _ = args["--averagecpu"].(bool)
 	conf.PercpuLoad, _ = args["--percpu"].(bool)
-	conf.Battery, _ = args["--battery"].(bool)
 	statusbar, _ = args["--statusbar"].(bool)
 
+	if args["--battery"].(bool) {
+		log.Printf("BATTERY %s", batteryUI)
+		conf.Layout = strings.NewReader(batteryUI)
+	}
 	if args["--minimal"].(bool) {
 		conf.Layout = strings.NewReader(minimalUI)
 	}
