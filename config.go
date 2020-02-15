@@ -18,7 +18,7 @@ import (
 type Config struct {
 	ConfigDir string
 	LogDir    string
-	LogPath   string
+	LogFile   string
 
 	GraphHorizontalScale int
 	HelpVisible          bool
@@ -32,4 +32,5 @@ type Config struct {
 	Statusbar      bool
 	NetInterface   string
 	Layout         io.Reader
+	MaxLogSize     int64
 }

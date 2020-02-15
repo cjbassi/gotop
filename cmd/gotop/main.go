@@ -79,7 +79,7 @@ Colorschemes:
 	conf = gotop.Config{
 		ConfigDir:            cd,
 		LogDir:               ld,
-		LogPath:              filepath.Join(ld, "errors.log"),
+		LogFile:              "errors.log",
 		GraphHorizontalScale: 7,
 		HelpVisible:          false,
 		Colorscheme:          colorschemes.Default,
@@ -90,6 +90,7 @@ Colorschemes:
 		Battery:              false,
 		Statusbar:            false,
 		NetInterface:         w.NET_INTERFACE_ALL,
+		MaxLogSize:           5000000,
 	}
 
 	args, err := docopt.ParseArgs(usage, os.Args[1:], version)
@@ -376,32 +377,13 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 	}
 }
 
-func setupLogfile(c gotop.Config) (*os.File, error) {
-	// create the log directory
-	if err := os.MkdirAll(c.LogDir, 0755); err != nil {
-		return nil, fmt.Errorf("failed to make the log directory: %v", err)
-	}
-	// open the log file
-	logfile, err := os.OpenFile(c.LogPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0660)
-	if err != nil {
-		return nil, fmt.Errorf("failed to open log file: %v", err)
-	}
-
-	// log time, filename, and line number
-	log.SetFlags(log.Ltime | log.Lshortfile)
-	// log to file
-	log.SetOutput(logfile)
-
-	return logfile, nil
-}
-
 func main() {
 	conf, err := parseArgs()
 	if err != nil {
 		stderrLogger.Fatalf("failed to parse cli args: %v", err)
 	}
 
-	logfile, err := setupLogfile(conf)
+	logfile, err := logging.New(conf)
 	if err != nil {
 		stderrLogger.Fatalf("failed to setup log file: %v", err)
 	}
@@ -411,8 +393,6 @@ func main() {
 		stderrLogger.Fatalf("failed to initialize termui: %v", err)
 	}
 	defer ui.Close()
-
-	logging.StderrToLogfile(logfile)
 
 	setDefaultTermuiColors(conf) // done before initializing widgets to allow inheriting colors
 	help = w.NewHelpMenu()

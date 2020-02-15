@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
+## [3.3.0] - 
+
+- Logs are now rotated. Settings are currently hard-coded at 4 files of 5MB
+  each, so logs shouldn't take up more than 20MB.  I'm going to see how many
+  complain about wanting to configure these settings before I add code to do
+  that.
+
 ## [3.2.0] - 2020-02-14
 
 Bug fixes & pull requests

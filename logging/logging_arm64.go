@@ -5,6 +5,6 @@ import (
 	"syscall"
 )
 
-func StderrToLogfile(logfile *os.File) {
+func stderrToLogfile(logfile *os.File) {
 	syscall.Dup3(int(logfile.Fd()), 2, 0)
 }
