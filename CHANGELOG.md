@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.3.0] - 
 
-- Logs are now rotated. Settings are currently hard-coded at 4 files of 5MB
+- Changed: Logs are now rotated. Settings are currently hard-coded at 4 files of 5MB
   each, so logs shouldn't take up more than 20MB.  I'm going to see how many
   complain about wanting to configure these settings before I add code to do
   that.
@@ -24,22 +24,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Bug fixes & pull requests
 
-- FIX Rowspan in a column loses widgets in later columns
-- Merged pull request for README clean-ups (theverything:add-missing-option-to-readme)
-- Merge Nord color scheme (jrswab:nordColorScheme)
-- Merge support for multiple (and filtering) network interfaces (mattLLVW:feature/network_interface_list)
-- Merge filtering subprocesses by substring (rephorm:filter)
+- Fixed: Rowspan in a column loses widgets in later columns
+- Fixed: Merged pull request for README clean-ups (theverything:add-missing-option-to-readme)
+- Added: Merge Nord color scheme (jrswab:nordColorScheme)
+- Added: Merge support for multiple (and filtering) network interfaces (mattLLVW:feature/network_interface_list)
+- Added: Merge filtering subprocesses by substring (rephorm:filter)
 
 ## [3.1.0] - 2020-02-13
 
 Re-homed the project after the original fork (trunk?) was marked as
 unmaintained by cjbassi.
 
--  Merges @HowJMay spelling fixes
--  Merges @markuspeloquin solarized themes
--  Merges @jrswab additional kill terms
--  Adds the ability to lay out the UI using a text file
--  Changed the project filesystem layout to be more idiomatic
+-  Changed: Merges @HowJMay spelling fixes
+-  Added: Merges @markuspeloquin solarized themes
+-  Added: Merges @jrswab additional kill terms
+-  Added: Adds the ability to lay out the UI using a text file
+-  Changed: the project filesystem layout to be more idiomatic
 
 ## [Unreleased]
 
