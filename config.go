@@ -15,6 +15,8 @@ import (
 // TODO: Merge #157 FreeBSD fixes & Nvidia GPU support (kraust:master)
 // TODO: Merge #156 Added temperatures for NVidia GPUs (azak-azkaran:master)
 // TODO: Merge #135 linux console font (cmatsuoka:console-font)
+// TODO: Export Prometheus metrics @feature
+// TODO: Virtual devices from Prometeus metrics @feature
 type Config struct {
 	ConfigDir string
 	LogDir    string
@@ -28,7 +30,6 @@ type Config struct {
 	AverageLoad    bool
 	PercpuLoad     bool
 	TempScale      widgets.TempScale
-	Battery        bool
 	Statusbar      bool
 	NetInterface   string
 	Layout         io.Reader
