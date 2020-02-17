@@ -15,10 +15,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.3.0] - 
 
-- Changed: Logs are now rotated. Settings are currently hard-coded at 4 files of 5MB
+- Added: Logs are now rotated. Settings are currently hard-coded at 4 files of 5MB
   each, so logs shouldn't take up more than 20MB.  I'm going to see how many
   complain about wanting to configure these settings before I add code to do
   that.
+- Added: Config file support. \$XDG_CONFIG_HOME/gotop/gotop.conf can now
+  contain any field in Config.  Syntax is simply KEY=VALUE.  Values in config
+  file are overridden by command-line arguments (although, there's a weakness
+  in that there's no way to disable boolean fields enabled in the config).
+- Changed: Colorscheme registration is changed to be less hard-coded.
+  Colorschemes can now be created and added to the repo, without having to also
+  add hard-coded references elsewhere.
+- Changed: Minor code refactoring to support Config file changes has resulted
+  in better isolation.
 
 ## [3.2.0] - 2020-02-14
 

@@ -149,14 +149,14 @@ build massive edifices, you're in for disappointment.
 ### CLI Options
 
 `-c`, `--color=NAME` Set a colorscheme.  
-`-m`, `--minimal` Only show CPU, Mem and Process widgets.  
+`-m`, `--minimal` Only show CPU, Mem and Process widgets.  (DEPRECATED for `-l minimal`)
 `-r`, `--rate=RATE` Number of times per second to update CPU and Mem widgets [default: 1].  
 `-V`, `--version` Print version and exit.  
 `-p`, `--percpu` Show each CPU in the CPU widget.  
 `-a`, `--averagecpu` Show average CPU in the CPU widget.  
 `-f`, `--fahrenheit` Show temperatures in fahrenheit.  
 `-s`, `--statusbar` Show a statusbar with the time.  
-`-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/screenshots/battery.png)  
+`-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/screenshots/battery.png)  (DEPRECATED for `-l battery`)
 `-i`, `--interface=NAME` Select network interface [default: all].
 `-l`, `--layout=NAME` Choose a layout. gotop searches for a file by NAME in \$XDG_CONFIG_HOME/gotop, then relative to the current path. "-" reads a layout from stdin, allowing for simple, one-off layouts such as `echo net | gotop -l -`
 

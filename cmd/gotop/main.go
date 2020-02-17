@@ -1,9 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"os/signal"
@@ -42,7 +41,7 @@ var (
 	stderrLogger = log.New(os.Stderr, "", 0)
 )
 
-func parseArgs() (gotop.Config, error) {
+func parseArgs(conf *gotop.Config) error {
 	usage := `
 Usage: gotop [options]
 
@@ -75,133 +74,65 @@ Colorschemes:
   vice
 `
 
-	ld := utils.GetLogDir(appName)
-	cd := utils.GetConfigDir(appName)
-	conf = gotop.Config{
-		ConfigDir:            cd,
-		LogDir:               ld,
-		LogFile:              "errors.log",
-		GraphHorizontalScale: 7,
-		HelpVisible:          false,
-		Colorscheme:          colorschemes.Default,
-		UpdateInterval:       time.Second,
-		AverageLoad:          false,
-		PercpuLoad:           false,
-		TempScale:            w.Celsius,
-		Statusbar:            false,
-		NetInterface:         w.NET_INTERFACE_ALL,
-		MaxLogSize:           5000000,
+	var err error
+	conf.Colorscheme, err = colorschemes.FromName(conf.ConfigDir, "default")
+	if err != nil {
+		return err
 	}
 
 	args, err := docopt.ParseArgs(usage, os.Args[1:], version)
 	if err != nil {
-		return conf, err
+		return err
 	}
 
 	if val, _ := args["--layout"]; val != nil {
-		s := val.(string)
-		switch s {
-		case "-":
-			conf.Layout = os.Stdin
-		case "default":
-			conf.Layout = strings.NewReader(defaultUI)
-		case "minimal":
-			conf.Layout = strings.NewReader(minimalUI)
-		case "battery":
-			conf.Layout = strings.NewReader(batteryUI)
-		default:
-			fp := filepath.Join(cd, s)
-			conf.Layout, err = os.Open(fp)
-			if err != nil {
-				conf.Layout, err = os.Open(s)
-				if err != nil {
-					stderrLogger.Fatalf("Unable to open layout file %s or ./%s", fp, s)
-				}
-			}
-		}
-	} else {
-		conf.Layout = strings.NewReader(defaultUI)
+		conf.Layout = val.(string)
 	}
-
 	if val, _ := args["--color"]; val != nil {
-		cs, err := handleColorscheme(val.(string))
+		cs, err := colorschemes.FromName(conf.ConfigDir, val.(string))
 		if err != nil {
-			return conf, err
+			return err
 		}
 		conf.Colorscheme = cs
 	}
-	conf.AverageLoad, _ = args["--averagecpu"].(bool)
-	conf.PercpuLoad, _ = args["--percpu"].(bool)
-	statusbar, _ = args["--statusbar"].(bool)
-
+	if args["--averagecpu"].(bool) {
+		conf.AverageLoad, _ = args["--averagecpu"].(bool)
+	}
+	if args["--percpu"].(bool) {
+		conf.PercpuLoad, _ = args["--percpu"].(bool)
+	}
+	if args["--statusbar"].(bool) {
+		statusbar, _ = args["--statusbar"].(bool)
+	}
 	if args["--battery"].(bool) {
-		log.Printf("BATTERY %s", batteryUI)
-		conf.Layout = strings.NewReader(batteryUI)
+		conf.Layout = "battery"
 	}
 	if args["--minimal"].(bool) {
-		conf.Layout = strings.NewReader(minimalUI)
+		conf.Layout = "minimal"
 	}
-	rateStr, _ := args["--rate"].(string)
-	rate, err := strconv.ParseFloat(rateStr, 64)
-	if err != nil {
-		return conf, fmt.Errorf("invalid rate parameter")
-	}
-	if rate < 1 {
-		conf.UpdateInterval = time.Second * time.Duration(1/rate)
-	} else {
-		conf.UpdateInterval = time.Second / time.Duration(rate)
-	}
-	fahrenheit, _ := args["--fahrenheit"].(bool)
-	if fahrenheit {
-		conf.TempScale = w.Fahrenheit
-	}
-	conf.NetInterface, _ = args["--interface"].(string)
-
-	return conf, nil
-}
-
-func handleColorscheme(c string) (colorschemes.Colorscheme, error) {
-	var cs colorschemes.Colorscheme
-	switch c {
-	case "default":
-		cs = colorschemes.Default
-	case "solarized":
-		cs = colorschemes.Solarized
-	case "solarized16-light":
-		cs = colorschemes.Solarized16Light
-	case "solarized16-dark":
-		cs = colorschemes.Solarized16Dark
-	case "monokai":
-		cs = colorschemes.Monokai
-	case "vice":
-		cs = colorschemes.Vice
-	case "default-dark":
-		cs = colorschemes.DefaultDark
-	case "nord":
-		cs = colorschemes.Nord
-	default:
-		custom, err := getCustomColorscheme(conf, c)
+	if val, _ := args["--statusbar"]; val != nil {
+		rateStr, _ := args["--rate"].(string)
+		rate, err := strconv.ParseFloat(rateStr, 64)
 		if err != nil {
-			return cs, err
+			return fmt.Errorf("invalid rate parameter")
 		}
-		cs = custom
+		if rate < 1 {
+			conf.UpdateInterval = time.Second * time.Duration(1/rate)
+		} else {
+			conf.UpdateInterval = time.Second / time.Duration(rate)
+		}
 	}
-	return cs, nil
-}
+	if val, _ := args["--fahrenheit"]; val != nil {
+		fahrenheit, _ := val.(bool)
+		if fahrenheit {
+			conf.TempScale = w.Fahrenheit
+		}
+	}
+	if val, _ := args["--interface"]; val != nil {
+		conf.NetInterface, _ = args["--interface"].(string)
+	}
 
-// getCustomColorscheme	tries to read a custom json colorscheme from <configDir>/<name>.json
-func getCustomColorscheme(c gotop.Config, name string) (colorschemes.Colorscheme, error) {
-	var cs colorschemes.Colorscheme
-	filePath := filepath.Join(c.ConfigDir, name+".json")
-	dat, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		return cs, fmt.Errorf("failed to read colorscheme file: %v", err)
-	}
-	err = json.Unmarshal(dat, &cs)
-	if err != nil {
-		return cs, fmt.Errorf("failed to parse colorscheme file: %v", err)
-	}
-	return cs, nil
+	return nil
 }
 
 func setDefaultTermuiColors(c gotop.Config) {
@@ -388,8 +319,40 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 	}
 }
 
+func makeConfig() gotop.Config {
+	ld := utils.GetLogDir(appName)
+	cd := utils.GetConfigDir(appName)
+	conf = gotop.Config{
+		ConfigDir:            cd,
+		LogDir:               ld,
+		LogFile:              "errors.log",
+		GraphHorizontalScale: 7,
+		HelpVisible:          false,
+		UpdateInterval:       time.Second,
+		AverageLoad:          false,
+		PercpuLoad:           false,
+		TempScale:            w.Celsius,
+		Statusbar:            false,
+		NetInterface:         w.NET_INTERFACE_ALL,
+		MaxLogSize:           5000000,
+		Layout:               "default",
+	}
+	return conf
+}
+
 func main() {
-	conf, err := parseArgs()
+	// Set up default config
+	conf := makeConfig()
+	// Parse the config file
+	cfn := filepath.Join(conf.ConfigDir, "gotop.conf")
+	if cf, err := os.Open(cfn); err == nil {
+		err := gotop.Parse(cf, &conf)
+		if err != nil {
+			stderrLogger.Fatalf("error parsing config file %v", err)
+		}
+	}
+	// Override with command line arguments
+	err := parseArgs(&conf)
 	if err != nil {
 		stderrLogger.Fatalf("failed to parse cli args: %v", err)
 	}
@@ -411,7 +374,8 @@ func main() {
 		bar = w.NewStatusBar()
 	}
 
-	ly := layout.ParseLayout(conf.Layout)
+	lstream := getLayout(conf)
+	ly := layout.ParseLayout(lstream)
 	grid, err := layout.Layout(ly, conf)
 	if err != nil {
 		stderrLogger.Fatalf("failed to initialize termui: %v", err)
@@ -432,4 +396,28 @@ func main() {
 	}
 
 	eventLoop(conf, grid)
+}
+
+func getLayout(conf gotop.Config) io.Reader {
+	switch conf.Layout {
+	case "-":
+		return os.Stdin
+	case "default":
+		return strings.NewReader(defaultUI)
+	case "minimal":
+		return strings.NewReader(minimalUI)
+	case "battery":
+		return strings.NewReader(batteryUI)
+	default:
+		log.Printf("layout = %s", conf.Layout)
+		fp := filepath.Join(conf.ConfigDir, conf.Layout)
+		fin, err := os.Open(fp)
+		if err != nil {
+			fin, err = os.Open(conf.Layout)
+			if err != nil {
+				log.Fatalf("Unable to open layout file %s or ./%s", fp, conf.Layout)
+			}
+		}
+		return fin
+	}
 }

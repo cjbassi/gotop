@@ -11,28 +11,30 @@
 
 package colorschemes
 
-var Nord = Colorscheme{
-	Name:   "A Nord Approximation",
-	Author: "@jrswab",
-	Fg:     254, // lightest
-	Bg:     -1,
+func init() {
+	register("nord", Colorscheme{
+		Name:   "A Nord Approximation",
+		Author: "@jrswab",
+		Fg:     254, // lightest
+		Bg:     -1,
 
-	BorderLabel: 254,
-	BorderLine:  96, // Purple
+		BorderLabel: 254,
+		BorderLine:  96, // Purple
 
-	CPULines: []int{4, 3, 2, 1, 5, 6, 7, 8},
+		CPULines: []int{4, 3, 2, 1, 5, 6, 7, 8},
 
-	BattLines: []int{4, 3, 2, 1, 5, 6, 7, 8},
+		BattLines: []int{4, 3, 2, 1, 5, 6, 7, 8},
 
-	MainMem: 172, // Orange
-	SwapMem: 221, // yellow
+		MainMem: 172, // Orange
+		SwapMem: 221, // yellow
 
-	ProcCursor: 31, // blue (nord9)
+		ProcCursor: 31, // blue (nord9)
 
-	Sparkline: 31,
+		Sparkline: 31,
 
-	DiskBar: 254,
+		DiskBar: 254,
 
-	TempLow:  64,  // green
-	TempHigh: 167, // red
+		TempLow:  64,  // green
+		TempHigh: 167, // red
+	})
 }
