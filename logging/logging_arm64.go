@@ -1,3 +1,5 @@
+// +build arm64
+
 package logging
 
 import (

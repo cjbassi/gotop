@@ -1,3 +1,5 @@
+// +build openbsd
+
 package widgets
 
 // loosely based on https://github.com/openbsd/src/blob/master/sbin/sysctl/sysctl.c#L2517

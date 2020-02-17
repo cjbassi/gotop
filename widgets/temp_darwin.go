@@ -1,3 +1,5 @@
+// +build darwin
+
 package widgets
 
 // #cgo LDFLAGS: -framework IOKit

@@ -1,3 +1,4 @@
+// +build linux openbsd freebsd
 // +build !arm64
 
 package logging
