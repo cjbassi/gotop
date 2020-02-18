@@ -170,6 +170,10 @@ func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 			i++
 		}
 		w = b
+	case "power":
+		b := widgets.NewBatteryGauge()
+		b.BarColor = ui.Color(c.Colorscheme.ProcCursor)
+		w = b
 	default:
 		log.Printf("Invalid widget name %s.  Must be one of %v", widRule.Widget, widgetNames)
 		return ui.NewBlock()

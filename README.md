@@ -94,7 +94,7 @@ and these are separated by spaces.
 1. Each line is a row
 2. Empty lines are skipped
 3. Spaces are compressed (so you can do limited visual formatting)
-4. Legal widget names are: cpu, disk, mem, temp, batt, net, procs
+4. Legal widget names are: cpu, disk, mem, temp, batt, net, procs, power
 5. Widget names are not case sensitive
 4. The simplest row is a single widget, by name, e.g.
    ```
