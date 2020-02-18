@@ -108,8 +108,12 @@ func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) (ui.GridIte
 	return ui.NewRow(1.0/float64(numRows), uiColumns...), rowDefs
 }
 
+type Metric interface {
+	EnableMetric()
+}
+
 func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
-	var w interface{}
+	var w Metric
 	switch widRule.Widget {
 	case "cpu":
 		cpu := widgets.NewCpuWidget(c.UpdateInterval, c.GraphHorizontalScale, c.AverageLoad, c.PercpuLoad)
@@ -130,7 +134,8 @@ func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 		}
 		w = cpu
 	case "disk":
-		w = widgets.NewDiskWidget()
+		dw := widgets.NewDiskWidget()
+		w = dw
 	case "mem":
 		m := widgets.NewMemWidget(c.UpdateInterval, c.GraphHorizontalScale)
 		m.LineColors["Main"] = ui.Color(c.Colorscheme.MainMem)
@@ -173,6 +178,9 @@ func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 	default:
 		log.Printf("Invalid widget name %s.  Must be one of %v", widRule.Widget, widgetNames)
 		return ui.NewBlock()
+	}
+	if c.ExportPort != "" {
+		w.EnableMetric()
 	}
 	return w
 }

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	ui "github.com/gizak/termui/v3"
+	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/xxxserxxx/gotop/utils"
 )
@@ -27,6 +28,7 @@ type TempWidget struct {
 	TempLowColor   ui.Color
 	TempHighColor  ui.Color
 	TempScale      TempScale
+	tempsMetric    map[string]prometheus.Gauge
 }
 
 func NewTempWidget(tempScale TempScale) *TempWidget {
@@ -54,6 +56,20 @@ func NewTempWidget(tempScale TempScale) *TempWidget {
 	}()
 
 	return self
+}
+
+func (self *TempWidget) EnableMetric() {
+	self.tempsMetric = make(map[string]prometheus.Gauge)
+	for k, v := range self.Data {
+		gauge := prometheus.NewGauge(prometheus.GaugeOpts{
+			Namespace: "gotop",
+			Subsystem: "temp",
+			Name:      k,
+		})
+		gauge.Set(float64(v))
+		prometheus.MustRegister(gauge)
+		self.tempsMetric[k] = gauge
+	}
 }
 
 // Custom Draw method instead of inheriting from a generic Widget.
@@ -98,5 +114,6 @@ func (self *TempWidget) Draw(buf *ui.Buffer) {
 				image.Pt(self.Inner.Max.X-4, self.Inner.Min.Y+y),
 			)
 		}
+		self.tempsMetric[key].Set(float64(self.Data[key]))
 	}
 }

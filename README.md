@@ -97,9 +97,9 @@ and these are separated by spaces.
 4. Legal widget names are: cpu, disk, mem, temp, batt, net, procs
 5. Widget names are not case sensitive
 4. The simplest row is a single widget, by name, e.g.
-   ```
-   cpu
-   ```
+    ```
+    cpu
+    ```
 5. **Weights**
     1. Widgets with no weights have a weight of 1.
     2. If multiple widgets are put on a row with no weights, they will all have
@@ -117,19 +117,19 @@ and these are separated by spaces.
        second will be 5/7 ~= 67% wide (or, memory will be twice as wide as disk).
 9. If prefixed by a number and colon, the widget will span that number of
    rows downward. E.g.
-   ```
-   mem   2:cpu
-   net
-   ```
+    ```
+    mem   2:cpu
+    net
+    ```
    Here, memory and network will be in the same row as CPU, one over the other,
    and each half as high as CPU; it'll look like this:
-   ```
-    +------+------+
-    | Mem  |      |
-    +------+ CPU  |
-    | Net  |      |
-    +------+------+
-   ```
+    ```
+     +------+------+
+     | Mem  |      |
+     +------+ CPU  |
+     | Net  |      |
+     +------+------+
+    ```
 10. Negative, 0, or non-integer weights will be recorded as "1".  Same for row
     spans. 
 11. Unrecognized widget names will cause the application to abort.                          
@@ -146,23 +146,71 @@ and these are separated by spaces.
 Yes, you're clever enough to break the layout algorithm, but if you try to
 build massive edifices, you're in for disappointment.
 
+### Metrics
+
+gotop can export widget data as Prometheus metrics. This allows users to take
+snapshots of the current state of a machine running gotop, or to query gotop
+remotely.
+
+All metrics are in the `gotop` namespace, and are tagged with
+`goto_<widget>_<enum>`. Metrics are only exported for widgets
+that are enabled, and are updated with the same frequency as the configured
+update interval.  Most widgets are exported as Prometheus gauges.
+
+Metrics are disabled by default, and must be enabled with the `--export` flag.
+The flag takes an interface port in the idiomatic Go format of
+`<addy>:<port>`; a common pattern is `-x :2112`. There is **no security**
+on this feature; I recommend that you run this bound to a localhost interface,
+e.g. `127.0.0.1:7653`, and if you want to access this remotely, run it behind
+a proxy that provides SSL and authentication such as
+[Caddy](https://caddyserver.com).
+
+Once enabled, any widgets that are enabled will appear in the HTTP payload of
+a call to `http://<addy>:<port>/metrics`. For example,
+
+```
+➜  ~ curl -s http://localhost:2112/metrics | egrep -e '^gotop'
+gotop_battery_0 0.6387792286668692
+gotop_cpu_0 12.871287128721228
+gotop_cpu_1 11.000000000001364
+gotop_disk_:dev:nvme0n1p1 0.63
+gotop_memory_main 49.932259713701434
+gotop_memory_swap 0
+gotop_net_recv 129461
+gotop_net_sent 218525
+gotop_temp_coretemp_core0 37
+gotop_temp_coretemp_core1 37
+```
+
+Disk metrics are reformatted to replace `/` with `:` which makes them legal
+Prometheus names:
+
+```
+➜  ~ curl -s http://localhost:2112/metrics | egrep -e '^gotop_disk' | tr ':' '/'
+gotop_disk_/dev/nvme0n1p1 0.63
+```
+
+This feature satisfies a ticket request to provide a "snapshot" for comparison
+with a known state, but it is also foundational for a future feature where
+widgets can be configured with virtual devices fed by data from remote gotop
+instances. The objective for that feature is to allow monitoring of multiple
+remote VMs without having to have a wall of gotops running on a large monitor.
+
 ### CLI Options
 
 `-c`, `--color=NAME` Set a colorscheme.  
-`-m`, `--minimal` Only show CPU, Mem and Process widgets.  (DEPRECATED for `-l minimal`)
+`-m`, `--minimal` Only show CPU, Mem and Process widgets.  (DEPRECATED for `-l minimal`)  
 `-r`, `--rate=RATE` Number of times per second to update CPU and Mem widgets [default: 1].  
 `-V`, `--version` Print version and exit.  
 `-p`, `--percpu` Show each CPU in the CPU widget.  
 `-a`, `--averagecpu` Show average CPU in the CPU widget.  
 `-f`, `--fahrenheit` Show temperatures in fahrenheit.  
 `-s`, `--statusbar` Show a statusbar with the time.  
-`-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/screenshots/battery.png)  (DEPRECATED for `-l battery`)
-`-i`, `--interface=NAME` Select network interface [default: all].
-`-l`, `--layout=NAME` Choose a layout. gotop searches for a file by NAME in \$XDG_CONFIG_HOME/gotop, then relative to the current path. "-" reads a layout from stdin, allowing for simple, one-off layouts such as `echo net | gotop -l -`
+`-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/screenshots/battery.png)  (DEPRECATED for `-l battery`)  
+`-i`, `--interface=NAME` Select network interface. Several interfaces can be defined using comma separated values. Interfaces can also be ignored by prefixing the interface with `!` [default: all].  
+`-l`, `--layout=NAME` Choose a layout. gotop searches for a file by NAME in \$XDG_CONFIG_HOME/gotop, then relative to the current path. "-" reads a layout from stdin, allowing for simple, one-off layouts such as `echo net | gotop -l -`  
+`-x`, `--export=PORT` Enable metrics for export on the specified port. This feature is disabled by default.
 
-Several interfaces can be defined using comma separated values.
-
-Interfaces can also be ignored using `!`
 
 ## Built With
 
@@ -172,3 +220,4 @@ Interfaces can also be ignored using `!`
 - [shirou/gopsutil](https://github.com/shirou/gopsutil)
 - [goreleaser/nfpm](https://github.com/goreleaser/nfpm)
 - [distatus/battery](https://github.com/distatus/battery)
+- [prometheus/client_golang](https://github.com/prometheus/client_golang)

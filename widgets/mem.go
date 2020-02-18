@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
 	psMem "github.com/shirou/gopsutil/mem"
 
 	ui "github.com/xxxserxxx/gotop/termui"
@@ -14,6 +15,8 @@ import (
 type MemWidget struct {
 	*ui.LineGraph
 	updateInterval time.Duration
+	mainMetric     prometheus.Gauge
+	swapMetric     prometheus.Gauge
 }
 
 type MemoryInfo struct {
@@ -45,6 +48,9 @@ func (self *MemWidget) updateMainMemory() {
 			Used:        mainMemory.Used,
 			UsedPercent: mainMemory.UsedPercent,
 		})
+		if self.mainMetric != nil {
+			self.mainMetric.Set(mainMemory.UsedPercent)
+		}
 	}
 }
 
@@ -71,6 +77,30 @@ func NewMemWidget(updateInterval time.Duration, horizontalScale int) *MemWidget 
 	}()
 
 	return self
+}
+
+func (b *MemWidget) EnableMetric() {
+	b.mainMetric = prometheus.NewGauge(prometheus.GaugeOpts{
+		Namespace: "gotop",
+		Subsystem: "memory",
+		Name:      "main",
+	})
+	mainMemory, err := psMem.VirtualMemory()
+	if err == nil {
+		b.mainMetric.Set(mainMemory.UsedPercent)
+	}
+	prometheus.MustRegister(b.mainMetric)
+
+	b.swapMetric = prometheus.NewGauge(prometheus.GaugeOpts{
+		Namespace: "gotop",
+		Subsystem: "memory",
+		Name:      "swap",
+	})
+	swapMemory, err := psMem.SwapMemory()
+	if err == nil {
+		b.swapMetric.Set(swapMemory.UsedPercent)
+	}
+	prometheus.MustRegister(b.swapMetric)
 }
 
 func (b *MemWidget) Scale(i int) {
