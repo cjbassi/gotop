@@ -86,13 +86,28 @@ func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) (ui.GridIte
 		columns = append(columns, make([]interface{}, 0))
 	}
 	colHeights := make([]int, numCols)
-	for _, rds := range processing {
-		for _, rd := range rds {
+	for i, row := range processing {
+		// A definition may fill up the columns before all rows are consumed,
+		// e.g. wid1/2 wid2/2.  This block checks for that and, if it occurs,
+		// prepends the remaining rows to the "remainder" return value.
+		full := true
+		for _, ch := range colHeights {
+			if ch <= maxHeight {
+				full = false
+				break
+			}
+		}
+		if full {
+			rowDefs = append(processing[i:], rowDefs...)
+			break
+		}
+		// Not all rows have been consumed, so go ahead and place the row's widgets in columns
+		for _, wid := range row {
 			for j, ch := range colHeights {
-				if ch+rd.Height <= maxHeight {
-					widget := makeWidget(c, rd)
-					columns[j] = append(columns[j], ui.NewRow(float64(rd.Height)/float64(maxHeight), widget))
-					colHeights[j] += rd.Height
+				if ch+wid.Height <= maxHeight {
+					widget := makeWidget(c, wid)
+					columns[j] = append(columns[j], ui.NewRow(float64(wid.Height)/float64(maxHeight), widget))
+					colHeights[j] += wid.Height
 					break
 				}
 			}
