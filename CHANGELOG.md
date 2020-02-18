@@ -13,7 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
-## [3.3.0] - 
+## [3.3.1] - 2020-02-18
+
+- Fixed: Fixes a layout bug where, if columns filled up early, widgets would be
+  consumed but not displayed.
+- Fixed: Rolled back dependency update on github.com/shirou/gopsutil; the new version
+  has a bug that causes cores to not be seen.
+
+## [3.3.0] - 2020-02-17
 
 - Added: Logs are now rotated. Settings are currently hard-coded at 4 files of 5MB
   each, so logs shouldn't take up more than 20MB.  I'm going to see how many

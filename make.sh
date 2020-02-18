@@ -22,7 +22,6 @@ function candz() {
 		D=${D}.exe
 	fi
 	go build -o $D ./cmd/gotop >> build.log 2>&1 
-	unset GOOS GOARCH GOARM CGO_ENABLED
 	if [[ $? -ne 0 ]]; then
 		printenv | grep GO >> build.log
 		echo "############### FAILED ###############" >> build.log
@@ -31,6 +30,7 @@ function candz() {
 		echo FAILED $OUT
 		return
 	fi
+	unset GOOS GOARCH GOARM CGO_ENABLED
 	cd build
 	zip $(basename $OUT) $(basename $D) >> ../build.log 2>&1
 	cd ..
