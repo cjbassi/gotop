@@ -100,6 +100,10 @@ func NewProcWidget() *ProcWidget {
 	return self
 }
 
+func (p *ProcWidget) EnableMetric() {
+	// There's (currently) no metric for this
+}
+
 func (self *ProcWidget) SetEditingFilter(editing bool) {
 	self.entry.SetEditing(editing)
 }

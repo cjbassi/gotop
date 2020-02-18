@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
 	psNet "github.com/shirou/gopsutil/net"
 
 	ui "github.com/xxxserxxx/gotop/termui"
@@ -25,6 +26,8 @@ type NetWidget struct {
 	totalBytesRecv uint64
 	totalBytesSent uint64
 	NetInterface   []string
+	sentMetric     prometheus.Counter
+	recvMetric     prometheus.Counter
 }
 
 func NewNetWidget(netInterface string) *NetWidget {
@@ -56,6 +59,22 @@ func NewNetWidget(netInterface string) *NetWidget {
 	}()
 
 	return self
+}
+
+func (b *NetWidget) EnableMetric() {
+	b.recvMetric = prometheus.NewCounter(prometheus.CounterOpts{
+		Namespace: "gotop",
+		Subsystem: "net",
+		Name:      "recv",
+	})
+	prometheus.MustRegister(b.recvMetric)
+
+	b.sentMetric = prometheus.NewCounter(prometheus.CounterOpts{
+		Namespace: "gotop",
+		Subsystem: "net",
+		Name:      "sent",
+	})
+	prometheus.MustRegister(b.sentMetric)
 }
 
 func (self *NetWidget) update() {
@@ -114,6 +133,10 @@ func (self *NetWidget) update() {
 
 		self.Lines[0].Data = append(self.Lines[0].Data, int(recentBytesRecv))
 		self.Lines[1].Data = append(self.Lines[1].Data, int(recentBytesSent))
+		if self.sentMetric != nil {
+			self.sentMetric.Add(float64(recentBytesSent))
+			self.recvMetric.Add(float64(recentBytesRecv))
+		}
 	}
 
 	// used in later calls to update

@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
+## [3.4.x] - 
+
+- Adds metrics. If run with the `--export :2112` flag (`:2112` is a port),
+  metrics are exposed as Prometheus metrics on that port and can be HTTP
+  GET-ted.  
+
 ## [3.3.1] - 2020-02-18
 
 - Fixed: Fixes a layout bug where, if columns filled up early, widgets would be

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -14,6 +15,7 @@ import (
 
 	docopt "github.com/docopt/docopt.go"
 	ui "github.com/gizak/termui/v3"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/xxxserxxx/gotop"
 	"github.com/xxxserxxx/gotop/colorschemes"
@@ -59,6 +61,7 @@ Options:
   -B, --bandwidth=bits	  Specify the number of bits per seconds.
   -l, --layout=NAME       Name of layout spec file for the UI.  Looks first in $XDG_CONFIG_HOME/gotop, then as a path.  Use "-" to pipe.
   -i, --interface=NAME    Select network interface [default: all].
+  -x, --export=PORT       Enable metrics for export on the specified port.
 
 Several interfaces can be defined using comma separated values.
 
@@ -110,8 +113,11 @@ Colorschemes:
 	if args["--minimal"].(bool) {
 		conf.Layout = "minimal"
 	}
-	if val, _ := args["--statusbar"]; val != nil {
-		rateStr, _ := args["--rate"].(string)
+	if val, _ := args["--export"]; val != nil {
+		conf.ExportPort = val.(string)
+	}
+	if val, _ := args["--rate"]; val != nil {
+		rateStr, _ := val.(string)
 		rate, err := strconv.ParseFloat(rateStr, 64)
 		if err != nil {
 			return fmt.Errorf("invalid rate parameter")
@@ -330,7 +336,7 @@ func makeConfig() gotop.Config {
 		HelpVisible:          false,
 		UpdateInterval:       time.Second,
 		AverageLoad:          false,
-		PercpuLoad:           false,
+		PercpuLoad:           true,
 		TempScale:            w.Celsius,
 		Statusbar:            false,
 		NetInterface:         w.NET_INTERFACE_ALL,
@@ -395,6 +401,12 @@ func main() {
 		ui.Render(bar)
 	}
 
+	if conf.ExportPort != "" {
+		go func() {
+			http.Handle("/metrics", promhttp.Handler())
+			http.ListenAndServe(conf.ExportPort, nil)
+		}()
+	}
 	eventLoop(conf, grid)
 }
 
