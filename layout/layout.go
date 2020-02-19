@@ -59,6 +59,7 @@ func Layout(wl layout, c gotop.Config) (*MyGrid, error) {
 // rows as the largest row span object in the row, and produce an uber-row
 // containing all that stuff. It returns a slice without the consumed elements.
 func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) (ui.GridItem, [][]widgetRule) {
+	// FIXME: 3\:A 2\:B\nC  should stop consuming rows when all columns are full
 	// Recursive function #3.  See the comment in deepFindProc.
 	if len(rowDefs) < 1 {
 		return ui.GridItem{}, [][]widgetRule{}
@@ -189,6 +190,10 @@ func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 			b.LineColors[v] = ui.Color(color)
 			i++
 		}
+		w = b
+	case "power":
+		b := widgets.NewBatteryGauge()
+		b.BarColor = ui.Color(c.Colorscheme.ProcCursor)
 		w = b
 	default:
 		log.Printf("Invalid widget name %s.  Must be one of %v", widRule.Widget, widgetNames)

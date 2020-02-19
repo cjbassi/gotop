@@ -27,7 +27,7 @@ import (
 
 const (
 	appName = "gotop"
-	version = "3.3.1"
+	version = "3.4.0"
 
 	graphHorizontalScaleDelta = 3
 	defaultUI                 = "cpu\ndisk/1 2:mem/2\ntemp\nnet procs"
@@ -43,6 +43,7 @@ var (
 	stderrLogger = log.New(os.Stderr, "", 0)
 )
 
+// TODO: Add tab completion for Linux https://gist.github.com/icholy/5314423
 func parseArgs(conf *gotop.Config) error {
 	usage := `
 Usage: gotop [options]
@@ -346,6 +347,7 @@ func makeConfig() gotop.Config {
 	return conf
 }
 
+// TODO: mpd visualizer widget
 func main() {
 	// Set up default config
 	conf := makeConfig()
