@@ -3,7 +3,7 @@ package colorschemes
 // This scheme assumes the terminal already uses Solarized. Only DiskBar is
 // different between dark/light.
 func init() {
-	register("solarized16light", Colorscheme{
+	register("solarized16-dark", Colorscheme{
 		Fg: -1,
 		Bg: -1,
 
@@ -21,7 +21,7 @@ func init() {
 
 		Sparkline: 4,
 
-		DiskBar: 11, // base00
+		DiskBar: 12, // base0
 
 		TempLow:  2,
 		TempHigh: 1,

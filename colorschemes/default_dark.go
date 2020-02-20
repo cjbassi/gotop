@@ -1,7 +1,7 @@
 package colorschemes
 
 func init() {
-	register("defaultdark", Colorscheme{
+	register("default-dark", Colorscheme{
 		Fg: 235,
 		Bg: -1,
 
