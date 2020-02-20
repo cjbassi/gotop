@@ -1,4 +1,4 @@
-// +build linux openbsd freebsd
+// +build linux openbsd freebsd darwin
 // +build !arm64
 
 package logging

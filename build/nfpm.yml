@@ -12,4 +12,4 @@ homepage: "https://github.com/xxxserxxx/gotop"
 license: "GNU Affero General Public License v3.0"
 bindir: "/usr/local/bin"
 files:
-  dist/gotop: "/usr/local/bin/gotop"
+  build/gotop: "/usr/local/bin/gotop"
