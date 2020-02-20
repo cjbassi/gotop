@@ -137,6 +137,7 @@ else
 		candz windows $x
 		candz freebsd $x
 
+		# TODO Preliminary OpenBSD support [#112] [#117] [#118]
 		# candz openbsd $x
 	done
 	cdarwinz

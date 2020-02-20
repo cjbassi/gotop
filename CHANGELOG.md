@@ -13,6 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
+## [3.4.x] - ??
+
+- Added: metrics. If run with the `--export :2112` flag (`:2112` is a port),
+  metrics are exposed as Prometheus metrics on that port and can be HTTP
+  GET-ted.  
+- Added: a battery gauge as a `power` widget; battery as a bar rather than
+  a histogram.
+
+## [3.3.2] - ??
+
+- Fixes #57, colors with dashes in the name not found.
+- Also, cjbassi/gotop#127 and cjbassi/gotop#130 were released back in v3.1.0.
+
 ## [3.3.1] - 2020-02-18
 
 - Fixed: Fixes a layout bug where, if columns filled up early, widgets would be
@@ -56,21 +69,6 @@ unmaintained by cjbassi.
 -  Added: Merges @jrswab additional kill terms
 -  Added: Adds the ability to lay out the UI using a text file
 -  Changed: the project filesystem layout to be more idiomatic
-
-## [Unreleased]
-
-### Added
-
-- Add snap package [#119] [#120] [#121]
-- Process list scroll indicator [#127] [#130]
-- Preliminary OpenBSD support [#112] [#117] [#118]
-
-### Fixed
-
-- Fix process localization issues on macOS [#124]
-- Fix miscellaneous issues on FreeBSD [#134] [#145]
-- Fix spelling of "Tx" to "TX" [#129]
-- Rerender statusbar on every tick [#128]
 
 ## [3.0.0] - 2019-02-22
 

@@ -21,6 +21,7 @@ import (
 // TODO: Merge #135 linux console font (cmatsuoka:console-font)
 // TODO: Export Prometheus metrics @feature
 // TODO: Virtual devices from Prometeus metrics @feature
+// TODO test, build, release [#119] [#120] [#121]
 type Config struct {
 	ConfigDir string
 	LogDir    string
