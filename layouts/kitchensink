@@ -1,5 +1,4 @@
-cpu/2 		mem/1
-3:temp/1        2:disk/2
-                power
-		power
-net 		procs
+cpu/2       mem/1
+3:temp/1    2:disk/2
+            power
+net         procs

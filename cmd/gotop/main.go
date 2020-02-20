@@ -423,7 +423,6 @@ func getLayout(conf gotop.Config) io.Reader {
 	case "battery":
 		return strings.NewReader(batteryUI)
 	default:
-		log.Printf("layout = %s", conf.Layout)
 		fp := filepath.Join(conf.ConfigDir, conf.Layout)
 		fin, err := os.Open(fp)
 		if err != nil {
