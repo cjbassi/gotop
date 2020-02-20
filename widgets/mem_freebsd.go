@@ -42,7 +42,10 @@ func gatherSwapInfo() (MemoryInfo, error) {
 		}
 	}
 
-	ss := strings.Split(strings.TrimSuffix(string(output), "\n"), " ")
+	s := strings.TrimSuffix(string(output), "\n")
+	s = strings.ReplaceAll(s, "\n", " ")
+	ss := strings.Split(s, " ")
+	ss = ss[((len(ss)/3)-1)*3:]
 
 	return convert(ss)
 }

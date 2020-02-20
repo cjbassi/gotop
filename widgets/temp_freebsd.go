@@ -3,12 +3,11 @@
 package widgets
 
 import (
-	"fmt"
-	"log"
 	"os/exec"
 	"strconv"
 	"strings"
 
+	"github.com/rai-project/nvidia-smi"
 	"github.com/xxxserxxx/gotop/utils"
 )
 
@@ -37,31 +36,83 @@ func refineOutput(output []byte) (float64, error) {
 	return value, nil
 }
 
-func collectSensors() ([]sensorMeasurement, error) {
+func collectSysctlSensors() []sensorMeasurement {
 	var measurements []sensorMeasurement
 	for k, v := range sensorOIDS {
 		output, err := exec.Command("sysctl", "-n", k).Output()
 		if err != nil {
-			return nil, fmt.Errorf("failed to execute 'sysctl' command: %v", err)
+			continue
 		}
 
 		value, err := refineOutput(output)
 		if err != nil {
-			return nil, fmt.Errorf("failed to execute 'sysctl' command: %v", err)
+			continue
 		}
 
 		measurements = append(measurements, sensorMeasurement{v, value})
-
 	}
-	return measurements, nil
+
+	return measurements
+}
+
+func collectNvidiaSensors() []sensorMeasurement {
+	var measurements []sensorMeasurement
+
+	info, _ := nvidiasmi.New()
+	if info.HasGPU() {
+		for i := range info.GPUS {
+			gpu := info.GPUS[i]
+			var s sensorMeasurement
+			s.name = gpu.ProductName + " " + strconv.Itoa(i)
+			s.temperature, _ = strconv.ParseFloat(strings.ReplaceAll(gpu.GpuTemp, " C", ""), 10)
+			measurements = append(measurements, s)
+		}
+	}
+
+	return measurements
+}
+
+func collectAMDGPUSensors() []sensorMeasurement {
+	var measurments []sensorMeasurement
+
+	return measurments
+}
+
+func collectGPUSensors() []sensorMeasurement {
+	var measurements []sensorMeasurement
+
+	measurements = append(measurements, collectSysctlSensors()...)
+	measurements = append(measurements, collectNvidiaSensors()...)
+	measurements = append(measurements, collectAMDGPUSensors()...)
+
+	return measurements
+}
+
+func collectSensors() []sensorMeasurement {
+	var measurements []sensorMeasurement
+	for k, v := range sensorOIDS {
+		output, err := exec.Command("sysctl", "-n", k).Output()
+		if err != nil {
+			continue
+		}
+
+		value, err := refineOutput(output)
+		if err != nil {
+			continue
+		}
+
+		measurements = append(measurements, sensorMeasurement{v, value})
+	}
+
+	measurements = append(measurements, collectGPUSensors()...)
+
+	return measurements
 
 }
 
 func (self *TempWidget) update() {
-	sensors, err := collectSensors()
-	if err != nil {
-		log.Printf("error received from gopsutil: %v", err)
-	}
+	sensors := collectSensors()
+
 	for _, sensor := range sensors {
 		switch self.TempScale {
 		case Fahrenheit:
