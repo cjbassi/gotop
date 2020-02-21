@@ -52,8 +52,25 @@ func (b *BatteryWidget) Scale(i int) {
 func (self *BatteryWidget) update() {
 	batteries, err := battery.GetAll()
 	if err != nil {
-		log.Printf("failed to get battery info: %v", err)
-		return
+		switch errt := err.(type) {
+		case battery.ErrFatal:
+			log.Printf("fatal error fetching battery info: %v", err)
+			return
+		case battery.Errors:
+			batts := make([]*battery.Battery, 0)
+			for i, e := range errt {
+				if e == nil {
+					batts = append(batts, batteries[i])
+				} else {
+					log.Printf("recoverable error fetching battery info; skipping battery: %v", e)
+				}
+			}
+			if len(batts) < 1 {
+				log.Print("no usable batteries found")
+				return
+			}
+			batteries = batts
+		}
 	}
 	for i, battery := range batteries {
 		id := makeId(i)
