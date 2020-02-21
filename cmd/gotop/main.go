@@ -44,6 +44,11 @@ var (
 )
 
 // TODO: Add tab completion for Linux https://gist.github.com/icholy/5314423
+// TODO: state:merge #135 linux console font (cmatsuoka/console-font)
+// TODO: state:deferred 157 FreeBSD fixes & Nvidia GPU support (kraust/master). Significant CPU use impact for NVidia changes.
+// TODO: Virtual devices from Prometeus metrics @feature
+// TODO: Export Prometheus metrics @feature
+// TODO: state:merge #167 configuration file (jrswab/configFile111)
 func parseArgs(conf *gotop.Config) error {
 	usage := `
 Usage: gotop [options]

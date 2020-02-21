@@ -32,6 +32,23 @@ Visit [here](https://github.com/xxxserxxx/gotop/releases) with your web browser 
 
 Unzip it and then move `gotop` into your `$PATH` somewhere.  If you're on a Debian or Redhat derivative, you can download an `.rpm` or `.deb` to install.
 
+### Building
+
+The easiest way is to
+```
+go get github.com/xxxserxxx/gotop/cmd/gotop
+```
+
+To create the cross-compile builds, there's a `make.sh` script; it has a lot of dependencies and has only been tested on my computer. When it works, it creates archives for numerous OSes & architectures. There's no testing for whether dependencies are available; it assumes they are and will fail in strange ways when they aren't.
+
+- bash
+- Go
+- zip
+- nfpm (for deb & rpm)
+- docker (for darwin)
+
+It is *just* smart enough to not rebuild things when it doesn't have to, and it tries to keep the darwin docker container around so it's not building from scratch every time. There are no guarantees.
+
 ## Usage
 
 ### Keybinds
