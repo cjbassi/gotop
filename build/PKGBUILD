@@ -11,6 +11,7 @@ license=(AGPL3)
 provides=(gotop)
 conflicts=(gotop)
 makedepends=("go")
+depends=('glibc>=2.31-1')
 source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/v${pkgver}.tar.gz")
 sha256sums=('79b261e5d778ddfdf85ded375dc4877b7d508916b771c2d1b7655849776ea66c')
 
