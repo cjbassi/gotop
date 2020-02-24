@@ -27,6 +27,7 @@ type NetWidget struct {
 	NetInterface   []string
 }
 
+// TODO: state:merge #169 % option for network use (jrswab/networkPercentage)
 func NewNetWidget(netInterface string) *NetWidget {
 	recvSparkline := ui.NewSparkline()
 	recvSparkline.Data = []int{}

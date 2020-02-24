@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.3.2] - ??
 
+- Fixes #15, crash caused by battery widget when some accessories have batteries
 - Fixes #57, colors with dashes in the name not found.
 - Also, cjbassi/gotop#127 and cjbassi/gotop#130 were released back in v3.1.0.
 

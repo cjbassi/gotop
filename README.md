@@ -9,8 +9,8 @@ Another terminal based graphical activity monitor, inspired by [gtop](https://gi
 
 The original author of gotop has re-implemented the application in Rust, as [ytop](https://github.com/cjbassi/ytop).  This is a fork of original gotop project with a new maintainer.
 
-<img src="./assets/demos/demo.gif" />
-<img src="./assets/screenshots/minimal.png" width="96%" />
+<img src="./assets/screenshots/demo.gif" />
+<img src="./assets/screenshots/kitchensink.gif" />
 
 </div>
 
@@ -166,20 +166,29 @@ build massive edifices, you're in for disappointment.
 ### CLI Options
 
 `-c`, `--color=NAME` Set a colorscheme.  
-`-m`, `--minimal` Only show CPU, Mem and Process widgets.  (DEPRECATED for `-l minimal`)
+`-m`, `--minimal` Only show CPU, Mem and Process widgets.  (DEPRECATED, use `-l minimal`)  
 `-r`, `--rate=RATE` Number of times per second to update CPU and Mem widgets [default: 1].  
 `-V`, `--version` Print version and exit.  
 `-p`, `--percpu` Show each CPU in the CPU widget.  
 `-a`, `--averagecpu` Show average CPU in the CPU widget.  
 `-f`, `--fahrenheit` Show temperatures in fahrenheit.  
 `-s`, `--statusbar` Show a statusbar with the time.  
-`-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/screenshots/battery.png)  (DEPRECATED for `-l battery`)
-`-i`, `--interface=NAME` Select network interface [default: all].
+`-b`, `--battery` Show battery level widget (`minimal` turns off). (DEPRECATED, use `-l battery`)  
+`-i`, `--interface=NAME` Select network interface [default: all].  
 `-l`, `--layout=NAME` Choose a layout. gotop searches for a file by NAME in \$XDG_CONFIG_HOME/gotop, then relative to the current path. "-" reads a layout from stdin, allowing for simple, one-off layouts such as `echo net | gotop -l -`
 
 Several interfaces can be defined using comma separated values.
 
 Interfaces can also be ignored using `!`
+
+## More screen shots
+
+#### "-l battery"
+<img src="./assets/screenshots/battery.png" />
+#### "-l minimal"
+<img src="./assets/screenshots/minimal.png" />
+#### Custom (layouts/procs)
+<img src="./assets/screenshots/procs.png" />
 
 ## Built With
 

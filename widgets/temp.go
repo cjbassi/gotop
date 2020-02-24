@@ -29,6 +29,7 @@ type TempWidget struct {
 	TempScale      TempScale
 }
 
+// TODO: state:deferred 156 Added temperatures for NVidia GPUs (azak-azkaran/master). Crashes on non-nvidia machines.
 func NewTempWidget(tempScale TempScale) *TempWidget {
 	self := &TempWidget{
 		Block:          ui.NewBlock(),
@@ -84,6 +85,7 @@ func (self *TempWidget) Draw(buf *ui.Buffer) {
 			image.Pt(self.Inner.Min.X, self.Inner.Min.Y+y),
 		)
 
+		// TODO: state:merge #184 or #177 degree symbol (BartWillems/master, fleaz/master)
 		switch self.TempScale {
 		case Fahrenheit:
 			buf.SetString(
