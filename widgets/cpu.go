@@ -6,8 +6,7 @@ import (
 	"sync"
 	"time"
 
-	psCpu "github.com/shirou/gopsutil/cpu"
-
+	"github.com/xxxserxxx/gotop/devices"
 	ui "github.com/xxxserxxx/gotop/termui"
 )
 
@@ -22,9 +21,9 @@ type CpuWidget struct {
 }
 
 func NewCpuWidget(updateInterval time.Duration, horizontalScale int, showAverageLoad bool, showPerCpuLoad bool) *CpuWidget {
-	cpuCount, err := psCpu.Counts(false)
+	cpuCount, err := devices.Counts(false)
 	if err != nil {
-		log.Printf("failed to get CPU count from gopsutil: %v", err)
+		log.Printf("failed to get CPU count: %v", err)
 	}
 	formatString := "CPU%1d"
 	if cpuCount > 10 {
@@ -78,9 +77,9 @@ func (b *CpuWidget) Scale(i int) {
 func (self *CpuWidget) update() {
 	if self.ShowAverageLoad {
 		go func() {
-			percent, err := psCpu.Percent(self.updateInterval, false)
+			percent, err := devices.Percent(self.updateInterval, false)
 			if err != nil {
-				log.Printf("failed to get average CPU usage percent from gopsutil: %v. self.updateInterval: %v. percpu: %v", err, self.updateInterval, false)
+				log.Printf("failed to get average CPU usage percent: %v. self.updateInterval: %v. percpu: %v", err, self.updateInterval, false)
 			} else {
 				self.Lock()
 				defer self.Unlock()
@@ -94,12 +93,12 @@ func (self *CpuWidget) update() {
 
 	if self.ShowPerCpuLoad {
 		go func() {
-			percents, err := psCpu.Percent(self.updateInterval, true)
+			percents, err := devices.Percent(self.updateInterval, true)
 			if err != nil {
-				log.Printf("failed to get CPU usage percents from gopsutil: %v. self.updateInterval: %v. percpu: %v", err, self.updateInterval, true)
+				log.Printf("failed to get CPU usage percents: %v. self.updateInterval: %v. percpu: %v", err, self.updateInterval, true)
 			} else {
 				if len(percents) != int(self.CpuCount) {
-					log.Printf("error: number of CPU usage percents from gopsutil doesn't match CPU count. percents: %v. self.Count: %v", percents, self.CpuCount)
+					log.Printf("error: number of CPU usage percents doesn't match CPU count. percents: %v. self.Count: %v", percents, self.CpuCount)
 				} else {
 					self.Lock()
 					defer self.Unlock()
