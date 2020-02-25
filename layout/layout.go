@@ -59,6 +59,8 @@ func Layout(wl layout, c gotop.Config) (*MyGrid, error) {
 // rows as the largest row span object in the row, and produce an uber-row
 // containing all that stuff. It returns a slice without the consumed elements.
 func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) ([]interface{}, [][]widgetRule) {
+	// FIXME: 2\:x\\n2\:y\\n2\:z\\na isn't laying out correctly
+
 	// Recursive function #3.  See the comment in deepFindProc.
 	if len(rowDefs) < 1 {
 		return nil, [][]widgetRule{}

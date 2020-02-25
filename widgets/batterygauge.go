@@ -3,8 +3,7 @@ package widgets
 import (
 	"fmt"
 	"log"
-	//"math"
-	//"strconv"
+
 	"time"
 
 	"github.com/distatus/battery"
@@ -65,12 +64,22 @@ func (self *BatteryGauge) update() {
 	}
 	mx := 0.0
 	cu := 0.0
+	charging := "%d%% ⚡%s"
+	rate := 0.0
 	for _, bat := range bats {
 		mx += bat.Full
 		cu += bat.Current
+		if rate < bat.ChargeRate {
+			rate = bat.ChargeRate
+		}
+		if bat.State == battery.Charging {
+			charging = "%d%% 🔌%s"
+		}
 	}
+	tn := (mx - cu) / rate
+	d, _ := time.ParseDuration(fmt.Sprintf("%fh", tn))
 	self.Percent = int((cu / mx) * 100.0)
-	self.Label = fmt.Sprintf("%d%%", self.Percent)
+	self.Label = fmt.Sprintf(charging, self.Percent, d.Truncate(time.Minute))
 	if self.metric != nil {
 		self.metric.Set(cu / mx)
 	}
