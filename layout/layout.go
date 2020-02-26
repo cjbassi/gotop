@@ -236,7 +236,6 @@ func countMaxHeight(rs [][]widgetRule) int {
 // deepFindProc looks in the UI widget tree for the ProcWidget,
 // and returns it if found or nil if not.
 func deepFindProc(gs interface{}) *widgets.ProcWidget {
-	// FIXME: `procs` layout isn't passing down keystrokes
 	// Recursive function #1.  Recursion is OK here because the number
 	// of UI elements, even in a very complex UI, is going to be
 	// relatively small.
@@ -256,6 +255,15 @@ func deepFindProc(gs interface{}) *widgets.ProcWidget {
 	fs, ok := gs.([]interface{})
 	if ok {
 		for _, g := range fs {
+			v := deepFindProc(g)
+			if v != nil {
+				return v
+			}
+		}
+	}
+	fs2, ok := gs.([][]interface{})
+	if ok {
+		for _, g := range fs2 {
 			v := deepFindProc(g)
 			if v != nil {
 				return v
