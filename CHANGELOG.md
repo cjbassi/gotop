@@ -15,11 +15,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.4.x] - ??
 
-- Added: metrics. If run with the `--export :2112` flag (`:2112` is a port),
-  metrics are exposed as Prometheus metrics on that port and can be HTTP
-  GET-ted.  
-- Added: a battery gauge as a `power` widget; battery as a bar rather than
+### Added
+
+- Device data export via HTTP. If run with the `--export :2112` flag (`:2112`
+  is a port), metrics are exposed as Prometheus metrics on that port.
+- A battery gauge as a `power` widget; battery as a bar rather than
   a histogram.
+- Temp widget displays degree symbol (merged from BartWillems, thanks
+  also fleaz)
+
+### Fixed
+
+- Keys not controlling process widget, #59
 
 ## [3.3.2] - ??
 
