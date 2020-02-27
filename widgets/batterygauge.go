@@ -59,7 +59,7 @@ func (b *BatteryGauge) EnableMetric() {
 func (self *BatteryGauge) update() {
 	bats, err := battery.GetAll()
 	if err != nil {
-		log.Printf("error setting up metrics: %v", err)
+		log.Printf("error setting up batteries: %v", err)
 		return
 	}
 	mx := 0.0

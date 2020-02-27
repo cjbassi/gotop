@@ -34,13 +34,19 @@ func Layout(wl layout, c gotop.Config) (*MyGrid, error) {
 	uiRows := make([][]interface{}, 0)
 	numRows := countNumRows(wl.Rows)
 	var uiRow []interface{}
+	maxHeight := 0
+	heights := make([]int, 0)
+	var h int
 	for len(rowDefs) > 0 {
-		uiRow, rowDefs = processRow(c, numRows, rowDefs)
+		h, uiRow, rowDefs = processRow(c, numRows, rowDefs)
+		maxHeight += h
 		uiRows = append(uiRows, uiRow)
+		heights = append(heights, h)
 	}
 	rgs := make([]interface{}, 0)
-	rh := 1.0 / float64(len(uiRows))
-	for _, ur := range uiRows {
+	for i, ur := range uiRows {
+		rh := float64(heights[i]) / float64(maxHeight)
+		log.Printf("appending row %d with height %d", i, heights[i])
 		rgs = append(rgs, ui.NewRow(rh, ur...))
 	}
 	grid := &MyGrid{ui.NewGrid(), nil, nil}
@@ -58,17 +64,18 @@ func Layout(wl layout, c gotop.Config) (*MyGrid, error) {
 // if there's a row span widget in the row; in this case, it'll consume as many
 // rows as the largest row span object in the row, and produce an uber-row
 // containing all that stuff. It returns a slice without the consumed elements.
-func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) ([]interface{}, [][]widgetRule) {
-	// FIXME: 2\:x\\n2\:y\\n2\:z\\na isn't laying out correctly
+func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) (int, []interface{}, [][]widgetRule) {
+	log.Printf("got %d rows", len(rowDefs))
 
 	// Recursive function #3.  See the comment in deepFindProc.
 	if len(rowDefs) < 1 {
-		return nil, [][]widgetRule{}
+		return 0, nil, [][]widgetRule{}
 	}
 	// The height of the tallest widget in this row; the number of rows that
 	// will be consumed, and the overall height of the row that will be
 	// produced.
 	maxHeight := countMaxHeight([][]widgetRule{rowDefs[0]})
+	log.Printf("maxHeight %d", maxHeight)
 	var processing [][]widgetRule
 	if maxHeight < len(rowDefs) {
 		processing = rowDefs[0:maxHeight]
@@ -77,6 +84,7 @@ func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) ([]interfac
 		processing = rowDefs[0:]
 		rowDefs = [][]widgetRule{}
 	}
+	log.Printf("consuming %d rows, %d remainder rows", len(processing), len(rowDefs))
 	var colWeights []float64
 	var columns [][]interface{}
 	numCols := len(processing[0])
@@ -91,7 +99,7 @@ func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) ([]interfac
 outer:
 	for i, row := range processing {
 		// A definition may fill up the columns before all rows are consumed,
-		// e.g. wid1/2 wid2/2.  This block checks for that and, if it occurs,
+		// e.g. cpu/2 net/2.  This block checks for that and, if it occurs,
 		// prepends the remaining rows to the "remainder" return value.
 		full := true
 		for _, ch := range colHeights {
@@ -102,6 +110,7 @@ outer:
 		}
 		if full {
 			rowDefs = append(processing[i:], rowDefs...)
+			log.Printf("prepended early consumption; remainder now %d rows", len(rowDefs))
 			break
 		}
 		// Not all rows have been consumed, so go ahead and place the row's
@@ -120,7 +129,7 @@ outer:
 			}
 			// If all columns are full, break out, return the row, and continue processing
 			if !placed {
-				rowDefs = processing[i:]
+				rowDefs = append(processing[i:], rowDefs...)
 				break outer
 			}
 		}
@@ -132,7 +141,8 @@ outer:
 		}
 	}
 
-	return uiColumns, rowDefs
+	log.Printf("returning %d columns", len(uiColumns))
+	return maxHeight, uiColumns, rowDefs
 }
 
 type Metric interface {

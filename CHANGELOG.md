@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Keys not controlling process widget, #59
+- The one-column bug, #62
 
 ## [3.3.2] - ??
 
