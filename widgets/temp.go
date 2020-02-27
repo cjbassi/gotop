@@ -7,16 +7,16 @@ import (
 	"time"
 
 	ui "github.com/gizak/termui/v3"
+	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/xxxserxxx/gotop/utils"
 )
 
-type TempScale int
+type TempScale rune
 
 const (
-	Celsius    TempScale = 0
-	Fahrenheit           = 1
-	Disabled             = 2
+	Celsius    TempScale = 'C'
+	Fahrenheit           = 'F'
 )
 
 type TempWidget struct {
@@ -27,6 +27,7 @@ type TempWidget struct {
 	TempLowColor   ui.Color
 	TempHighColor  ui.Color
 	TempScale      TempScale
+	tempsMetric    map[string]prometheus.Gauge
 }
 
 // TODO: state:deferred 156 Added temperatures for NVidia GPUs (azak-azkaran/master). Crashes on non-nvidia machines.
@@ -55,6 +56,20 @@ func NewTempWidget(tempScale TempScale) *TempWidget {
 	}()
 
 	return self
+}
+
+func (self *TempWidget) EnableMetric() {
+	self.tempsMetric = make(map[string]prometheus.Gauge)
+	for k, v := range self.Data {
+		gauge := prometheus.NewGauge(prometheus.GaugeOpts{
+			Namespace: "gotop",
+			Subsystem: "temp",
+			Name:      k,
+		})
+		gauge.Set(float64(v))
+		prometheus.MustRegister(gauge)
+		self.tempsMetric[k] = gauge
+	}
 }
 
 // Custom Draw method instead of inheriting from a generic Widget.
@@ -86,19 +101,15 @@ func (self *TempWidget) Draw(buf *ui.Buffer) {
 		)
 
 		// TODO: state:merge #184 or #177 degree symbol (BartWillems/master, fleaz/master)
-		switch self.TempScale {
-		case Fahrenheit:
-			buf.SetString(
-				fmt.Sprintf("%3dF", self.Data[key]),
-				ui.NewStyle(fg),
-				image.Pt(self.Inner.Max.X-4, self.Inner.Min.Y+y),
-			)
-		case Celsius:
-			buf.SetString(
-				fmt.Sprintf("%3dC", self.Data[key]),
-				ui.NewStyle(fg),
-				image.Pt(self.Inner.Max.X-4, self.Inner.Min.Y+y),
-			)
+		if self.tempsMetric != nil {
+			self.tempsMetric[key].Set(float64(self.Data[key]))
 		}
+		temperature := fmt.Sprintf("%3d°%c", self.Data[key], self.TempScale)
+
+		buf.SetString(
+			temperature,
+			ui.NewStyle(fg),
+			image.Pt(self.Inner.Max.X-(len(temperature)-1), self.Inner.Min.Y+y),
+		)
 	}
 }

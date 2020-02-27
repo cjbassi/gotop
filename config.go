@@ -30,6 +30,7 @@ type Config struct {
 	NetInterface   string
 	Layout         string
 	MaxLogSize     int64
+	ExportPort     string
 }
 
 func Parse(in io.Reader, conf *Config) error {
@@ -109,6 +110,8 @@ func Parse(in io.Reader, conf *Config) error {
 				return err
 			}
 			conf.MaxLogSize = int64(iv)
+		case "export":
+			conf.ExportPort = kv[1]
 		}
 	}
 

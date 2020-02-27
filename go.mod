@@ -13,7 +13,7 @@ require (
 	github.com/mailru/easyjson v0.7.1 // indirect
 	github.com/mattn/go-runewidth v0.0.4
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
-	github.com/prometheus/client_golang v1.4.1 // indirect
+	github.com/prometheus/client_golang v1.4.1
 	github.com/rai-project/config v0.0.0-20190926180509-3bd01e698aad // indirect
 	github.com/rai-project/logger v0.0.0-20190701163301-49978a80bf96 // indirect
 	github.com/rai-project/nvidia-smi v0.0.0-20190730061239-864eb441c9ae

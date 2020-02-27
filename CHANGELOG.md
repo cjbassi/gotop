@@ -15,16 +15,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.4.x] - ??
 
-- Added: metrics. If run with the `--export :2112` flag (`:2112` is a port),
-  metrics are exposed as Prometheus metrics on that port and can be HTTP
-  GET-ted.  
-- Added: a battery gauge as a `power` widget; battery as a bar rather than
+### Added
+
+- Device data export via HTTP. If run with the `--export :2112` flag (`:2112`
+  is a port), metrics are exposed as Prometheus metrics on that port.
+- A battery gauge as a `power` widget; battery as a bar rather than
   a histogram.
+- Temp widget displays degree symbol (merged from BartWillems, thanks
+  also fleaz)
+
+### Fixed
+
+- Keys not controlling process widget, #59
+- The one-column bug, #62
 
 ## [3.3.2] - ??
 
-- Fixes #15, crash caused by battery widget when some accessories have batteries
-- Fixes #57, colors with dashes in the name not found.
+### Fixed
+
+- #15, crash caused by battery widget when some accessories have batteries
+- #57, colors with dashes in the name not found.
 - Also, cjbassi/gotop#127 and cjbassi/gotop#130 were released back in v3.1.0.
 
 ## [3.3.1] - 2020-02-18

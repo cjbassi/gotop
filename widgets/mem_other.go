@@ -18,5 +18,8 @@ func (self *MemWidget) updateSwapMemory() {
 			Used:        swapMemory.Used,
 			UsedPercent: swapMemory.UsedPercent,
 		})
+		if self.swapMetric != nil {
+			self.swapMetric.Set(swapMemory.UsedPercent)
+		}
 	}
 }
