@@ -6,7 +6,8 @@ import (
 	"sync"
 	"time"
 
-	psCpu "github.com/shirou/gopsutil/cpu"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/xxxserxxx/gotop/devices"
 
 	ui "github.com/xxxserxxx/gotop/termui"
 )
@@ -17,26 +18,19 @@ type CpuWidget struct {
 	ShowAverageLoad bool
 	ShowPerCpuLoad  bool
 	updateInterval  time.Duration
-	formatString    string
 	updateLock      sync.Mutex
+	metric          map[string]prometheus.Gauge
 }
 
+var cpuLabels []string
+
 func NewCpuWidget(updateInterval time.Duration, horizontalScale int, showAverageLoad bool, showPerCpuLoad bool) *CpuWidget {
-	cpuCount, err := psCpu.Counts(false)
-	if err != nil {
-		log.Printf("failed to get CPU count from gopsutil: %v", err)
-	}
-	formatString := "CPU%1d"
-	if cpuCount > 10 {
-		formatString = "CPU%02d"
-	}
 	self := &CpuWidget{
 		LineGraph:       ui.NewLineGraph(),
-		CpuCount:        cpuCount,
+		CpuCount:        len(cpuLabels),
 		updateInterval:  updateInterval,
 		ShowAverageLoad: showAverageLoad,
 		ShowPerCpuLoad:  showPerCpuLoad,
-		formatString:    formatString,
 	}
 	self.Title = " CPU Usage "
 	self.HorizontalScale = horizontalScale
@@ -54,9 +48,10 @@ func NewCpuWidget(updateInterval time.Duration, horizontalScale int, showAverage
 	}
 
 	if self.ShowPerCpuLoad {
-		for i := 0; i < int(self.CpuCount); i++ {
-			key := fmt.Sprintf(formatString, i)
-			self.Data[key] = []float64{0}
+		cpus := make(map[string]int)
+		devices.UpdateCPU(cpus, self.updateInterval, self.ShowPerCpuLoad)
+		for k, v := range cpus {
+			self.Data[k] = []float64{float64(v)}
 		}
 	}
 
@@ -71,6 +66,30 @@ func NewCpuWidget(updateInterval time.Duration, horizontalScale int, showAverage
 	return self
 }
 
+func (self *CpuWidget) EnableMetric() {
+	if self.ShowAverageLoad {
+		self.metric = make(map[string]prometheus.Gauge)
+		self.metric["AVRG"] = prometheus.NewGauge(prometheus.GaugeOpts{
+			Subsystem: "cpu",
+			Name:      "avg",
+		})
+	} else {
+		cpus := make(map[string]int)
+		devices.UpdateCPU(cpus, self.updateInterval, self.ShowPerCpuLoad)
+		self.metric = make(map[string]prometheus.Gauge)
+		for key, perc := range cpus {
+			gauge := prometheus.NewGauge(prometheus.GaugeOpts{
+				Namespace: "gotop",
+				Subsystem: "cpu",
+				Name:      key,
+			})
+			gauge.Set(float64(perc))
+			prometheus.MustRegister(gauge)
+			self.metric[key] = gauge
+		}
+	}
+}
+
 func (b *CpuWidget) Scale(i int) {
 	b.LineGraph.HorizontalScale = i
 }
@@ -78,37 +97,41 @@ func (b *CpuWidget) Scale(i int) {
 func (self *CpuWidget) update() {
 	if self.ShowAverageLoad {
 		go func() {
-			percent, err := psCpu.Percent(self.updateInterval, false)
-			if err != nil {
-				log.Printf("failed to get average CPU usage percent from gopsutil: %v. self.updateInterval: %v. percpu: %v", err, self.updateInterval, false)
-			} else {
-				self.Lock()
-				defer self.Unlock()
-				self.updateLock.Lock()
-				defer self.updateLock.Unlock()
-				self.Data["AVRG"] = append(self.Data["AVRG"], percent[0])
-				self.Labels["AVRG"] = fmt.Sprintf("%3.0f%%", percent[0])
+			cpus := make(map[string]int)
+			devices.UpdateCPU(cpus, self.updateInterval, false)
+			self.Lock()
+			defer self.Unlock()
+			self.updateLock.Lock()
+			defer self.updateLock.Unlock()
+			var val float64
+			for _, v := range cpus {
+				val = float64(v)
+				break
+			}
+			self.Data["AVRG"] = append(self.Data["AVRG"], val)
+			self.Labels["AVRG"] = fmt.Sprintf("%3.0f%%", val)
+			if self.metric != nil {
+				self.metric["AVRG"].Set(val)
 			}
 		}()
 	}
 
 	if self.ShowPerCpuLoad {
 		go func() {
-			percents, err := psCpu.Percent(self.updateInterval, true)
-			if err != nil {
-				log.Printf("failed to get CPU usage percents from gopsutil: %v. self.updateInterval: %v. percpu: %v", err, self.updateInterval, true)
-			} else {
-				if len(percents) != int(self.CpuCount) {
-					log.Printf("error: number of CPU usage percents from gopsutil doesn't match CPU count. percents: %v. self.Count: %v", percents, self.CpuCount)
-				} else {
-					self.Lock()
-					defer self.Unlock()
-					self.updateLock.Lock()
-					defer self.updateLock.Unlock()
-					for i, percent := range percents {
-						key := fmt.Sprintf(self.formatString, i)
-						self.Data[key] = append(self.Data[key], percent)
-						self.Labels[key] = fmt.Sprintf("%3.0f%%", percent)
+			cpus := make(map[string]int)
+			devices.UpdateCPU(cpus, self.updateInterval, true)
+			self.Lock()
+			defer self.Unlock()
+			self.updateLock.Lock()
+			defer self.updateLock.Unlock()
+			for key, percent := range cpus {
+				self.Data[key] = append(self.Data[key], float64(percent))
+				self.Labels[key] = fmt.Sprintf("%d%%", percent)
+				if self.metric != nil {
+					if self.metric[key] == nil {
+						log.Printf("no metrics for %s", key)
+					} else {
+						self.metric[key].Set(float64(percent))
 					}
 				}
 			}

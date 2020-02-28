@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/distatus/battery"
+	"github.com/prometheus/client_golang/prometheus"
 
 	ui "github.com/xxxserxxx/gotop/termui"
 )
@@ -15,6 +16,7 @@ import (
 type BatteryWidget struct {
 	*ui.LineGraph
 	updateInterval time.Duration
+	metric         []prometheus.Gauge
 }
 
 func NewBatteryWidget(horizontalScale int) *BatteryWidget {
@@ -39,6 +41,25 @@ func NewBatteryWidget(horizontalScale int) *BatteryWidget {
 	}()
 
 	return self
+}
+
+func (b *BatteryWidget) EnableMetric() {
+	bats, err := battery.GetAll()
+	if err != nil {
+		log.Printf("error setting up metrics: %v", err)
+		return
+	}
+	b.metric = make([]prometheus.Gauge, len(bats))
+	for i, bat := range bats {
+		gauge := prometheus.NewGauge(prometheus.GaugeOpts{
+			Namespace: "gotop",
+			Subsystem: "battery",
+			Name:      fmt.Sprintf("%d", i),
+		})
+		gauge.Set(bat.Current / bat.Full)
+		b.metric[i] = gauge
+		prometheus.MustRegister(gauge)
+	}
 }
 
 func makeId(i int) string {
@@ -74,8 +95,12 @@ func (self *BatteryWidget) update() {
 	}
 	for i, battery := range batteries {
 		id := makeId(i)
-		percentFull := math.Abs(battery.Current/battery.Full) * 100.0
+		perc := battery.Current / battery.Full
+		percentFull := math.Abs(perc) * 100.0
 		self.Data[id] = append(self.Data[id], percentFull)
 		self.Labels[id] = fmt.Sprintf("%3.0f%% %.0f/%.0f", percentFull, math.Abs(battery.Current), math.Abs(battery.Full))
+		if self.metric != nil {
+			self.metric[i].Set(perc)
+		}
 	}
 }

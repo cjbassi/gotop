@@ -31,17 +31,22 @@ var widgetNames []string = []string{"cpu", "disk", "mem", "temp", "net", "procs"
 
 func Layout(wl layout, c gotop.Config) (*MyGrid, error) {
 	rowDefs := wl.Rows
-	uiRows := make([]ui.GridItem, 0)
+	uiRows := make([][]interface{}, 0)
 	numRows := countNumRows(wl.Rows)
-	var uiRow ui.GridItem
+	var uiRow []interface{}
+	maxHeight := 0
+	heights := make([]int, 0)
+	var h int
 	for len(rowDefs) > 0 {
-		uiRow, rowDefs = processRow(c, numRows, rowDefs)
+		h, uiRow, rowDefs = processRow(c, numRows, rowDefs)
+		maxHeight += h
 		uiRows = append(uiRows, uiRow)
+		heights = append(heights, h)
 	}
 	rgs := make([]interface{}, 0)
-	for _, ur := range uiRows {
-		ur.HeightRatio = ur.HeightRatio / float64(numRows)
-		rgs = append(rgs, ur)
+	for i, ur := range uiRows {
+		rh := float64(heights[i]) / float64(maxHeight)
+		rgs = append(rgs, ui.NewRow(rh, ur...))
 	}
 	grid := &MyGrid{ui.NewGrid(), nil, nil}
 	grid.Set(rgs...)
@@ -58,10 +63,10 @@ func Layout(wl layout, c gotop.Config) (*MyGrid, error) {
 // if there's a row span widget in the row; in this case, it'll consume as many
 // rows as the largest row span object in the row, and produce an uber-row
 // containing all that stuff. It returns a slice without the consumed elements.
-func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) (ui.GridItem, [][]widgetRule) {
+func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) (int, []interface{}, [][]widgetRule) {
 	// Recursive function #3.  See the comment in deepFindProc.
 	if len(rowDefs) < 1 {
-		return ui.GridItem{}, [][]widgetRule{}
+		return 0, nil, [][]widgetRule{}
 	}
 	// The height of the tallest widget in this row; the number of rows that
 	// will be consumed, and the overall height of the row that will be
@@ -86,9 +91,10 @@ func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) (ui.GridIte
 		columns = append(columns, make([]interface{}, 0))
 	}
 	colHeights := make([]int, numCols)
+outer:
 	for i, row := range processing {
 		// A definition may fill up the columns before all rows are consumed,
-		// e.g. wid1/2 wid2/2.  This block checks for that and, if it occurs,
+		// e.g. cpu/2 net/2.  This block checks for that and, if it occurs,
 		// prepends the remaining rows to the "remainder" return value.
 		full := true
 		for _, ch := range colHeights {
@@ -101,15 +107,24 @@ func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) (ui.GridIte
 			rowDefs = append(processing[i:], rowDefs...)
 			break
 		}
-		// Not all rows have been consumed, so go ahead and place the row's widgets in columns
-		for _, wid := range row {
-			for j, ch := range colHeights {
-				if ch+wid.Height <= maxHeight {
-					widget := makeWidget(c, wid)
-					columns[j] = append(columns[j], ui.NewRow(float64(wid.Height)/float64(maxHeight), widget))
-					colHeights[j] += wid.Height
+		// Not all rows have been consumed, so go ahead and place the row's
+		// widgets in columns
+		for w, widg := range row {
+			placed := false
+			for k := w; k < len(colHeights); k++ { // there are enough columns
+				ch := colHeights[k]
+				if ch+widg.Height <= maxHeight {
+					widget := makeWidget(c, widg)
+					columns[k] = append(columns[k], ui.NewRow(float64(widg.Height)/float64(maxHeight), widget))
+					colHeights[k] += widg.Height
+					placed = true
 					break
 				}
+			}
+			// If all columns are full, break out, return the row, and continue processing
+			if !placed {
+				rowDefs = append(processing[i:], rowDefs...)
+				break outer
 			}
 		}
 	}
@@ -120,11 +135,15 @@ func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) (ui.GridIte
 		}
 	}
 
-	return ui.NewRow(1.0/float64(numRows), uiColumns...), rowDefs
+	return maxHeight, uiColumns, rowDefs
+}
+
+type Metric interface {
+	EnableMetric()
 }
 
 func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
-	var w interface{}
+	var w Metric
 	switch widRule.Widget {
 	case "cpu":
 		cpu := widgets.NewCpuWidget(c.UpdateInterval, c.GraphHorizontalScale, c.AverageLoad, c.PercpuLoad)
@@ -145,11 +164,19 @@ func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 		}
 		w = cpu
 	case "disk":
-		w = widgets.NewDiskWidget()
+		dw := widgets.NewDiskWidget()
+		w = dw
 	case "mem":
 		m := widgets.NewMemWidget(c.UpdateInterval, c.GraphHorizontalScale)
-		m.LineColors["Main"] = ui.Color(c.Colorscheme.MainMem)
-		m.LineColors["Swap"] = ui.Color(c.Colorscheme.SwapMem)
+		var i int
+		for key, _ := range m.Data {
+			if i >= len(c.Colorscheme.MemLines) {
+				i = 0
+			}
+			color := c.Colorscheme.MemLines[i]
+			m.LineColors[key] = ui.Color(color)
+			i++
+		}
 		w = m
 	case "temp":
 		t := widgets.NewTempWidget(c.TempScale)
@@ -185,9 +212,16 @@ func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 			i++
 		}
 		w = b
+	case "power":
+		b := widgets.NewBatteryGauge()
+		b.BarColor = ui.Color(c.Colorscheme.ProcCursor)
+		w = b
 	default:
 		log.Printf("Invalid widget name %s.  Must be one of %v", widRule.Widget, widgetNames)
 		return ui.NewBlock()
+	}
+	if c.ExportPort != "" {
+		w.EnableMetric()
 	}
 	return w
 }

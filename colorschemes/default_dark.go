@@ -12,8 +12,7 @@ func init() {
 
 		BattLines: []int{4, 3, 2, 1, 5, 6, 7, 8},
 
-		MainMem: 5,
-		SwapMem: 3,
+		MemLines: []int{5, 3, 4, 2, 1, 6, 7, 8, 11},
 
 		ProcCursor: 33,
 

@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
+	"plugin"
 	"strconv"
 	"strings"
 	"syscall"
@@ -14,6 +16,7 @@ import (
 
 	docopt "github.com/docopt/docopt.go"
 	ui "github.com/gizak/termui/v3"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/xxxserxxx/gotop"
 	"github.com/xxxserxxx/gotop/colorschemes"
@@ -25,12 +28,13 @@ import (
 
 const (
 	appName = "gotop"
-	version = "3.3.2"
+	version = "3.4.0"
 
 	graphHorizontalScaleDelta = 3
 	defaultUI                 = "cpu\ndisk/1 2:mem/2\ntemp\nnet procs"
 	minimalUI                 = "cpu\nmem procs"
 	batteryUI                 = "cpu/2 batt/1\ndisk/1 2:mem/2\ntemp\nnet procs"
+	procsUI                   = "cpu 4:procs\ndisk\nmem\nnet"
 )
 
 var (
@@ -41,10 +45,10 @@ var (
 	stderrLogger = log.New(os.Stderr, "", 0)
 )
 
+// TODO: Add tab completion for Linux https://gist.github.com/icholy/5314423
 // TODO: state:merge #135 linux console font (cmatsuoka/console-font)
 // TODO: state:deferred 157 FreeBSD fixes & Nvidia GPU support (kraust/master). Significant CPU use impact for NVidia changes.
 // TODO: Virtual devices from Prometeus metrics @feature
-// TODO: Export Prometheus metrics @feature
 // TODO: state:merge #167 configuration file (jrswab/configFile111)
 func parseArgs(conf *gotop.Config) error {
 	usage := `
@@ -63,11 +67,16 @@ Options:
   -b, --battery           Show battery level widget ('minimal' turns off). (DEPRECATED, use -l battery)
   -B, --bandwidth=bits	  Specify the number of bits per seconds.
   -l, --layout=NAME       Name of layout spec file for the UI.  Looks first in $XDG_CONFIG_HOME/gotop, then as a path.  Use "-" to pipe.
-  -i, --interface=NAME    Select network interface [default: all].
+  -i, --interface=NAME    Select network interface [default: all]. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using !  
+  -x, --export=PORT       Enable metrics for export on the specified port.
+  -X, --extensions=NAMES  Enables the listed extensions.  This is a comma-separated list without the .so suffix. The current and config directories will be searched.  
 
-Several interfaces can be defined using comma separated values.
 
-Interfaces can also be ignored using !
+Built-in layouts:
+  default
+  minimal
+  battery
+  kitchensink
 
 Colorschemes:
   default
@@ -115,8 +124,11 @@ Colorschemes:
 	if args["--minimal"].(bool) {
 		conf.Layout = "minimal"
 	}
-	if val, _ := args["--statusbar"]; val != nil {
-		rateStr, _ := args["--rate"].(string)
+	if val, _ := args["--export"]; val != nil {
+		conf.ExportPort = val.(string)
+	}
+	if val, _ := args["--rate"]; val != nil {
+		rateStr, _ := val.(string)
 		rate, err := strconv.ParseFloat(rateStr, 64)
 		if err != nil {
 			return fmt.Errorf("invalid rate parameter")
@@ -135,6 +147,10 @@ Colorschemes:
 	}
 	if val, _ := args["--interface"]; val != nil {
 		conf.NetInterface, _ = args["--interface"].(string)
+	}
+	if val, _ := args["--extensions"]; val != nil {
+		exs, _ := args["--extensions"].(string)
+		conf.Extensions = strings.Split(exs, ",")
 	}
 
 	return nil
@@ -335,7 +351,7 @@ func makeConfig() gotop.Config {
 		HelpVisible:          false,
 		UpdateInterval:       time.Second,
 		AverageLoad:          false,
-		PercpuLoad:           false,
+		PercpuLoad:           true,
 		TempScale:            w.Celsius,
 		Statusbar:            false,
 		NetInterface:         w.NET_INTERFACE_ALL,
@@ -345,6 +361,7 @@ func makeConfig() gotop.Config {
 	return conf
 }
 
+// TODO: mpd visualizer widget
 func main() {
 	// Set up default config
 	conf := makeConfig()
@@ -379,6 +396,8 @@ func main() {
 		bar = w.NewStatusBar()
 	}
 
+	loadExtensions(conf)
+
 	lstream := getLayout(conf)
 	ly := layout.ParseLayout(lstream)
 	grid, err := layout.Layout(ly, conf)
@@ -400,6 +419,12 @@ func main() {
 		ui.Render(bar)
 	}
 
+	if conf.ExportPort != "" {
+		go func() {
+			http.Handle("/metrics", promhttp.Handler())
+			http.ListenAndServe(conf.ExportPort, nil)
+		}()
+	}
 	eventLoop(conf, grid)
 }
 
@@ -413,8 +438,9 @@ func getLayout(conf gotop.Config) io.Reader {
 		return strings.NewReader(minimalUI)
 	case "battery":
 		return strings.NewReader(batteryUI)
+	case "procs":
+		return strings.NewReader(procsUI)
 	default:
-		log.Printf("layout = %s", conf.Layout)
 		fp := filepath.Join(conf.ConfigDir, conf.Layout)
 		fin, err := os.Open(fp)
 		if err != nil {
@@ -424,5 +450,49 @@ func getLayout(conf gotop.Config) io.Reader {
 			}
 		}
 		return fin
+	}
+}
+
+func loadExtensions(conf gotop.Config) {
+	var hasError bool
+	for _, ex := range conf.Extensions {
+		exf := ex + ".so"
+		fn := exf
+		_, err := os.Stat(fn)
+		if err != nil && os.IsNotExist(err) {
+			log.Printf("no plugin %s found in current directory", fn)
+			fn = filepath.Join(conf.ConfigDir, exf)
+			_, err = os.Stat(fn)
+			if err != nil || os.IsNotExist(err) {
+				hasError = true
+				log.Printf("no plugin %s found in config directory", fn)
+				continue
+			}
+		}
+		p, err := plugin.Open(fn)
+		if err != nil {
+			hasError = true
+			log.Printf(err.Error())
+			continue
+		}
+		init, err := p.Lookup("Init")
+		if err != nil {
+			hasError = true
+			log.Printf(err.Error())
+			continue
+		}
+
+		initFunc, ok := init.(func())
+		if !ok {
+			hasError = true
+			log.Printf(err.Error())
+			continue
+		}
+		initFunc()
+	}
+	if hasError {
+		ui.Close()
+		fmt.Printf("Error initializing requested plugins; check the log file %s\n", filepath.Join(conf.ConfigDir, conf.LogFile))
+		os.Exit(1)
 	}
 }
