@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/xxxserxxx/gotop/colorschemes"
-	"github.com/xxxserxxx/gotop/widgets"
+	"github.com/xxxserxxx/gotop/v3/colorschemes"
+	"github.com/xxxserxxx/gotop/v3/widgets"
 )
 
 // TODO: test, build, release [#119] [#120] [#121]

@@ -18,12 +18,12 @@ import (
 	ui "github.com/gizak/termui/v3"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/xxxserxxx/gotop"
-	"github.com/xxxserxxx/gotop/colorschemes"
-	"github.com/xxxserxxx/gotop/layout"
-	"github.com/xxxserxxx/gotop/logging"
-	"github.com/xxxserxxx/gotop/utils"
-	w "github.com/xxxserxxx/gotop/widgets"
+	"github.com/xxxserxxx/gotop/v3"
+	"github.com/xxxserxxx/gotop/v3/colorschemes"
+	"github.com/xxxserxxx/gotop/v3/layout"
+	"github.com/xxxserxxx/gotop/v3/logging"
+	"github.com/xxxserxxx/gotop/v3/utils"
+	w "github.com/xxxserxxx/gotop/v3/widgets"
 )
 
 const (

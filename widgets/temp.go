@@ -9,8 +9,8 @@ import (
 	ui "github.com/gizak/termui/v3"
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/xxxserxxx/gotop/devices"
-	"github.com/xxxserxxx/gotop/utils"
+	"github.com/xxxserxxx/gotop/v3/devices"
+	"github.com/xxxserxxx/gotop/v3/utils"
 )
 
 type TempScale rune

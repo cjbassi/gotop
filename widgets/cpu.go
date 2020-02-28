@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/xxxserxxx/gotop/devices"
+	"github.com/xxxserxxx/gotop/v3/devices"
 
-	ui "github.com/xxxserxxx/gotop/termui"
+	ui "github.com/xxxserxxx/gotop/v3/termui"
 )
 
 type CpuWidget struct {

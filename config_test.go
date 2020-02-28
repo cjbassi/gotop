@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/xxxserxxx/gotop/widgets"
+	"github.com/xxxserxxx/gotop/v3/widgets"
 )
 
 func TestParse(t *testing.T) {

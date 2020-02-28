@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/xxxserxxx/gotop"
+	"github.com/xxxserxxx/gotop/v3"
 )
 
 func New(c gotop.Config) (io.WriteCloser, error) {

@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/xxxserxxx/gotop/utils"
+	"github.com/xxxserxxx/gotop/v3/utils"
 )
 
 const (

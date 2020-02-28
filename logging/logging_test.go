@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/xxxserxxx/gotop"
+	"github.com/xxxserxxx/gotop/v3"
 )
 
 func TestLogging(t *testing.T) {

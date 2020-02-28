@@ -9,8 +9,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	psNet "github.com/shirou/gopsutil/net"
 
-	ui "github.com/xxxserxxx/gotop/termui"
-	"github.com/xxxserxxx/gotop/utils"
+	ui "github.com/xxxserxxx/gotop/v3/termui"
+	"github.com/xxxserxxx/gotop/v3/utils"
 )
 
 const (
