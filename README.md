@@ -21,7 +21,7 @@ Working and tested on Linux, FreeBSD and macOS. Windows support is planned. Open
 ### Source
 
 ```bash
-go get github.com/xxxserxxx/gotop/v3/cmd/gotop
+go get github.com/xxxserxxx/gotop/cmd/gotop
 ```
 
 ### Prebuilt binaries
@@ -36,7 +36,7 @@ Unzip it and then move `gotop` into your `$PATH` somewhere.  If you're on a Debi
 
 The easiest way is to
 ```
-go get github.com/xxxserxxx/gotop/v3/cmd/gotop
+go get github.com/xxxserxxx/gotop/cmd/gotop
 ```
 
 To create the cross-compile builds, there's a `make.sh` script; it has a lot of dependencies and has only been tested on my computer. When it works, it creates archives for numerous OSes & architectures. There's no testing for whether dependencies are available; it assumes they are and will fail in strange ways when they aren't.
