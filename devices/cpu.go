@@ -1,44 +1,34 @@
 package devices
 
 import (
+	"log"
 	"time"
 )
 
-var deviceCounts []func(bool) (int, error)
-var devicePercents []func(time.Duration, bool) ([]float64, error)
-var numDevices int
+var cpuFuncs []func(map[string]float64, time.Duration, bool) map[string]error
 
-// Counts returns the number of CPUs registered.
+// RegisterCPU adds a new CPU device to the CPU widget. labels returns the
+// names of the devices; they should be as short as possible, and the indexes
+// of the returned slice should align with the values returned by the percents
+// function.  The percents function should return the percent CPU usage of the
+// device(s), sliced over the time duration supplied.  If the bool argument to
+// percents is true, it is expected that the return slice
 //
-// logical tells Counts to count the logical cores; this may be ignored for
-// some devices.
-func Counts(logical bool) (int, error) {
-	var rv int
-	var re error
-	for _, d := range deviceCounts {
-		r, err := d(logical)
-		if err != nil {
-			return rv, re
-		}
-		rv += r
-	}
-	return rv, re
+// labels may be called once and the value cached.  This means the number of
+// cores should not change dynamically.
+func RegisterCPU(f func(map[string]float64, time.Duration, bool) map[string]error) {
+	cpuFuncs = append(cpuFuncs, f)
 }
 
-// Percent calculates the percentage of cpu used either per CPU or combined.
+// CPUPercent calculates the percentage of cpu used either per CPU or combined.
 // Returns one value per cpu, or a single value if percpu is set to false.
-func Percent(interval time.Duration, combined bool) ([]float64, error) {
-	var rvs []float64
-	rvs = make([]float64, 0, numDevices)
-	for _, f := range devicePercents {
-		vs, err := f(interval, combined)
-		if err != nil {
-			return rvs, err
-		}
-		for _, v := range vs {
-			rvs = append(rvs, v)
+func UpdateCPU(cpus map[string]float64, interval time.Duration, logical bool) {
+	for _, f := range cpuFuncs {
+		errs := f(cpus, interval, logical)
+		if errs != nil {
+			for k, e := range errs {
+				log.Printf("%s: %s", k, e)
+			}
 		}
 	}
-	numDevices = len(rvs)
-	return rvs, nil
 }

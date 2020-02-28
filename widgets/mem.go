@@ -2,12 +2,11 @@ package widgets
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
-	psMem "github.com/shirou/gopsutil/mem"
 
+	"github.com/xxxserxxx/gotop/devices"
 	ui "github.com/xxxserxxx/gotop/termui"
 	"github.com/xxxserxxx/gotop/utils"
 )
@@ -15,17 +14,60 @@ import (
 type MemWidget struct {
 	*ui.LineGraph
 	updateInterval time.Duration
-	mainMetric     prometheus.Gauge
-	swapMetric     prometheus.Gauge
+	metrics        map[string]prometheus.Gauge
 }
 
-type MemoryInfo struct {
-	Total       uint64
-	Used        uint64
-	UsedPercent float64
+func NewMemWidget(updateInterval time.Duration, horizontalScale int) *MemWidget {
+	self := &MemWidget{
+		LineGraph:      ui.NewLineGraph(),
+		updateInterval: updateInterval,
+	}
+	self.Title = " Memory Usage "
+	self.HorizontalScale = horizontalScale
+	mems := make(map[string]devices.MemoryInfo)
+	devices.UpdateMem(mems)
+	for name, mem := range mems {
+		self.Data[name] = []float64{mem.UsedPercent}
+		self.renderMemInfo(name, mem)
+	}
+
+	go func() {
+		for range time.NewTicker(self.updateInterval).C {
+			self.Lock()
+			devices.UpdateMem(mems)
+			for label, mi := range mems {
+				self.renderMemInfo(label, mi)
+				if self.metrics != nil && self.metrics[label] != nil {
+					self.metrics[label].Set(mi.UsedPercent)
+				}
+			}
+			self.Unlock()
+		}
+	}()
+
+	return self
 }
 
-func (self *MemWidget) renderMemInfo(line string, memoryInfo MemoryInfo) {
+func (b *MemWidget) EnableMetric() {
+	b.metrics = make(map[string]prometheus.Gauge)
+	mems := make(map[string]devices.MemoryInfo)
+	devices.UpdateMem(mems)
+	for l, mem := range mems {
+		b.metrics[l] = prometheus.NewGauge(prometheus.GaugeOpts{
+			Namespace: "gotop",
+			Subsystem: "memory",
+			Name:      l,
+		})
+		b.metrics[l].Set(mem.UsedPercent)
+		prometheus.MustRegister(b.metrics[l])
+	}
+}
+
+func (b *MemWidget) Scale(i int) {
+	b.LineGraph.HorizontalScale = i
+}
+
+func (self *MemWidget) renderMemInfo(line string, memoryInfo devices.MemoryInfo) {
 	self.Data[line] = append(self.Data[line], memoryInfo.UsedPercent)
 	memoryTotalBytes, memoryTotalMagnitude := utils.ConvertBytes(memoryInfo.Total)
 	memoryUsedBytes, memoryUsedMagnitude := utils.ConvertBytes(memoryInfo.Used)
@@ -36,73 +78,4 @@ func (self *MemWidget) renderMemInfo(line string, memoryInfo MemoryInfo) {
 		memoryTotalBytes,
 		memoryTotalMagnitude,
 	)
-}
-
-func (self *MemWidget) updateMainMemory() {
-	mainMemory, err := psMem.VirtualMemory()
-	if err != nil {
-		log.Printf("failed to get main memory info from gopsutil: %v", err)
-	} else {
-		self.renderMemInfo("Main", MemoryInfo{
-			Total:       mainMemory.Total,
-			Used:        mainMemory.Used,
-			UsedPercent: mainMemory.UsedPercent,
-		})
-		if self.mainMetric != nil {
-			self.mainMetric.Set(mainMemory.UsedPercent)
-		}
-	}
-}
-
-func NewMemWidget(updateInterval time.Duration, horizontalScale int) *MemWidget {
-	self := &MemWidget{
-		LineGraph:      ui.NewLineGraph(),
-		updateInterval: updateInterval,
-	}
-	self.Title = " Memory Usage "
-	self.HorizontalScale = horizontalScale
-	self.Data["Main"] = []float64{0}
-	self.Data["Swap"] = []float64{0}
-
-	self.updateMainMemory()
-	self.updateSwapMemory()
-
-	go func() {
-		for range time.NewTicker(self.updateInterval).C {
-			self.Lock()
-			self.updateMainMemory()
-			self.updateSwapMemory()
-			self.Unlock()
-		}
-	}()
-
-	return self
-}
-
-func (b *MemWidget) EnableMetric() {
-	b.mainMetric = prometheus.NewGauge(prometheus.GaugeOpts{
-		Namespace: "gotop",
-		Subsystem: "memory",
-		Name:      "main",
-	})
-	mainMemory, err := psMem.VirtualMemory()
-	if err == nil {
-		b.mainMetric.Set(mainMemory.UsedPercent)
-	}
-	prometheus.MustRegister(b.mainMetric)
-
-	b.swapMetric = prometheus.NewGauge(prometheus.GaugeOpts{
-		Namespace: "gotop",
-		Subsystem: "memory",
-		Name:      "swap",
-	})
-	swapMemory, err := psMem.SwapMemory()
-	if err == nil {
-		b.swapMetric.Set(swapMemory.UsedPercent)
-	}
-	prometheus.MustRegister(b.swapMetric)
-}
-
-func (b *MemWidget) Scale(i int) {
-	b.LineGraph.HorizontalScale = i
 }

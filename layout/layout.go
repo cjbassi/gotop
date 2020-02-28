@@ -46,7 +46,6 @@ func Layout(wl layout, c gotop.Config) (*MyGrid, error) {
 	rgs := make([]interface{}, 0)
 	for i, ur := range uiRows {
 		rh := float64(heights[i]) / float64(maxHeight)
-		log.Printf("appending row %d with height %d", i, heights[i])
 		rgs = append(rgs, ui.NewRow(rh, ur...))
 	}
 	grid := &MyGrid{ui.NewGrid(), nil, nil}
@@ -65,8 +64,6 @@ func Layout(wl layout, c gotop.Config) (*MyGrid, error) {
 // rows as the largest row span object in the row, and produce an uber-row
 // containing all that stuff. It returns a slice without the consumed elements.
 func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) (int, []interface{}, [][]widgetRule) {
-	log.Printf("got %d rows", len(rowDefs))
-
 	// Recursive function #3.  See the comment in deepFindProc.
 	if len(rowDefs) < 1 {
 		return 0, nil, [][]widgetRule{}
@@ -75,7 +72,6 @@ func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) (int, []int
 	// will be consumed, and the overall height of the row that will be
 	// produced.
 	maxHeight := countMaxHeight([][]widgetRule{rowDefs[0]})
-	log.Printf("maxHeight %d", maxHeight)
 	var processing [][]widgetRule
 	if maxHeight < len(rowDefs) {
 		processing = rowDefs[0:maxHeight]
@@ -84,7 +80,6 @@ func processRow(c gotop.Config, numRows int, rowDefs [][]widgetRule) (int, []int
 		processing = rowDefs[0:]
 		rowDefs = [][]widgetRule{}
 	}
-	log.Printf("consuming %d rows, %d remainder rows", len(processing), len(rowDefs))
 	var colWeights []float64
 	var columns [][]interface{}
 	numCols := len(processing[0])
@@ -110,7 +105,6 @@ outer:
 		}
 		if full {
 			rowDefs = append(processing[i:], rowDefs...)
-			log.Printf("prepended early consumption; remainder now %d rows", len(rowDefs))
 			break
 		}
 		// Not all rows have been consumed, so go ahead and place the row's
@@ -141,7 +135,6 @@ outer:
 		}
 	}
 
-	log.Printf("returning %d columns", len(uiColumns))
 	return maxHeight, uiColumns, rowDefs
 }
 

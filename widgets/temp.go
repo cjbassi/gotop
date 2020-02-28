@@ -9,6 +9,7 @@ import (
 	ui "github.com/gizak/termui/v3"
 	"github.com/prometheus/client_golang/prometheus"
 
+	"github.com/xxxserxxx/gotop/devices"
 	"github.com/xxxserxxx/gotop/utils"
 )
 
@@ -100,7 +101,6 @@ func (self *TempWidget) Draw(buf *ui.Buffer) {
 			image.Pt(self.Inner.Min.X, self.Inner.Min.Y+y),
 		)
 
-		// TODO: state:merge #184 or #177 degree symbol (BartWillems/master, fleaz/master)
 		if self.tempsMetric != nil {
 			self.tempsMetric[key].Set(float64(self.Data[key]))
 		}
@@ -111,5 +111,16 @@ func (self *TempWidget) Draw(buf *ui.Buffer) {
 			ui.NewStyle(fg),
 			image.Pt(self.Inner.Max.X-(len(temperature)-1), self.Inner.Min.Y+y),
 		)
+	}
+}
+
+func (self *TempWidget) update() {
+	devices.UpdateTemps(self.Data)
+	for name, val := range self.Data {
+		if self.TempScale == Fahrenheit {
+			self.Data[name] = utils.CelsiusToFahrenheit(val)
+		} else {
+			self.Data[name] = val
+		}
 	}
 }

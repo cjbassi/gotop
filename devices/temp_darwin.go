@@ -1,22 +1,16 @@
 // +build darwin
 
-package widgets
+package devices
 
 // #cgo LDFLAGS: -framework IOKit
 // #include "include/smc.c"
 import "C"
-import (
-	"log"
 
-	"github.com/xxxserxxx/gotop/utils"
-)
-
-type TemperatureStat struct {
-	SensorKey   string  `json:"sensorKey"`
-	Temperature float64 `json:"sensorTemperature"`
+func init() {
+	RegisterTemp(update)
 }
 
-func SensorsTemperatures() ([]TemperatureStat, error) {
+func update(temps map[string]int) map[string]error {
 	temperatureKeys := map[string]string{
 		C.AMBIENT_AIR_0:          "ambient_air_0",
 		C.AMBIENT_AIR_1:          "ambient_air_1",
@@ -41,34 +35,12 @@ func SensorsTemperatures() ([]TemperatureStat, error) {
 		C.WIRELESS_MODULE:        "wireless_module",
 	}
 
-	var temperatures []TemperatureStat
-
 	C.open_smc()
 	defer C.close_smc()
 
 	for key, val := range temperatureKeys {
-		temperatures = append(temperatures, TemperatureStat{
-			SensorKey:   val,
-			Temperature: float64(C.get_tmp(C.CString(key), C.CELSIUS)),
-		})
+		temps[val] = int(C.get_tmp(C.CString(key), C.CELSIUS))
 	}
-	return temperatures, nil
-}
 
-func (self *TempWidget) update() {
-	sensors, err := SensorsTemperatures()
-	if err != nil {
-		log.Printf("failed to get sensors from CGO: %v", err)
-		return
-	}
-	for _, sensor := range sensors {
-		if sensor.Temperature != 0 {
-			switch self.TempScale {
-			case Fahrenheit:
-				self.Data[sensor.SensorKey] = utils.CelsiusToFahrenheit(int(sensor.Temperature))
-			case Celsius:
-				self.Data[sensor.SensorKey] = int(sensor.Temperature)
-			}
-		}
-	}
+	return nil
 }

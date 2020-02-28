@@ -92,6 +92,7 @@ function cdarwinz() {
 		cd darwin
 	else
 		cd darwin
+		git checkout -- .
 		git pull
 	fi
 	export CGO_ENABLED=1

@@ -1,32 +1,29 @@
 // +build linux
 
-package widgets
+package devices
 
 import (
-	"log"
 	"strings"
 
 	psHost "github.com/shirou/gopsutil/host"
-
-	"github.com/xxxserxxx/gotop/utils"
 )
 
-func (self *TempWidget) update() {
+func init() {
+	RegisterTemp(getTemps)
+}
+
+func getTemps(temps map[string]int) map[string]error {
 	sensors, err := psHost.SensorsTemperatures()
 	if err != nil {
-		log.Printf("error received from gopsutil: %v", err)
+		return map[string]error{"psHost": err}
 	}
 	for _, sensor := range sensors {
 		// only sensors with input in their name are giving us live temp info
 		if strings.Contains(sensor.SensorKey, "input") && sensor.Temperature != 0 {
 			// removes '_input' from the end of the sensor name
 			label := sensor.SensorKey[:strings.Index(sensor.SensorKey, "_input")]
-			switch self.TempScale {
-			case Fahrenheit:
-				self.Data[label] = utils.CelsiusToFahrenheit(int(sensor.Temperature))
-			case Celsius:
-				self.Data[label] = int(sensor.Temperature)
-			}
+			temps[label] = int(sensor.Temperature)
 		}
 	}
+	return nil
 }
