@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	f := func(cpus map[string]float64, iv time.Duration, l bool) map[string]error {
+	f := func(cpus map[string]int, iv time.Duration, l bool) map[string]error {
 		cpuCount, err := psCpu.Counts(l)
 		if err != nil {
 			return nil
@@ -23,7 +23,7 @@ func init() {
 		}
 		for i := 0; i < len(vals); i++ {
 			key := fmt.Sprintf(formatString, i)
-			cpus[key] = vals[i]
+			cpus[key] = int(vals[i])
 		}
 		return nil
 	}

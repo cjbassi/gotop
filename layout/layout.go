@@ -168,8 +168,15 @@ func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 		w = dw
 	case "mem":
 		m := widgets.NewMemWidget(c.UpdateInterval, c.GraphHorizontalScale)
-		m.LineColors["Main"] = ui.Color(c.Colorscheme.MainMem)
-		m.LineColors["Swap"] = ui.Color(c.Colorscheme.SwapMem)
+		var i int
+		for key, _ := range m.Data {
+			if i >= len(c.Colorscheme.MemLines) {
+				i = 0
+			}
+			color := c.Colorscheme.MemLines[i]
+			m.LineColors[key] = ui.Color(color)
+			i++
+		}
 		w = m
 	case "temp":
 		t := widgets.NewTempWidget(c.TempScale)

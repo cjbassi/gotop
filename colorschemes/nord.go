@@ -25,8 +25,7 @@ func init() {
 
 		BattLines: []int{4, 3, 2, 1, 5, 6, 7, 8},
 
-		MainMem: 172, // Orange
-		SwapMem: 221, // yellow
+		MemLines: []int{172, 221, 4, 3, 2, 1, 5, 6, 7, 8},
 
 		ProcCursor: 31, // blue (nord9)
 

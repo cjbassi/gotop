@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"plugin"
 	"strconv"
 	"strings"
 	"syscall"
@@ -33,6 +34,7 @@ const (
 	defaultUI                 = "cpu\ndisk/1 2:mem/2\ntemp\nnet procs"
 	minimalUI                 = "cpu\nmem procs"
 	batteryUI                 = "cpu/2 batt/1\ndisk/1 2:mem/2\ntemp\nnet procs"
+	procsUI                   = "cpu 4:procs\ndisk\nmem\nnet"
 )
 
 var (
@@ -65,12 +67,16 @@ Options:
   -b, --battery           Show battery level widget ('minimal' turns off). (DEPRECATED, use -l battery)
   -B, --bandwidth=bits	  Specify the number of bits per seconds.
   -l, --layout=NAME       Name of layout spec file for the UI.  Looks first in $XDG_CONFIG_HOME/gotop, then as a path.  Use "-" to pipe.
-  -i, --interface=NAME    Select network interface [default: all].
+  -i, --interface=NAME    Select network interface [default: all]. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using !  
   -x, --export=PORT       Enable metrics for export on the specified port.
+  -X, --extensions=NAMES  Enables the listed extensions.  This is a comma-separated list without the .so suffix. The current and config directories will be searched.  
 
-Several interfaces can be defined using comma separated values.
 
-Interfaces can also be ignored using !
+Built-in layouts:
+  default
+  minimal
+  battery
+  kitchensink
 
 Colorschemes:
   default
@@ -141,6 +147,10 @@ Colorschemes:
 	}
 	if val, _ := args["--interface"]; val != nil {
 		conf.NetInterface, _ = args["--interface"].(string)
+	}
+	if val, _ := args["--extensions"]; val != nil {
+		exs, _ := args["--extensions"].(string)
+		conf.Extensions = strings.Split(exs, ",")
 	}
 
 	return nil
@@ -386,6 +396,8 @@ func main() {
 		bar = w.NewStatusBar()
 	}
 
+	loadExtensions(conf)
+
 	lstream := getLayout(conf)
 	ly := layout.ParseLayout(lstream)
 	grid, err := layout.Layout(ly, conf)
@@ -426,6 +438,8 @@ func getLayout(conf gotop.Config) io.Reader {
 		return strings.NewReader(minimalUI)
 	case "battery":
 		return strings.NewReader(batteryUI)
+	case "procs":
+		return strings.NewReader(procsUI)
 	default:
 		fp := filepath.Join(conf.ConfigDir, conf.Layout)
 		fin, err := os.Open(fp)
@@ -436,5 +450,49 @@ func getLayout(conf gotop.Config) io.Reader {
 			}
 		}
 		return fin
+	}
+}
+
+func loadExtensions(conf gotop.Config) {
+	var hasError bool
+	for _, ex := range conf.Extensions {
+		exf := ex + ".so"
+		fn := exf
+		_, err := os.Stat(fn)
+		if err != nil && os.IsNotExist(err) {
+			log.Printf("no plugin %s found in current directory", fn)
+			fn = filepath.Join(conf.ConfigDir, exf)
+			_, err = os.Stat(fn)
+			if err != nil || os.IsNotExist(err) {
+				hasError = true
+				log.Printf("no plugin %s found in config directory", fn)
+				continue
+			}
+		}
+		p, err := plugin.Open(fn)
+		if err != nil {
+			hasError = true
+			log.Printf(err.Error())
+			continue
+		}
+		init, err := p.Lookup("Init")
+		if err != nil {
+			hasError = true
+			log.Printf(err.Error())
+			continue
+		}
+
+		initFunc, ok := init.(func())
+		if !ok {
+			hasError = true
+			log.Printf(err.Error())
+			continue
+		}
+		initFunc()
+	}
+	if hasError {
+		ui.Close()
+		fmt.Printf("Error initializing requested plugins; check the log file %s\n", filepath.Join(conf.ConfigDir, conf.LogFile))
+		os.Exit(1)
 	}
 }

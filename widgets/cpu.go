@@ -48,10 +48,10 @@ func NewCpuWidget(updateInterval time.Duration, horizontalScale int, showAverage
 	}
 
 	if self.ShowPerCpuLoad {
-		cpus := make(map[string]float64)
+		cpus := make(map[string]int)
 		devices.UpdateCPU(cpus, self.updateInterval, self.ShowPerCpuLoad)
 		for k, v := range cpus {
-			self.Data[k] = []float64{v}
+			self.Data[k] = []float64{float64(v)}
 		}
 	}
 
@@ -74,7 +74,7 @@ func (self *CpuWidget) EnableMetric() {
 			Name:      "avg",
 		})
 	} else {
-		cpus := make(map[string]float64)
+		cpus := make(map[string]int)
 		devices.UpdateCPU(cpus, self.updateInterval, self.ShowPerCpuLoad)
 		self.metric = make(map[string]prometheus.Gauge)
 		for key, perc := range cpus {
@@ -83,7 +83,7 @@ func (self *CpuWidget) EnableMetric() {
 				Subsystem: "cpu",
 				Name:      key,
 			})
-			gauge.Set(perc)
+			gauge.Set(float64(perc))
 			prometheus.MustRegister(gauge)
 			self.metric[key] = gauge
 		}
@@ -97,7 +97,7 @@ func (b *CpuWidget) Scale(i int) {
 func (self *CpuWidget) update() {
 	if self.ShowAverageLoad {
 		go func() {
-			cpus := make(map[string]float64)
+			cpus := make(map[string]int)
 			devices.UpdateCPU(cpus, self.updateInterval, false)
 			self.Lock()
 			defer self.Unlock()
@@ -105,7 +105,7 @@ func (self *CpuWidget) update() {
 			defer self.updateLock.Unlock()
 			var val float64
 			for _, v := range cpus {
-				val = v
+				val = float64(v)
 				break
 			}
 			self.Data["AVRG"] = append(self.Data["AVRG"], val)
@@ -118,20 +118,20 @@ func (self *CpuWidget) update() {
 
 	if self.ShowPerCpuLoad {
 		go func() {
-			cpus := make(map[string]float64)
+			cpus := make(map[string]int)
 			devices.UpdateCPU(cpus, self.updateInterval, true)
 			self.Lock()
 			defer self.Unlock()
 			self.updateLock.Lock()
 			defer self.updateLock.Unlock()
 			for key, percent := range cpus {
-				self.Data[key] = append(self.Data[key], percent)
-				self.Labels[key] = fmt.Sprintf("%3.0f%%", percent)
+				self.Data[key] = append(self.Data[key], float64(percent))
+				self.Labels[key] = fmt.Sprintf("%d%%", percent)
 				if self.metric != nil {
 					if self.metric[key] == nil {
 						log.Printf("no metrics for %s", key)
 					} else {
-						self.metric[key].Set(percent)
+						self.metric[key].Set(float64(percent))
 					}
 				}
 			}
