@@ -28,7 +28,7 @@ import (
 
 const (
 	appName = "gotop"
-	version = "3.4.3"
+	version = "3.4.4"
 
 	graphHorizontalScaleDelta = 3
 	defaultUI                 = "cpu\ndisk/1 2:mem/2\ntemp\nnet procs"
