@@ -16,10 +16,7 @@ jobs:
         env:
           COMPRESS_FILES: true
 
-      - id: getfilename
-        run: echo "::set-output name=file::$(ls .release/*.tgz .release/*.zip)"
-
       - uses: actions/upload-artifact@v1
         with:
           name: Binaries
-          path: ${{ steps.getfilename.outputs.file }}
+          path: .release
