@@ -1,4 +1,4 @@
-name: Build Go binaries
+name: Create pre-release
 
 on: 
   push:
@@ -20,11 +20,16 @@ jobs:
         env:
           COMPRESS_FILES: true
 
+      - name: Get tag name
+        shell: bash
+        run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF##*/})"
+        id: tag_name
+
       - name: Pre-release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ GITHUB_REF }}"
+          automatic_release_tag: "${{ steps.tag_name.outputs.tag }}"
           draft: true
           title: "Release candidate"
           files: |
