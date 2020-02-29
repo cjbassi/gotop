@@ -14,6 +14,9 @@ The original author of gotop has re-implemented the application in Rust, as [yto
 
 </div>
 
+![](https://github.com/xxxserxxx/gotop/workflows/build/badge.svg)
+![](https://github.com/xxxserxxx/gotop/workflows/prerelease/badge.svg)
+
 ## Installation
 
 Working and tested on Linux, FreeBSD and macOS. Windows support is planned. OpenBSD works with some caveats.
@@ -198,3 +201,7 @@ Interfaces can also be ignored using `!`
 - [shirou/gopsutil](https://github.com/shirou/gopsutil)
 - [goreleaser/nfpm](https://github.com/goreleaser/nfpm)
 - [distatus/battery](https://github.com/distatus/battery)
+
+## Stargazers over time
+
+[![Stargazers over time](https://starcharts.herokuapp.com/xxxserxxx/gotop.svg)](https://starcharts.herokuapp.com/xxxserxxx/gotop)
