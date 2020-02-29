@@ -1,6 +1,10 @@
 name: Build Go binaries
 
-on: push
+on: 
+  push:
+    tags:
+      - "v*"
+
 
 jobs:
   build:
@@ -16,7 +20,13 @@ jobs:
         env:
           COMPRESS_FILES: true
 
-      - uses: actions/upload-artifact@v1
+      - name: Pre-release
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          name: Binaries
-          path: .release
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "${{ GITHUB_REF }}"
+          draft: true
+          title: "Release candidate"
+          files: |
+            .release/*.tgz
+            .release/*.zip
