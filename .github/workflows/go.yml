@@ -16,9 +16,6 @@ jobs:
         env:
           COMPRESS_FILES: true
 
-      - id: getfilename
-        run: echo "::set-output name=file::$(ls /github/workspace/.release/*.tgz /github/workspace/.release/*.zip)"
-
       - uses: actions/upload-artifact@v1
         with:
-          path: ${{ steps.getfilename.outputs.file }}
+          path: /github/workspace/.release
