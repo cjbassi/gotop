@@ -18,4 +18,5 @@ jobs:
 
       - uses: actions/upload-artifact@v1
         with:
+          name: Binaries
           path: /github/workspace/.release
