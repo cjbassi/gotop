@@ -14,33 +14,56 @@ The original author of gotop has re-implemented the application in Rust, as [yto
 
 </div>
 
-![](https://github.com/xxxserxxx/gotop/workflows/build/badge.svg)
-![](https://github.com/xxxserxxx/gotop/workflows/prerelease/badge.svg)
-
 ## Installation
 
-Working and tested on Linux, FreeBSD and macOS. Windows support is planned. OpenBSD works with some caveats.
+![](https://github.com/xxxserxxx/gotop/workflows/Build%20Go%20binaries/badge.svg)
+![](https://github.com/xxxserxxx/gotop/workflows/Create%20pre-release/badge.svg)
 
-### Source
+Working and tested on Linux, FreeBSD and MacOS. Windows binaries are provided, but have limited testing. OpenBSD works with some caveats; cross-compiling is difficult and binaries are not provided.
 
-```bash
-go get github.com/xxxserxxx/gotop/cmd/gotop
+### Arch
+
+AUR contains entries for `gotop` and `gotop-bin`.  `gotop-git` still points at the old, unmaintained, repository for the moment.
+
+```
+yay -S gotop-bin
+```
+
+### OSX
+
+gotop can be installed with [Homebrew](https://brew.sh/); you'll need to tap the recipe. If you'd previously tapped cjbassi's recipe, you'll want to untap that first.
+
+```
+brew untap cjbassi/gotop    # If previously tapped
+brew tap xxxserxxx/gotop
+brew install gotop
 ```
 
 ### Prebuilt binaries
 
-**Note**: Doesn't require Go.
+This doesn't require Go, is easy, and works across distributions. You have to manually upgrade the executable yourself, though.
 
-Visit [here](https://github.com/xxxserxxx/gotop/releases) with your web browser and download a version that works for you.
+Visit [the releases page](https://github.com/xxxserxxx/gotop/releases) with your web browser and download the appropriate file for your OS.  Unzip it (the archive contains a single file) and then move the resulting `gotop` binary into your `$PATH` somewhere.  If you're on a Debian or Redhat derivative, you can download an `.rpm` or `.deb` and install that.
 
-Unzip it and then move `gotop` into your `$PATH` somewhere.  If you're on a Debian or Redhat derivative, you can download an `.rpm` or `.deb` to install.
+### Source
+
+This requires Go, and at the moment, Go 1.14 specifically.
+
+```bash
+go get -u github.com/xxxserxxx/gotop/cmd/gotop
+```
 
 ### Building
 
-The easiest way is to
+This is the download & compile approach.
+
 ```
-go get github.com/xxxserxxx/gotop/cmd/gotop
+git clone https://github.com/xxxserxxx/gotop.git
+cd gotop
+go build -o gotop ./cmd/gotop
 ```
+
+Move `gotop` to somewhere in your `$PATH`.
 
 To create the cross-compile builds, there's a `make.sh` script; it has a lot of dependencies and has only been tested on my computer. When it works, it creates archives for numerous OSes & architectures. There's no testing for whether dependencies are available; it assumes they are and will fail in strange ways when they aren't.
 
@@ -51,6 +74,10 @@ To create the cross-compile builds, there's a `make.sh` script; it has a lot of 
 - docker (for darwin)
 
 It is *just* smart enough to not rebuild things when it doesn't have to, and it tries to keep the darwin docker container around so it's not building from scratch every time. There are no guarantees.
+
+#### Note
+
+`make.sh` will probably go away soon as the project has shifted to using the github workflow engine to do builds.
 
 ## Usage
 
@@ -188,8 +215,10 @@ Interfaces can also be ignored using `!`
 
 #### "-l battery"
 <img src="./assets/screenshots/battery.png" />
+
 #### "-l minimal"
 <img src="./assets/screenshots/minimal.png" />
+
 #### Custom (layouts/procs)
 <img src="./assets/screenshots/procs.png" />
 
