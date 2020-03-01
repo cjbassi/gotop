@@ -1,0 +1,26 @@
+# run: |
+#    curl -XPOST -u "${{ secrets.PAT_USERNAME}}:${{secrets.PAT_TOKEN}}" -H "Accept: application/vnd.github.everest-preview+json"  -H "Content-Type: application/json" https://api.github.com/repos/YOURNAME/APPLICATION_NAME/dispatches --data '{"event_type": "update", "client_payload": {"tag": GITHUB_REF }}'
+
+name: Post release triggers
+
+on: 
+  release:
+    types: [published]
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get tag name
+        shell: bash
+        run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF##*/})"
+        id: tag_name
+
+      - name: Update Homebrew recipe
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          repository: xxxserxxx/homebrew-gotop
+          event-type: my-event
+          client-payload: '{"tag": "${{ steps.tag_name.outputs.tag }}"}'
