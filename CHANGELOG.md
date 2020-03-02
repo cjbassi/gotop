@@ -13,21 +13,77 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
-## [Unreleased]
+## [3.4.5] - ??
 
 ### Added
 
-- Add cli option to select network interface [#20] [#144]
-- Add snap package [#119] [#120] [#121]
-- Process list scroll indicator [#127] [#130]
-- Preliminary OpenBSD support [#112] [#117] [#118]
+- Device data export via HTTP. If run with the `--export :2112` flag (`:2112`
+  is a port), metrics are exposed as Prometheus metrics on that port.
+- A battery gauge as a `power` widget; battery as a bar rather than
+  a histogram.
+- Temp widget displays degree symbol (merged from BartWillems, thanks
+  also fleaz)
+- Support for (device) plugins, and abstracting devices from widgets. This
+  allows adding functionality without adding bulk.
 
 ### Fixed
 
-- Fix process localization issues on macOS [#124]
-- Fix miscellaneous issues on FreeBSD [#134] [#145]
-- Fix spelling of "Tx" to "TX" [#129]
-- Rerender statusbar on every tick [#128]
+- Keys not controlling process widget, #59
+- The one-column bug, #62
+
+## [3.3.2] - 2020-02-26
+
+Bugfix release.
+
+### Fixed
+
+- #15, crash caused by battery widget when some accessories have batteries
+- #57, colors with dashes in the name not found.
+- Also, cjbassi/gotop#127 and cjbassi/gotop#130 were released back in v3.1.0.
+
+## [3.3.1] - 2020-02-18
+
+- Fixed: Fixes a layout bug where, if columns filled up early, widgets would be
+  consumed but not displayed.
+- Fixed: Rolled back dependency update on github.com/shirou/gopsutil; the new version
+  has a bug that causes cores to not be seen.
+
+## [3.3.0] - 2020-02-17
+
+- Added: Logs are now rotated. Settings are currently hard-coded at 4 files of 5MB
+  each, so logs shouldn't take up more than 20MB.  I'm going to see how many
+  complain about wanting to configure these settings before I add code to do
+  that.
+- Added: Config file support. \$XDG_CONFIG_HOME/gotop/gotop.conf can now
+  contain any field in Config.  Syntax is simply KEY=VALUE.  Values in config
+  file are overridden by command-line arguments (although, there's a weakness
+  in that there's no way to disable boolean fields enabled in the config).
+- Changed: Colorscheme registration is changed to be less hard-coded.
+  Colorschemes can now be created and added to the repo, without having to also
+  add hard-coded references elsewhere.
+- Changed: Minor code refactoring to support Config file changes has resulted
+  in better isolation.
+
+## [3.2.0] - 2020-02-14
+
+Bug fixes & pull requests
+
+- Fixed: Rowspan in a column loses widgets in later columns
+- Fixed: Merged pull request for README clean-ups (theverything:add-missing-option-to-readme)
+- Added: Merge Nord color scheme (jrswab:nordColorScheme)
+- Added: Merge support for multiple (and filtering) network interfaces (mattLLVW:feature/network_interface_list)
+- Added: Merge filtering subprocesses by substring (rephorm:filter)
+
+## [3.1.0] - 2020-02-13
+
+Re-homed the project after the original fork (trunk?) was marked as
+unmaintained by cjbassi.
+
+-  Changed: Merges @HowJMay spelling fixes
+-  Added: Merges @markuspeloquin solarized themes
+-  Added: Merges @jrswab additional kill terms
+-  Added: Adds the ability to lay out the UI using a text file
+-  Changed: the project filesystem layout to be more idiomatic
 
 ## [3.0.0] - 2019-02-22
 

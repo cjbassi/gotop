@@ -1,0 +1,4 @@
+3:cpu/2     3:mem/1
+4:temp/1    3:disk/2
+            power
+3:net       3:procs

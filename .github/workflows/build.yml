@@ -1,0 +1,15 @@
+name: Build Go binaries
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Compile
+        uses: xxxserxxx/actions/golang-build@master
+        with:
+          args: darwin/amd64/1 darwin/386/1 linux/amd64 linux/386 linux/arm64 linux/arm7 linux/arm6 linux/arm5 windows/amd64 windows/386 freebsd/amd64 freebsd/386

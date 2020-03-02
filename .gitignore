@@ -1,5 +1,5 @@
 dist/
-gotop*
+/gotop
 
 # snap packaging specific
 /parts/
@@ -8,3 +8,6 @@ gotop*
 /*.snap
 /snap/.snapcraft/
 /*_source.tar.bz2
+
+build/gotop_*
+build.log

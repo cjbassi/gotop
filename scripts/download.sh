@@ -8,9 +8,9 @@ function get_latest_release {
 }
 
 function download {
-    RELEASE=$(get_latest_release 'cjbassi/gotop')
+    RELEASE=$(get_latest_release 'xxxserxxx/gotop')
     ARCHIVE=gotop_${RELEASE}_${1}.tgz
-    curl -LO https://github.com/cjbassi/gotop/releases/download/${RELEASE}/${ARCHIVE}
+    curl -LO https://github.com/xxxserxxx/gotop/releases/download/${RELEASE}/${ARCHIVE}
     tar xf ${ARCHIVE}
     rm ${ARCHIVE}
 }

@@ -1,0 +1,37 @@
+name: Create pre-release
+
+on: 
+  push:
+    tags:
+      - "v*"
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Make binaries
+        uses: xxxserxxx/actions/golang-build@master
+        with:
+          args: darwin/amd64/1 darwin/386/1 linux/amd64 linux/386 linux/arm64 linux/arm7 linux/arm6 linux/arm5 windows/amd64 windows/386 freebsd/amd64 freebsd/386
+        env:
+          COMPRESS_FILES: true
+
+      - name: Get tag name
+        shell: bash
+        run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF##*/})"
+        id: tag_name
+
+      - name: Pre-release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "${{ steps.tag_name.outputs.tag }}"
+          draft: true
+          title: "Release candidate"
+          files: |
+            .release/*.tgz
+            .release/*.zip

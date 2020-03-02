@@ -32,8 +32,7 @@ type Colorscheme struct {
 
 	BattLines []int
 
-	MainMem int
-	SwapMem int
+	MemLines []int
 
 	ProcCursor int
 

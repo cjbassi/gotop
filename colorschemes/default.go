@@ -1,25 +1,26 @@
 package colorschemes
 
-var Default = Colorscheme{
-	Fg: 7,
-	Bg: -1,
+func init() {
+	register("default", Colorscheme{
+		Fg: 7,
+		Bg: -1,
 
-	BorderLabel: 7,
-	BorderLine:  6,
+		BorderLabel: 7,
+		BorderLine:  6,
 
-	CPULines: []int{4, 3, 2, 1, 5, 6, 7, 8},
+		CPULines: []int{4, 3, 2, 1, 5, 6, 7, 8},
 
-	BattLines: []int{4, 3, 2, 1, 5, 6, 7, 8},
+		BattLines: []int{4, 3, 2, 1, 5, 6, 7, 8},
 
-	MainMem: 5,
-	SwapMem: 11,
+		MemLines: []int{5, 11, 4, 3, 2, 1, 6, 7, 8},
 
-	ProcCursor: 4,
+		ProcCursor: 4,
 
-	Sparkline: 4,
+		Sparkline: 4,
 
-	DiskBar: 7,
+		DiskBar: 7,
 
-	TempLow:  2,
-	TempHigh: 1,
+		TempLow:  2,
+		TempHigh: 1,
+	})
 }
