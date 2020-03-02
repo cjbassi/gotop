@@ -24,3 +24,11 @@ jobs:
           repository: xxxserxxx/homebrew-gotop
           event-type: my-event
           client-payload: '{"tag": "${{ steps.tag_name.outputs.tag }}"}'
+
+      - name: Update Arch AURs
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          repository: xxxserxxx/gotop-linux
+          event-type: my-event
+          client-payload: '{"tag": "${{ steps.tag_name.outputs.tag }}"}'
