@@ -31,17 +31,18 @@ yay -S gotop-bin
 
 ### OSX
 
-gotop can be installed with [Homebrew](https://brew.sh/); you'll need to tap the recipe. If you'd previously tapped cjbassi's recipe, you'll want to untap that first.
+gotop can be installed with [Homebrew](https://brew.sh/); you'll need to tap the recipe. If you'd previously tapped cjbassi's recipe, you'll want to untap that first.  The old version of gotop is also included in Homebrew's core library, and that will always be chosen before any taps, so you have to specify the tap specifically.
 
 ```
+brew uninstall gotop        # If previously installed
 brew untap cjbassi/gotop    # If previously tapped
 brew tap xxxserxxx/gotop
-brew install gotop
+brew install xxxserxxx/gotop
 ```
 
 ### Prebuilt binaries
 
-This doesn't require Go, is easy, and works across distributions. You have to manually upgrade the executable yourself, though.
+This doesn't require Go, is easy, and works across distributions. You have to manually upgrade the executable yourself, though, so using your distribution's package (if one is available) is a better approach.
 
 Visit [the releases page](https://github.com/xxxserxxx/gotop/releases) with your web browser and download the appropriate file for your OS.  Unzip it (the archive contains a single file) and then move the resulting `gotop` binary into your `$PATH` somewhere.  If you're on a Debian or Redhat derivative, you can download an `.rpm` or `.deb` and install that.
 

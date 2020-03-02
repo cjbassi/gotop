@@ -19,7 +19,7 @@ jobs:
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           repository: xxxserxxx/homebrew-gotop
-          event-type: my-event
+          event-type: my-release
           client-payload: '{"tag": "${{ steps.tag_name.outputs.tag }}"}'
 
       - name: Update Arch AURs
@@ -27,5 +27,5 @@ jobs:
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           repository: xxxserxxx/gotop-linux
-          event-type: my-event
+          event-type: my-release
           client-payload: '{"tag": "${{ steps.tag_name.outputs.tag }}"}'

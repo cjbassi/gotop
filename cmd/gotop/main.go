@@ -51,6 +51,7 @@ var (
 // TODO: state:deferred 157 FreeBSD fixes & Nvidia GPU support (kraust/master). Significant CPU use impact for NVidia changes.
 // TODO: Virtual devices from Prometeus metrics @feature
 // TODO: state:merge #167 configuration file (jrswab/configFile111)
+// TODO: Abstract out the UI toolkit.  mum4k/termdash, VladimirMarkelov/clui, gcla/gowid, rivo/tview, marcusolsson/tui-go might work better for some OS/Archs. Performance/memory use comparison would be interesting.
 func parseArgs(conf *gotop.Config) error {
 	usage := `
 Usage: gotop [options]
