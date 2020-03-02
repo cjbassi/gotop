@@ -1,4 +1,4 @@
-### **NO LONGER MAINTAINED.** Future development has moved to [ytop](https://github.com/cjbassi/ytop), a Rust port of gotop. 
+### **NO LONGER MAINTAINED.** Future development has moved to [ytop](https://github.com/cjbassi/ytop), a Rust port of gotop. A maintained fork of gotop also exists at https://github.com/xxxserxxx/gotop.
 
 <div align="center">
 
