@@ -5,12 +5,12 @@ Current steps for a release:
 2. Update CHANGELOG.md
 3. Tag
 4. Push everything
-5. ./make.sh
-6. Create github release
+5. When the github workflows complete, finish the draft release and publish.
+6. After the [Homebrew](https://github.com/xxxserxxx/homebrew-gotop) and [AUR](https://github.com/xxxserxxx/gotop-linux] projects are done, check out gotop-linux and run `aurpublish aur` and `aurpublish aur-bin`
 
-### Homebrew
-1. Change homebrew-gotop
-```
-curl --output - -L https://github.com/xxxserxxx/gotop/releases/download/v3.3.2/gotop_3.3.2_linux_amd64.tgz | sha256sum
-curl --output - -L https://github.com/xxxserxxx/gotop/releases/download/v3.3.2/gotop_3.3.2_darwin_amd64.tgz | sha256sum
-```
+
+Homebrew is automatically updated.  The AUR project still needs secret
+credentials to aurpublish to the AUR repository, so the final publish step is
+still currently manual.
+
+Oh, what a tangled web.

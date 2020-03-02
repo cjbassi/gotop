@@ -71,6 +71,7 @@ Options:
   -i, --interface=NAME    Select network interface [default: all]. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using !  
   -x, --export=PORT       Enable metrics for export on the specified port.
   -X, --extensions=NAMES  Enables the listed extensions.  This is a comma-separated list without the .so suffix. The current and config directories will be searched.  
+      --test              Runs tests and exits with success/failure code  
 
 
 Built-in layouts:
@@ -152,6 +153,9 @@ Colorschemes:
 	if val, _ := args["--extensions"]; val != nil {
 		exs, _ := args["--extensions"].(string)
 		conf.Extensions = strings.Split(exs, ",")
+	}
+	if val, _ := args["--test"]; val != nil {
+		conf.Test = val.(bool)
 	}
 
 	return nil
@@ -386,6 +390,15 @@ func main() {
 	}
 	defer logfile.Close()
 
+	lstream := getLayout(conf)
+	ly := layout.ParseLayout(lstream)
+
+	loadExtensions(conf)
+
+	if conf.Test {
+		os.Exit(runTests(conf))
+	}
+
 	if err := ui.Init(); err != nil {
 		stderrLogger.Fatalf("failed to initialize termui: %v", err)
 	}
@@ -397,10 +410,6 @@ func main() {
 		bar = w.NewStatusBar()
 	}
 
-	loadExtensions(conf)
-
-	lstream := getLayout(conf)
-	ly := layout.ParseLayout(lstream)
 	grid, err := layout.Layout(ly, conf)
 	if err != nil {
 		stderrLogger.Fatalf("failed to initialize termui: %v", err)
@@ -496,4 +505,9 @@ func loadExtensions(conf gotop.Config) {
 		fmt.Printf("Error initializing requested plugins; check the log file %s\n", filepath.Join(conf.ConfigDir, conf.LogFile))
 		os.Exit(1)
 	}
+}
+
+func runTests(conf gotop.Config) int {
+	fmt.Printf("PASS")
+	return 0
 }

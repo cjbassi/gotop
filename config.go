@@ -32,6 +32,8 @@ type Config struct {
 	MaxLogSize     int64
 	ExportPort     string
 	Extensions     []string
+
+	Test bool
 }
 
 func Parse(in io.Reader, conf *Config) error {
