@@ -11,7 +11,7 @@ Required information:
 - gotop version (`gotop -V`):
 - The output of `uname -a`:
 - Terminal emulator (e.g. iTerm or gnome terminal):
-- Any relevenat hardware info:
+- Any relevant hardware info:
 - tmux version if using tmux:
 
 Also please copy or attach `~/.local/state/gotop/errors.log` if it exists and contains logs:
