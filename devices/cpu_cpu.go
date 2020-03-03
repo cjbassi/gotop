@@ -23,7 +23,11 @@ func init() {
 		}
 		for i := 0; i < len(vals); i++ {
 			key := fmt.Sprintf(formatString, i)
-			cpus[key] = int(vals[i])
+			v := vals[i]
+			if v > 100 {
+				v = 100
+			}
+			cpus[key] = int(v)
 		}
 		return nil
 	}
