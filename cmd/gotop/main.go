@@ -30,7 +30,7 @@ const (
 	appName = "gotop"
 
 	graphHorizontalScaleDelta = 3
-	defaultUI                 = "cpu\ndisk/1 2:mem/2\ntemp\nnet procs"
+	defaultUI                 = "2:cpu\ndisk/1 2:mem/2\ntemp\n2:net 2:procs"
 	minimalUI                 = "cpu\nmem procs"
 	batteryUI                 = "cpu/2 batt/1\ndisk/1 2:mem/2\ntemp\nnet procs"
 	procsUI                   = "cpu 4:procs\ndisk\nmem\nnet"

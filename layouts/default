@@ -1,5 +1,5 @@
-cpu
-disk/1    2:mem/2
+2:cpu
+disk/1      2:mem/2
 temp
-net       procs
+2:net       2:procs
 
