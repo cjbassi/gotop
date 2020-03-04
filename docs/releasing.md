@@ -14,3 +14,22 @@ credentials to aurpublish to the AUR repository, so the final publish step is
 still currently manual.
 
 Oh, what a tangled web.
+
+
+Nix adds new and interesting complexities to the release.
+
+1. cd to the nixpkgs directory
+2. docker run -it --rm --mount type=bind,source="\$(pwd)",target=/mnt nixos/nix sh
+3. cd /mnt
+4. nix-prefetch-url --unpack https://github.com/xxxserxxx/gotop/archive/v3.3.2.tar.gz
+5. Copy the sha256
+6. Update the version and hash in nixpkgs/pkgs/tools/system/gotop/default.nix
+8. In docker, install & run vgo2nix to update deps.nix
+7. nix-build -A gotop
+
+
+For plugin development:
+```
+V=$(git show -s --format=%cI HEAD | cut -b -19 |  tr -cd '[:digit:]')-$(git rev-parse HEAD | cut -b -12)
+go build -ldflags "-X main.Version=$V" -o gotop ./cmd/gotop
+```

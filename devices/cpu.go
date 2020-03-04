@@ -1,5 +1,7 @@
 package devices
 
+// TODO: https://github.com/elastic/go-sysinfo
+
 import (
 	"log"
 	"time"

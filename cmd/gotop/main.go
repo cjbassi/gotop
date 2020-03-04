@@ -28,8 +28,6 @@ import (
 
 const (
 	appName = "gotop"
-	// TODO: Set this at compile time; having to check this in sucks.
-	version = "3.4.5"
 
 	graphHorizontalScaleDelta = 3
 	defaultUI                 = "cpu\ndisk/1 2:mem/2\ntemp\nnet procs"
@@ -39,6 +37,8 @@ const (
 )
 
 var (
+	// TODO: Set this at compile time; having to check this in sucks.
+	Version      = "3.4.5"
 	conf         gotop.Config
 	help         *w.HelpMenu
 	bar          *w.StatusBar
@@ -50,7 +50,6 @@ var (
 // TODO: state:merge #135 linux console font (cmatsuoka/console-font)
 // TODO: state:deferred 157 FreeBSD fixes & Nvidia GPU support (kraust/master). Significant CPU use impact for NVidia changes.
 // TODO: Virtual devices from Prometeus metrics @feature
-// TODO: state:merge #167 configuration file (jrswab/configFile111)
 // TODO: Abstract out the UI toolkit.  mum4k/termdash, VladimirMarkelov/clui, gcla/gowid, rivo/tview, marcusolsson/tui-go might work better for some OS/Archs. Performance/memory use comparison would be interesting.
 func parseArgs(conf *gotop.Config) error {
 	usage := `
@@ -97,7 +96,7 @@ Colorschemes:
 		return err
 	}
 
-	args, err := docopt.ParseArgs(usage, os.Args[1:], version)
+	args, err := docopt.ParseArgs(usage, os.Args[1:], Version)
 	if err != nil {
 		return err
 	}
