@@ -12,7 +12,7 @@ about: Template to report bugs.
 Linux: `uname -or`, OSX: `sw_vers`; Windows: `systeminfo | findstr /B /C:"OS Name" /C:"OS Version"`
 ##### Terminal emulator: 
 e.g. iTerm, kitty, xterm, PowerShell
-##### Any relevenat hardware info:
+##### Any relevant hardware info:
 If the issue is clearly related to a specific piece of hardware, e.g., the network
 ##### tmux version:
 `tmux -V`, if using tmux
