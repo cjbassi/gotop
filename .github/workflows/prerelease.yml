@@ -32,7 +32,7 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "${{ steps.tag_name.outputs.tag }}"
           draft: true
-          title: "Release candidate"
+          title: "${{ steps.tag_name.output.tag }} release candidate"
           files: |
             .release/*.tgz
             .release/*.zip
