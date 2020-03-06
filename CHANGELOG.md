@@ -13,7 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
-## [3.4.5] - ??
+## [3.5.0] - 2020-03-06
+
+The version jump from 3.3.x is due to some work in the build automation that necessitated a number of bumps to test the build/release, and testing compiling plugins from github repositories.
 
 ### Added
 
@@ -24,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Temp widget displays degree symbol (merged from BartWillems, thanks
   also fleaz)
 - Support for (device) plugins, and abstracting devices from widgets. This
-  allows adding functionality without adding bulk.
+  allows adding functionality without adding bulk. See the [plugins decision wiki section](https://github.com/xxxserxxx/gotop/wiki/Plugins-in-gotop) for more information.
 
 ### Fixed
 

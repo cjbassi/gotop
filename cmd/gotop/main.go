@@ -38,7 +38,7 @@ const (
 
 var (
 	// TODO: Set this at compile time; having to check this in sucks.
-	Version      = "3.4.5"
+	Version      = "3.5.0"
 	conf         gotop.Config
 	help         *w.HelpMenu
 	bar          *w.StatusBar

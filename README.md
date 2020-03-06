@@ -29,6 +29,12 @@ AUR contains entries for `gotop` and `gotop-bin`.  `gotop-git` still points at t
 yay -S gotop-bin
 ```
 
+There is also a build-from-source package:
+
+```
+yay -S gotop
+```
+
 ### OSX
 
 gotop can be installed with [Homebrew](https://brew.sh/); you'll need to tap the recipe. If you'd previously tapped cjbassi's recipe, you'll want to untap that first.  The old version of gotop is also included in Homebrew's core library, and that will always be chosen before any taps, so you have to specify the tap specifically.
@@ -44,41 +50,32 @@ brew install xxxserxxx/gotop
 
 This doesn't require Go, is easy, and works across distributions. You have to manually upgrade the executable yourself, though, so using your distribution's package (if one is available) is a better approach.
 
-Visit [the releases page](https://github.com/xxxserxxx/gotop/releases) with your web browser and download the appropriate file for your OS.  Unzip it (the archive contains a single file) and then move the resulting `gotop` binary into your `$PATH` somewhere.  If you're on a Debian or Redhat derivative, you can download an `.rpm` or `.deb` and install that.
+Visit [the releases page](https://github.com/xxxserxxx/gotop/releases) with your web browser and download the appropriate file for your OS and architecture.  Unzip it (the archive contains a single file) and then move the resulting `gotop` binary into your `$PATH` somewhere.  If you're on a Debian or Redhat derivative, you can download an `.rpm` or `.deb` and install that.
 
 ### Source
 
-This requires Go, and at the moment, Go 1.14 specifically.
+This requires Go, and at the moment, Go 1.14 specifically.  
 
 ```bash
 go get -u github.com/xxxserxxx/gotop/cmd/gotop
 ```
 
+If you don't have Go 1.14, you will want to follow the Building instructions in the next section.
+
 ### Building
 
 This is the download & compile approach.
 
+gotop should build with most versions of Go.  If you have a version other than 1.14 installed, remove the `go` line at the end of `go.mod`.
+
 ```
 git clone https://github.com/xxxserxxx/gotop.git
 cd gotop
+sed -i '/^go/d' go.mod          # Do this if you have go != 1.14
 go build -o gotop ./cmd/gotop
 ```
 
 Move `gotop` to somewhere in your `$PATH`.
-
-To create the cross-compile builds, there's a `make.sh` script; it has a lot of dependencies and has only been tested on my computer. When it works, it creates archives for numerous OSes & architectures. There's no testing for whether dependencies are available; it assumes they are and will fail in strange ways when they aren't.
-
-- bash
-- Go
-- zip
-- nfpm (for deb & rpm)
-- docker (for darwin)
-
-It is *just* smart enough to not rebuild things when it doesn't have to, and it tries to keep the darwin docker container around so it's not building from scratch every time. There are no guarantees.
-
-#### Note
-
-`make.sh` will probably go away soon as the project has shifted to using the github workflow engine to do builds.
 
 ## Usage
 
