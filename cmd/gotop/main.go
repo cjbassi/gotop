@@ -34,6 +34,7 @@ const (
 	minimalUI                 = "cpu\nmem procs"
 	batteryUI                 = "cpu/2 batt/1\ndisk/1 2:mem/2\ntemp\nnet procs"
 	procsUI                   = "cpu 4:procs\ndisk\nmem\nnet"
+	kitchensink               = "3:cpu/2 3:mem/1\n4:temp/1 3:disk/2\npower\n3:net 3:procs"
 )
 
 var (
@@ -450,6 +451,8 @@ func getLayout(conf gotop.Config) io.Reader {
 		return strings.NewReader(batteryUI)
 	case "procs":
 		return strings.NewReader(procsUI)
+	case "kitchensink":
+		return strings.NewReader(kitchensink)
 	default:
 		fp := filepath.Join(conf.ConfigDir, conf.Layout)
 		fin, err := os.Open(fp)
