@@ -17,12 +17,12 @@ import (
 	docopt "github.com/docopt/docopt.go"
 	ui "github.com/gizak/termui/v3"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/shibukawa/configdir"
 
 	"github.com/xxxserxxx/gotop/v3"
 	"github.com/xxxserxxx/gotop/v3/colorschemes"
 	"github.com/xxxserxxx/gotop/v3/layout"
 	"github.com/xxxserxxx/gotop/v3/logging"
-	"github.com/xxxserxxx/gotop/v3/utils"
 	w "github.com/xxxserxxx/gotop/v3/widgets"
 )
 
@@ -73,6 +73,7 @@ Options:
   -x, --export=PORT       Enable metrics for export on the specified port.
   -X, --extensions=NAMES  Enables the listed extensions.  This is a comma-separated list without the .so suffix. The current and config directories will be searched.  
       --test              Runs tests and exits with success/failure code  
+      --print-paths       List out the paths that gotop will look for gotop.conf, layouts, color schemes, and extensions
 
 
 Built-in layouts:
@@ -157,6 +158,14 @@ Colorschemes:
 	}
 	if val, _ := args["--test"]; val != nil {
 		conf.Test = val.(bool)
+	}
+	if args["--print-paths"].(bool) {
+		paths := make([]string, 0)
+		for _, d := range conf.ConfigDir.QueryFolders(configdir.All) {
+			paths = append(paths, d.Path)
+		}
+		fmt.Println(strings.Join(paths, "\n"))
+		os.Exit(0)
 	}
 
 	return nil
@@ -347,12 +356,10 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 }
 
 func makeConfig() gotop.Config {
-	ld := utils.GetLogDir(appName)
-	cd := utils.GetConfigDir(appName)
+	cd := configdir.New("", appName)
+	cd.LocalPath, _ = filepath.Abs(".")
 	conf = gotop.Config{
 		ConfigDir:            cd,
-		LogDir:               ld,
-		LogFile:              "errors.log",
 		GraphHorizontalScale: 7,
 		HelpVisible:          false,
 		UpdateInterval:       time.Second,
@@ -371,27 +378,29 @@ func makeConfig() gotop.Config {
 func main() {
 	// Set up default config
 	conf := makeConfig()
-	// Parse the config file
-	cfn := filepath.Join(conf.ConfigDir, "gotop.conf")
-	if cf, err := os.Open(cfn); err == nil {
-		err := gotop.Parse(cf, &conf)
-		if err != nil {
-			stderrLogger.Fatalf("error parsing config file %v", err)
-		}
+	// Find the config file; look in (1) local, (2) user, (3) global
+	err := conf.Load()
+	if err != nil {
+		stderrLogger.Printf("failed to parse config file: %s", err)
 	}
 	// Override with command line arguments
-	err := parseArgs(&conf)
+	err = parseArgs(&conf)
 	if err != nil {
 		stderrLogger.Fatalf("failed to parse cli args: %v", err)
 	}
 
 	logfile, err := logging.New(conf)
 	if err != nil {
-		stderrLogger.Fatalf("failed to setup log file: %v", err)
+		fmt.Printf("failed to setup log file: %v\n", err)
+		os.Exit(1)
 	}
 	defer logfile.Close()
 
-	lstream := getLayout(conf)
+	lstream, err := getLayout(conf)
+	if err != nil {
+		fmt.Printf("failed to find layou: %s\n", err)
+		os.Exit(1)
+	}
 	ly := layout.ParseLayout(lstream)
 
 	loadExtensions(conf)
@@ -439,30 +448,34 @@ func main() {
 	eventLoop(conf, grid)
 }
 
-func getLayout(conf gotop.Config) io.Reader {
+func getLayout(conf gotop.Config) (io.Reader, error) {
 	switch conf.Layout {
 	case "-":
-		return os.Stdin
+		return os.Stdin, nil
 	case "default":
-		return strings.NewReader(defaultUI)
+		return strings.NewReader(defaultUI), nil
 	case "minimal":
-		return strings.NewReader(minimalUI)
+		return strings.NewReader(minimalUI), nil
 	case "battery":
-		return strings.NewReader(batteryUI)
+		return strings.NewReader(batteryUI), nil
 	case "procs":
-		return strings.NewReader(procsUI)
+		return strings.NewReader(procsUI), nil
 	case "kitchensink":
-		return strings.NewReader(kitchensink)
+		return strings.NewReader(kitchensink), nil
 	default:
-		fp := filepath.Join(conf.ConfigDir, conf.Layout)
-		fin, err := os.Open(fp)
-		if err != nil {
-			fin, err = os.Open(conf.Layout)
-			if err != nil {
-				log.Fatalf("Unable to open layout file %s or ./%s", fp, conf.Layout)
+		folder := conf.ConfigDir.QueryFolderContainsFile(conf.Layout)
+		if folder == nil {
+			paths := make([]string, 0)
+			for _, d := range conf.ConfigDir.QueryFolders(configdir.Existing) {
+				paths = append(paths, d.Path)
 			}
+			return nil, fmt.Errorf("unable find layout file %s in %s", conf.Layout, strings.Join(paths, ", "))
 		}
-		return fin
+		lo, err := folder.ReadFile(conf.Layout)
+		if err != nil {
+			return nil, err
+		}
+		return strings.NewReader(string(lo)), nil
 	}
 }
 
@@ -471,18 +484,17 @@ func loadExtensions(conf gotop.Config) {
 	for _, ex := range conf.Extensions {
 		exf := ex + ".so"
 		fn := exf
-		_, err := os.Stat(fn)
-		if err != nil && os.IsNotExist(err) {
-			log.Printf("no plugin %s found in current directory", fn)
-			fn = filepath.Join(conf.ConfigDir, exf)
-			_, err = os.Stat(fn)
-			if err != nil || os.IsNotExist(err) {
-				hasError = true
-				log.Printf("no plugin %s found in config directory", fn)
-				continue
+		folder := conf.ConfigDir.QueryFolderContainsFile(fn)
+		if folder == nil {
+			paths := make([]string, 0)
+			for _, d := range conf.ConfigDir.QueryFolders(configdir.Existing) {
+				paths = append(paths, d.Path)
 			}
+			log.Printf("unable find extension %s in %s", fn, strings.Join(paths, ", "))
+			continue
 		}
-		p, err := plugin.Open(fn)
+		fp := filepath.Join(folder.Path, fn)
+		p, err := plugin.Open(fp)
 		if err != nil {
 			hasError = true
 			log.Printf(err.Error())
@@ -494,7 +506,6 @@ func loadExtensions(conf gotop.Config) {
 			log.Printf(err.Error())
 			continue
 		}
-
 		initFunc, ok := init.(func())
 		if !ok {
 			hasError = true
@@ -505,7 +516,12 @@ func loadExtensions(conf gotop.Config) {
 	}
 	if hasError {
 		ui.Close()
-		fmt.Printf("Error initializing requested plugins; check the log file %s\n", filepath.Join(conf.ConfigDir, conf.LogFile))
+		folder := conf.ConfigDir.QueryFolderContainsFile(logging.LOGFILE)
+		if folder == nil {
+			fmt.Printf("error initializing requested plugins\n")
+		} else {
+			fmt.Printf("error initializing requested plugins; check the log file %s\n", filepath.Join(folder.Path, logging.LOGFILE))
+		}
 		os.Exit(1)
 	}
 }

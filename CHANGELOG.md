@@ -13,6 +13,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
+## [3.6.0] - ???
+
+### Added
+
+- Adds support for system-wide configurations.  This improves support for package maintainers.
+
+### Changed
+
+- Log files stored in \$XDG_CACHE_HOME; DATA, CONFIG, CACHE, and RUNTIME are the only directories specified by the FreeDesktop spec.
+
+### Removed
+
+- configdir, logdir, and logfile options in the config file are no longer used.  gotop looks for a configuration file, layouts, and colorschemes in the following order: command-line; `pwd`; user-home, and finally a system-wide path.  The paths depend on the OS and whether XDG is in use.
+
 ## [3.5.1] - ??
 
 ### Fixed

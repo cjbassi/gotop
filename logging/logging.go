@@ -11,16 +11,22 @@ import (
 	"github.com/xxxserxxx/gotop/v3"
 )
 
+const (
+	LOGFILE = "errors.log"
+)
+
 func New(c gotop.Config) (io.WriteCloser, error) {
 	// create the log directory
-	if err := os.MkdirAll(c.LogDir, 0755); err != nil {
-		return nil, fmt.Errorf("failed to make the log directory: %v", err)
+	cache := c.ConfigDir.QueryCacheFolder()
+	err := cache.MkdirAll()
+	if err != nil && !os.IsExist(err) {
+		return nil, err
 	}
 	w := &RotateWriter{
-		filename:   filepath.Join(c.LogDir, c.LogFile),
+		filename:   filepath.Join(cache.Path, LOGFILE),
 		maxLogSize: c.MaxLogSize,
 	}
-	err := w.rotate()
+	err = w.rotate()
 	if err != nil {
 		return nil, err
 	}

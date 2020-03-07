@@ -4,19 +4,20 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/shibukawa/configdir"
 	"github.com/xxxserxxx/gotop/v3/colorschemes"
 	"github.com/xxxserxxx/gotop/v3/widgets"
 )
 
 // TODO: test, build, release [#119] [#120] [#121]
 type Config struct {
-	ConfigDir string
-	LogDir    string
-	LogFile   string
+	ConfigDir configdir.ConfigDir
 
 	GraphHorizontalScale int
 	HelpVisible          bool
@@ -36,7 +37,19 @@ type Config struct {
 	Test bool
 }
 
-func Parse(in io.Reader, conf *Config) error {
+func (conf *Config) Load() error {
+	var in io.Reader
+	cfn := "gotop.conf"
+	folder := conf.ConfigDir.QueryFolderContainsFile(cfn)
+	if folder != nil {
+		if cf, err := os.Open(cfn); err == nil {
+			defer cf.Close()
+		} else {
+			return err
+		}
+	} else {
+		return nil
+	}
 	r := bufio.NewScanner(in)
 	var lineNo int
 	for r.Scan() {
@@ -50,11 +63,11 @@ func Parse(in io.Reader, conf *Config) error {
 		default:
 			return fmt.Errorf("invalid config option %s", key)
 		case "configdir":
-			conf.ConfigDir = kv[1]
+			log.Printf("configdir is deprecated.  Ignored configdir=%s", kv[1])
 		case "logdir":
-			conf.LogDir = kv[1]
+			log.Printf("logdir is deprecated.  Ignored logdir=%s", kv[1])
 		case "logfile":
-			conf.LogFile = kv[1]
+			log.Printf("logfile is deprecated.  Ignored logfile=%s", kv[1])
 		case "graphhorizontalscale":
 			iv, err := strconv.Atoi(kv[1])
 			if err != nil {
