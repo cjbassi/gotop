@@ -73,7 +73,8 @@ Options:
   -x, --export=PORT       Enable metrics for export on the specified port.
   -X, --extensions=NAMES  Enables the listed extensions.  This is a comma-separated list without the .so suffix. The current and config directories will be searched.  
       --test              Runs tests and exits with success/failure code  
-      --print-paths       List out the paths that gotop will look for gotop.conf, layouts, color schemes, and extensions
+      --print-paths       List out the paths that gotop will look for gotop.conf, layouts, color schemes, and extensions  
+	  --print-keys        Show the keyboard bindings  
 
 
 Built-in layouts:
@@ -165,6 +166,38 @@ Colorschemes:
 			paths = append(paths, d.Path)
 		}
 		fmt.Println(strings.Join(paths, "\n"))
+		os.Exit(0)
+	}
+	if args["--print-keys"].(bool) {
+		fmt.Println(`
+Quit: q or <C-c>
+Process navigation:
+    k and <Up>: up
+    j and <Down>: down
+    <C-u>: half page up
+    <C-d>: half page down
+    <C-b>: full page up
+    <C-f>: full page down
+    gg and <Home>: jump to top
+    G and <End>: jump to bottom
+Process actions:
+    <Tab>: toggle process grouping
+    dd: kill selected process or group of processes with SIGTERM
+    d3: kill selected process or group of processes with SIGQUIT
+    d9: kill selected process or group of processes with SIGKILL
+Process sorting
+    c: CPU
+    m: Mem
+    p: PID
+Process filtering:
+    /: start editing filter
+    (while editing):
+        <Enter> accept filter
+        <C-c> and <Escape>: clear filter
+CPU and Mem graph scaling:
+    h: scale in
+    l: scale out
+?: toggles keybind help menu`)
 		os.Exit(0)
 	}
 

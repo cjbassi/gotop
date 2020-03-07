@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Adds support for system-wide configurations.  This improves support for package maintainers.
+- Help function to print key bindings
 
 ### Changed
 
