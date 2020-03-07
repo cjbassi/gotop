@@ -2,7 +2,6 @@ package widgets
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -28,7 +27,6 @@ func NewMemWidget(updateInterval time.Duration, horizontalScale int) *MemWidget 
 	mems := make(map[string]devices.MemoryInfo)
 	devices.UpdateMem(mems)
 	for name, mem := range mems {
-		log.Printf("setting %s to %v", name, mem)
 		self.Data[name] = []float64{0}
 		self.renderMemInfo(name, mem)
 	}
@@ -38,7 +36,6 @@ func NewMemWidget(updateInterval time.Duration, horizontalScale int) *MemWidget 
 			self.Lock()
 			devices.UpdateMem(mems)
 			for label, mi := range mems {
-				log.Printf("  updating %s to %v", label, mi)
 				self.renderMemInfo(label, mi)
 				if self.metrics != nil && self.metrics[label] != nil {
 					self.metrics[label].Set(mi.UsedPercent)
