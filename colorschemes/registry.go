@@ -9,6 +9,12 @@ import (
 
 var registry map[string]Colorscheme
 
+func init() {
+	if registry == nil {
+		registry = make(map[string]Colorscheme)
+	}
+}
+
 func FromName(confDir string, c string) (Colorscheme, error) {
 	cs, ok := registry[c]
 	if !ok {

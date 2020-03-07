@@ -13,6 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
+## [3.5.1] - ??
+
+### Fixed
+
+- Removes verbose debugging unintentionally left in the code.
+- kitchensink referenced by, but not included in binary is now included.
+- Safety check prevents uninitialized colorscheme registry use
+
 ## [3.5.0] - 2020-03-06
 
 The version jump from 3.3.x is due to some work in the build automation that necessitated a number of bumps to test the build/release, and testing compiling plugins from github repositories.
