@@ -409,6 +409,15 @@ func makeConfig() gotop.Config {
 
 // TODO: mpd visualizer widget
 func main() {
+	// This is just to make sure gotop returns a useful exit code, but also
+	// executes all defer statements and so cleans up before exit.  Sort of
+	// annoying work-around for a lack of a clean way to exit Go programs
+	// with exit codes.
+	ec := run()
+	os.Exit(ec)
+}
+
+func run() int {
 	// Set up default config
 	conf := makeConfig()
 	// Find the config file; look in (1) local, (2) user, (3) global
@@ -425,21 +434,24 @@ func main() {
 	logfile, err := logging.New(conf)
 	if err != nil {
 		fmt.Printf("failed to setup log file: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
 	defer logfile.Close()
 
 	lstream, err := getLayout(conf)
 	if err != nil {
 		fmt.Printf("failed to find layou: %s\n", err)
-		os.Exit(1)
+		return 1
 	}
 	ly := layout.ParseLayout(lstream)
 
-	loadExtensions(conf)
+	err = loadExtensions(conf)
+	if err != nil {
+		return 1
+	}
 
 	if conf.Test {
-		os.Exit(runTests(conf))
+		return runTests(conf)
 	}
 
 	if err := ui.Init(); err != nil {
@@ -479,6 +491,7 @@ func main() {
 		}()
 	}
 	eventLoop(conf, grid)
+	return 0
 }
 
 func getLayout(conf gotop.Config) (io.Reader, error) {
@@ -512,7 +525,7 @@ func getLayout(conf gotop.Config) (io.Reader, error) {
 	}
 }
 
-func loadExtensions(conf gotop.Config) {
+func loadExtensions(conf gotop.Config) error {
 	var hasError bool
 	for _, ex := range conf.Extensions {
 		exf := ex + ".so"
@@ -549,13 +562,15 @@ func loadExtensions(conf gotop.Config) {
 	}
 	if hasError {
 		folder := conf.ConfigDir.QueryFolderContainsFile(logging.LOGFILE)
+		var err error
 		if folder == nil {
-			fmt.Printf("error initializing requested plugins\n")
+			err = fmt.Errorf("error initializing requested plugins\n")
 		} else {
-			fmt.Printf("error initializing requested plugins; check the log file %s\n", filepath.Join(folder.Path, logging.LOGFILE))
+			err = fmt.Errorf("error initializing requested plugins; check the log file %s\n", filepath.Join(folder.Path, logging.LOGFILE))
 		}
-		os.Exit(1)
+		return err
 	}
+	return nil
 }
 
 func runTests(conf gotop.Config) int {
