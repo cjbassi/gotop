@@ -74,7 +74,7 @@ Options:
   -X, --extensions=NAMES  Enables the listed extensions.  This is a comma-separated list without the .so suffix. The current and config directories will be searched.  
       --test              Runs tests and exits with success/failure code  
       --print-paths       List out the paths that gotop will look for gotop.conf, layouts, color schemes, and extensions  
-	  --print-keys        Show the keyboard bindings  
+      --print-keys        Show the keyboard bindings  
 
 
 Built-in layouts:
@@ -414,6 +414,11 @@ func main() {
 	// annoying work-around for a lack of a clean way to exit Go programs
 	// with exit codes.
 	ec := run()
+	if ec > 0 {
+		if ec < 2 {
+			fmt.Printf("errors encountered; check the log file %s\n", filepath.Join(conf.ConfigDir.QueryCacheFolder().Path, logging.LOGFILE))
+		}
+	}
 	os.Exit(ec)
 }
 
@@ -423,30 +428,33 @@ func run() int {
 	// Find the config file; look in (1) local, (2) user, (3) global
 	err := conf.Load()
 	if err != nil {
-		stderrLogger.Printf("failed to parse config file: %s", err)
+		fmt.Printf("failed to parse config file: %s\n", err)
+		return 2
 	}
 	// Override with command line arguments
 	err = parseArgs(&conf)
 	if err != nil {
-		stderrLogger.Fatalf("failed to parse cli args: %v", err)
+		fmt.Printf("parsing CLI args: %s\n", err)
+		return 2
 	}
 
 	logfile, err := logging.New(conf)
 	if err != nil {
 		fmt.Printf("failed to setup log file: %v\n", err)
-		return 1
+		return 2
 	}
 	defer logfile.Close()
 
 	lstream, err := getLayout(conf)
 	if err != nil {
-		fmt.Printf("failed to find layou: %s\n", err)
+		stderrLogger.Print(err)
 		return 1
 	}
 	ly := layout.ParseLayout(lstream)
 
 	err = loadExtensions(conf)
 	if err != nil {
+		stderrLogger.Print(err)
 		return 1
 	}
 
@@ -455,7 +463,8 @@ func run() int {
 	}
 
 	if err := ui.Init(); err != nil {
-		stderrLogger.Fatalf("failed to initialize termui: %v", err)
+		stderrLogger.Print(err)
+		return 1
 	}
 	defer ui.Close()
 
@@ -467,7 +476,8 @@ func run() int {
 
 	grid, err := layout.Layout(ly, conf)
 	if err != nil {
-		stderrLogger.Fatalf("failed to initialize termui: %v", err)
+		stderrLogger.Print(err)
+		return 1
 	}
 
 	termWidth, termHeight := ui.TerminalDimensions()
@@ -537,6 +547,7 @@ func loadExtensions(conf gotop.Config) error {
 				paths = append(paths, d.Path)
 			}
 			log.Printf("unable find extension %s in %s", fn, strings.Join(paths, ", "))
+			hasError = true
 			continue
 		}
 		fp := filepath.Join(folder.Path, fn)
@@ -561,14 +572,7 @@ func loadExtensions(conf gotop.Config) error {
 		initFunc()
 	}
 	if hasError {
-		folder := conf.ConfigDir.QueryFolderContainsFile(logging.LOGFILE)
-		var err error
-		if folder == nil {
-			err = fmt.Errorf("error initializing requested plugins\n")
-		} else {
-			err = fmt.Errorf("error initializing requested plugins; check the log file %s\n", filepath.Join(folder.Path, logging.LOGFILE))
-		}
-		return err
+		return fmt.Errorf("error initializing plugins")
 	}
 	return nil
 }
