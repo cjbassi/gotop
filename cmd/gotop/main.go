@@ -548,7 +548,6 @@ func loadExtensions(conf gotop.Config) {
 		initFunc()
 	}
 	if hasError {
-		ui.Close()
 		folder := conf.ConfigDir.QueryFolderContainsFile(logging.LOGFILE)
 		if folder == nil {
 			fmt.Printf("error initializing requested plugins\n")
