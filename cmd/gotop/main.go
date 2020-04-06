@@ -81,10 +81,6 @@ Options:
       --print-paths       List out the paths that gotop will look for gotop.conf, layouts, color schemes, and extensions  
       --print-keys        Show the keyboard bindings  
 
-Colorschemes and layouts that are not built-in are searched for (in order) in:
-%s
-The first path in this list is always the cwd.
-
 Built-in layouts:
   default
   minimal
@@ -99,7 +95,14 @@ Colorschemes:
   solarized16-light
   monokai
   vice
-`, strings.Join(cpaths, ", "))
+
+Colorschemes and layouts that are not built-in are searched for (in order) in:
+%s
+The first path in this list is always the cwd.
+
+Log files are stored in %s
+
+`, strings.Join(cpaths, ", "), filepath.Join(conf.ConfigDir.QueryCacheFolder().Path, logging.LOGFILE))
 
 	var err error
 	conf.Colorscheme, err = colorschemes.FromName(conf.ConfigDir, "default")
