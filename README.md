@@ -7,7 +7,7 @@
 
 Another terminal based graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!
 
-The original author of gotop has re-implemented the application in Rust, as [ytop](https://github.com/cjbassi/ytop).  This is a fork of original gotop project with a new maintainer.
+Join us in [\#gotop:matrix.org](https://riot.im/app/#/room/#gotop:matrix.org) ([matrix clients](https://matrix.to/#/#gotop:matrix.org)).
 
 <img src="./assets/screenshots/demo.gif" />
 <img src="./assets/screenshots/kitchensink.gif" />
@@ -20,6 +20,8 @@ The original author of gotop has re-implemented the application in Rust, as [yto
 ![](https://github.com/xxxserxxx/gotop/workflows/Create%20pre-release/badge.svg)
 
 Working and tested on Linux, FreeBSD and MacOS. Windows binaries are provided, but have limited testing. OpenBSD works with some caveats; cross-compiling is difficult and binaries are not provided.
+
+If you install gotop by hand, or you download or create new layouts or colorschemes, you will need to put the layout files where gotop can find them.  To see the list of directories gotop looks for files, run `gotop -h`.  The first directory is always the directory from which gotop is run.
 
 ### Arch
 
@@ -43,7 +45,7 @@ gotop can be installed with [Homebrew](https://brew.sh/); you'll need to tap the
 brew uninstall gotop        # If previously installed
 brew untap cjbassi/gotop    # If previously tapped
 brew tap xxxserxxx/gotop
-brew install xxxserxxx/gotop
+brew install xxxserxxx/gotop/gotop
 ```
 
 ### Prebuilt binaries
@@ -141,10 +143,7 @@ and these are separated by spaces.
 3. Spaces are compressed (so you can do limited visual formatting)
 4. Legal widget names are: cpu, disk, mem, temp, batt, net, procs
 5. Widget names are not case sensitive
-4. The simplest row is a single widget, by name, e.g.
-   ```
-   cpu
-   ```
+4. The simplest row is a single widget, by name, e.g. `cpu`
 5. **Weights**
     1. Widgets with no weights have a weight of 1.
     2. If multiple widgets are put on a row with no weights, they will all have
@@ -152,29 +151,35 @@ and these are separated by spaces.
     3. Weights are integers
     4. A widget will have a width proportional to its weight divided by the
        total weight count of the row. E.g.,
+
        ```
        cpu      net
        disk/2   mem/4
        ```
+
        The first row will have two widgets: the CPU and network widgets; each
        will be 50% of the total width wide.  The second row will have two
        widgets: disk and memory; the first will be 2/6 ~= 33% wide, and the
        second will be 5/7 ~= 67% wide (or, memory will be twice as wide as disk).
-9. If prefixed by a number and colon, the widget will span that number of
-   rows downward. E.g.
-   ```
-   mem   2:cpu
-   net
-   ```
-   Here, memory and network will be in the same row as CPU, one over the other,
-   and each half as high as CPU; it'll look like this:
-   ```
-    +------+------+
-    | Mem  |      |
-    +------+ CPU  |
-    | Net  |      |
-    +------+------+
-   ```
+9.  If prefixed by a number and colon, the widget will span that number of
+    rows downward. E.g.
+
+    ```
+    mem   2:cpu
+    net
+    ```
+
+    Here, memory and network will be in the same row as CPU, one over the other,
+    and each half as high as CPU; it'll look like this:
+
+    ```
+     +------+------+
+     | Mem  |      |
+     +------+ CPU  |
+     | Net  |      |
+     +------+------+
+    ```
+     
 10. Negative, 0, or non-integer weights will be recorded as "1".  Same for row
     spans. 
 11. Unrecognized widget names will cause the application to abort.                          
@@ -228,6 +233,10 @@ Interfaces can also be ignored using `!`
 - [shirou/gopsutil](https://github.com/shirou/gopsutil)
 - [goreleaser/nfpm](https://github.com/goreleaser/nfpm)
 - [distatus/battery](https://github.com/distatus/battery)
+
+## History
+
+The original author of gotop started a new tool in Rust, called [ytop](https://github.com/cjbassi/ytop).  This repository is a fork of original gotop project with a new maintainer.
 
 ## Stargazers over time
 

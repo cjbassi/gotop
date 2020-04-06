@@ -42,6 +42,7 @@ func (conf *Config) Load() error {
 	cfn := "gotop.conf"
 	folder := conf.ConfigDir.QueryFolderContainsFile(cfn)
 	if folder != nil {
+		// FIXME: Shouldn't this be looking in folder??
 		if cf, err := os.Open(cfn); err == nil {
 			defer cf.Close()
 		} else {

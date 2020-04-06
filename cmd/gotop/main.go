@@ -53,7 +53,12 @@ var (
 // TODO: Virtual devices from Prometeus metrics @feature
 // TODO: Abstract out the UI toolkit.  mum4k/termdash, VladimirMarkelov/clui, gcla/gowid, rivo/tview, marcusolsson/tui-go might work better for some OS/Archs. Performance/memory use comparison would be interesting.
 func parseArgs(conf *gotop.Config) error {
-	usage := `
+	cds := conf.ConfigDir.QueryFolders(configdir.All)
+	cpaths := make([]string, len(cds))
+	for i, p := range cds {
+		cpaths[i] = p.Path
+	}
+	usage := fmt.Sprintf(`
 Usage: gotop [options]
 
 Options:
@@ -76,6 +81,9 @@ Options:
       --print-paths       List out the paths that gotop will look for gotop.conf, layouts, color schemes, and extensions  
       --print-keys        Show the keyboard bindings  
 
+Colorschemes and layouts that are not built-in are searched for (in order) in:
+%s
+The first path in this list is always the cwd.
 
 Built-in layouts:
   default
@@ -91,7 +99,7 @@ Colorschemes:
   solarized16-light
   monokai
   vice
-`
+`, strings.Join(cpaths, ", "))
 
 	var err error
 	conf.Colorscheme, err = colorschemes.FromName(conf.ConfigDir, "default")
