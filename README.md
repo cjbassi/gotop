@@ -21,6 +21,11 @@ The original author of gotop has re-implemented the application in Rust, as [yto
 
 Working and tested on Linux, FreeBSD and MacOS. Windows binaries are provided, but have limited testing. OpenBSD works with some caveats; cross-compiling is difficult and binaries are not provided.
 
+If you install gotop by hand, or you download or create new layouts or colorschemes, you will need to put the layout files where gotop can find them.  This is in one of two places, searched in this order:
+
+1. The current working directory
+2. `${XDG_CONFIG_HOME}/gotop`
+
 ### Arch
 
 AUR contains entries for `gotop` and `gotop-bin`.  `gotop-git` still points at the old, unmaintained, repository for the moment.
