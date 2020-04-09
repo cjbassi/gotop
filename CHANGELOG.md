@@ -17,9 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Removes verbose debugging unintentionally left in the code.
-- kitchensink referenced by, but not included in binary is now included.
+- Removes verbose debugging unintentionally left in the code (#85, #86)
+- kitchensink referenced by, but not included in binary is now included (#72)
 - Safety check prevents uninitialized colorscheme registry use
+- Updates instructions on where to put colorschemes and layouts (#75)
+- Don't silently succeed when plugins are requested but not found (#77)
 
 ## [3.5.0] - 2020-03-06
 
