@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
-## [3.6.0] - ???
+## PENDING (NOT RELEASED 3.6)
 
 ### Added
 
@@ -28,13 +28,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - configdir, logdir, and logfile options in the config file are no longer used.  gotop looks for a configuration file, layouts, and colorschemes in the following order: command-line; `pwd`; user-home, and finally a system-wide path.  The paths depend on the OS and whether XDG is in use.
 
-## [3.5.1] - ??
+## [3.5.1] - 2020-04-09 
+
+This is a bug fix release.
 
 ### Fixed
 
-- Removes verbose debugging unintentionally left in the code.
-- kitchensink referenced by, but not included in binary is now included.
+- Removes verbose debugging unintentionally left in the code (#85)
+- kitchensink referenced by, but not included in binary is now included (#72)
 - Safety check prevents uninitialized colorscheme registry use
+- Trying to use a non-installed plugin should fail, not silently continue (#77)
+
+### Changed
+
+- Improved documentation about installing layouts and colorschemes
 
 ## [3.5.0] - 2020-03-06
 
