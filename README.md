@@ -37,6 +37,15 @@ There is also a build-from-source package:
 yay -S gotop
 ```
 
+### Gentoo
+
+`gotop` is available on [guru](https://gitweb.gentoo.org/repo/proj/guru.git) overlay. It's currently required to add this overlay in order to install `gotop`:
+
+```shell
+sudo layman -a guru
+sudo emerge gotop
+```
+
 ### OSX
 
 gotop can be installed with [Homebrew](https://brew.sh/); you'll need to tap the recipe. If you'd previously tapped cjbassi's recipe, you'll want to untap that first.  The old version of gotop is also included in Homebrew's core library, and that will always be chosen before any taps, so you have to specify the tap specifically.
