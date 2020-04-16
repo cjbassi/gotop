@@ -40,6 +40,7 @@ This is a bug fix release.
 - Removes verbose debugging unintentionally left in the code (#85)
 - kitchensink referenced by, but not included in binary is now included (#72)
 - Safety check prevents uninitialized colorscheme registry use
+- Updates instructions on where to put colorschemes and layouts (#75)
 - Trying to use a non-installed plugin should fail, not silently continue (#77)
 
 ### Changed
