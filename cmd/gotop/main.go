@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
-	"plugin"
 	"strconv"
 	"strings"
 	"syscall"
@@ -463,12 +462,6 @@ func run() int {
 	}
 	ly := layout.ParseLayout(lstream)
 
-	err = loadExtensions(conf)
-	if err != nil {
-		stderrLogger.Print(err)
-		return 1
-	}
-
 	if conf.Test {
 		return runTests(conf)
 	}
@@ -544,48 +537,6 @@ func getLayout(conf gotop.Config) (io.Reader, error) {
 		}
 		return strings.NewReader(string(lo)), nil
 	}
-}
-
-func loadExtensions(conf gotop.Config) error {
-	var hasError bool
-	for _, ex := range conf.Extensions {
-		exf := ex + ".so"
-		fn := exf
-		folder := conf.ConfigDir.QueryFolderContainsFile(fn)
-		if folder == nil {
-			paths := make([]string, 0)
-			for _, d := range conf.ConfigDir.QueryFolders(configdir.Existing) {
-				paths = append(paths, d.Path)
-			}
-			log.Printf("unable find extension %s in %s", fn, strings.Join(paths, ", "))
-			hasError = true
-			continue
-		}
-		fp := filepath.Join(folder.Path, fn)
-		p, err := plugin.Open(fp)
-		if err != nil {
-			hasError = true
-			log.Printf(err.Error())
-			continue
-		}
-		init, err := p.Lookup("Init")
-		if err != nil {
-			hasError = true
-			log.Printf(err.Error())
-			continue
-		}
-		initFunc, ok := init.(func())
-		if !ok {
-			hasError = true
-			log.Printf(err.Error())
-			continue
-		}
-		initFunc()
-	}
-	if hasError {
-		return fmt.Errorf("error initializing plugins")
-	}
-	return nil
 }
 
 func runTests(conf gotop.Config) int {

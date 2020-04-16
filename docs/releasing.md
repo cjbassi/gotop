@@ -6,8 +6,10 @@ Current steps for a release:
 3. Tag
 4. Push everything
 5. When the github workflows complete, finish the draft release and publish.
-6. After the [Homebrew](https://github.com/xxxserxxx/homebrew-gotop) and [AUR](https://github.com/xxxserxxx/gotop-linux] projects are done, check out gotop-linux and run `aurpublish aur` and `aurpublish aur-bin`
-
+6. Wait for the [Homebrew](https://github.com/xxxserxxx/homebrew-gotop) and [AUR](https://github.com/xxxserxxx/gotop-linux] projects to finish building.
+    1. check out gotop-linux and run `aurpublish aur` and `aurpublish aur-bin`
+    2. update the hashes in the Nix package (see below), test build, push a pull request
+    3. notify Homebrew
 
 Homebrew is automatically updated.  The AUR project still needs secret
 credentials to aurpublish to the AUR repository, so the final publish step is
@@ -18,14 +20,14 @@ Oh, what a tangled web.
 
 Nix adds new and interesting complexities to the release.
 
+0. Download the gotop src package; run sha256 on it to get the hash
 1. cd to the nixpkgs directory
-2. docker run -it --rm --mount type=bind,source="\$(pwd)",target=/mnt nixos/nix sh
-3. cd /mnt
-4. nix-prefetch-url --unpack https://github.com/xxxserxxx/gotop/archive/v3.3.2.tar.gz
-5. Copy the sha256
-6. Update the version and hash in nixpkgs/pkgs/tools/system/gotop/default.nix
-8. In docker, install & run vgo2nix to update deps.nix
-7. nix-build -A gotop
+2. Update the sha256 hash in `pkgs/tools/system/gotop/default.nix`
+2. `docker run -it --rm --mount type=bind,source="\$(pwd)",target=/mnt nixos/nix sh`
+3. `cd /mnt`
+8. install & run vgo2nix to update deps.nix
+7. `nix-build -A gotop`
+8. When it fails, copy the hash and update the 
 
 
 For plugin development:
