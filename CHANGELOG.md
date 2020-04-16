@@ -19,10 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adds support for system-wide configurations.  This improves support for package maintainers.
 - Help function to print key bindings
+- Help prints locations of config files (color schemes & layouts)
+- Help prints location of logs
 
 ### Changed
 
 - Log files stored in \$XDG_CACHE_HOME; DATA, CONFIG, CACHE, and RUNTIME are the only directories specified by the FreeDesktop spec.
+- Extensions are now built with a build tool; this is an interim solution until issues with the Go plugin API are resolved.
 
 ### Removed
 
