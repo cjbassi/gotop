@@ -18,14 +18,11 @@ func init() {
 }
 
 func FromName(confDir configdir.ConfigDir, c string) (Colorscheme, error) {
-	cs, ok := registry[c]
-	if !ok {
-		cs, err := getCustomColorscheme(confDir, c)
-		if err != nil {
-			return cs, err
-		}
+	if cs, ok := registry[c]; ok {
+		return cs, nil
 	}
-	return cs, nil
+	cs, err := getCustomColorscheme(confDir, c)
+	return cs, err
 }
 
 func register(name string, c Colorscheme) {
