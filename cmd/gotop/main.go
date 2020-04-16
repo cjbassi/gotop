@@ -64,6 +64,7 @@ Options:
   -c, --color=NAME        Set a colorscheme.
   -h, --help              Show this screen.
   -m, --minimal           Only show CPU, Mem and Process widgets. Overrides -l. (DEPRECATED, use -l minimal)
+  -S, --graphscale=INT   Default is 7; 1 is lowest scale-out; values greater than 30 are probably not useful.
   -r, --rate=RATE         Number of times per second to update CPU and Mem widgets [default: 1].
   -V, --version           Print version and exit.
   -p, --percpu            Show each CPU in the CPU widget.
@@ -169,6 +170,19 @@ Log files are stored in %s
 	}
 	if val, _ := args["--test"]; val != nil {
 		conf.Test = val.(bool)
+	}
+	if val, _ := args["--graphscale"]; val != nil {
+		str, _ := args["--graphscale"].(string)
+		scl, err := strconv.Atoi(str)
+		if err != nil {
+			fmt.Printf("invalid value \"%s\" for graphscale; must be an integer\n", args["--graphscale"])
+			os.Exit(1)
+		}
+		if scl < 1 {
+			fmt.Printf("graphscale must be greater than 0 [1, ∞); you provided %d. Values > 30 are probably not useful.\n", scl)
+			os.Exit(1)
+		}
+		conf.GraphHorizontalScale = scl
 	}
 	if args["--print-paths"].(bool) {
 		paths := make([]string, 0)
@@ -504,6 +518,7 @@ func run() int {
 			http.ListenAndServe(conf.ExportPort, nil)
 		}()
 	}
+
 	eventLoop(conf, grid)
 	return 0
 }
