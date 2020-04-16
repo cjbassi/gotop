@@ -54,6 +54,11 @@ func NewHelpMenu() *HelpMenu {
 
 func (self *HelpMenu) Resize(termWidth, termHeight int) {
 	textWidth := 53
+	for _, line := range strings.Split(KEYBINDS, "\n") {
+		if textWidth < len(line) {
+			textWidth = len(line) + 2
+		}
+	}
 	textHeight := strings.Count(KEYBINDS, "\n") + 1
 	x := (termWidth - textWidth) / 2
 	y := (termHeight - textHeight) / 2
@@ -67,7 +72,7 @@ func (self *HelpMenu) Draw(buf *ui.Buffer) {
 	for y, line := range strings.Split(KEYBINDS, "\n") {
 		for x, rune := range line {
 			buf.SetCell(
-				ui.NewCell(rune, ui.NewStyle(7)),
+				ui.NewCell(rune, ui.Theme.Default),
 				image.Pt(self.Inner.Min.X+x, self.Inner.Min.Y+y-1),
 			)
 		}

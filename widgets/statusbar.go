@@ -29,7 +29,7 @@ func (self *StatusBar) Draw(buf *ui.Buffer) {
 	}
 	buf.SetString(
 		hostname,
-		ui.NewStyle(ui.ColorWhite),
+		ui.Theme.Default,
 		image.Pt(self.Inner.Min.X, self.Inner.Min.Y+(self.Inner.Dy()/2)),
 	)
 
@@ -37,7 +37,7 @@ func (self *StatusBar) Draw(buf *ui.Buffer) {
 	formattedTime := currentTime.Format("15:04:05")
 	buf.SetString(
 		formattedTime,
-		ui.NewStyle(ui.ColorWhite),
+		ui.Theme.Default,
 		image.Pt(
 			self.Inner.Min.X+(self.Inner.Dx()/2)-len(formattedTime)/2,
 			self.Inner.Min.Y+(self.Inner.Dy()/2),
@@ -46,7 +46,7 @@ func (self *StatusBar) Draw(buf *ui.Buffer) {
 
 	buf.SetString(
 		"gotop",
-		ui.NewStyle(ui.ColorWhite),
+		ui.Theme.Default,
 		image.Pt(
 			self.Inner.Max.X-6,
 			self.Inner.Min.Y+(self.Inner.Dy()/2),
