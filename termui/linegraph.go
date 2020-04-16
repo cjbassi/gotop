@@ -71,7 +71,7 @@ func (self *LineGraph) Draw(buf *Buffer) {
 			y := ((self.Inner.Dy() + 1) * 4) - 1 - int((float64((self.Inner.Dy())*4)-1)*(seriesData[i]/100))
 			if x < 0 {
 				// render the line to the last point up to the wall
-				if x > 0-self.HorizontalScale {
+				if x > -self.HorizontalScale {
 					for _, p := range drawille.Line(lastX, lastY, x, y) {
 						if p.X > 0 {
 							c.Set(p.X, p.Y)
@@ -111,9 +111,14 @@ func (self *LineGraph) Draw(buf *Buffer) {
 	}
 
 	// renders key/label ontop
+	maxWid := 0
+	xoff := 0 // X offset for additional columns of text
+	yoff := 0 // Y offset for resetting column to top of widget
 	for i, seriesName := range seriesList {
-		if i+2 > self.Inner.Dy() {
-			continue
+		if yoff+i+2 > self.Inner.Dy() {
+			xoff += maxWid + 2
+			yoff = -i
+			maxWid = 0
 		}
 		seriesLineColor, ok := self.LineColors[seriesName]
 		if !ok {
@@ -122,11 +127,14 @@ func (self *LineGraph) Draw(buf *Buffer) {
 
 		// render key ontop, but let braille be drawn over space characters
 		str := seriesName + " " + self.Labels[seriesName]
+		if len(str) > maxWid {
+			maxWid = len(str)
+		}
 		for k, char := range str {
 			if char != ' ' {
 				buf.SetCell(
 					NewCell(char, NewStyle(seriesLineColor)),
-					image.Pt(self.Inner.Min.X+2+k, self.Inner.Min.Y+i+1),
+					image.Pt(xoff+self.Inner.Min.X+2+k, yoff+self.Inner.Min.Y+i+1),
 				)
 			}
 		}

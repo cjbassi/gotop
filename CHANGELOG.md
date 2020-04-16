@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help prints location of logs.
 - CLI option to scale out (#84).
 - Ability to report network traffic rates as mbps (#46).
+- Ignore lines matching `/^#.*/` in layout files.
+- Instructions for Gentoo (thanks @tormath1!)
+- Graph labels that don't fit (vertically) in the window are now drawn in additional columns (#40)
 
 ### Changed
 
@@ -37,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Help & statusbar don't obey theme (#47).
 - Fix help text layout.
+- Merged fix from @markuspeloquin for custom color scheme loading crash
 
 ## [3.5.1] - 2020-04-09 
 
