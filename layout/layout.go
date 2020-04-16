@@ -25,6 +25,7 @@ type MyGrid struct {
 	*ui.Grid
 	Lines []widgets.Scalable
 	Proc  *widgets.ProcWidget
+	Net   *widgets.NetWidget
 }
 
 var widgetNames []string = []string{"cpu", "disk", "mem", "temp", "net", "procs", "batt"}
@@ -48,10 +49,25 @@ func Layout(wl layout, c gotop.Config) (*MyGrid, error) {
 		rh := float64(heights[i]) / float64(maxHeight)
 		rgs = append(rgs, ui.NewRow(rh, ur...))
 	}
-	grid := &MyGrid{ui.NewGrid(), nil, nil}
+	grid := &MyGrid{ui.NewGrid(), nil, nil, nil}
 	grid.Set(rgs...)
 	grid.Lines = deepFindScalable(rgs)
-	grid.Proc = deepFindProc(uiRows)
+	res := deepFindWidget(uiRows, func(gs interface{}) interface{} {
+		p, ok := gs.(*widgets.ProcWidget)
+		if ok {
+			return p
+		}
+		return nil
+	})
+	grid.Proc, _ = res.(*widgets.ProcWidget)
+	res = deepFindWidget(uiRows, func(gs interface{}) interface{} {
+		p, ok := gs.(*widgets.NetWidget)
+		if ok {
+			return p
+		}
+		return nil
+	})
+	grid.Net, _ = res.(*widgets.NetWidget)
 	return grid, nil
 }
 
@@ -189,6 +205,7 @@ func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 		n.Lines[0].TitleColor = ui.Color(c.Colorscheme.BorderLabel)
 		n.Lines[1].LineColor = ui.Color(c.Colorscheme.Sparkline)
 		n.Lines[1].TitleColor = ui.Color(c.Colorscheme.BorderLabel)
+		n.Mbps = c.Mbps
 		w = n
 	case "procs":
 		p := widgets.NewProcWidget()
@@ -267,20 +284,19 @@ func countMaxHeight(rs [][]widgetRule) int {
 	return ttl
 }
 
-// deepFindProc looks in the UI widget tree for the ProcWidget,
-// and returns it if found or nil if not.
-func deepFindProc(gs interface{}) *widgets.ProcWidget {
+// deepFindWidget looks in the UI widget tree for a widget, and returns it if found or nil if not.
+func deepFindWidget(gs interface{}, test func(v interface{}) interface{}) interface{} {
 	// Recursive function #1.  Recursion is OK here because the number
 	// of UI elements, even in a very complex UI, is going to be
 	// relatively small.
 	t, ok := gs.(ui.GridItem)
 	if ok {
-		return deepFindProc(t.Entry)
+		return deepFindWidget(t.Entry, test)
 	}
 	es, ok := gs.([]ui.GridItem)
 	if ok {
 		for _, g := range es {
-			v := deepFindProc(g)
+			v := deepFindWidget(g, test)
 			if v != nil {
 				return v
 			}
@@ -289,7 +305,7 @@ func deepFindProc(gs interface{}) *widgets.ProcWidget {
 	fs, ok := gs.([]interface{})
 	if ok {
 		for _, g := range fs {
-			v := deepFindProc(g)
+			v := deepFindWidget(g, test)
 			if v != nil {
 				return v
 			}
@@ -298,17 +314,13 @@ func deepFindProc(gs interface{}) *widgets.ProcWidget {
 	fs2, ok := gs.([][]interface{})
 	if ok {
 		for _, g := range fs2 {
-			v := deepFindProc(g)
+			v := deepFindWidget(g, test)
 			if v != nil {
 				return v
 			}
 		}
 	}
-	p, ok := gs.(*widgets.ProcWidget)
-	if ok {
-		return p
-	}
-	return nil
+	return test(gs)
 }
 
 // deepFindScalable looks in the UI widget tree for Scalable widgets,

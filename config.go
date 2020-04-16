@@ -33,6 +33,7 @@ type Config struct {
 	MaxLogSize     int64
 	ExportPort     string
 	Extensions     []string
+	Mbps           bool
 
 	Test bool
 }
@@ -131,6 +132,8 @@ func (conf *Config) Load() error {
 			conf.ExportPort = kv[1]
 		case "extensions":
 			conf.Extensions = strings.Split(kv[1], ",")
+		case "mbps":
+			conf.Mbps = true
 		}
 	}
 

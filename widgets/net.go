@@ -28,6 +28,7 @@ type NetWidget struct {
 	NetInterface   []string
 	sentMetric     prometheus.Counter
 	recvMetric     prometheus.Counter
+	Mbps           bool
 }
 
 // TODO: state:merge #169 % option for network use (jrswab/networkPercentage)
@@ -144,19 +145,31 @@ func (self *NetWidget) update() {
 	self.totalBytesRecv = totalBytesRecv
 	self.totalBytesSent = totalBytesSent
 
+	rx, tx := "RX/s", "TX/s"
+	if self.Mbps {
+		rx, tx = "mbps", "mbps"
+	}
+	format := " %s: %9.1f %2s/s"
+
+	var total, recent uint64
+	var label, unitRecent, rate string
+	var recentConverted float64
 	// render widget titles
 	for i := 0; i < 2; i++ {
-		total, label, recent := func() (uint64, string, uint64) {
-			if i == 0 {
-				return totalBytesRecv, "RX", recentBytesRecv
-			}
-			return totalBytesSent, "TX", recentBytesSent
-		}()
+		if i == 0 {
+			total, label, rate, recent = totalBytesRecv, "RX", rx, recentBytesRecv
+		} else {
+			total, label, rate, recent = totalBytesSent, "TX", tx, recentBytesSent
+		}
 
-		recentConverted, unitRecent := utils.ConvertBytes(uint64(recent))
-		totalConverted, unitTotal := utils.ConvertBytes(uint64(total))
+		totalConverted, unitTotal := utils.ConvertBytes(total)
+		if self.Mbps {
+			recentConverted, unitRecent, format = float64(recent)*0.000008, "", " %s: %11.3f %2s"
+		} else {
+			recentConverted, unitRecent = utils.ConvertBytes(recent)
+		}
 
 		self.Lines[i].Title1 = fmt.Sprintf(" Total %s: %5.1f %s", label, totalConverted, unitTotal)
-		self.Lines[i].Title2 = fmt.Sprintf(" %s/s: %9.1f %2s/s", label, recentConverted, unitRecent)
+		self.Lines[i].Title2 = fmt.Sprintf(format, rate, recentConverted, unitRecent)
 	}
 }

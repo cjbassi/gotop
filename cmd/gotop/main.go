@@ -74,12 +74,13 @@ Options:
   -b, --battery           Show battery level widget ('minimal' turns off). (DEPRECATED, use -l battery)
   -B, --bandwidth=bits	  Specify the number of bits per seconds.
   -l, --layout=NAME       Name of layout spec file for the UI.  Looks first in $XDG_CONFIG_HOME/gotop, then as a path.  Use "-" to pipe.
-  -i, --interface=NAME    Select network interface [default: all]. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using !  
+  -i, --interface=NAME    Select network interface [default: all]. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using !
   -x, --export=PORT       Enable metrics for export on the specified port.
-  -X, --extensions=NAMES  Enables the listed extensions.  This is a comma-separated list without the .so suffix. The current and config directories will be searched.  
-      --test              Runs tests and exits with success/failure code  
-      --print-paths       List out the paths that gotop will look for gotop.conf, layouts, color schemes, and extensions  
-      --print-keys        Show the keyboard bindings  
+  -X, --extensions=NAMES  Enables the listed extensions.  This is a comma-separated list without the .so suffix. The current and config directories will be searched.
+      --mbps              Net widget shows mb(its)ps for RX/TX instead of scaled bytes per second.
+      --test              Runs tests and exits with success/failure code.
+      --print-paths       List out the paths that gotop will look for gotop.conf, layouts, color schemes, and extensions.
+      --print-keys        Show the keyboard bindings.  
 
 Built-in layouts:
   default
@@ -183,6 +184,9 @@ Log files are stored in %s
 			os.Exit(1)
 		}
 		conf.GraphHorizontalScale = scl
+	}
+	if args["--mbps"].(bool) {
+		conf.Mbps = true
 	}
 	if args["--print-paths"].(bool) {
 		paths := make([]string, 0)
@@ -307,6 +311,10 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 							item.Scale(c.GraphHorizontalScale)
 							ui.Render(item)
 						}
+					}
+				case "b":
+					if grid.Net != nil {
+						grid.Net.Mbps = !grid.Net.Mbps
 					}
 				case "<Resize>":
 					ui.Render(grid)

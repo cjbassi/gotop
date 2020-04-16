@@ -40,6 +40,9 @@ Process filtering:
 CPU and Mem graph scaling:
   - h: scale in
   - l: scale out
+
+Network:
+  - b: toggle between mbps and scaled bytes per second
 `
 
 type HelpMenu struct {

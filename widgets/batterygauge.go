@@ -12,7 +12,6 @@ import (
 	. "github.com/xxxserxxx/gotop/v3/termui"
 )
 
-// FIXME 3.5.1 is 0% always
 type BatteryGauge struct {
 	*Gauge
 	metric prometheus.Gauge

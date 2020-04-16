@@ -120,6 +120,7 @@ Move `gotop` to somewhere in your `$PATH`.
   - `h`: scale in
   - `l`: scale out
 - `?`: toggles keybind help menu
+- `b`: toggles display of network traffic in mbps or TX (or RX) per second
 
 ### Mouse
 
@@ -207,21 +208,7 @@ build massive edifices, you're in for disappointment.
 
 ### CLI Options
 
-`-c`, `--color=NAME` Set a colorscheme.  
-`-m`, `--minimal` Only show CPU, Mem and Process widgets.  (DEPRECATED, use `-l minimal`)  
-`-r`, `--rate=RATE` Number of times per second to update CPU and Mem widgets [default: 1].  
-`-V`, `--version` Print version and exit.  
-`-p`, `--percpu` Show each CPU in the CPU widget.  
-`-a`, `--averagecpu` Show average CPU in the CPU widget.  
-`-f`, `--fahrenheit` Show temperatures in fahrenheit.  
-`-s`, `--statusbar` Show a statusbar with the time.  
-`-b`, `--battery` Show battery level widget (`minimal` turns off). (DEPRECATED, use `-l battery`)  
-`-i`, `--interface=NAME` Select network interface [default: all].  
-`-l`, `--layout=NAME` Choose a layout. gotop searches for a file by NAME in \$XDG_CONFIG_HOME/gotop, then relative to the current path. "-" reads a layout from stdin, allowing for simple, one-off layouts such as `echo net | gotop -l -`
-
-Several interfaces can be defined using comma separated values.
-
-Interfaces can also be ignored using `!`
+Run `gotop -h` to see the list of all command line options.
 
 ## More screen shots
 

@@ -18,9 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Adds support for system-wide configurations.  This improves support for package maintainers.
-- Help function to print key bindings
-- Help prints locations of config files (color schemes & layouts)
-- Help prints location of logs
+- Help function to print key bindings.
+- Help prints locations of config files (color schemes & layouts).
+- Help prints location of logs.
+- CLI option to scale out (#84).
+- Ability to report network traffic rates as mbps (#46).
 
 ### Changed
 
@@ -30,6 +32,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - configdir, logdir, and logfile options in the config file are no longer used.  gotop looks for a configuration file, layouts, and colorschemes in the following order: command-line; `pwd`; user-home, and finally a system-wide path.  The paths depend on the OS and whether XDG is in use.
+
+### Fixed
+
+- Help & statusbar don't obey theme (#47).
+- Fix help text layout.
 
 ## [3.5.1] - 2020-04-09 
 
