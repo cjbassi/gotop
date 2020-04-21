@@ -121,17 +121,16 @@ func (self *DiskWidget) update() {
 		delete(self.Partitions, device)
 	}
 
-	// updates partition info
+	// updates partition info. We add 0.5 to all values to make sure the truncation rounds
 	for _, partition := range self.Partitions {
 		usage, err := psDisk.Usage(partition.MountPoint)
 		if err != nil {
 			log.Printf("failed to get partition usage statistics from gopsutil: %v. partition: %v", err, partition)
 			continue
 		}
-		partition.UsedPercent = uint32(usage.UsedPercent)
-
+		partition.UsedPercent = uint32(usage.UsedPercent + 0.5)
 		bytesFree, magnitudeFree := utils.ConvertBytes(usage.Free)
-		partition.Free = fmt.Sprintf("%3d%s", uint64(bytesFree), magnitudeFree)
+		partition.Free = fmt.Sprintf("%3d%s", uint64(bytesFree+0.5), magnitudeFree)
 
 		ioCounters, err := psDisk.IOCounters(partition.Device)
 		if err != nil {
@@ -146,7 +145,7 @@ func (self *DiskWidget) update() {
 
 			readFloat, readMagnitude := utils.ConvertBytes(bytesReadRecently)
 			writeFloat, writeMagnitude := utils.ConvertBytes(bytesWrittenRecently)
-			bytesReadRecently, bytesWrittenRecently = uint64(readFloat), uint64(writeFloat)
+			bytesReadRecently, bytesWrittenRecently = uint64(readFloat+0.5), uint64(writeFloat+0.5)
 			partition.BytesReadRecently = fmt.Sprintf("%d%s", bytesReadRecently, readMagnitude)
 			partition.BytesWrittenRecently = fmt.Sprintf("%d%s", bytesWrittenRecently, writeMagnitude)
 		} else {

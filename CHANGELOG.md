@@ -41,6 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help & statusbar don't obey theme (#47).
 - Fix help text layout.
 - Merged fix from @markuspeloquin for custom color scheme loading crash
+- Memory line colors were inconsistently assigned (#91)
+- The disk code was truncating values instead of rounding (#90)
 
 ## [3.5.1] - 2020-04-09 
 
