@@ -161,39 +161,21 @@ type Metric interface {
 func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 	var w Metric
 	switch widRule.Widget {
-	case "cpu":
-		cpu := widgets.NewCpuWidget(c.UpdateInterval, c.GraphHorizontalScale, c.AverageLoad, c.PercpuLoad)
-		var keys []string
-		for key := range cpu.Data {
-			keys = append(keys, key)
-		}
-		sort.Strings(keys)
-		i := 0
-		for _, v := range keys {
-			if i >= len(c.Colorscheme.CPULines) {
-				// assuming colorscheme for CPU lines is not empty
-				i = 0
-			}
-			color := c.Colorscheme.CPULines[i]
-			cpu.LineColors[v] = ui.Color(color)
-			i++
-		}
-		w = cpu
 	case "disk":
 		dw := widgets.NewDiskWidget()
 		w = dw
+	case "cpu":
+		cpu := widgets.NewCpuWidget(c.UpdateInterval, c.GraphHorizontalScale, c.AverageLoad, c.PercpuLoad)
+		assignColors(cpu.Data, c.Colorscheme.CPULines, cpu.LineColors)
+		w = cpu
 	case "mem":
 		m := widgets.NewMemWidget(c.UpdateInterval, c.GraphHorizontalScale)
-		var i int
-		for key, _ := range m.Data {
-			if i >= len(c.Colorscheme.MemLines) {
-				i = 0
-			}
-			color := c.Colorscheme.MemLines[i]
-			m.LineColors[key] = ui.Color(color)
-			i++
-		}
+		assignColors(m.Data, c.Colorscheme.MemLines, m.LineColors)
 		w = m
+	case "batt":
+		b := widgets.NewBatteryWidget(c.GraphHorizontalScale)
+		assignColors(b.Data, c.Colorscheme.BattLines, b.LineColors)
+		w = b
 	case "temp":
 		t := widgets.NewTempWidget(c.TempScale)
 		t.TempLowColor = ui.Color(c.Colorscheme.TempLow)
@@ -211,24 +193,6 @@ func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 		p := widgets.NewProcWidget()
 		p.CursorColor = ui.Color(c.Colorscheme.ProcCursor)
 		w = p
-	case "batt":
-		b := widgets.NewBatteryWidget(c.GraphHorizontalScale)
-		var battKeys []string
-		for key := range b.Data {
-			battKeys = append(battKeys, key)
-		}
-		sort.Strings(battKeys)
-		i := 0 // Re-using variable from CPU
-		for _, v := range battKeys {
-			if i >= len(c.Colorscheme.BattLines) {
-				// assuming colorscheme for battery lines is not empty
-				i = 0
-			}
-			color := c.Colorscheme.BattLines[i]
-			b.LineColors[v] = ui.Color(color)
-			i++
-		}
-		w = b
 	case "power":
 		b := widgets.NewBatteryGauge()
 		b.BarColor = ui.Color(c.Colorscheme.ProcCursor)
@@ -241,6 +205,24 @@ func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 		w.EnableMetric()
 	}
 	return w
+}
+
+func assignColors(data map[string][]float64, colors []int, assign map[string]ui.Color) {
+	// Make sure the data is always processed in the same order so that
+	// colors are assigned to devices consistently
+	keys := make([]string, 0, len(data))
+	for key := range data {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	i := 0 // For looping around if we run out of colors
+	for _, v := range keys {
+		if i >= len(colors) {
+			i = 0
+		}
+		assign[v] = ui.Color(colors[i])
+		i++
+	}
 }
 
 func countNumRows(rs [][]widgetRule) int {
