@@ -1,5 +1,6 @@
 package widgets
 
+// Const as enum: https://medium.com/@iNatata/use-struct-as-enum-in-go-6a314ae78678
 import (
 	"fmt"
 	"image"
@@ -36,7 +37,7 @@ func NewTempWidget(tempScale TempScale) *TempWidget {
 		TempThreshold:  80,
 		TempScale:      tempScale,
 	}
-	self.Title = " Temperatures "
+	self.Title = "Remove This"
 
 	if tempScale == Fahrenheit {
 		self.TempThreshold = utils.CelsiusToFahrenheit(self.TempThreshold)

@@ -44,6 +44,7 @@ var (
 	minimalMode    = false
 	averageLoad    = false
 	percpuLoad     = false
+    // no_temperature = false
 	tempScale      = w.Celcius
 	battery        = false
 	statusbar      = false
@@ -55,7 +56,7 @@ var (
 	proc *w.ProcWidget
 	net  *w.NetWidget
 	disk *w.DiskWidget
-	temp *w.TempWidget
+	//temp *w.TempWidget
 	help *w.HelpMenu
 	grid *ui.Grid
 	bar  *w.StatusBar
@@ -73,6 +74,7 @@ Options:
   -V, --version         Print version and exit.
   -p, --percpu          Show each CPU in the CPU widget.
   -a, --averagecpu      Show average CPU in the CPU widget.
+  -t, --temperature     Show temperatures
   -f, --fahrenheit      Show temperatures in fahrenheit.
   -s, --statusbar       Show a statusbar with the time.
   -b, --battery         Show battery level widget ('minimal' turns off).
@@ -185,8 +187,8 @@ func setupGrid() {
 			cpuRow,
 			ui.NewRow(1.0/3,
 				ui.NewCol(1.0/3,
-					ui.NewRow(1.0/2, disk),
-					ui.NewRow(1.0/2, temp),
+					ui.NewRow(1.0/1.0, disk),
+					//ui.NewRow(1.0/2, temp),
 				),
 				ui.NewCol(2.0/3, mem),
 			),
@@ -245,8 +247,8 @@ func setWidgetColors() {
 			}
 		}
 
-		temp.TempLowColor = ui.Color(colorscheme.TempLow)
-		temp.TempHighColor = ui.Color(colorscheme.TempHigh)
+		// temp.TempLowColor = ui.Color(colorscheme.TempLow)
+		// temp.TempHighColor = ui.Color(colorscheme.TempHigh)
 
 		net.Lines[0].LineColor = ui.Color(colorscheme.Sparkline)
 		net.Lines[0].TitleColor = ui.Color(colorscheme.BorderLabel)
@@ -266,7 +268,7 @@ func initWidgets() {
 		}
 		net = w.NewNetWidget(netInterface)
 		disk = w.NewDiskWidget()
-		temp = w.NewTempWidget(tempScale)
+		// temp = w.NewTempWidget(tempScale)
 	}
 	if statusbar {
 		bar = w.NewStatusBar()
