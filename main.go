@@ -44,7 +44,7 @@ var (
 	minimalMode    = false
 	averageLoad    = false
 	percpuLoad     = false
-    // no_temperature = false
+	temperature    = false
 	tempScale      = w.Celcius
 	battery        = false
 	statusbar      = false
@@ -56,7 +56,7 @@ var (
 	proc *w.ProcWidget
 	net  *w.NetWidget
 	disk *w.DiskWidget
-	//temp *w.TempWidget
+	temp *w.TempWidget
 	help *w.HelpMenu
 	grid *ui.Grid
 	bar  *w.StatusBar
@@ -101,6 +101,7 @@ Colorschemes:
 	averageLoad, _ = args["--averagecpu"].(bool)
 	percpuLoad, _ = args["--percpu"].(bool)
 	battery, _ = args["--battery"].(bool)
+	temperature, _ = args["--temperature"].(bool)
 
 	minimalMode, _ = args["--minimal"].(bool)
 
@@ -175,6 +176,7 @@ func setupGrid() {
 		)
 	} else {
 		var cpuRow ui.GridItem
+		var tempRow ui.GridItem
 		if battery {
 			cpuRow = ui.NewRow(1.0/3,
 				ui.NewCol(2.0/3, cpu),
@@ -183,13 +185,20 @@ func setupGrid() {
 		} else {
 			cpuRow = ui.NewRow(1.0/3, cpu)
 		}
+		if temperature {
+			tempRow = ui.NewCol(1.0/3,
+				ui.NewRow(1.0/2.0, disk),
+				ui.NewRow(1.0/2, temp),
+			)
+		} else {
+			tempRow = ui.NewCol(1.0/3,
+				ui.NewRow(1.0/1.0, disk),
+			)
+		}
 		grid.Set(
 			cpuRow,
 			ui.NewRow(1.0/3,
-				ui.NewCol(1.0/3,
-					ui.NewRow(1.0/1.0, disk),
-					//ui.NewRow(1.0/2, temp),
-				),
+				tempRow,
 				ui.NewCol(2.0/3, mem),
 			),
 			ui.NewRow(1.0/3,
@@ -247,8 +256,10 @@ func setWidgetColors() {
 			}
 		}
 
-		// temp.TempLowColor = ui.Color(colorscheme.TempLow)
-		// temp.TempHighColor = ui.Color(colorscheme.TempHigh)
+		if temperature {
+			temp.TempLowColor = ui.Color(colorscheme.TempLow)
+			temp.TempHighColor = ui.Color(colorscheme.TempHigh)
+		}
 
 		net.Lines[0].LineColor = ui.Color(colorscheme.Sparkline)
 		net.Lines[0].TitleColor = ui.Color(colorscheme.BorderLabel)
@@ -268,7 +279,10 @@ func initWidgets() {
 		}
 		net = w.NewNetWidget(netInterface)
 		disk = w.NewDiskWidget()
-		// temp = w.NewTempWidget(tempScale)
+
+		if temperature {
+			temp = w.NewTempWidget(tempScale)
+		}
 	}
 	if statusbar {
 		bar = w.NewStatusBar()
