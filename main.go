@@ -24,7 +24,7 @@ import (
 
 const (
 	appName = "gotop"
-	version = "3.0.0"
+	version = "3.0.1-nasef_temp_patch"
 
 	graphHorizontalScaleDelta = 3
 )
@@ -75,7 +75,7 @@ Options:
   -p, --percpu          Show each CPU in the CPU widget.
   -a, --averagecpu      Show average CPU in the CPU widget.
   -t, --temperature     Show temperatures
-  -f, --fahrenheit      Show temperatures in fahrenheit.
+  -f, --fahrenheit      Show temperatures in fahrenheit (expects "--temperature" is set).
   -s, --statusbar       Show a statusbar with the time.
   -b, --battery         Show battery level widget ('minimal' turns off).
   -i, --interface=NAME  Select network interface [default: all].
