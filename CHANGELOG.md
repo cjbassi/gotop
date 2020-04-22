@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Merged fix from @markuspeloquin for custom color scheme loading crash
 - Memory line colors were inconsistently assigned (#91)
 - The disk code was truncating values instead of rounding (#90)
+- Temperatures on Darwin were all over the place, and wrong (#48)
 
 ## [3.5.1] - 2020-04-09 
 

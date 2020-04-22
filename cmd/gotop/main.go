@@ -38,7 +38,7 @@ const (
 
 var (
 	// TODO: Set this at compile time; having to check this in sucks.
-	Version      = "3.6.0"
+	Version      = "3.6.dev"
 	conf         gotop.Config
 	help         *w.HelpMenu
 	bar          *w.StatusBar
@@ -51,6 +51,7 @@ var (
 // TODO: state:deferred 157 FreeBSD fixes & Nvidia GPU support (kraust/master). Significant CPU use impact for NVidia changes.
 // TODO: Virtual devices from Prometeus metrics @feature
 // TODO: Abstract out the UI toolkit.  mum4k/termdash, VladimirMarkelov/clui, gcla/gowid, rivo/tview, marcusolsson/tui-go might work better for some OS/Archs. Performance/memory use comparison would be interesting.
+// TODO: Add fans
 func parseArgs(conf *gotop.Config) error {
 	cds := conf.ConfigDir.QueryFolders(configdir.All)
 	cpaths := make([]string, len(cds))
