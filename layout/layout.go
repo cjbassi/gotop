@@ -177,7 +177,7 @@ func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 		assignColors(b.Data, c.Colorscheme.BattLines, b.LineColors)
 		w = b
 	case "temp":
-		t := widgets.NewTempWidget(c.TempScale)
+		t := widgets.NewTempWidget(c.TempScale, c.Temps)
 		t.TempLowColor = ui.Color(c.Colorscheme.TempLow)
 		t.TempHighColor = ui.Color(c.Colorscheme.TempHigh)
 		w = t

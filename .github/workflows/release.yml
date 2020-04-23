@@ -29,5 +29,3 @@ jobs:
           repository: xxxserxxx/gotop-linux
           event-type: my-release
           client-payload: '{"tag": "${{ steps.tag_name.outputs.tag }}"}'
-
-# TODO: Build the plugins too

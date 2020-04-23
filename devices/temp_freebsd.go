@@ -12,6 +12,7 @@ import (
 
 func init() {
 	RegisterTemp(update)
+	RegisterDeviceList(Temperatures, devs)
 }
 
 var sensorOIDS = map[string]string{
@@ -23,6 +24,9 @@ func update(temps map[string]int) map[string]error {
 	var errors map[string]error
 
 	for k, v := range sensorOIDS {
+		if _, ok := temps[k]; !ok {
+			continue
+		}
 		output, err := exec.Command("sysctl", "-n", k).Output()
 		if err != nil {
 			errors[v] = err
@@ -42,4 +46,12 @@ func update(temps map[string]int) map[string]error {
 	}
 
 	return errors
+}
+
+func devs() []string {
+	rv := make([]string, 0, len(sensorOIDS))
+	for k, _ := range sensorOIDS {
+		rv = append(rv, k)
+	}
+	return rv
 }

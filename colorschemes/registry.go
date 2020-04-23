@@ -29,6 +29,7 @@ func register(name string, c Colorscheme) {
 	if registry == nil {
 		registry = make(map[string]Colorscheme)
 	}
+	c.Name = name
 	registry[name] = c
 }
 

@@ -15,6 +15,7 @@ import (
 	"unsafe"
 )
 
+// TODO: Add filtering.  Getting the temperature sensor names is non-trivial for OpenBSD, and until I can test it, leave it unimplemented
 func init() {
 	RegisterTemp(update)
 }
@@ -66,7 +67,9 @@ func getTemp(temps map[string]int, mib []C.int, mlen int, snsrdev *C.struct_sens
 			key := C.GoString(&snsrdev.xname[0]) + ".temp" + strconv.Itoa(index)
 			temp := int((snsr.value - 273150000.0) / 1000000.0)
 
-			temps[key] = temp
+			if _, ok := temps[key]; ok {
+				temps[key] = temp
+			}
 		}
 	}
 }

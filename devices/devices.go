@@ -2,7 +2,13 @@ package devices
 
 import "log"
 
+const (
+	Temperatures = "Temperatures"
+)
+
+var Domains []string = []string{Temperatures}
 var shutdownFuncs []func() error
+var _devs map[string][]string
 
 // RegisterShutdown stores a function to be called by gotop on exit, allowing
 // extensions to properly release resources.  Extensions should register a
@@ -23,4 +29,19 @@ func Shutdown() {
 			log.Print(err)
 		}
 	}
+}
+
+func RegisterDeviceList(typ string, f func() []string) {
+	if _devs == nil {
+		_devs = make(map[string][]string)
+	}
+	if ls, ok := _devs[typ]; ok {
+		_devs[typ] = append(ls, f()...)
+		return
+	}
+	_devs[typ] = f()
+}
+
+func Devices(domain string) []string {
+	return _devs[domain]
 }

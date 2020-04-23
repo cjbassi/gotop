@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"syscall"
@@ -20,6 +21,7 @@ import (
 
 	"github.com/xxxserxxx/gotop/v3"
 	"github.com/xxxserxxx/gotop/v3/colorschemes"
+	"github.com/xxxserxxx/gotop/v3/devices"
 	"github.com/xxxserxxx/gotop/v3/layout"
 	"github.com/xxxserxxx/gotop/v3/logging"
 	w "github.com/xxxserxxx/gotop/v3/widgets"
@@ -37,8 +39,8 @@ const (
 )
 
 var (
-	// TODO: Set this at compile time; having to check this in sucks.
-	Version      = "3.6.dev"
+	Version      = "0.0.0"
+	BuildDate    = "Hadean"
 	conf         gotop.Config
 	help         *w.HelpMenu
 	bar          *w.StatusBar
@@ -48,17 +50,14 @@ var (
 
 // TODO: Add tab completion for Linux https://gist.github.com/icholy/5314423
 // TODO: state:merge #135 linux console font (cmatsuoka/console-font)
-// TODO: state:deferred 157 FreeBSD fixes & Nvidia GPU support (kraust/master). Significant CPU use impact for NVidia changes.
-// TODO: Virtual devices from Prometeus metrics @feature
 // TODO: Abstract out the UI toolkit.  mum4k/termdash, VladimirMarkelov/clui, gcla/gowid, rivo/tview, marcusolsson/tui-go might work better for some OS/Archs. Performance/memory use comparison would be interesting.
-// TODO: Add fans
 func parseArgs(conf *gotop.Config) error {
 	cds := conf.ConfigDir.QueryFolders(configdir.All)
 	cpaths := make([]string, len(cds))
 	for i, p := range cds {
 		cpaths[i] = p.Path
 	}
-	usage := fmt.Sprintf(`
+	usage := fmt.Sprintln(`
 Usage: gotop [options]
 
 Options:
@@ -77,40 +76,15 @@ Options:
   -l, --layout=NAME       Name of layout spec file for the UI.  Looks first in $XDG_CONFIG_HOME/gotop, then as a path.  Use "-" to pipe.
   -i, --interface=NAME    Select network interface [default: all]. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using !
   -x, --export=PORT       Enable metrics for export on the specified port.
-  -X, --extensions=NAMES  Enables the listed extensions.  This is a comma-separated list without the .so suffix. The current and config directories will be searched.
       --mbps              Net widget shows mb(its)ps for RX/TX instead of scaled bytes per second.
       --test              Runs tests and exits with success/failure code.
-      --print-paths       List out the paths that gotop will look for gotop.conf, layouts, color schemes, and extensions.
-      --print-keys        Show the keyboard bindings.  
-
-Built-in layouts:
-  default
-  minimal
-  battery
-  kitchensink
-
-Colorschemes:
-  default
-  default-dark (for white background)
-  solarized
-  solarized16-dark
-  solarized16-light
-  monokai
-  vice
-
-Colorschemes and layouts that are not built-in are searched for (in order) in:
-%s
-The first path in this list is always the cwd.
-
-Log files are stored in %s
-
-`, strings.Join(cpaths, ", "), filepath.Join(conf.ConfigDir.QueryCacheFolder().Path, logging.LOGFILE))
-
-	var err error
-	conf.Colorscheme, err = colorschemes.FromName(conf.ConfigDir, "default")
-	if err != nil {
-		return err
-	}
+      --list <devices|layouts|colorschemes|paths|keys>
+        devices: Prints out device names for widgets supporting filters.
+        layouts: Lists build-in layouts
+        colorschemes: Lists built-in colorschemes
+        paths: List out the paths that gotop will look for gotop.conf, layouts, and color schemes.
+        keys: Show the keyboard bindings.  
+      --write-config      Write out a sample config file, either to the home config location, or current directory. Command-line arguments specificed at the same time will overwrite values in the config file.`)
 
 	args, err := docopt.ParseArgs(usage, os.Args[1:], Version)
 	if err != nil {
@@ -127,6 +101,7 @@ Log files are stored in %s
 		}
 		conf.Colorscheme = cs
 	}
+
 	if args["--averagecpu"].(bool) {
 		conf.AverageLoad, _ = args["--averagecpu"].(bool)
 	}
@@ -166,10 +141,6 @@ Log files are stored in %s
 	if val, _ := args["--interface"]; val != nil {
 		conf.NetInterface, _ = args["--interface"].(string)
 	}
-	if val, _ := args["--extensions"]; val != nil {
-		exs, _ := args["--extensions"].(string)
-		conf.Extensions = strings.Split(exs, ",")
-	}
 	if val, _ := args["--test"]; val != nil {
 		conf.Test = val.(bool)
 	}
@@ -189,16 +160,35 @@ Log files are stored in %s
 	if args["--mbps"].(bool) {
 		conf.Mbps = true
 	}
-	if args["--print-paths"].(bool) {
-		paths := make([]string, 0)
-		for _, d := range conf.ConfigDir.QueryFolders(configdir.All) {
-			paths = append(paths, d.Path)
-		}
-		fmt.Println(strings.Join(paths, "\n"))
-		os.Exit(0)
-	}
-	if args["--print-keys"].(bool) {
-		fmt.Println(`
+	if val, _ := args["--list"]; val != nil {
+		switch val {
+		case "layouts":
+			fmt.Println("Built-in layouts:")
+			fmt.Println("\tdefault")
+			fmt.Println("\tminimal")
+			fmt.Println("\tbattery")
+			fmt.Println("\tkitchensink")
+		case "colorschemes":
+			fmt.Println("Built-in colorschemes:")
+			fmt.Println("\tdefault")
+			fmt.Println("\tdefault-dark (for white background)")
+			fmt.Println("\tsolarized")
+			fmt.Println("\tsolarized16-dark")
+			fmt.Println("\tsolarized16-light")
+			fmt.Println("\tmonokai")
+			fmt.Println("\tvice")
+		case "paths":
+			fmt.Println("Loadable colorschemes & layouts, and the config file, are searched for, in order:")
+			paths := make([]string, 0)
+			for _, d := range conf.ConfigDir.QueryFolders(configdir.All) {
+				paths = append(paths, d.Path)
+			}
+			fmt.Println(strings.Join(paths, "\n"))
+			fmt.Printf("\nThe log file is in %s\n", filepath.Join(conf.ConfigDir.QueryCacheFolder().Path, logging.LOGFILE))
+		case "devices":
+			listDevices()
+		case "keys":
+			fmt.Println(`
 Quit: q or <C-c>
 Process navigation:
     k and <Up>: up
@@ -227,6 +217,19 @@ CPU and Mem graph scaling:
     h: scale in
     l: scale out
 ?: toggles keybind help menu`)
+		default:
+			fmt.Printf("Unknown option \"%s\"; try layouts, colorschemes, or devices\n", val)
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
+	if args["--write-config"].(bool) {
+		path, err := conf.Write()
+		if err != nil {
+			fmt.Printf("Failed to write configuration file: %s\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("Config written to %s\n", path)
 		os.Exit(0)
 	}
 
@@ -437,9 +440,11 @@ func makeConfig() gotop.Config {
 		MaxLogSize:           5000000,
 		Layout:               "default",
 	}
+	conf.Colorscheme, _ = colorschemes.FromName(conf.ConfigDir, "default")
 	return conf
 }
 
+// TODO: Add fans
 // TODO: mpd visualizer widget
 func main() {
 	// This is just to make sure gotop returns a useful exit code, but also
@@ -566,4 +571,15 @@ func getLayout(conf gotop.Config) (io.Reader, error) {
 func runTests(conf gotop.Config) int {
 	fmt.Printf("PASS")
 	return 0
+}
+
+func listDevices() {
+	ms := devices.Domains
+	sort.Strings(ms)
+	for _, m := range ms {
+		fmt.Printf("%s:\n", m)
+		for _, d := range devices.Devices(m) {
+			fmt.Printf("\t%s\n", d)
+		}
+	}
 }

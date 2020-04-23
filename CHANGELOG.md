@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ignore lines matching `/^#.*/` in layout files.
 - Instructions for Gentoo (thanks @tormath1!)
 - Graph labels that don't fit (vertically) in the window are now drawn in additional columns (#40)
+- Adds ability to filter reported temperatures (#92)
 
 ### Changed
 
@@ -44,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Memory line colors were inconsistently assigned (#91)
 - The disk code was truncating values instead of rounding (#90)
 - Temperatures on Darwin were all over the place, and wrong (#48)
+- Config file loading from `~/.config/gotop` wasn't working
 
 ## [3.5.1] - 2020-04-09 
 

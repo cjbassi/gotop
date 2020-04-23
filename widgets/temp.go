@@ -32,7 +32,7 @@ type TempWidget struct {
 }
 
 // TODO: state:deferred 156 Added temperatures for NVidia GPUs (azak-azkaran/master). Crashes on non-nvidia machines.
-func NewTempWidget(tempScale TempScale) *TempWidget {
+func NewTempWidget(tempScale TempScale, filter []string) *TempWidget {
 	self := &TempWidget{
 		Block:          ui.NewBlock(),
 		updateInterval: time.Second * 5,
@@ -41,6 +41,15 @@ func NewTempWidget(tempScale TempScale) *TempWidget {
 		TempScale:      tempScale,
 	}
 	self.Title = " Temperatures "
+	if len(filter) > 0 {
+		for _, t := range filter {
+			self.Data[t] = 0
+		}
+	} else {
+		for _, t := range devices.Devices(devices.Temperatures) {
+			self.Data[t] = 0
+		}
+	}
 
 	if tempScale == Fahrenheit {
 		self.TempThreshold = utils.CelsiusToFahrenheit(self.TempThreshold)

@@ -32,6 +32,8 @@ type DiskWidget struct {
 	metric         map[string]prometheus.Gauge
 }
 
+// TODO: Add filtering
+// TODO: Abstract out device from widget
 func NewDiskWidget() *DiskWidget {
 	self := &DiskWidget{
 		Table:          ui.NewTable(),
