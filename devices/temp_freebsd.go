@@ -12,7 +12,7 @@ import (
 
 func init() {
 	RegisterTemp(update)
-	RegisterDeviceList(Temperatures, devs)
+	RegisterDeviceList(Temperatures, devs, devs)
 }
 
 var sensorOIDS = map[string]string{

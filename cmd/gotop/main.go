@@ -578,7 +578,7 @@ func listDevices() {
 	sort.Strings(ms)
 	for _, m := range ms {
 		fmt.Printf("%s:\n", m)
-		for _, d := range devices.Devices(m) {
+		for _, d := range devices.Devices(m, true) {
 			fmt.Printf("\t%s\n", d)
 		}
 	}

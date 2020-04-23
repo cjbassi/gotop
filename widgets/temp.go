@@ -46,7 +46,7 @@ func NewTempWidget(tempScale TempScale, filter []string) *TempWidget {
 			self.Data[t] = 0
 		}
 	} else {
-		for _, t := range devices.Devices(devices.Temperatures) {
+		for _, t := range devices.Devices(devices.Temperatures, false) {
 			self.Data[t] = 0
 		}
 	}

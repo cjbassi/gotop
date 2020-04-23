@@ -6,7 +6,7 @@ import smc "github.com/xxxserxxx/iSMC"
 
 func init() {
 	RegisterTemp(update)
-	RegisterDeviceList(Temperatures, devs)
+	RegisterDeviceList(Temperatures, devs, defs)
 	ts = make(map[string]float32)
 }
 
@@ -25,12 +25,22 @@ func update(temps map[string]int) map[string]error {
 	return nil
 }
 
-// TODO: Set reasonable default devices
-// CPU (TC[01]P), GPU (TG0P), Memory (Ts0S) and Disk (TH0P)
 func devs() []string {
 	rv := make([]string, len(smc.AppleTemp))
 	for i, v := range smc.AppleTemp {
 		rv[i] = v.Desc
+	}
+	return rv
+}
+
+func defs() []string {
+	//                     CPU 0         CPU 1         GPU           Memory        Disk
+	ids := map[string]bool{"TC0P": true, "TC1P": true, "TG0P": true, "Ts0S": true, "TH0P": true}
+	rv := make([]string, 0, len(ids))
+	for _, v := range smc.AppleTemp {
+		if ids[v.Key] {
+			rv = append(rv, v.Desc)
+		}
 	}
 	return rv
 }

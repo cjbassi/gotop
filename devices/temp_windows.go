@@ -8,7 +8,7 @@ import (
 
 func init() {
 	RegisterTemp(update)
-	RegisterDeviceList(Temperatures, devs)
+	RegisterDeviceList(Temperatures, devs, devs)
 }
 
 func update(temps map[string]int) map[string]error {
