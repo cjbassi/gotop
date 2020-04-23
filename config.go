@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"io"
 	"log"
 	"path/filepath"
 	"strconv"
@@ -49,7 +50,11 @@ func (conf *Config) Load() error {
 	} else {
 		return nil
 	}
-	r := bufio.NewScanner(bytes.NewReader(in))
+	return load(bytes.NewReader(in), conf)
+}
+
+func load(in io.Reader, conf *Config) error {
+	r := bufio.NewScanner(in)
 	var lineNo int
 	for r.Scan() {
 		l := strings.TrimSpace(r.Text())
@@ -123,6 +128,7 @@ func (conf *Config) Load() error {
 			}
 			conf.Statusbar = bv
 		case netinterface:
+			// FIXME this should be a comma-separated list
 			conf.NetInterface = kv[1]
 		case layout:
 			conf.Layout = kv[1]

@@ -9,6 +9,7 @@ import (
 	"github.com/xxxserxxx/gotop/v3/widgets"
 )
 
+// FIXME This is totally broken since the updates
 func TestParse(t *testing.T) {
 	tests := []struct {
 		i string
@@ -37,8 +38,6 @@ func TestParse(t *testing.T) {
 			f: func(c Config, e error) {
 				assert.Nil(t, e, "unexpected error")
 				assert.Equal(t, "abc", c.ConfigDir)
-				assert.Equal(t, "bar", c.LogDir)
-				assert.Equal(t, "errors", c.LogFile)
 			},
 		},
 		{
@@ -46,8 +45,6 @@ func TestParse(t *testing.T) {
 			f: func(c Config, e error) {
 				assert.Nil(t, e, "unexpected error")
 				assert.Equal(t, "abc", c.ConfigDir)
-				assert.Equal(t, "bar", c.LogDir)
-				assert.Equal(t, "errors", c.LogFile)
 			},
 		},
 		{
@@ -81,7 +78,7 @@ func TestParse(t *testing.T) {
 	for _, tc := range tests {
 		in := strings.NewReader(tc.i)
 		c := Config{}
-		e := Parse(in, &c)
+		e := load(in, &c)
 		tc.f(c, e)
 	}
 }

@@ -63,7 +63,6 @@ Usage: gotop [options]
 Options:
   -c, --color=NAME        Set a colorscheme.
   -h, --help              Show this screen.
-  -m, --minimal           Only show CPU, Mem and Process widgets. (DEPRECATED, use '-l minimal')
   -S, --graphscale=INT    Graph scale factor, from 1+ [default: 7]
   -r, --rate=RATE         Number of times per second to update CPU and Mem widgets [default: 1].
   -V, --version           Print version and exit.
@@ -71,7 +70,6 @@ Options:
   -a, --averagecpu        Show average CPU in the CPU widget.
   -f, --fahrenheit        Show temperatures in fahrenheit.
   -s, --statusbar         Show a statusbar with the time.
-  -b, --battery           Show battery level widget (DEPRECATED, use '-l battery')
   -B, --bandwidth=bits	  Specify the number of bits per seconds.
   -l, --layout=NAME       Name of layout spec file for the UI. Use "-" to pipe.
   -i, --interface=NAME    Select network interface [default: all]. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using !

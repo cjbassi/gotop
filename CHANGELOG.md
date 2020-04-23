@@ -27,15 +27,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Instructions for Gentoo (thanks @tormath1!)
 - Graph labels that don't fit (vertically) in the window are now drawn in additional columns (#40)
 - Adds ability to filter reported temperatures (#92)
+- Command line option to list layouts, paths, colorschemes, hotkeys, and filterable devices
+- Adds ability to write out a configuration file
 
 ### Changed
 
 - Log files stored in \$XDG_CACHE_HOME; DATA, CONFIG, CACHE, and RUNTIME are the only directories specified by the FreeDesktop spec.
 - Extensions are now built with a build tool; this is an interim solution until issues with the Go plugin API are resolved.
+- Command line help text is cleaned up.
 
 ### Removed
 
 - configdir, logdir, and logfile options in the config file are no longer used.  gotop looks for a configuration file, layouts, and colorschemes in the following order: command-line; `pwd`; user-home, and finally a system-wide path.  The paths depend on the OS and whether XDG is in use.
+- Removes the deprecated `--minimal` and `--battery` options.  Use `-l minimal` and `-l battery` instead.
 
 ### Fixed
 
@@ -46,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The disk code was truncating values instead of rounding (#90)
 - Temperatures on Darwin were all over the place, and wrong (#48)
 - Config file loading from `~/.config/gotop` wasn't working
+- There were a number of minor issues with the config file that have been cleaned up.
 
 ## [3.5.1] - 2020-04-09 
 
