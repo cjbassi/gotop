@@ -63,28 +63,28 @@ Usage: gotop [options]
 Options:
   -c, --color=NAME        Set a colorscheme.
   -h, --help              Show this screen.
-  -m, --minimal           Only show CPU, Mem and Process widgets. Overrides -l. (DEPRECATED, use -l minimal)
-  -S, --graphscale=INT   Default is 7; 1 is lowest scale-out; values greater than 30 are probably not useful.
+  -m, --minimal           Only show CPU, Mem and Process widgets. (DEPRECATED, use '-l minimal')
+  -S, --graphscale=INT    Graph scale factor, from 1+ [default: 7]
   -r, --rate=RATE         Number of times per second to update CPU and Mem widgets [default: 1].
   -V, --version           Print version and exit.
   -p, --percpu            Show each CPU in the CPU widget.
   -a, --averagecpu        Show average CPU in the CPU widget.
   -f, --fahrenheit        Show temperatures in fahrenheit.
   -s, --statusbar         Show a statusbar with the time.
-  -b, --battery           Show battery level widget ('minimal' turns off). (DEPRECATED, use -l battery)
+  -b, --battery           Show battery level widget (DEPRECATED, use '-l battery')
   -B, --bandwidth=bits	  Specify the number of bits per seconds.
-  -l, --layout=NAME       Name of layout spec file for the UI.  Looks first in $XDG_CONFIG_HOME/gotop, then as a path.  Use "-" to pipe.
+  -l, --layout=NAME       Name of layout spec file for the UI. Use "-" to pipe.
   -i, --interface=NAME    Select network interface [default: all]. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using !
   -x, --export=PORT       Enable metrics for export on the specified port.
-      --mbps              Net widget shows mb(its)ps for RX/TX instead of scaled bytes per second.
+      --mbps              Show mbps for network IO.
       --test              Runs tests and exits with success/failure code.
       --list <devices|layouts|colorschemes|paths|keys>
         devices: Prints out device names for widgets supporting filters.
         layouts: Lists build-in layouts
         colorschemes: Lists built-in colorschemes
-        paths: List out the paths that gotop will look for gotop.conf, layouts, and color schemes.
+        paths: List out configuration file search paths
         keys: Show the keyboard bindings.  
-      --write-config      Write out a sample config file, either to the home config location, or current directory. Command-line arguments specificed at the same time will overwrite values in the config file.`)
+      --write-config      Write out a default config file.`)
 
 	args, err := docopt.ParseArgs(usage, os.Args[1:], Version)
 	if err != nil {
