@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/shibukawa/configdir"
-	"github.com/xxxserxxx/gotop/v3/colorschemes"
-	"github.com/xxxserxxx/gotop/v3/widgets"
+	"github.com/xxxserxxx/gotop/v4/colorschemes"
+	"github.com/xxxserxxx/gotop/v4/widgets"
 )
 
 type Config struct {

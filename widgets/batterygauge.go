@@ -9,7 +9,7 @@ import (
 	"github.com/distatus/battery"
 	"github.com/prometheus/client_golang/prometheus"
 
-	. "github.com/xxxserxxx/gotop/v3/termui"
+	. "github.com/xxxserxxx/gotop/v4/termui"
 )
 
 type BatteryGauge struct {

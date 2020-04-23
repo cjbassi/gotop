@@ -19,12 +19,12 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/shibukawa/configdir"
 
-	"github.com/xxxserxxx/gotop/v3"
-	"github.com/xxxserxxx/gotop/v3/colorschemes"
-	"github.com/xxxserxxx/gotop/v3/devices"
-	"github.com/xxxserxxx/gotop/v3/layout"
-	"github.com/xxxserxxx/gotop/v3/logging"
-	w "github.com/xxxserxxx/gotop/v3/widgets"
+	"github.com/xxxserxxx/gotop/v4"
+	"github.com/xxxserxxx/gotop/v4/colorschemes"
+	"github.com/xxxserxxx/gotop/v4/devices"
+	"github.com/xxxserxxx/gotop/v4/layout"
+	"github.com/xxxserxxx/gotop/v4/logging"
+	w "github.com/xxxserxxx/gotop/v4/widgets"
 )
 
 const (

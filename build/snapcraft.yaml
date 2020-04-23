@@ -15,7 +15,7 @@ parts:
     gotop:
         source: .
         plugin: go
-        go-importpath: github.com/xxxserxxx/gotop/v3
+        go-importpath: github.com/xxxserxxx/gotop/v4
         build-packages:
         - git-core
         - gcc

@@ -12,8 +12,8 @@ import (
 	psCPU "github.com/shirou/gopsutil/cpu"
 
 	tui "github.com/gizak/termui/v3"
-	ui "github.com/xxxserxxx/gotop/v3/termui"
-	"github.com/xxxserxxx/gotop/v3/utils"
+	ui "github.com/xxxserxxx/gotop/v4/termui"
+	"github.com/xxxserxxx/gotop/v4/utils"
 )
 
 const (

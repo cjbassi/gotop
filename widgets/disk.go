@@ -10,8 +10,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	psDisk "github.com/shirou/gopsutil/disk"
 
-	ui "github.com/xxxserxxx/gotop/v3/termui"
-	"github.com/xxxserxxx/gotop/v3/utils"
+	ui "github.com/xxxserxxx/gotop/v4/termui"
+	"github.com/xxxserxxx/gotop/v4/utils"
 )
 
 type Partition struct {

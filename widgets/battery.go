@@ -10,7 +10,7 @@ import (
 	"github.com/distatus/battery"
 	"github.com/prometheus/client_golang/prometheus"
 
-	ui "github.com/xxxserxxx/gotop/v3/termui"
+	ui "github.com/xxxserxxx/gotop/v4/termui"
 )
 
 type BatteryWidget struct {

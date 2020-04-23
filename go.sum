@@ -100,6 +100,9 @@ github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXf
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJyk=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
+github.com/xxxserxxx/gotop v0.0.0-20200228201131-d16cf1c6d2b9 h1:Sn+TuKkfF+CVaJjm4oVmeADtrOaHtrWpgqVLtsMpUqg=
+github.com/xxxserxxx/gotop/v3 v3.5.1 h1:aBf++Oxg7qCZpKqYpPPnXKFOxT1KYLPtiEXRh57ywu0=
+github.com/xxxserxxx/gotop/v3 v3.5.1/go.mod h1:DGPTiAmUhqE21xvokK64BuMxW+EmnOptaxpdOlqiH6s=
 github.com/xxxserxxx/iSMC v1.0.1 h1:M9Gkwnnkl+evvnugoB5yRYrbUP+cRIVOPM+xrHZc3Hs=
 github.com/xxxserxxx/iSMC v1.0.1/go.mod h1:TGgNjU7BF2DZSuxiTft+BdzxzcujFJYqFfMCzcTl/aY=
 golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045/go.mod h1:cYlCBUl1MsqxdiKgmc4uh7TxZfWSFLOGSRR090WDxt8=

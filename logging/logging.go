@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/xxxserxxx/gotop/v3"
+	"github.com/xxxserxxx/gotop/v4"
 )
 
 const (

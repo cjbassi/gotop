@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/xxxserxxx/gotop/v3/widgets"
+	"github.com/xxxserxxx/gotop/v4/widgets"
 )
 
 // FIXME This is totally broken since the updates

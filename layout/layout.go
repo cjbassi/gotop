@@ -5,8 +5,8 @@ import (
 	"log"
 	"sort"
 
-	"github.com/xxxserxxx/gotop/v3"
-	"github.com/xxxserxxx/gotop/v3/widgets"
+	"github.com/xxxserxxx/gotop/v4"
+	"github.com/xxxserxxx/gotop/v4/widgets"
 
 	ui "github.com/gizak/termui/v3"
 )

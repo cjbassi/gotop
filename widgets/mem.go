@@ -6,9 +6,9 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/xxxserxxx/gotop/v3/devices"
-	ui "github.com/xxxserxxx/gotop/v3/termui"
-	"github.com/xxxserxxx/gotop/v3/utils"
+	"github.com/xxxserxxx/gotop/v4/devices"
+	ui "github.com/xxxserxxx/gotop/v4/termui"
+	"github.com/xxxserxxx/gotop/v4/utils"
 )
 
 type MemWidget struct {

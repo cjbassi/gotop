@@ -5,7 +5,7 @@ import (
 	"sort"
 
 	. "github.com/gizak/termui/v3"
-	drawille "github.com/xxxserxxx/gotop/v3/termui/drawille-go"
+	drawille "github.com/xxxserxxx/gotop/v4/termui/drawille-go"
 )
 
 // LineGraph implements a line graph of data points.
