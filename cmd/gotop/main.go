@@ -109,12 +109,6 @@ Options:
 	if args["--statusbar"].(bool) {
 		statusbar, _ = args["--statusbar"].(bool)
 	}
-	if args["--battery"].(bool) {
-		conf.Layout = "battery"
-	}
-	if args["--minimal"].(bool) {
-		conf.Layout = "minimal"
-	}
 	if val, _ := args["--export"]; val != nil {
 		conf.ExportPort = val.(string)
 	}
