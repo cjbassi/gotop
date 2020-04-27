@@ -1,6 +1,8 @@
 package devices
 
-import "log"
+import (
+	"log"
+)
 
 const (
 	Temperatures = "Temperatures" // Device domain for temperature sensors
@@ -19,6 +21,22 @@ var _defaults map[string][]string
 func RegisterShutdown(f func() error) {
 	_shutdownFuncs = append(_shutdownFuncs, f)
 }
+
+/*
+func RegisterStartup(f func(gotop.Config)) {
+	if _startup == nil {
+		_startup = make([]func(gotop.Config), 1)
+	}
+	_startup = append(_startup, f)
+}
+
+// Called after configuration has been parsed
+func Startup(c gotop.Config) {
+	for _, f := range _startup {
+		f(c)
+	}
+}
+*/
 
 // Shutdown will be called by the `main()` function if gotop is exited
 // cleanly.  It will call all of the registered shutdown functions of devices,

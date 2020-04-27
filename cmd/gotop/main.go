@@ -9,15 +9,16 @@ import (
 	"os/signal"
 	"path/filepath"
 	"sort"
-	"strconv"
 	"strings"
 	"syscall"
 	"time"
 
-	docopt "github.com/docopt/docopt.go"
+	//_ "net/http/pprof"
+
 	ui "github.com/gizak/termui/v3"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/shibukawa/configdir"
+	flag "github.com/xxxserxxx/pflag"
 
 	"github.com/xxxserxxx/gotop/v4"
 	"github.com/xxxserxxx/gotop/v4/colorschemes"
@@ -48,127 +49,66 @@ var (
 	stderrLogger = log.New(os.Stderr, "", 0)
 )
 
-// TODO: Add tab completion for Linux https://gist.github.com/icholy/5314423
-// TODO: state:merge #135 linux console font (cmatsuoka/console-font)
-// TODO: Abstract out the UI toolkit.  mum4k/termdash, VladimirMarkelov/clui, gcla/gowid, rivo/tview, marcusolsson/tui-go might work better for some OS/Archs. Performance/memory use comparison would be interesting.
 func parseArgs(conf *gotop.Config) error {
 	cds := conf.ConfigDir.QueryFolders(configdir.All)
 	cpaths := make([]string, len(cds))
 	for i, p := range cds {
 		cpaths[i] = p.Path
 	}
-	usage := fmt.Sprintln(`
-Usage: gotop [options]
-
-Options:
-  -c, --color=NAME        Set a colorscheme.
-  -h, --help              Show this screen.
-  -S, --graphscale=INT    Graph scale factor, from 1+ [default: 7]
-  -r, --rate=RATE         Number of times per second to update CPU and Mem widgets [default: 1].
-  -V, --version           Print version and exit.
-  -p, --percpu            Show each CPU in the CPU widget.
-  -a, --averagecpu        Show average CPU in the CPU widget.
-  -f, --fahrenheit        Show temperatures in fahrenheit.
-  -s, --statusbar         Show a statusbar with the time.
-  -B, --bandwidth=bits	  Specify the number of bits per seconds.
-  -l, --layout=NAME       Name of layout spec file for the UI. Use "-" to pipe.
-  -i, --interface=NAME    Select network interface [default: all]. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using !
-  -x, --export=PORT       Enable metrics for export on the specified port.
-      --mbps              Show mbps for network IO.
-      --test              Runs tests and exits with success/failure code.
-      --list <devices|layouts|colorschemes|paths|keys>
-        devices: Prints out device names for widgets supporting filters.
-        layouts: Lists build-in layouts
-        colorschemes: Lists built-in colorschemes
-        paths: List out configuration file search paths
-        keys: Show the keyboard bindings.  
-      --write-config      Write out a default config file.`)
-
-	args, err := docopt.ParseArgs(usage, os.Args[1:], Version)
+	help := flag.BoolP("help", "h", false, "Show this screen.")
+	color := flag.StringP("color", "c", conf.Colorscheme.Name, "Set a colorscheme.")
+	flag.IntVarP(&conf.GraphHorizontalScale, "graphscale", "S", conf.GraphHorizontalScale, "Graph scale factor, >0")
+	version := flag.BoolP("version", "v", false, "Print version and exit.")
+	versioN := flag.BoolP("", "V", false, "Print version and exit.")
+	flag.BoolVarP(&conf.PercpuLoad, "percpu", "p", conf.PercpuLoad, "Show each CPU in the CPU widget.")
+	flag.BoolVarP(&conf.AverageLoad, "averagecpu", "a", conf.AverageLoad, "Show average CPU in the CPU widget.")
+	fahrenheit := flag.BoolP("fahrenheit", "f", conf.TempScale == 'F', "Show temperatures in fahrenheit.Show temperatures in fahrenheit.")
+	flag.BoolVarP(&conf.Statusbar, "statusbar", "s", conf.Statusbar, "Show a statusbar with the time.")
+	flag.DurationVarP(&conf.UpdateInterval, "rate", "r", conf.UpdateInterval, "Number of times per second to update CPU and Mem widgets.")
+	flag.StringVarP(&conf.ExportPort, "layout", "l", conf.Layout, `Name of layout spec file for the UI. Use "-" to pipe.`)
+	flag.StringVarP(&conf.NetInterface, "interface", "i", "all", "Select network interface. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using `!`")
+	flag.StringVarP(&conf.ExportPort, "export", "x", conf.ExportPort, "Enable metrics for export on the specified port.")
+	flag.BoolVarP(&conf.Mbps, "mbps", "", conf.Mbps, "Show network rate as mbps.")
+	// FIXME Where did this go??
+	//conf.Band = flag.IntP("bandwidth", "B", 100, "Specify the number of bits per seconds.")
+	flag.BoolVar(&conf.Test, "test", conf.Test, "Runs tests and exits with success/failure code.")
+	list := flag.String("list", "", `List <devices|layouts|colorschemes|paths|keys>
+devices: Prints out device names for filterable widgets
+layouts: Lists build-in layouts
+colorschemes: Lists built-in colorschemes
+paths: List out configuration file search paths
+keys: Show the keyboard bindings.`)
+	wc := flag.Bool("write-config", false, "Write out a default config file.")
+	flag.CommandLine.SortFlags = false
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: %s [options]\n\nOptions:\n", os.Args[0])
+		flag.PrintDefaults()
+	}
+	flag.Parse()
+	if *version || *versioN {
+		fmt.Printf("gotop %s (%s)\n", Version, BuildDate)
+		os.Exit(0)
+	}
+	if *help {
+		flag.Usage()
+		os.Exit(0)
+	}
+	cs, err := colorschemes.FromName(conf.ConfigDir, *color)
 	if err != nil {
 		return err
 	}
-
-	if val, _ := args["--layout"]; val != nil {
-		conf.Layout = val.(string)
+	conf.Colorscheme = cs
+	if *fahrenheit {
+		conf.TempScale = 'F'
+	} else {
+		conf.TempScale = 'C'
 	}
-	if val, _ := args["--color"]; val != nil {
-		cs, err := colorschemes.FromName(conf.ConfigDir, val.(string))
-		if err != nil {
-			return err
-		}
-		conf.Colorscheme = cs
-	}
-
-	if args["--averagecpu"].(bool) {
-		conf.AverageLoad, _ = args["--averagecpu"].(bool)
-	}
-	if args["--percpu"].(bool) {
-		conf.PercpuLoad, _ = args["--percpu"].(bool)
-	}
-	if args["--statusbar"].(bool) {
-		statusbar, _ = args["--statusbar"].(bool)
-	}
-	if val, _ := args["--export"]; val != nil {
-		conf.ExportPort = val.(string)
-	}
-	if val, _ := args["--rate"]; val != nil {
-		rateStr, _ := val.(string)
-		rate, err := strconv.ParseFloat(rateStr, 64)
-		if err != nil {
-			return fmt.Errorf("invalid rate parameter")
-		}
-		if rate < 1 {
-			conf.UpdateInterval = time.Second * time.Duration(1/rate)
-		} else {
-			conf.UpdateInterval = time.Second / time.Duration(rate)
-		}
-	}
-	if val, _ := args["--fahrenheit"]; val != nil {
-		fahrenheit, _ := val.(bool)
-		if fahrenheit {
-			conf.TempScale = w.Fahrenheit
-		}
-	}
-	if val, _ := args["--interface"]; val != nil {
-		conf.NetInterface, _ = args["--interface"].(string)
-	}
-	if val, _ := args["--test"]; val != nil {
-		conf.Test = val.(bool)
-	}
-	if val, _ := args["--graphscale"]; val != nil {
-		str, _ := args["--graphscale"].(string)
-		scl, err := strconv.Atoi(str)
-		if err != nil {
-			fmt.Printf("invalid value \"%s\" for graphscale; must be an integer\n", args["--graphscale"])
-			os.Exit(1)
-		}
-		if scl < 1 {
-			fmt.Printf("graphscale must be greater than 0 [1, ∞); you provided %d. Values > 30 are probably not useful.\n", scl)
-			os.Exit(1)
-		}
-		conf.GraphHorizontalScale = scl
-	}
-	if args["--mbps"].(bool) {
-		conf.Mbps = true
-	}
-	if val, _ := args["--list"]; val != nil {
-		switch val {
+	if *list != "" {
+		switch *list {
 		case "layouts":
-			fmt.Println("Built-in layouts:")
-			fmt.Println("\tdefault")
-			fmt.Println("\tminimal")
-			fmt.Println("\tbattery")
-			fmt.Println("\tkitchensink")
+			fmt.Println(LAYOUTS)
 		case "colorschemes":
-			fmt.Println("Built-in colorschemes:")
-			fmt.Println("\tdefault")
-			fmt.Println("\tdefault-dark (for white background)")
-			fmt.Println("\tsolarized")
-			fmt.Println("\tsolarized16-dark")
-			fmt.Println("\tsolarized16-light")
-			fmt.Println("\tmonokai")
-			fmt.Println("\tvice")
+			fmt.Println(COLORSCHEMES)
 		case "paths":
 			fmt.Println("Loadable colorschemes & layouts, and the config file, are searched for, in order:")
 			paths := make([]string, 0)
@@ -180,42 +120,14 @@ Options:
 		case "devices":
 			listDevices()
 		case "keys":
-			fmt.Println(`
-Quit: q or <C-c>
-Process navigation:
-    k and <Up>: up
-    j and <Down>: down
-    <C-u>: half page up
-    <C-d>: half page down
-    <C-b>: full page up
-    <C-f>: full page down
-    gg and <Home>: jump to top
-    G and <End>: jump to bottom
-Process actions:
-    <Tab>: toggle process grouping
-    dd: kill selected process or group of processes with SIGTERM
-    d3: kill selected process or group of processes with SIGQUIT
-    d9: kill selected process or group of processes with SIGKILL
-Process sorting
-    c: CPU
-    m: Mem
-    p: PID
-Process filtering:
-    /: start editing filter
-    (while editing):
-        <Enter> accept filter
-        <C-c> and <Escape>: clear filter
-CPU and Mem graph scaling:
-    h: scale in
-    l: scale out
-?: toggles keybind help menu`)
+			fmt.Println(KEYS)
 		default:
-			fmt.Printf("Unknown option \"%s\"; try layouts, colorschemes, or devices\n", val)
+			fmt.Printf("Unknown option \"%s\"; try layouts, colorschemes, or devices\n", *list)
 			os.Exit(1)
 		}
 		os.Exit(0)
 	}
-	if args["--write-config"].(bool) {
+	if *wc {
 		path, err := conf.Write()
 		if err != nil {
 			fmt.Printf("Failed to write configuration file: %s\n", err)
@@ -224,7 +136,6 @@ CPU and Mem graph scaling:
 		fmt.Printf("Config written to %s\n", path)
 		os.Exit(0)
 	}
-
 	return nil
 }
 
@@ -438,7 +349,17 @@ func makeConfig() gotop.Config {
 
 // TODO: Add fans
 // TODO: mpd visualizer widget
+// TODO: Add tab completion for Linux https://gist.github.com/icholy/5314423
+// TODO: state:merge #135 linux console font (cmatsuoka/console-font)
+// TODO: Abstract out the UI toolkit.  mum4k/termdash, VladimirMarkelov/clui, gcla/gowid, rivo/tview, marcusolsson/tui-go might work better for some OS/Archs. Performance/memory use comparison would be interesting.
+// TODO: all of the go vet stuff, more unit tests, benchmarks, finish remote.
+// TODO: color bars for memory, a-la bashtop
 func main() {
+	// For performance testing
+	//go func() {
+	//	log.Fatal(http.ListenAndServe(":7777", nil))
+	//}()
+
 	// This is just to make sure gotop returns a useful exit code, but also
 	// executes all defer statements and so cleans up before exit.  Sort of
 	// annoying work-around for a lack of a clean way to exit Go programs
@@ -486,6 +407,7 @@ func run() int {
 		return runTests(conf)
 	}
 
+	//devices.Startup(conf)
 	if err := ui.Init(); err != nil {
 		stderrLogger.Print(err)
 		return 1
@@ -575,3 +497,45 @@ func listDevices() {
 		}
 	}
 }
+
+const KEYS = `Quit: q or <C-c>
+Process navigation:
+    k and <Up>: up
+    j and <Down>: down
+    <C-u>: half page up
+    <C-d>: half page down
+    <C-b>: full page up
+    <C-f>: full page down
+    gg and <Home>: jump to top
+    G and <End>: jump to bottom
+Process actions:
+    <Tab>: toggle process grouping
+    dd: kill selected process or group of processes with SIGTERM
+    d3: kill selected process or group of processes with SIGQUIT
+    d9: kill selected process or group of processes with SIGKILL
+Process sorting
+    c: CPU
+    m: Mem
+    p: PID
+Process filtering:
+    /: start editing filter
+    (while editing):
+        <Enter> accept filter
+        <C-c> and <Escape>: clear filter
+CPU and Mem graph scaling:
+    h: scale in
+    l: scale out
+?: toggles keybind help menu`
+const LAYOUTS = `Built-in layouts:
+\tdefault
+\tminimal
+\tbattery
+\tkitchensink`
+const COLORSCHEMES = `Built-in colorschemes:
+\tdefault
+\tdefault-dark (for white background)
+\tsolarized
+\tsolarized16-dark
+\tsolarized16-light
+\tmonokai
+\tvice`
