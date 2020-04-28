@@ -78,6 +78,7 @@ func parseArgs(conf *gotop.Config) error {
          layouts: Lists build-in layouts
          colorschemes: Lists built-in colorschemes
          paths: List out configuration file search paths
+		 widgets: Widgets that can be used in a layout
          keys: Show the keyboard bindings.`)
 	wc := flag.Bool("write-config", false, "Write out a default config file.")
 	flag.SortFlags = false
@@ -122,6 +123,8 @@ func parseArgs(conf *gotop.Config) error {
 			listDevices()
 		case "keys":
 			fmt.Println(widgets.KEYBINDS)
+		case "widgets":
+			fmt.Println(_widgets)
 		default:
 			fmt.Printf("Unknown option \"%s\"; try layouts, colorschemes, keys, paths, or devices\n", *list)
 			os.Exit(1)
@@ -499,3 +502,11 @@ const _colorschemes = `Built-in colorschemes:
    solarized16-light
    monokai
    vice`
+const _widgets = `Widgets that can be used in layouts:
+   cpu   - CPU load graph
+   mem   - Physical & swap memory use graph
+   temp  - Sensor temperatures
+   disk  - Physical disk partition use
+   power - A battery bar
+   net   - Network load
+   procs - Interactive process list`
