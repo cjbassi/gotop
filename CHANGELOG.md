@@ -13,7 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
-## [3.5.1] - ??
+## [3.5.2] - 2020-04-28
+
+### Fixed
+
+- Fixes (an embarrasing) null map bug on FreeBSD (#94)
+
+## [3.5.1] - 2020-04-09
 
 ### Fixed
 

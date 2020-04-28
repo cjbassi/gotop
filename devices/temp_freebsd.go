@@ -20,7 +20,7 @@ var sensorOIDS = map[string]string{
 }
 
 func update(temps map[string]int) map[string]error {
-	var errors map[string]error
+	errors := make(map[string]error)
 
 	for k, v := range sensorOIDS {
 		output, err := exec.Command("sysctl", "-n", k).Output()
