@@ -18,7 +18,7 @@ import (
 	ui "github.com/gizak/termui/v3"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/shibukawa/configdir"
-	flag "github.com/xxxserxxx/pflag"
+	flag "github.com/xxxserxxx/opflag"
 
 	"github.com/xxxserxxx/gotop/v4"
 	"github.com/xxxserxxx/gotop/v4/colorschemes"
@@ -29,8 +29,6 @@ import (
 )
 
 const (
-	appName = "gotop"
-
 	graphHorizontalScaleDelta = 3
 	defaultUI                 = "2:cpu\ndisk/1 2:mem/2\ntemp\n2:net 2:procs"
 	minimalUI                 = "cpu\nmem procs"
@@ -65,7 +63,7 @@ func parseArgs(conf *gotop.Config) error {
 	fahrenheit := flag.BoolP("fahrenheit", "f", conf.TempScale == 'F', "Show temperatures in fahrenheit.Show temperatures in fahrenheit.")
 	flag.BoolVarP(&conf.Statusbar, "statusbar", "s", conf.Statusbar, "Show a statusbar with the time.")
 	flag.DurationVarP(&conf.UpdateInterval, "rate", "r", conf.UpdateInterval, "Number of times per second to update CPU and Mem widgets.")
-	flag.StringVarP(&conf.ExportPort, "layout", "l", conf.Layout, `Name of layout spec file for the UI. Use "-" to pipe.`)
+	flag.StringVarP(&conf.Layout, "layout", "l", conf.Layout, `Name of layout spec file for the UI. Use "-" to pipe.`)
 	flag.StringVarP(&conf.NetInterface, "interface", "i", "all", "Select network interface. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using `!`")
 	flag.StringVarP(&conf.ExportPort, "export", "x", conf.ExportPort, "Enable metrics for export on the specified port.")
 	flag.BoolVarP(&conf.Mbps, "mbps", "", conf.Mbps, "Show network rate as mbps.")
@@ -73,13 +71,13 @@ func parseArgs(conf *gotop.Config) error {
 	//conf.Band = flag.IntP("bandwidth", "B", 100, "Specify the number of bits per seconds.")
 	flag.BoolVar(&conf.Test, "test", conf.Test, "Runs tests and exits with success/failure code.")
 	list := flag.String("list", "", `List <devices|layouts|colorschemes|paths|keys>
-devices: Prints out device names for filterable widgets
-layouts: Lists build-in layouts
-colorschemes: Lists built-in colorschemes
-paths: List out configuration file search paths
-keys: Show the keyboard bindings.`)
+         devices: Prints out device names for filterable widgets
+         layouts: Lists build-in layouts
+         colorschemes: Lists built-in colorschemes
+         paths: List out configuration file search paths
+         keys: Show the keyboard bindings.`)
 	wc := flag.Bool("write-config", false, "Write out a default config file.")
-	flag.CommandLine.SortFlags = false
+	flag.SortFlags = false
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [options]\n\nOptions:\n", os.Args[0])
 		flag.PrintDefaults()
@@ -122,7 +120,7 @@ keys: Show the keyboard bindings.`)
 		case "keys":
 			fmt.Println(KEYS)
 		default:
-			fmt.Printf("Unknown option \"%s\"; try layouts, colorschemes, or devices\n", *list)
+			fmt.Printf("Unknown option \"%s\"; try layouts, colorschemes, keys, paths, or devices\n", *list)
 			os.Exit(1)
 		}
 		os.Exit(0)
@@ -327,26 +325,6 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 	}
 }
 
-func makeConfig() gotop.Config {
-	cd := configdir.New("", appName)
-	cd.LocalPath, _ = filepath.Abs(".")
-	conf = gotop.Config{
-		ConfigDir:            cd,
-		GraphHorizontalScale: 7,
-		HelpVisible:          false,
-		UpdateInterval:       time.Second,
-		AverageLoad:          false,
-		PercpuLoad:           true,
-		TempScale:            w.Celsius,
-		Statusbar:            false,
-		NetInterface:         w.NET_INTERFACE_ALL,
-		MaxLogSize:           5000000,
-		Layout:               "default",
-	}
-	conf.Colorscheme, _ = colorschemes.FromName(conf.ConfigDir, "default")
-	return conf
-}
-
 // TODO: Add fans
 // TODO: mpd visualizer widget
 // TODO: Add tab completion for Linux https://gist.github.com/icholy/5314423
@@ -374,8 +352,7 @@ func main() {
 }
 
 func run() int {
-	// Set up default config
-	conf := makeConfig()
+	conf := gotop.NewConfig()
 	// Find the config file; look in (1) local, (2) user, (3) global
 	err := conf.Load()
 	if err != nil {
@@ -407,7 +384,13 @@ func run() int {
 		return runTests(conf)
 	}
 
-	//devices.Startup(conf)
+	errs := devices.Startup(conf.ExtensionVars)
+	if len(errs) > 0 {
+		for _, err := range errs {
+			stderrLogger.Print(err)
+		}
+		return 1
+	}
 	if err := ui.Init(); err != nil {
 		stderrLogger.Print(err)
 		return 1
@@ -527,15 +510,15 @@ CPU and Mem graph scaling:
     l: scale out
 ?: toggles keybind help menu`
 const LAYOUTS = `Built-in layouts:
-\tdefault
-\tminimal
-\tbattery
-\tkitchensink`
+   default
+   minimal
+   battery
+   kitchensink`
 const COLORSCHEMES = `Built-in colorschemes:
-\tdefault
-\tdefault-dark (for white background)
-\tsolarized
-\tsolarized16-dark
-\tsolarized16-light
-\tmonokai
-\tvice`
+   default
+   default-dark (for white background)
+   solarized
+   solarized16-dark
+   solarized16-light
+   monokai
+   vice`

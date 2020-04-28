@@ -12,6 +12,7 @@ var Domains []string = []string{Temperatures}
 var _shutdownFuncs []func() error
 var _devs map[string][]string
 var _defaults map[string][]string
+var _startup []func(map[string]string) error
 
 // RegisterShutdown stores a function to be called by gotop on exit, allowing
 // extensions to properly release resources.  Extensions should register a
@@ -22,21 +23,24 @@ func RegisterShutdown(f func() error) {
 	_shutdownFuncs = append(_shutdownFuncs, f)
 }
 
-/*
-func RegisterStartup(f func(gotop.Config)) {
+func RegisterStartup(f func(vars map[string]string) error) {
 	if _startup == nil {
-		_startup = make([]func(gotop.Config), 1)
+		_startup = make([]func(map[string]string) error, 0, 1)
 	}
 	_startup = append(_startup, f)
 }
 
 // Called after configuration has been parsed
-func Startup(c gotop.Config) {
+func Startup(vars map[string]string) []error {
+	rv := make([]error, 0)
 	for _, f := range _startup {
-		f(c)
+		err := f(vars)
+		if err != nil {
+			rv = append(rv, err)
+		}
 	}
+	return rv
 }
-*/
 
 // Shutdown will be called by the `main()` function if gotop is exited
 // cleanly.  It will call all of the registered shutdown functions of devices,

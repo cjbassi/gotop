@@ -17,25 +17,44 @@ import (
 )
 
 type Config struct {
-	ConfigDir configdir.ConfigDir
-
+	ConfigDir            configdir.ConfigDir
 	GraphHorizontalScale int
 	HelpVisible          bool
 	Colorscheme          colorschemes.Colorscheme
+	UpdateInterval       time.Duration
+	AverageLoad          bool
+	PercpuLoad           bool
+	Statusbar            bool
+	TempScale            widgets.TempScale
+	NetInterface         string
+	Layout               string
+	MaxLogSize           int64
+	ExportPort           string
+	Mbps                 bool
+	Temps                []string
+	Test                 bool
+	ExtensionVars        map[string]string
+}
 
-	UpdateInterval time.Duration
-	AverageLoad    bool
-	PercpuLoad     bool
-	Statusbar      bool
-	TempScale      widgets.TempScale
-	NetInterface   string
-	Layout         string
-	MaxLogSize     int64
-	ExportPort     string
-	Mbps           bool
-	Temps          []string
-
-	Test bool
+func NewConfig() Config {
+	cd := configdir.New("", "gotop")
+	cd.LocalPath, _ = filepath.Abs(".")
+	conf := Config{
+		ConfigDir:            cd,
+		GraphHorizontalScale: 7,
+		HelpVisible:          false,
+		UpdateInterval:       time.Second,
+		AverageLoad:          false,
+		PercpuLoad:           true,
+		TempScale:            widgets.Celsius,
+		Statusbar:            false,
+		NetInterface:         widgets.NET_INTERFACE_ALL,
+		MaxLogSize:           5000000,
+		Layout:               "default",
+		ExtensionVars:        make(map[string]string),
+	}
+	conf.Colorscheme, _ = colorschemes.FromName(conf.ConfigDir, "default")
+	return conf
 }
 
 func (conf *Config) Load() error {
@@ -68,7 +87,7 @@ func load(in io.Reader, conf *Config) error {
 		key := strings.ToLower(kv[0])
 		switch key {
 		default:
-			return fmt.Errorf("invalid config option %s", key)
+			conf.ExtensionVars[key] = kv[1]
 		case "configdir":
 			log.Printf("configdir is deprecated.  Ignored configdir=%s", kv[1])
 		case "logdir":

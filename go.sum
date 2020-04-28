@@ -113,10 +113,12 @@ github.com/xxxserxxx/gotop/v3 v3.5.1 h1:aBf++Oxg7qCZpKqYpPPnXKFOxT1KYLPtiEXRh57y
 github.com/xxxserxxx/gotop/v3 v3.5.1/go.mod h1:DGPTiAmUhqE21xvokK64BuMxW+EmnOptaxpdOlqiH6s=
 github.com/xxxserxxx/iSMC v1.0.1 h1:M9Gkwnnkl+evvnugoB5yRYrbUP+cRIVOPM+xrHZc3Hs=
 github.com/xxxserxxx/iSMC v1.0.1/go.mod h1:TGgNjU7BF2DZSuxiTft+BdzxzcujFJYqFfMCzcTl/aY=
-github.com/xxxserxxx/pflag v1.0.7 h1:451NW+tmkc1R30NnibaAbbsysLqGLguFrdLr6SIbYac=
-github.com/xxxserxxx/pflag v1.0.7/go.mod h1:Nyfo0BBT+1wKxL37phQvEyr5zgzmQ+C7/CiXSOsYR2w=
-github.com/xxxserxxx/pflag v1.0.8 h1:UuFim2L1eNWapysJARSJ+QbbUOxEz23VrYWe4mFXTg8=
-github.com/xxxserxxx/pflag v1.0.8/go.mod h1:Nyfo0BBT+1wKxL37phQvEyr5zgzmQ+C7/CiXSOsYR2w=
+github.com/xxxserxxx/opflag v1.0.0 h1:NabxbubvejqcdzQUHnsU8pBMAiWM+a/Rh2IJe56moiU=
+github.com/xxxserxxx/opflag v1.0.0/go.mod h1:Zf9bGkOcA35ypGfN25KX0iujVpZB5XwauEFjcfSKcBo=
+github.com/xxxserxxx/opflag v1.0.2 h1:TanW4Ck/RNal4fP2VVAvhEu7eBq4z+9hhGq9Q8OTq68=
+github.com/xxxserxxx/opflag v1.0.2/go.mod h1:GWZtb3/tGGj5W1GE/JTyJAuqgxDxl1+jqDGAGM+P/p4=
+github.com/xxxserxxx/opflag v1.0.3 h1:ugsBWZtSXUaMLEjPLW0WKGjq/gsrc0GpZYbCJY6ZHVY=
+github.com/xxxserxxx/opflag v1.0.3/go.mod h1:GWZtb3/tGGj5W1GE/JTyJAuqgxDxl1+jqDGAGM+P/p4=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045/go.mod h1:cYlCBUl1MsqxdiKgmc4uh7TxZfWSFLOGSRR090WDxt8=
 golang.org/x/crypto v0.0.0-20180904163835-0709b304e793/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
