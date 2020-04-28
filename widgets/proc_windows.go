@@ -32,7 +32,7 @@ func getProcs() ([]Proc, error) {
 		procs[i] = Proc{
 			Pid:         int(pid),
 			CommandName: command,
-			Cpu:         cpu,
+			CPU:         cpu,
 			Mem:         float64(mem),
 			// getting command args using gopsutil's Cmdline and CmdlineSlice wasn't
 			// working the last time I tried it, so we're just reusing 'command'
