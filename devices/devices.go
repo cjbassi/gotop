@@ -30,7 +30,10 @@ func RegisterStartup(f func(vars map[string]string) error) {
 	_startup = append(_startup, f)
 }
 
-// Called after configuration has been parsed
+// Startup is after configuration has been parsed, and provides extensions with
+// any configuration data provided by the user.  An extension's registered
+// startup function should process and populate data at least once so that the
+// widgets have a full list of sensors, for (e.g.) setting up colors.
 func Startup(vars map[string]string) []error {
 	rv := make([]error, 0)
 	for _, f := range _startup {

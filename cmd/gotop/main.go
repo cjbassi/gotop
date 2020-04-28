@@ -335,6 +335,7 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 // TODO: Abstract out the UI toolkit.  mum4k/termdash, VladimirMarkelov/clui, gcla/gowid, rivo/tview, marcusolsson/tui-go might work better for some OS/Archs. Performance/memory use comparison would be interesting.
 // TODO: all of the go vet stuff, more unit tests, benchmarks, finish remote.
 // TODO: color bars for memory, a-la bashtop
+// TODO: add verbose debugging option
 func main() {
 	// For performance testing
 	//go func() {
@@ -376,6 +377,14 @@ func run() int {
 	}
 	defer logfile.Close()
 
+	errs := devices.Startup(conf.ExtensionVars)
+	if len(errs) > 0 {
+		for _, err := range errs {
+			stderrLogger.Print(err)
+		}
+		return 1
+	}
+
 	lstream, err := getLayout(conf)
 	if err != nil {
 		stderrLogger.Print(err)
@@ -387,13 +396,6 @@ func run() int {
 		return runTests(conf)
 	}
 
-	errs := devices.Startup(conf.ExtensionVars)
-	if len(errs) > 0 {
-		for _, err := range errs {
-			stderrLogger.Print(err)
-		}
-		return 1
-	}
 	if err = ui.Init(); err != nil {
 		stderrLogger.Print(err)
 		return 1

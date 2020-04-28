@@ -61,6 +61,7 @@ func (self *LineGraph) Draw(buf *Buffer) {
 		seriesLineColor, ok := self.LineColors[seriesName]
 		if !ok {
 			seriesLineColor = self.DefaultLineColor
+			self.LineColors[seriesName] = seriesLineColor
 		}
 
 		// coordinates of last point
