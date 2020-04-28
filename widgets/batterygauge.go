@@ -9,16 +9,16 @@ import (
 	"github.com/distatus/battery"
 	"github.com/prometheus/client_golang/prometheus"
 
-	. "github.com/xxxserxxx/gotop/v4/termui"
+	"github.com/xxxserxxx/gotop/v4/termui"
 )
 
 type BatteryGauge struct {
-	*Gauge
+	*termui.Gauge
 	metric prometheus.Gauge
 }
 
 func NewBatteryGauge() *BatteryGauge {
-	self := &BatteryGauge{Gauge: NewGauge()}
+	self := &BatteryGauge{Gauge: termui.NewGauge()}
 	self.Title = " Power Level "
 
 	self.update()
@@ -56,7 +56,7 @@ func (b *BatteryGauge) EnableMetric() {
 	}
 }
 
-func (self *BatteryGauge) update() {
+func (b *BatteryGauge) update() {
 	bats, err := battery.GetAll()
 	if err != nil {
 		log.Printf("error setting up batteries: %v", err)
@@ -78,9 +78,9 @@ func (self *BatteryGauge) update() {
 	}
 	tn := (mx - cu) / rate
 	d, _ := time.ParseDuration(fmt.Sprintf("%fh", tn))
-	self.Percent = int((cu / mx) * 100.0)
-	self.Label = fmt.Sprintf(charging, self.Percent, d.Truncate(time.Minute))
-	if self.metric != nil {
-		self.metric.Set(cu / mx)
+	b.Percent = int((cu / mx) * 100.0)
+	b.Label = fmt.Sprintf(charging, b.Percent, d.Truncate(time.Minute))
+	if b.metric != nil {
+		b.metric.Set(cu / mx)
 	}
 }

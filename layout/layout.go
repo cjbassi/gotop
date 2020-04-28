@@ -1,4 +1,3 @@
-// Copyright 2020 The gotop Authors Licensed under terms of the LICENSE file in this repository.
 package layout
 
 import (
@@ -165,7 +164,7 @@ func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 		dw := widgets.NewDiskWidget()
 		w = dw
 	case "cpu":
-		cpu := widgets.NewCpuWidget(c.UpdateInterval, c.GraphHorizontalScale, c.AverageLoad, c.PercpuLoad)
+		cpu := widgets.NewCPUWidget(c.UpdateInterval, c.GraphHorizontalScale, c.AverageLoad, c.PercpuLoad)
 		assignColors(cpu.Data, c.Colorscheme.CPULines, cpu.LineColors)
 		w = cpu
 	case "mem":
@@ -228,7 +227,7 @@ func assignColors(data map[string][]float64, colors []int, assign map[string]ui.
 func countNumRows(rs [][]widgetRule) int {
 	var ttl int
 	for len(rs) > 0 {
-		ttl += 1
+		ttl++
 		line := rs[0]
 		h := 1
 		for _, c := range line {

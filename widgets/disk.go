@@ -64,9 +64,9 @@ func NewDiskWidget() *DiskWidget {
 	return self
 }
 
-func (self *DiskWidget) EnableMetric() {
-	self.metric = make(map[string]prometheus.Gauge)
-	for key, part := range self.Partitions {
+func (disk *DiskWidget) EnableMetric() {
+	disk.metric = make(map[string]prometheus.Gauge)
+	for key, part := range disk.Partitions {
 		gauge := prometheus.NewGauge(prometheus.GaugeOpts{
 			Namespace: "gotop",
 			Subsystem: "disk",
@@ -75,11 +75,11 @@ func (self *DiskWidget) EnableMetric() {
 		})
 		gauge.Set(float64(part.UsedPercent) / 100.0)
 		prometheus.MustRegister(gauge)
-		self.metric[key] = gauge
+		disk.metric[key] = gauge
 	}
 }
 
-func (self *DiskWidget) update() {
+func (disk *DiskWidget) update() {
 	partitions, err := psDisk.Partitions(false)
 	if err != nil {
 		log.Printf("failed to get disk partitions from gopsutil: %v", err)
@@ -97,8 +97,8 @@ func (self *DiskWidget) update() {
 			continue
 		}
 		// check if partition doesn't already exist in our list
-		if _, ok := self.Partitions[partition.Device]; !ok {
-			self.Partitions[partition.Device] = &Partition{
+		if _, ok := disk.Partitions[partition.Device]; !ok {
+			disk.Partitions[partition.Device] = &Partition{
 				Device:     partition.Device,
 				MountPoint: partition.Mountpoint,
 			}
@@ -107,7 +107,7 @@ func (self *DiskWidget) update() {
 
 	// delete a partition if it no longer exists
 	toDelete := []string{}
-	for device := range self.Partitions {
+	for device := range disk.Partitions {
 		exists := false
 		for _, partition := range partitions {
 			if device == partition.Device {
@@ -120,11 +120,11 @@ func (self *DiskWidget) update() {
 		}
 	}
 	for _, device := range toDelete {
-		delete(self.Partitions, device)
+		delete(disk.Partitions, device)
 	}
 
 	// updates partition info. We add 0.5 to all values to make sure the truncation rounds
-	for _, partition := range self.Partitions {
+	for _, partition := range disk.Partitions {
 		usage, err := psDisk.Usage(partition.MountPoint)
 		if err != nil {
 			log.Printf("failed to get partition usage statistics from gopsutil: %v. partition: %v", err, partition)
@@ -160,27 +160,27 @@ func (self *DiskWidget) update() {
 	// converts self.Partitions into self.Rows which is a [][]String
 
 	sortedPartitions := []string{}
-	for seriesName := range self.Partitions {
+	for seriesName := range disk.Partitions {
 		sortedPartitions = append(sortedPartitions, seriesName)
 	}
 	sort.Strings(sortedPartitions)
 
-	self.Rows = make([][]string, len(self.Partitions))
+	disk.Rows = make([][]string, len(disk.Partitions))
 
 	for i, key := range sortedPartitions {
-		partition := self.Partitions[key]
-		self.Rows[i] = make([]string, 6)
-		self.Rows[i][0] = strings.Replace(strings.Replace(partition.Device, "/dev/", "", -1), "mapper/", "", -1)
-		self.Rows[i][1] = partition.MountPoint
-		self.Rows[i][2] = fmt.Sprintf("%d%%", partition.UsedPercent)
-		self.Rows[i][3] = partition.Free
-		self.Rows[i][4] = partition.BytesReadRecently
-		self.Rows[i][5] = partition.BytesWrittenRecently
-		if self.metric != nil {
-			if self.metric[key] == nil {
+		partition := disk.Partitions[key]
+		disk.Rows[i] = make([]string, 6)
+		disk.Rows[i][0] = strings.Replace(strings.Replace(partition.Device, "/dev/", "", -1), "mapper/", "", -1)
+		disk.Rows[i][1] = partition.MountPoint
+		disk.Rows[i][2] = fmt.Sprintf("%d%%", partition.UsedPercent)
+		disk.Rows[i][3] = partition.Free
+		disk.Rows[i][4] = partition.BytesReadRecently
+		disk.Rows[i][5] = partition.BytesWrittenRecently
+		if disk.metric != nil {
+			if disk.metric[key] == nil {
 				log.Printf("ERROR: missing metric %s", key)
 			} else {
-				self.metric[key].Set(float64(partition.UsedPercent) / 100.0)
+				disk.metric[key].Set(float64(partition.UsedPercent) / 100.0)
 			}
 		}
 	}

@@ -48,30 +48,30 @@ func NewMemWidget(updateInterval time.Duration, horizontalScale int) *MemWidget 
 	return self
 }
 
-func (b *MemWidget) EnableMetric() {
-	b.metrics = make(map[string]prometheus.Gauge)
+func (mem *MemWidget) EnableMetric() {
+	mem.metrics = make(map[string]prometheus.Gauge)
 	mems := make(map[string]devices.MemoryInfo)
 	devices.UpdateMem(mems)
-	for l, mem := range mems {
-		b.metrics[l] = prometheus.NewGauge(prometheus.GaugeOpts{
+	for l, m := range mems {
+		mem.metrics[l] = prometheus.NewGauge(prometheus.GaugeOpts{
 			Namespace: "gotop",
 			Subsystem: "memory",
 			Name:      l,
 		})
-		b.metrics[l].Set(mem.UsedPercent)
-		prometheus.MustRegister(b.metrics[l])
+		mem.metrics[l].Set(m.UsedPercent)
+		prometheus.MustRegister(mem.metrics[l])
 	}
 }
 
-func (b *MemWidget) Scale(i int) {
-	b.LineGraph.HorizontalScale = i
+func (mem *MemWidget) Scale(i int) {
+	mem.LineGraph.HorizontalScale = i
 }
 
-func (self *MemWidget) renderMemInfo(line string, memoryInfo devices.MemoryInfo) {
-	self.Data[line] = append(self.Data[line], memoryInfo.UsedPercent)
+func (mem *MemWidget) renderMemInfo(line string, memoryInfo devices.MemoryInfo) {
+	mem.Data[line] = append(mem.Data[line], memoryInfo.UsedPercent)
 	memoryTotalBytes, memoryTotalMagnitude := utils.ConvertBytes(memoryInfo.Total)
 	memoryUsedBytes, memoryUsedMagnitude := utils.ConvertBytes(memoryInfo.Used)
-	self.Labels[line] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s",
+	mem.Labels[line] = fmt.Sprintf("%3.0f%% %5.1f%s/%.0f%s",
 		memoryInfo.UsedPercent,
 		memoryUsedBytes,
 		memoryUsedMagnitude,

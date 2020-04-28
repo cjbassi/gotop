@@ -48,7 +48,7 @@ func NewConfig() Config {
 		PercpuLoad:           true,
 		TempScale:            widgets.Celsius,
 		Statusbar:            false,
-		NetInterface:         widgets.NET_INTERFACE_ALL,
+		NetInterface:         widgets.NetInterfaceAll,
 		MaxLogSize:           5000000,
 		Layout:               "default",
 		ExtensionVars:        make(map[string]string),
@@ -169,16 +169,16 @@ func load(in io.Reader, conf *Config) error {
 	return nil
 }
 
-func (c *Config) Write() (string, error) {
+func (conf *Config) Write() (string, error) {
 	cfn := "gotop.conf"
-	ds := c.ConfigDir.QueryFolders(configdir.Global)
+	ds := conf.ConfigDir.QueryFolders(configdir.Global)
 	if len(ds) == 0 {
-		ds = c.ConfigDir.QueryFolders(configdir.Local)
+		ds = conf.ConfigDir.QueryFolders(configdir.Local)
 		if len(ds) == 0 {
 			return "", fmt.Errorf("error locating config folders")
 		}
 	}
-	marshalled := marshal(c)
+	marshalled := marshal(conf)
 	err := ds[0].WriteFile(cfn, marshalled)
 	if err != nil {
 		return "", err

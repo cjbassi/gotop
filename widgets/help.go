@@ -7,6 +7,7 @@ import (
 	ui "github.com/gizak/termui/v3"
 )
 
+// KEYBINDS is the help text for the in-program shortcuts
 const KEYBINDS = `
 Quit: q or <C-c>
 
@@ -55,7 +56,7 @@ func NewHelpMenu() *HelpMenu {
 	}
 }
 
-func (self *HelpMenu) Resize(termWidth, termHeight int) {
+func (help *HelpMenu) Resize(termWidth, termHeight int) {
 	textWidth := 53
 	for _, line := range strings.Split(KEYBINDS, "\n") {
 		if textWidth < len(line) {
@@ -66,17 +67,17 @@ func (self *HelpMenu) Resize(termWidth, termHeight int) {
 	x := (termWidth - textWidth) / 2
 	y := (termHeight - textHeight) / 2
 
-	self.Block.SetRect(x, y, textWidth+x, textHeight+y)
+	help.Block.SetRect(x, y, textWidth+x, textHeight+y)
 }
 
-func (self *HelpMenu) Draw(buf *ui.Buffer) {
-	self.Block.Draw(buf)
+func (help *HelpMenu) Draw(buf *ui.Buffer) {
+	help.Block.Draw(buf)
 
 	for y, line := range strings.Split(KEYBINDS, "\n") {
 		for x, rune := range line {
 			buf.SetCell(
 				ui.NewCell(rune, ui.Theme.Default),
-				image.Pt(self.Inner.Min.X+x, self.Inner.Min.Y+y-1),
+				image.Pt(help.Inner.Min.X+x, help.Inner.Min.Y+y-1),
 			)
 		}
 	}

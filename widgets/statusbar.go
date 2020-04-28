@@ -19,8 +19,8 @@ func NewStatusBar() *StatusBar {
 	return self
 }
 
-func (self *StatusBar) Draw(buf *ui.Buffer) {
-	self.Block.Draw(buf)
+func (sb *StatusBar) Draw(buf *ui.Buffer) {
+	sb.Block.Draw(buf)
 
 	hostname, err := os.Hostname()
 	if err != nil {
@@ -30,7 +30,7 @@ func (self *StatusBar) Draw(buf *ui.Buffer) {
 	buf.SetString(
 		hostname,
 		ui.Theme.Default,
-		image.Pt(self.Inner.Min.X, self.Inner.Min.Y+(self.Inner.Dy()/2)),
+		image.Pt(sb.Inner.Min.X, sb.Inner.Min.Y+(sb.Inner.Dy()/2)),
 	)
 
 	currentTime := time.Now()
@@ -39,8 +39,8 @@ func (self *StatusBar) Draw(buf *ui.Buffer) {
 		formattedTime,
 		ui.Theme.Default,
 		image.Pt(
-			self.Inner.Min.X+(self.Inner.Dx()/2)-len(formattedTime)/2,
-			self.Inner.Min.Y+(self.Inner.Dy()/2),
+			sb.Inner.Min.X+(sb.Inner.Dx()/2)-len(formattedTime)/2,
+			sb.Inner.Min.Y+(sb.Inner.Dy()/2),
 		),
 	)
 
@@ -48,8 +48,8 @@ func (self *StatusBar) Draw(buf *ui.Buffer) {
 		"gotop",
 		ui.Theme.Default,
 		image.Pt(
-			self.Inner.Max.X-6,
-			self.Inner.Min.Y+(self.Inner.Dy()/2),
+			sb.Inner.Max.X-6,
+			sb.Inner.Min.Y+(sb.Inner.Dy()/2),
 		),
 	)
 }

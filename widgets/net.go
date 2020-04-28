@@ -14,8 +14,10 @@ import (
 )
 
 const (
-	NET_INTERFACE_ALL = "all"
-	NET_INTERFACE_VPN = "tun0"
+	// NetInterfaceAll enables all network interfaces
+	NetInterfaceAll = "all"
+	// NetInterfaceVpn is the VPN interface
+	NetInterfaceVpn = "tun0"
 )
 
 type NetWidget struct {
@@ -63,23 +65,23 @@ func NewNetWidget(netInterface string) *NetWidget {
 	return self
 }
 
-func (b *NetWidget) EnableMetric() {
-	b.recvMetric = prometheus.NewCounter(prometheus.CounterOpts{
+func (net *NetWidget) EnableMetric() {
+	net.recvMetric = prometheus.NewCounter(prometheus.CounterOpts{
 		Namespace: "gotop",
 		Subsystem: "net",
 		Name:      "recv",
 	})
-	prometheus.MustRegister(b.recvMetric)
+	prometheus.MustRegister(net.recvMetric)
 
-	b.sentMetric = prometheus.NewCounter(prometheus.CounterOpts{
+	net.sentMetric = prometheus.NewCounter(prometheus.CounterOpts{
 		Namespace: "gotop",
 		Subsystem: "net",
 		Name:      "sent",
 	})
-	prometheus.MustRegister(b.sentMetric)
+	prometheus.MustRegister(net.sentMetric)
 }
 
-func (self *NetWidget) update() {
+func (net *NetWidget) update() {
 	interfaces, err := psNet.IOCounters(true)
 	if err != nil {
 		log.Printf("failed to get network activity from gopsutil: %v", err)
@@ -90,15 +92,15 @@ func (self *NetWidget) update() {
 	var totalBytesSent uint64
 	interfaceMap := make(map[string]bool)
 	// Default behaviour
-	interfaceMap[NET_INTERFACE_ALL] = true
-	interfaceMap[NET_INTERFACE_VPN] = false
+	interfaceMap[NetInterfaceAll] = true
+	interfaceMap[NetInterfaceVpn] = false
 	// Build a map with wanted status for each interfaces.
-	for _, iface := range self.NetInterface {
+	for _, iface := range net.NetInterface {
 		if strings.HasPrefix(iface, "!") {
 			interfaceMap[strings.TrimPrefix(iface, "!")] = false
 		} else {
 			// if we specify a wanted interface, remove capture on all.
-			delete(interfaceMap, NET_INTERFACE_ALL)
+			delete(interfaceMap, NetInterfaceAll)
 			interfaceMap[iface] = true
 		}
 	}
@@ -109,7 +111,7 @@ func (self *NetWidget) update() {
 			totalBytesSent += _interface.BytesSent
 		} else if ok { // Present but unwanted
 			continue
-		} else if interfaceMap[NET_INTERFACE_ALL] { // Capture other
+		} else if interfaceMap[NetInterfaceAll] { // Capture other
 			totalBytesRecv += _interface.BytesRecv
 			totalBytesSent += _interface.BytesSent
 		}
@@ -118,9 +120,9 @@ func (self *NetWidget) update() {
 	var recentBytesRecv uint64
 	var recentBytesSent uint64
 
-	if self.totalBytesRecv != 0 { // if this isn't the first update
-		recentBytesRecv = totalBytesRecv - self.totalBytesRecv
-		recentBytesSent = totalBytesSent - self.totalBytesSent
+	if net.totalBytesRecv != 0 { // if this isn't the first update
+		recentBytesRecv = totalBytesRecv - net.totalBytesRecv
+		recentBytesSent = totalBytesSent - net.totalBytesSent
 
 		if int(recentBytesRecv) < 0 {
 			log.Printf("error: negative value for recently received network data from gopsutil. recentBytesRecv: %v", recentBytesRecv)
@@ -133,20 +135,20 @@ func (self *NetWidget) update() {
 			recentBytesSent = 0
 		}
 
-		self.Lines[0].Data = append(self.Lines[0].Data, int(recentBytesRecv))
-		self.Lines[1].Data = append(self.Lines[1].Data, int(recentBytesSent))
-		if self.sentMetric != nil {
-			self.sentMetric.Add(float64(recentBytesSent))
-			self.recvMetric.Add(float64(recentBytesRecv))
+		net.Lines[0].Data = append(net.Lines[0].Data, int(recentBytesRecv))
+		net.Lines[1].Data = append(net.Lines[1].Data, int(recentBytesSent))
+		if net.sentMetric != nil {
+			net.sentMetric.Add(float64(recentBytesSent))
+			net.recvMetric.Add(float64(recentBytesRecv))
 		}
 	}
 
 	// used in later calls to update
-	self.totalBytesRecv = totalBytesRecv
-	self.totalBytesSent = totalBytesSent
+	net.totalBytesRecv = totalBytesRecv
+	net.totalBytesSent = totalBytesSent
 
 	rx, tx := "RX/s", "TX/s"
-	if self.Mbps {
+	if net.Mbps {
 		rx, tx = "mbps", "mbps"
 	}
 	format := " %s: %9.1f %2s/s"
@@ -163,13 +165,13 @@ func (self *NetWidget) update() {
 		}
 
 		totalConverted, unitTotal := utils.ConvertBytes(total)
-		if self.Mbps {
+		if net.Mbps {
 			recentConverted, unitRecent, format = float64(recent)*0.000008, "", " %s: %11.3f %2s"
 		} else {
 			recentConverted, unitRecent = utils.ConvertBytes(recent)
 		}
 
-		self.Lines[i].Title1 = fmt.Sprintf(" Total %s: %5.1f %s", label, totalConverted, unitTotal)
-		self.Lines[i].Title2 = fmt.Sprintf(format, rate, recentConverted, unitRecent)
+		net.Lines[i].Title1 = fmt.Sprintf(" Total %s: %5.1f %s", label, totalConverted, unitTotal)
+		net.Lines[i].Title2 = fmt.Sprintf(format, rate, recentConverted, unitRecent)
 	}
 }

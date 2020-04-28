@@ -78,7 +78,6 @@ func RegisterDeviceList(typ string, all func() []string, def func() []string) {
 func Devices(domain string, all bool) []string {
 	if all {
 		return _devs[domain]
-	} else {
-		return _defaults[domain]
 	}
+	return _defaults[domain]
 }

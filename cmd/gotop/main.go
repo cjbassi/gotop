@@ -25,6 +25,7 @@ import (
 	"github.com/xxxserxxx/gotop/v4/devices"
 	"github.com/xxxserxxx/gotop/v4/layout"
 	"github.com/xxxserxxx/gotop/v4/logging"
+	"github.com/xxxserxxx/gotop/v4/widgets"
 	w "github.com/xxxserxxx/gotop/v4/widgets"
 )
 
@@ -38,7 +39,9 @@ const (
 )
 
 var (
-	Version      = "0.0.0"
+	// Version of the program; set during build from git tags
+	Version = "0.0.0"
+	// BuildDate when the program was compiled; set during build
 	BuildDate    = "Hadean"
 	conf         gotop.Config
 	help         *w.HelpMenu
@@ -104,9 +107,9 @@ func parseArgs(conf *gotop.Config) error {
 	if *list != "" {
 		switch *list {
 		case "layouts":
-			fmt.Println(LAYOUTS)
+			fmt.Println(_layouts)
 		case "colorschemes":
-			fmt.Println(COLORSCHEMES)
+			fmt.Println(_colorschemes)
 		case "paths":
 			fmt.Println("Loadable colorschemes & layouts, and the config file, are searched for, in order:")
 			paths := make([]string, 0)
@@ -118,7 +121,7 @@ func parseArgs(conf *gotop.Config) error {
 		case "devices":
 			listDevices()
 		case "keys":
-			fmt.Println(KEYS)
+			fmt.Println(widgets.KEYBINDS)
 		default:
 			fmt.Printf("Unknown option \"%s\"; try layouts, colorschemes, keys, paths, or devices\n", *list)
 			os.Exit(1)
@@ -391,7 +394,7 @@ func run() int {
 		}
 		return 1
 	}
-	if err := ui.Init(); err != nil {
+	if err = ui.Init(); err != nil {
 		stderrLogger.Print(err)
 		return 1
 	}
@@ -481,40 +484,12 @@ func listDevices() {
 	}
 }
 
-const KEYS = `Quit: q or <C-c>
-Process navigation:
-    k and <Up>: up
-    j and <Down>: down
-    <C-u>: half page up
-    <C-d>: half page down
-    <C-b>: full page up
-    <C-f>: full page down
-    gg and <Home>: jump to top
-    G and <End>: jump to bottom
-Process actions:
-    <Tab>: toggle process grouping
-    dd: kill selected process or group of processes with SIGTERM
-    d3: kill selected process or group of processes with SIGQUIT
-    d9: kill selected process or group of processes with SIGKILL
-Process sorting
-    c: CPU
-    m: Mem
-    p: PID
-Process filtering:
-    /: start editing filter
-    (while editing):
-        <Enter> accept filter
-        <C-c> and <Escape>: clear filter
-CPU and Mem graph scaling:
-    h: scale in
-    l: scale out
-?: toggles keybind help menu`
-const LAYOUTS = `Built-in layouts:
+const _layouts = `Built-in layouts:
    default
    minimal
    battery
    kitchensink`
-const COLORSCHEMES = `Built-in colorschemes:
+const _colorschemes = `Built-in colorschemes:
    default
    default-dark (for white background)
    solarized

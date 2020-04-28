@@ -62,7 +62,7 @@ func (b *BatteryWidget) EnableMetric() {
 	}
 }
 
-func makeId(i int) string {
+func makeID(i int) string {
 	return "Batt" + strconv.Itoa(i)
 }
 
@@ -70,7 +70,7 @@ func (b *BatteryWidget) Scale(i int) {
 	b.LineGraph.HorizontalScale = i
 }
 
-func (self *BatteryWidget) update() {
+func (b *BatteryWidget) update() {
 	batteries, err := battery.GetAll()
 	if err != nil {
 		switch errt := err.(type) {
@@ -94,13 +94,13 @@ func (self *BatteryWidget) update() {
 		}
 	}
 	for i, battery := range batteries {
-		id := makeId(i)
+		id := makeID(i)
 		perc := battery.Current / battery.Full
 		percentFull := math.Abs(perc) * 100.0
-		self.Data[id] = append(self.Data[id], percentFull)
-		self.Labels[id] = fmt.Sprintf("%3.0f%% %.0f/%.0f", percentFull, math.Abs(battery.Current), math.Abs(battery.Full))
-		if self.metric != nil {
-			self.metric[i].Set(perc)
+		b.Data[id] = append(b.Data[id], percentFull)
+		b.Labels[id] = fmt.Sprintf("%3.0f%% %.0f/%.0f", percentFull, math.Abs(battery.Current), math.Abs(battery.Full))
+		if b.metric != nil {
+			b.metric[i].Set(perc)
 		}
 	}
 }

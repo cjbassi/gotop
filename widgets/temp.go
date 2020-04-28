@@ -68,9 +68,9 @@ func NewTempWidget(tempScale TempScale, filter []string) *TempWidget {
 	return self
 }
 
-func (self *TempWidget) EnableMetric() {
-	self.tempsMetric = make(map[string]prometheus.Gauge)
-	for k, v := range self.Data {
+func (temp *TempWidget) EnableMetric() {
+	temp.tempsMetric = make(map[string]prometheus.Gauge)
+	for k, v := range temp.Data {
 		gauge := prometheus.NewGauge(prometheus.GaugeOpts{
 			Namespace: "gotop",
 			Subsystem: "temp",
@@ -78,58 +78,58 @@ func (self *TempWidget) EnableMetric() {
 		})
 		gauge.Set(float64(v))
 		prometheus.MustRegister(gauge)
-		self.tempsMetric[k] = gauge
+		temp.tempsMetric[k] = gauge
 	}
 }
 
 // Custom Draw method instead of inheriting from a generic Widget.
-func (self *TempWidget) Draw(buf *ui.Buffer) {
-	self.Block.Draw(buf)
+func (temp *TempWidget) Draw(buf *ui.Buffer) {
+	temp.Block.Draw(buf)
 
 	var keys []string
-	for key := range self.Data {
+	for key := range temp.Data {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
 
 	for y, key := range keys {
-		if y+1 > self.Inner.Dy() {
+		if y+1 > temp.Inner.Dy() {
 			break
 		}
 
 		var fg ui.Color
-		if self.Data[key] < self.TempThreshold {
-			fg = self.TempLowColor
+		if temp.Data[key] < temp.TempThreshold {
+			fg = temp.TempLowColor
 		} else {
-			fg = self.TempHighColor
+			fg = temp.TempHighColor
 		}
 
-		s := ui.TrimString(key, (self.Inner.Dx() - 4))
+		s := ui.TrimString(key, (temp.Inner.Dx() - 4))
 		buf.SetString(s,
 			ui.Theme.Default,
-			image.Pt(self.Inner.Min.X, self.Inner.Min.Y+y),
+			image.Pt(temp.Inner.Min.X, temp.Inner.Min.Y+y),
 		)
 
-		if self.tempsMetric != nil {
-			self.tempsMetric[key].Set(float64(self.Data[key]))
+		if temp.tempsMetric != nil {
+			temp.tempsMetric[key].Set(float64(temp.Data[key]))
 		}
-		temperature := fmt.Sprintf("%3d°%c", self.Data[key], self.TempScale)
+		temperature := fmt.Sprintf("%3d°%c", temp.Data[key], temp.TempScale)
 
 		buf.SetString(
 			temperature,
 			ui.NewStyle(fg),
-			image.Pt(self.Inner.Max.X-(len(temperature)-1), self.Inner.Min.Y+y),
+			image.Pt(temp.Inner.Max.X-(len(temperature)-1), temp.Inner.Min.Y+y),
 		)
 	}
 }
 
-func (self *TempWidget) update() {
-	devices.UpdateTemps(self.Data)
-	for name, val := range self.Data {
-		if self.TempScale == Fahrenheit {
-			self.Data[name] = utils.CelsiusToFahrenheit(val)
+func (temp *TempWidget) update() {
+	devices.UpdateTemps(temp.Data)
+	for name, val := range temp.Data {
+		if temp.TempScale == Fahrenheit {
+			temp.Data[name] = utils.CelsiusToFahrenheit(val)
 		} else {
-			self.Data[name] = val
+			temp.Data[name] = val
 		}
 	}
 }

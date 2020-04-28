@@ -17,8 +17,6 @@ func TestLogging(t *testing.T) {
 	defer os.RemoveAll(path)
 	c := gotop.Config{
 		MaxLogSize: 300,
-		LogDir:     path,
-		LogFile:    "errors.log",
 	}
 	wc, err := New(c)
 	assert.NoError(t, err)
@@ -27,7 +25,7 @@ func TestLogging(t *testing.T) {
 	}
 	defer wc.Close()
 	ds := make([]byte, 100)
-	for i, _ := range ds {
+	for i := range ds {
 		ds[i] = 'x'
 	}
 

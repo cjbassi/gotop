@@ -111,7 +111,7 @@ func ParseLayout(i io.Reader) layout {
 				}
 				weightTotal += weight
 			} else {
-				weightTotal += 1
+				weightTotal++
 			}
 			row = append(row, wr)
 		}

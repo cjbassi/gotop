@@ -35,7 +35,7 @@ func getProcs() ([]Proc, error) {
 			Pid:         pid,
 			CommandName: strings.TrimSpace(line[11:61]),
 			FullCommand: line[74:],
-			Cpu:         cpu,
+			CPU:         cpu,
 			Mem:         mem,
 		}
 		procs = append(procs, proc)
