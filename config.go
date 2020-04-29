@@ -74,7 +74,12 @@ func (conf *Config) Load() error {
 	}
 	var err error
 	if _, err = os.Stat(conf.ConfigFile); os.IsNotExist(err) {
-		return nil
+		// Check for the file in the usual suspects
+		folder := conf.ConfigDir.QueryFolderContainsFile(conf.ConfigFile)
+		if folder == nil {
+			return nil
+		}
+		conf.ConfigFile = filepath.Join(folder.Path, conf.ConfigFile)
 	}
 	if in, err = ioutil.ReadFile(conf.ConfigFile); err != nil {
 		return err

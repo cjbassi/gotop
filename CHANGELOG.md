@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Log files stored in \$XDG_CACHE_HOME; DATA, CONFIG, CACHE, and RUNTIME are the only directories specified by the FreeDesktop spec.
 - Extensions are now built with a build tool; this is an interim solution until issues with the Go plugin API are resolved.
 - Command line help text is cleaned up.
+- Version bump of gopsutil
 
 ### Removed
 
