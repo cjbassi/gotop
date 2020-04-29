@@ -55,7 +55,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Config file loading from `~/.config/gotop` wasn't working
 - There were a number of minor issues with the config file that have been cleaned up.
 
-## [3.5.1] - 2020-04-09 
+## [3.5.2] - 2020-04-28
+
+### Fixed
+
+- Fixes (an embarrasing) null map bug on FreeBSD (#94)
+
+## [3.5.1] - 2020-04-09
 
 This is a bug fix release.
 
