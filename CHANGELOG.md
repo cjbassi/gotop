@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Command line option to list layouts, paths, colorschemes, hotkeys, and filterable devices
 - Adds ability to write out a configuration file
 - Adds a command for specifying the configuration file to use
+- Added contribution from @wcdawn for building on machines w/ no Go/root access
 
 ### Changed
 
