@@ -31,7 +31,6 @@ type TempWidget struct {
 	tempsMetric    map[string]prometheus.Gauge
 }
 
-// TODO: state:deferred 156 Added temperatures for NVidia GPUs (azak-azkaran/master). Crashes on non-nvidia machines.
 func NewTempWidget(tempScale TempScale, filter []string) *TempWidget {
 	self := &TempWidget{
 		Block:          ui.NewBlock(),

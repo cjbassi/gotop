@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -18,7 +20,7 @@ import (
 	ui "github.com/gizak/termui/v3"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/shibukawa/configdir"
-	flag "github.com/xxxserxxx/opflag"
+	"github.com/xxxserxxx/opflag"
 
 	"github.com/xxxserxxx/gotop/v4"
 	"github.com/xxxserxxx/gotop/v4/colorschemes"
@@ -50,49 +52,50 @@ var (
 	stderrLogger = log.New(os.Stderr, "", 0)
 )
 
-func parseArgs(conf *gotop.Config) error {
+func parseArgs() error {
 	cds := conf.ConfigDir.QueryFolders(configdir.All)
 	cpaths := make([]string, len(cds))
 	for i, p := range cds {
 		cpaths[i] = p.Path
 	}
-	help := flag.BoolP("help", "h", false, "Show this screen.")
-	color := flag.StringP("color", "c", conf.Colorscheme.Name, "Set a colorscheme.")
-	flag.IntVarP(&conf.GraphHorizontalScale, "graphscale", "S", conf.GraphHorizontalScale, "Graph scale factor, >0")
-	version := flag.BoolP("version", "v", false, "Print version and exit.")
-	versioN := flag.BoolP("", "V", false, "Print version and exit.")
-	flag.BoolVarP(&conf.PercpuLoad, "percpu", "p", conf.PercpuLoad, "Show each CPU in the CPU widget.")
-	flag.BoolVarP(&conf.AverageLoad, "averagecpu", "a", conf.AverageLoad, "Show average CPU in the CPU widget.")
-	fahrenheit := flag.BoolP("fahrenheit", "f", conf.TempScale == 'F', "Show temperatures in fahrenheit.Show temperatures in fahrenheit.")
-	flag.BoolVarP(&conf.Statusbar, "statusbar", "s", conf.Statusbar, "Show a statusbar with the time.")
-	flag.DurationVarP(&conf.UpdateInterval, "rate", "r", conf.UpdateInterval, "Number of times per second to update CPU and Mem widgets.")
-	flag.StringVarP(&conf.Layout, "layout", "l", conf.Layout, `Name of layout spec file for the UI. Use "-" to pipe.`)
-	flag.StringVarP(&conf.NetInterface, "interface", "i", "all", "Select network interface. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using `!`")
-	flag.StringVarP(&conf.ExportPort, "export", "x", conf.ExportPort, "Enable metrics for export on the specified port.")
-	flag.BoolVarP(&conf.Mbps, "mbps", "", conf.Mbps, "Show network rate as mbps.")
+	help := opflag.BoolP("help", "h", false, "Show this screen.")
+	color := opflag.StringP("color", "c", conf.Colorscheme.Name, "Set a colorscheme.")
+	opflag.IntVarP(&conf.GraphHorizontalScale, "graphscale", "S", conf.GraphHorizontalScale, "Graph scale factor, >0")
+	version := opflag.BoolP("version", "v", false, "Print version and exit.")
+	versioN := opflag.BoolP("", "V", false, "Print version and exit.")
+	opflag.BoolVarP(&conf.PercpuLoad, "percpu", "p", conf.PercpuLoad, "Show each CPU in the CPU widget.")
+	opflag.BoolVarP(&conf.AverageLoad, "averagecpu", "a", conf.AverageLoad, "Show average CPU in the CPU widget.")
+	fahrenheit := opflag.BoolP("fahrenheit", "f", conf.TempScale == 'F', "Show temperatures in fahrenheit.Show temperatures in fahrenheit.")
+	opflag.BoolVarP(&conf.Statusbar, "statusbar", "s", conf.Statusbar, "Show a statusbar with the time.")
+	opflag.DurationVarP(&conf.UpdateInterval, "rate", "r", conf.UpdateInterval, "Number of times per second to update CPU and Mem widgets.")
+	opflag.StringVarP(&conf.Layout, "layout", "l", conf.Layout, `Name of layout spec file for the UI. Use "-" to pipe.`)
+	opflag.StringVarP(&conf.NetInterface, "interface", "i", "all", "Select network interface. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using `!`")
+	opflag.StringVarP(&conf.ExportPort, "export", "x", conf.ExportPort, "Enable metrics for export on the specified port.")
+	opflag.BoolVarP(&conf.Mbps, "mbps", "", conf.Mbps, "Show network rate as mbps.")
 	// FIXME Where did this go??
-	//conf.Band = flag.IntP("bandwidth", "B", 100, "Specify the number of bits per seconds.")
-	flag.BoolVar(&conf.Test, "test", conf.Test, "Runs tests and exits with success/failure code.")
-	list := flag.String("list", "", `List <devices|layouts|colorschemes|paths|keys>
+	//conf.Band = opflag.IntP("bandwidth", "B", 100, "Specify the number of bits per seconds.")
+	opflag.BoolVar(&conf.Test, "test", conf.Test, "Runs tests and exits with success/failure code.")
+	opflag.StringP("", "C", "", "Config file to use instead of default (MUST BE FIRST ARGUMENT)")
+	list := opflag.String("list", "", `List <devices|layouts|colorschemes|paths|keys>
          devices: Prints out device names for filterable widgets
          layouts: Lists build-in layouts
          colorschemes: Lists built-in colorschemes
          paths: List out configuration file search paths
-		 widgets: Widgets that can be used in a layout
+         widgets: Widgets that can be used in a layout
          keys: Show the keyboard bindings.`)
-	wc := flag.Bool("write-config", false, "Write out a default config file.")
-	flag.SortFlags = false
-	flag.Usage = func() {
+	wc := opflag.Bool("write-config", false, "Write out a default config file.")
+	opflag.SortFlags = false
+	opflag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [options]\n\nOptions:\n", os.Args[0])
-		flag.PrintDefaults()
+		opflag.PrintDefaults()
 	}
-	flag.Parse()
+	opflag.Parse()
 	if *version || *versioN {
 		fmt.Printf("gotop %s (%s)\n", Version, BuildDate)
 		os.Exit(0)
 	}
 	if *help {
-		flag.Usage()
+		opflag.Usage()
 		os.Exit(0)
 	}
 	cs, err := colorschemes.FromName(conf.ConfigDir, *color)
@@ -331,14 +334,17 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 	}
 }
 
-// TODO: Add fans
-// TODO: mpd visualizer widget
+// TODO: @devices fans
+// TODO: @devices mpd visualizer
+// TODO: @devices color bars for memory, a-la bashtop
 // TODO: Add tab completion for Linux https://gist.github.com/icholy/5314423
 // TODO: state:merge #135 linux console font (cmatsuoka/console-font)
 // TODO: Abstract out the UI toolkit.  mum4k/termdash, VladimirMarkelov/clui, gcla/gowid, rivo/tview, marcusolsson/tui-go might work better for some OS/Archs. Performance/memory use comparison would be interesting.
-// TODO: all of the go vet stuff, more unit tests, benchmarks, finish remote.
-// TODO: color bars for memory, a-la bashtop
+// TODO: more unit tests, benchmarks
+// TODO: README is getting long. Move to wiki.
 // TODO: add verbose debugging option
+// TODO: find VMs for FreeBSD, etc for testing gotop
+// TODO: add README about extensions, and wiki page for writing extensions
 func main() {
 	// For performance testing
 	//go func() {
@@ -359,15 +365,23 @@ func main() {
 }
 
 func run() int {
-	conf := gotop.NewConfig()
+	conf = gotop.NewConfig()
 	// Find the config file; look in (1) local, (2) user, (3) global
+	// Check the last argument first
+	fs := flag.NewFlagSet("config", flag.ContinueOnError)
+	cfg := fs.String("C", "", "Config file")
+	fs.SetOutput(bufio.NewWriter(nil))
+	fs.Parse(os.Args[1:])
+	if *cfg != "" {
+		conf.ConfigFile = *cfg
+	}
 	err := conf.Load()
 	if err != nil {
 		fmt.Printf("failed to parse config file: %s\n", err)
 		return 2
 	}
 	// Override with command line arguments
-	err = parseArgs(&conf)
+	err = parseArgs()
 	if err != nil {
 		fmt.Printf("parsing CLI args: %s\n", err)
 		return 2

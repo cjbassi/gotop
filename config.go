@@ -5,7 +5,9 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -15,6 +17,9 @@ import (
 	"github.com/xxxserxxx/gotop/v4/colorschemes"
 	"github.com/xxxserxxx/gotop/v4/widgets"
 )
+
+// CONFFILE is the name of the default config file
+const CONFFILE = "gotop.conf"
 
 type Config struct {
 	ConfigDir            configdir.ConfigDir
@@ -34,6 +39,7 @@ type Config struct {
 	Temps                []string
 	Test                 bool
 	ExtensionVars        map[string]string
+	ConfigFile           string
 }
 
 func NewConfig() Config {
@@ -54,20 +60,24 @@ func NewConfig() Config {
 		ExtensionVars:        make(map[string]string),
 	}
 	conf.Colorscheme, _ = colorschemes.FromName(conf.ConfigDir, "default")
+	folder := conf.ConfigDir.QueryFolderContainsFile(CONFFILE)
+	if folder != nil {
+		conf.ConfigFile = filepath.Join(folder.Path, CONFFILE)
+	}
 	return conf
 }
 
 func (conf *Config) Load() error {
 	var in []byte
-	var err error
-	cfn := "gotop.conf"
-	folder := conf.ConfigDir.QueryFolderContainsFile(cfn)
-	if folder != nil {
-		if in, err = folder.ReadFile(cfn); err != nil {
-			return err
-		}
-	} else {
+	if conf.ConfigFile == "" {
 		return nil
+	}
+	var err error
+	if _, err = os.Stat(conf.ConfigFile); os.IsNotExist(err) {
+		return nil
+	}
+	if in, err = ioutil.ReadFile(conf.ConfigFile); err != nil {
+		return err
 	}
 	return load(bytes.NewReader(in), conf)
 }
@@ -169,21 +179,35 @@ func load(in io.Reader, conf *Config) error {
 	return nil
 }
 
+// Write serializes the configuration to a file.
+// The configuration written is based on the loaded configuration, plus any
+// command-line changes, so it can be used to update an existing configuration
+// file.  The file will be written to the specificed `--config` argument file,
+// if one is set; otherwise, it'll create one in the user's config directory.
 func (conf *Config) Write() (string, error) {
-	cfn := "gotop.conf"
-	ds := conf.ConfigDir.QueryFolders(configdir.Global)
-	if len(ds) == 0 {
-		ds = conf.ConfigDir.QueryFolders(configdir.Local)
+	var dir *configdir.Config
+	var file string = CONFFILE
+	if conf.ConfigFile == "" {
+		ds := conf.ConfigDir.QueryFolders(configdir.Global)
 		if len(ds) == 0 {
-			return "", fmt.Errorf("error locating config folders")
+			ds = conf.ConfigDir.QueryFolders(configdir.Local)
+			if len(ds) == 0 {
+				return "", fmt.Errorf("error locating config folders")
+			}
 		}
+		ds[0].CreateParentDir(CONFFILE)
+		dir = ds[0]
+	} else {
+		dir = &configdir.Config{}
+		dir.Path = filepath.Dir(conf.ConfigFile)
+		file = filepath.Base(conf.ConfigFile)
 	}
 	marshalled := marshal(conf)
-	err := ds[0].WriteFile(cfn, marshalled)
+	err := dir.WriteFile(file, marshalled)
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(ds[0].Path, cfn), nil
+	return filepath.Join(dir.Path, file), nil
 }
 
 func marshal(c *Config) []byte {

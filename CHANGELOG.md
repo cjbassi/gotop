@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adds ability to filter reported temperatures (#92)
 - Command line option to list layouts, paths, colorschemes, hotkeys, and filterable devices
 - Adds ability to write out a configuration file
+- Adds a command for specifying the configuration file to use
 
 ### Changed
 

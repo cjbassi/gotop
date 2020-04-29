@@ -119,6 +119,10 @@ github.com/xxxserxxx/opflag v1.0.2 h1:TanW4Ck/RNal4fP2VVAvhEu7eBq4z+9hhGq9Q8OTq6
 github.com/xxxserxxx/opflag v1.0.2/go.mod h1:GWZtb3/tGGj5W1GE/JTyJAuqgxDxl1+jqDGAGM+P/p4=
 github.com/xxxserxxx/opflag v1.0.3 h1:ugsBWZtSXUaMLEjPLW0WKGjq/gsrc0GpZYbCJY6ZHVY=
 github.com/xxxserxxx/opflag v1.0.3/go.mod h1:GWZtb3/tGGj5W1GE/JTyJAuqgxDxl1+jqDGAGM+P/p4=
+github.com/xxxserxxx/opflag v1.0.4 h1:g979b8oReAERfDKFTTwdvAYIarFxpVYOzYrHa/hMvNs=
+github.com/xxxserxxx/opflag v1.0.4/go.mod h1:GWZtb3/tGGj5W1GE/JTyJAuqgxDxl1+jqDGAGM+P/p4=
+github.com/xxxserxxx/opflag v1.0.5 h1:2H4Qtl1qe+dSkEcGt+fBe2mQ8z14MgkWPqcLaoa6k90=
+github.com/xxxserxxx/opflag v1.0.5/go.mod h1:GWZtb3/tGGj5W1GE/JTyJAuqgxDxl1+jqDGAGM+P/p4=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045/go.mod h1:cYlCBUl1MsqxdiKgmc4uh7TxZfWSFLOGSRR090WDxt8=
 golang.org/x/crypto v0.0.0-20180904163835-0709b304e793/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=

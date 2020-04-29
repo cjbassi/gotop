@@ -14,7 +14,7 @@ require (
 	github.com/shirou/w32 v0.0.0-20160930032740-bb4de0191aa4 // indirect
 	github.com/stretchr/testify v1.4.0
 	github.com/xxxserxxx/iSMC v1.0.1
-	github.com/xxxserxxx/opflag v1.0.3
+	github.com/xxxserxxx/opflag v1.0.5
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a // indirect
 	golang.org/x/tools v0.0.0-20200425043458-8463f397d07c // indirect
 	golang.org/x/tools/gopls v0.4.0 // indirect
