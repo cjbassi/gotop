@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-var cpuFuncs []func(map[string]int, time.Duration, bool) map[string]error
+var cpuFuncs []func(map[string]int, bool) map[string]error
 
 // RegisterCPU adds a new CPU device to the CPU widget. labels returns the
 // names of the devices; they should be as short as possible, and the indexes
@@ -16,7 +16,7 @@ var cpuFuncs []func(map[string]int, time.Duration, bool) map[string]error
 //
 // labels may be called once and the value cached.  This means the number of
 // cores should not change dynamically.
-func RegisterCPU(f func(map[string]int, time.Duration, bool) map[string]error) {
+func RegisterCPU(f func(map[string]int, bool) map[string]error) {
 	cpuFuncs = append(cpuFuncs, f)
 }
 
@@ -24,7 +24,7 @@ func RegisterCPU(f func(map[string]int, time.Duration, bool) map[string]error) {
 // Returns one value per cpu, or a single value if percpu is set to false.
 func UpdateCPU(cpus map[string]int, interval time.Duration, logical bool) {
 	for _, f := range cpuFuncs {
-		errs := f(cpus, interval, logical)
+		errs := f(cpus, logical)
 		if errs != nil {
 			for k, e := range errs {
 				log.Printf("%s: %s", k, e)

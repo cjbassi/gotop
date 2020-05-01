@@ -67,7 +67,7 @@ func parseArgs() error {
 	opflag.BoolVarP(&conf.AverageLoad, "averagecpu", "a", conf.AverageLoad, "Show average CPU in the CPU widget.")
 	fahrenheit := opflag.BoolP("fahrenheit", "f", conf.TempScale == 'F', "Show temperatures in fahrenheit.Show temperatures in fahrenheit.")
 	opflag.BoolVarP(&conf.Statusbar, "statusbar", "s", conf.Statusbar, "Show a statusbar with the time.")
-	opflag.DurationVarP(&conf.UpdateInterval, "rate", "r", conf.UpdateInterval, "Number of times per second to update CPU and Mem widgets.")
+	opflag.DurationVarP(&conf.UpdateInterval, "rate", "r", conf.UpdateInterval, "Refresh frequency. Most time units accepted.  `1m` = refresh every minute.  `100ms` = refresh every 100ms.")
 	opflag.StringVarP(&conf.Layout, "layout", "l", conf.Layout, `Name of layout spec file for the UI. Use "-" to pipe.`)
 	opflag.StringVarP(&conf.NetInterface, "interface", "i", "all", "Select network interface. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using `!`")
 	opflag.StringVarP(&conf.ExportPort, "export", "x", conf.ExportPort, "Enable metrics for export on the specified port.")
@@ -336,7 +336,7 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 
 // TODO: state:merge #135 linux console font (cmatsuoka/console-font)
 func main() {
-	// For performance testing
+	// TODO: Make this an option, for performance testing
 	//go func() {
 	//	log.Fatal(http.ListenAndServe(":7777", nil))
 	//}()

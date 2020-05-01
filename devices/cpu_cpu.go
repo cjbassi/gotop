@@ -2,13 +2,12 @@ package devices
 
 import (
 	"fmt"
-	"time"
 
 	psCpu "github.com/shirou/gopsutil/cpu"
 )
 
 func init() {
-	f := func(cpus map[string]int, iv time.Duration, l bool) map[string]error {
+	f := func(cpus map[string]int, l bool) map[string]error {
 		cpuCount, err := psCpu.Counts(l)
 		if err != nil {
 			return nil
@@ -17,7 +16,7 @@ func init() {
 		if cpuCount > 10 {
 			formatString = "CPU%02d"
 		}
-		vals, err := psCpu.Percent(iv, l)
+		vals, err := psCpu.Percent(0, l)
 		if err != nil {
 			return map[string]error{"gopsutil": err}
 		}
