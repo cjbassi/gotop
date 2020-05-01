@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Adds support for system-wide configurations.  This improves support for package maintainers.
-- Help function to print key bindings.
+- Help function to print key bindings, widgets, layouts, colorschemes, and paths
 - Help prints locations of config files (color schemes & layouts).
 - Help prints location of logs.
 - CLI option to scale out (#84).
@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Command line option to list layouts, paths, colorschemes, hotkeys, and filterable devices
 - Adds ability to write out a configuration file
 - Adds a command for specifying the configuration file to use
+- Merged cmatsuoka's console font contribution
 
 ### Changed
 

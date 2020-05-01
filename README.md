@@ -23,55 +23,24 @@ Working and tested on Linux, FreeBSD and MacOS. Windows binaries are provided, b
 
 If you install gotop by hand, or you download or create new layouts or colorschemes, you will need to put the layout files where gotop can find them.  To see the list of directories gotop looks for files, run `gotop -h`.  The first directory is always the directory from which gotop is run.
 
-### Arch
+-  **Arch**: Install from AUR, e.g. `yay -S gotop-bin`. There is also `gotop` and `gotop-git`
+-  **Gentoo**: gotop is available on [guru](https://gitweb.gentoo.org/repo/proj/guru.git) overlay. 
+    ```shell
+    sudo layman -a guru
+    sudo emerge gotop
+    ```
+- OSX: gotop is in *homebrew-core*.  `brew install gotop`.  Make sure to uninstall and untap any previous installations or taps.
+- **Prebuilt binaries**: Binaries for most systems can be downloaded from [the github releases page](https://github.com/xxxserxxx/gotop/releases). RPM and DEB packages are also provided.
+- **Source**: This requires Go >= 1.14. `go get -u github.com/xxxserxxx/gotop/cmd/gotop`
 
-AUR contains entries for `gotop` and `gotop-bin`.  `gotop-git` still points at the old, unmaintained, repository for the moment.
+### Console Users Note
 
-```
-yay -S gotop-bin
-```
-
-There is also a build-from-source package:
-
-```
-yay -S gotop
-```
-
-### Gentoo
-
-`gotop` is available on [guru](https://gitweb.gentoo.org/repo/proj/guru.git) overlay. It's currently required to add this overlay in order to install `gotop`:
+gotop requires a font that has braille and block character Unicode code points; some distributions do not provide this.  In the gotop repository is a `pcf` font that has these points, and setting this font may improve how gotop renders in your console.  To use this, run these commands:
 
 ```shell
-sudo layman -a guru
-sudo emerge gotop
+$ curl -O -L https://raw.githubusercontent.com/xxxserxxx/gotop/master/fonts/Lat15-VGA16-braille.psf
+$ setfont Lat15-VGA16-braille.psf
 ```
-
-### OSX
-
-gotop can be installed with [Homebrew](https://brew.sh/); you'll need to tap the recipe. If you'd previously tapped cjbassi's recipe, you'll want to untap that first.  The old version of gotop is also included in Homebrew's core library, and that will always be chosen before any taps, so you have to specify the tap specifically.
-
-```
-brew uninstall gotop        # If previously installed
-brew untap cjbassi/gotop    # If previously tapped
-brew tap xxxserxxx/gotop
-brew install xxxserxxx/gotop/gotop
-```
-
-### Prebuilt binaries
-
-This doesn't require Go, is easy, and works across distributions. You have to manually upgrade the executable yourself, though, so using your distribution's package (if one is available) is a better approach.
-
-Visit [the releases page](https://github.com/xxxserxxx/gotop/releases) with your web browser and download the appropriate file for your OS and architecture.  Unzip it (the archive contains a single file) and then move the resulting `gotop` binary into your `$PATH` somewhere.  If you're on a Debian or Redhat derivative, you can download an `.rpm` or `.deb` and install that.
-
-### Source
-
-This requires Go, and at the moment, Go 1.14 specifically.  
-
-```bash
-go get -u github.com/xxxserxxx/gotop/cmd/gotop
-```
-
-If you don't have Go 1.14, you will want to follow the Building instructions in the next section.
 
 ### Building
 
@@ -90,44 +59,14 @@ Move `gotop` to somewhere in your `$PATH`.
 
 ## Usage
 
-### Keybinds
+Run with `-h` to get an extensive list of command line arguments.  Many of these can be configured by creating a configuration file; see the next section for more information.  Key bindings can be viewed while gotop is running by pressing the `?` key, or they can be printed out by using the `--list keys` command.
 
-- Quit: `q` or `<C-c>`
-- Process navigation:
-  - `k` and `<Up>`: up
-  - `j` and `<Down>`: down
-  - `<C-u>`: half page up
-  - `<C-d>`: half page down
-  - `<C-b>`: full page up
-  - `<C-f>`: full page down
-  - `gg` and `<Home>`: jump to top
-  - `G` and `<End>`: jump to bottom
-- Process actions:
-  - `<Tab>`: toggle process grouping
-  - `dd`: kill selected process or group of processes with SIGTERM
-  - `d3`: kill selected process or group of processes with SIGQUIT
-  - `d9`: kill selected process or group of processes with SIGKILL
-- Process sorting
-  - `c`: CPU
-  - `m`: Mem
-  - `p`: PID
-- Process filtering:
-  - `/`: start editing filter
-  - (while editing):
-    - `<Enter>` accept filter
-    - `<C-c>` and `<Escape>`: clear filter
-- CPU and Mem graph scaling:
-  - `h`: scale in
-  - `l`: scale out
-- `?`: toggles keybind help menu
-- `b`: toggles display of network traffic in mbps or TX (or RX) per second
-
-### Mouse
+In addition to the key bindings, the mouse can be used to control the process list:
 
 - click to select process
 - mouse wheel to scroll through processes
 
-### Config file
+## Config file
 
 Most command-line settings can be persisted into a configuration file. The config file is named `gotop.conf` and can be located in several places. The first place gotop will look is in the current directory; after this, the locations depend on the OS and distribution. On Linux using XDG, for instance, the home location of `~/.config/gotop/gotop.conf` is the second location. The last location is a system-wide global location, such as `/etc/gotop/gotop.conf`. The `-h` help command will print out all of the locations, in order. Command-line options override values in any config files, and only the first config file found is loaded.
 
