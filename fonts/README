@@ -1,0 +1,16 @@
+`Lat15-VGA16-braille.psf` is a Linux console font based on `Lat15-VGA16.psf`
+with additional braille and graphic block characters suitable to run gotop
+on the Linux console without a graphic environment. To use the braille font,
+just run `setfont Lat15-VGA16-braille.psf`.
+
+To rebase the braille and graphic block characters on a different 16x8
+psf font, use the psf2txt and txt2psf from psftools[1]. In this case, make
+sure the `Length:` entry in the file header is set to 512.
+
+The original `Lat15-VGA16.psf` font file was obtained from the Ubuntu 18.04
+console-setup-linux package[2]. Console fonts are public domain by nature[3].
+
+
+[1] https://www.seasip.info/Unix/PSF/
+[2] https://launchpad.net/ubuntu/bionic/amd64/console-setup-linux/1.178ubuntu2.7
+[3] https://launchpad.net/ubuntu/bionic/+source/console-setup/+copyright
