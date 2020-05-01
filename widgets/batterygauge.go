@@ -57,6 +57,7 @@ func (b *BatteryGauge) EnableMetric() {
 }
 
 func (b *BatteryGauge) update() {
+	// FIXME: Getting a lot of these in the logs
 	bats, err := battery.GetAll()
 	if err != nil {
 		log.Printf("error setting up batteries: %v", err)

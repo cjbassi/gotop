@@ -15,7 +15,7 @@ import (
 	"unsafe"
 )
 
-// TODO: Add filtering.  Getting the temperature sensor names is non-trivial for OpenBSD, and until I can test it, leave it unimplemented
+// TODO: Add sensor filtering
 func init() {
 	RegisterTemp(update)
 }

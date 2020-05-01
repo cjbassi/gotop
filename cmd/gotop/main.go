@@ -334,17 +334,7 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 	}
 }
 
-// TODO: @devices fans
-// TODO: @devices mpd visualizer
-// TODO: @devices color bars for memory, a-la bashtop
-// TODO: Add tab completion for Linux https://gist.github.com/icholy/5314423
 // TODO: state:merge #135 linux console font (cmatsuoka/console-font)
-// TODO: Abstract out the UI toolkit.  mum4k/termdash, VladimirMarkelov/clui, gcla/gowid, rivo/tview, marcusolsson/tui-go might work better for some OS/Archs. Performance/memory use comparison would be interesting.
-// TODO: more unit tests, benchmarks
-// TODO: README is getting long. Move to wiki.
-// TODO: add verbose debugging option
-// TODO: find VMs for FreeBSD, etc for testing gotop
-// TODO: add README about extensions, and wiki page for writing extensions
 func main() {
 	// For performance testing
 	//go func() {

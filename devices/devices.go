@@ -8,6 +8,8 @@ const (
 	Temperatures = "Temperatures" // Device domain for temperature sensors
 )
 
+// TODO: Redesign; this is not thread safe, and it's easy to write code that triggers concurrent modification panics. Channels?
+
 var Domains []string = []string{Temperatures}
 var _shutdownFuncs []func() error
 var _devs map[string][]string
