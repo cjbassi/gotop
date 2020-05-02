@@ -1,0 +1,44 @@
+configfile="Config file"
+usage="Usage: {0} [options]\n\nOptions:\n"
+
+
+[help]
+paths="Loadable colorschemes & layouts, and the config file, are searched for, in order:"
+log="The log file is in {0}"
+written="Config written to {0}"
+
+
+[args]
+help="Show this screen."
+color="Set a colorscheme."
+scale="Graph scale factor, >0"
+version="Print version and exit."
+percpu="Show each CPU in the CPU widget."
+cpuavg="Show average CPU in the CPU widget."
+temp="Show temperatures in fahrenheit.Show temperatures in fahrenheit."
+statusbar="Show a statusbar with the time."
+rate="Refresh frequency. Most time units accepted.  \"1m\" = refresh every minute.  \"100ms\" = refresh every 100ms."
+layout="Name of layout spec file for the UI. Use \"-\" to pipe."
+net="Select network interface. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using \"!\""
+export="Enable metrics for export on the specified port."
+mbps="Show network rate as mbps."
+test="Runs tests and exits with success/failure code."
+conffile="Config file to use instead of default (MUST BE FIRST ARGUMENT)"
+list="""
+List <devices|layouts|colorschemes|paths|keys>
+   devices: Prints out device names for filterable widgets
+   layouts: Lists build-in layouts
+   colorschemes: Lists built-in colorschemes
+   paths: List out configuration file search paths
+   widgets: Widgets that can be used in a layout
+   keys: Show the keyboard bindings."""
+write="Write out a default config file."
+
+
+[errors]
+configparse="failed to parse config file: {0}"
+cliparse="parsing CLI args: {0}"
+logsetup="failed to setup log file: {0}"
+unknownopt="Unknown option \"{0}\"; try layouts, colorschemes, keys, paths, or devices\n"
+writefail="Failed to write configuration file: {0}"
+checklog="errors encountered; from {0}:"
