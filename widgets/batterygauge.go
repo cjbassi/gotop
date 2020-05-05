@@ -19,7 +19,7 @@ type BatteryGauge struct {
 
 func NewBatteryGauge() *BatteryGauge {
 	self := &BatteryGauge{Gauge: termui.NewGauge()}
-	self.Title = " Power Level "
+	self.Title = tr.Value("widget.gauge")
 
 	self.update()
 
@@ -37,7 +37,7 @@ func NewBatteryGauge() *BatteryGauge {
 func (b *BatteryGauge) EnableMetric() {
 	bats, err := battery.GetAll()
 	if err != nil {
-		log.Printf("error setting up metrics: %v", err)
+		log.Printf(tr.Value("error.metricsetup", "power", err.Error()))
 		return
 	}
 	mx := 0.0
@@ -60,7 +60,7 @@ func (b *BatteryGauge) update() {
 	// FIXME: Getting a lot of these in the logs
 	bats, err := battery.GetAll()
 	if err != nil {
-		log.Printf("error setting up batteries: %v", err)
+		log.Printf(tr.Value("error.setup", "power", err.Error()))
 		return
 	}
 	mx := 0.0

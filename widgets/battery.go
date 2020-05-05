@@ -24,7 +24,7 @@ func NewBatteryWidget(horizontalScale int) *BatteryWidget {
 		LineGraph:      ui.NewLineGraph(),
 		updateInterval: time.Minute,
 	}
-	self.Title = " Battery Status "
+	self.Title = tr.Value("widget.battery")
 	self.HorizontalScale = horizontalScale
 
 	// intentional duplicate
@@ -46,7 +46,7 @@ func NewBatteryWidget(horizontalScale int) *BatteryWidget {
 func (b *BatteryWidget) EnableMetric() {
 	bats, err := battery.GetAll()
 	if err != nil {
-		log.Printf("error setting up metrics: %v", err)
+		log.Printf(tr.Value("error.metricsetup", "batt", err.Error()))
 		return
 	}
 	b.metric = make([]prometheus.Gauge, len(bats))
@@ -63,7 +63,7 @@ func (b *BatteryWidget) EnableMetric() {
 }
 
 func makeID(i int) string {
-	return "Batt" + strconv.Itoa(i)
+	return tr.Value("widget.batt") + strconv.Itoa(i)
 }
 
 func (b *BatteryWidget) Scale(i int) {
@@ -75,7 +75,7 @@ func (b *BatteryWidget) update() {
 	if err != nil {
 		switch errt := err.(type) {
 		case battery.ErrFatal:
-			log.Printf("fatal error fetching battery info: %v", err)
+			log.Printf(tr.Value("error.fatalfetch", "batt", err.Error()))
 			return
 		case battery.Errors:
 			batts := make([]*battery.Battery, 0)
@@ -83,11 +83,11 @@ func (b *BatteryWidget) update() {
 				if e == nil {
 					batts = append(batts, batteries[i])
 				} else {
-					log.Printf("recoverable error fetching battery info; skipping battery: %v", e)
+					log.Printf(tr.Value("error.recovfetch"), "batt", e.Error())
 				}
 			}
 			if len(batts) < 1 {
-				log.Print("no usable batteries found")
+				log.Print(tr.Value("error.nodevfound", "batt"))
 				return
 			}
 			batteries = batts

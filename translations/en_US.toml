@@ -35,10 +35,70 @@ List <devices|layouts|colorschemes|paths|keys>
 write="Write out a default config file."
 
 
-[errors]
-configparse="failed to parse config file: {0}"
-cliparse="parsing CLI args: {0}"
-logsetup="failed to setup log file: {0}"
-unknownopt="Unknown option \"{0}\"; try layouts, colorschemes, keys, paths, or devices\n"
-writefail="Failed to write configuration file: {0}"
-checklog="errors encountered; from {0}:"
+[error]
+configparse="0: failed to parse config file: {0}"
+cliparse="1: parsing CLI args: {0}"
+logsetup="2: failed to setup log file: {0}"
+unknownopt="3: Unknown option \"{0}\"; try layouts, colorschemes, keys, paths, or devices\n"
+writefail="4: Failed to write configuration file: {0}"
+checklog="5: errors encountered; from {0}:"
+metricsetup="6: error setting up {0} metrics: {1}"
+nometrics="7: no metrics for {0} {0}"
+fatalfetch="8: fatal error fetching {0} info: {1}"
+recovfetch="9: recoverable error fetching {0} info; skipping {0}: {0}"
+nodevfound="10: no usable {0} found"
+setuperr="11: error setting up {0}: {1}"
+
+
+[widget]
+disk=" Disk Usage "
+cpu=" CPU Usage "
+gauge=" Power Level "
+battery=" Battery Status "
+batt=
+help="""
+Quit: q or <C-c>
+
+Process navigation:
+  - k and <Up>: up
+  - j and <Down>: down
+  - <C-u>: half page up
+  - <C-d>: half page down
+  - <C-b>: full page up
+  - <C-f>: full page down
+  - gg and <Home>: jump to top
+  - G and <End>: jump to bottom
+
+Process actions:
+  - <Tab>: toggle process grouping
+  - dd: kill selected process or group of processes with SIGTERM (15)
+  - d3: kill selected process or group of processes with SIGQUIT (3)
+  - d9: kill selected process or group of processes with SIGKILL (9)
+
+Process sorting:
+  - c: CPU
+  - m: Mem
+  - p: PID
+
+Process filtering:
+  - /: start editing filter
+  - (while editing):
+    - <Enter>: accept filter
+    - <C-c> and <Escape>: clear filter
+
+CPU and Mem graph scaling:
+  - h: scale in
+  - l: scale out
+
+Network:
+  - b: toggle between mbps and scaled bytes per second
+"""
+
+
+[widget.disk]
+disk="Disk"
+mount="Mount"
+used="Used"
+free="Free"
+rs="R/s"
+ws="W/s"

@@ -32,7 +32,7 @@ func NewCPUWidget(updateInterval time.Duration, horizontalScale int, showAverage
 		ShowAverageLoad: showAverageLoad,
 		ShowPerCPULoad:  showPerCPULoad,
 	}
-	self.Title = " CPU Usage "
+	self.Title = tr.Value("cpu")
 	self.HorizontalScale = horizontalScale
 
 	if !(self.ShowAverageLoad || self.ShowPerCPULoad) {
@@ -129,7 +129,7 @@ func (cpu *CPUWidget) update() {
 				cpu.Labels[key] = fmt.Sprintf("%d%%", percent)
 				if cpu.metric != nil {
 					if cpu.metric[key] == nil {
-						log.Printf("no metrics for %s", key)
+						log.Printf(tr.Value("error.nometrics", "cpu", key))
 					} else {
 						cpu.metric[key].Set(float64(percent))
 					}

@@ -38,8 +38,8 @@ func NewDiskWidget() *DiskWidget {
 		updateInterval: time.Second,
 		Partitions:     make(map[string]*Partition),
 	}
-	self.Title = " Disk Usage "
-	self.Header = []string{"Disk", "Mount", "Used", "Free", "R/s", "W/s"}
+	self.Title = tr.Value("widget.disk")
+	self.Header = []string{tr.Value("disk.disk"), tr.Value("disk.mount"), tr.Value("disk.used"), tr.Value("disk.free"), tr.Value("disk.rs"), tr.Value("disk.ws")}
 	self.ColGap = 2
 	self.ColResizer = func() {
 		self.ColWidths = []int{
@@ -80,7 +80,7 @@ func (disk *DiskWidget) EnableMetric() {
 func (disk *DiskWidget) update() {
 	partitions, err := psDisk.Partitions(false)
 	if err != nil {
-		log.Printf("failed to get disk partitions from gopsutil: %v", err)
+		log.Printf(tr.Value("error.setup", "disk-partitions", err.Error()))
 		return
 	}
 
@@ -125,7 +125,7 @@ func (disk *DiskWidget) update() {
 	for _, partition := range disk.Partitions {
 		usage, err := psDisk.Usage(partition.MountPoint)
 		if err != nil {
-			log.Printf("failed to get partition usage statistics from gopsutil: %v. partition: %v", err, partition)
+			log.Printf(tr.Value("error.recovfetch", "partition-"+partition.MountPoint+"-usage", err.Error()))
 			continue
 		}
 		partition.UsedPercent = uint32(usage.UsedPercent + 0.5)
@@ -134,7 +134,7 @@ func (disk *DiskWidget) update() {
 
 		ioCounters, err := psDisk.IOCounters(partition.Device)
 		if err != nil {
-			log.Printf("failed to get partition read/write info from gopsutil: %v. partition: %v", err, partition)
+			log.Printf(tr.Value("error.recovfetch", "partition-"+partition.Device+"-rw", err.Error()))
 			continue
 		}
 		ioCounter := ioCounters[strings.Replace(partition.Device, "/dev/", "", -1)]
@@ -176,7 +176,7 @@ func (disk *DiskWidget) update() {
 		disk.Rows[i][5] = partition.BytesWrittenRecently
 		if disk.metric != nil {
 			if disk.metric[key] == nil {
-				log.Printf("ERROR: missing metric %s", key)
+				log.Printf(tr.Value("error.nometrics", "disk", key))
 			} else {
 				disk.metric[key].Set(float64(partition.UsedPercent) / 100.0)
 			}

@@ -30,7 +30,6 @@ import (
 	"github.com/xxxserxxx/gotop/v4/devices"
 	"github.com/xxxserxxx/gotop/v4/layout"
 	"github.com/xxxserxxx/gotop/v4/logging"
-	"github.com/xxxserxxx/gotop/v4/widgets"
 	w "github.com/xxxserxxx/gotop/v4/widgets"
 )
 
@@ -122,11 +121,11 @@ func parseArgs() error {
 		case "devices":
 			listDevices()
 		case "keys":
-			fmt.Println(widgets.KEYBINDS)
+			fmt.Println(tr.Value("widget.help"))
 		case "widgets":
 			fmt.Println(_widgets)
 		default:
-			fmt.Printf(tr.Value("errors.unknownopt", *list))
+			fmt.Printf(tr.Value("error.unknownopt", *list))
 			os.Exit(1)
 		}
 		os.Exit(0)
@@ -134,7 +133,7 @@ func parseArgs() error {
 	if *wc {
 		path, err := conf.Write()
 		if err != nil {
-			fmt.Println(tr.Value("errors.writefail", err.Error()))
+			fmt.Println(tr.Value("error.writefail", err.Error()))
 			os.Exit(1)
 		}
 		fmt.Println(tr.Value("help.written", path))
@@ -346,7 +345,7 @@ func main() {
 	if ec > 0 {
 		if ec < 2 {
 			logpath := filepath.Join(conf.ConfigDir.QueryCacheFolder().Path, logging.LOGFILE)
-			fmt.Println(tr.Value("errors.checklog", logpath))
+			fmt.Println(tr.Value("error.checklog", logpath))
 			fmt.Println(ioutil.ReadFile(logpath))
 		}
 	}
@@ -379,13 +378,13 @@ func run() int {
 	}
 	err = conf.Load()
 	if err != nil {
-		fmt.Println(tr.Value("errors.configparse", err.Error()))
+		fmt.Println(tr.Value("error.configparse", err.Error()))
 		return 2
 	}
 	// Override with command line arguments
 	err = parseArgs()
 	if err != nil {
-		fmt.Println(tr.Value("errors.cliparse", err.Error()))
+		fmt.Println(tr.Value("error.cliparse", err.Error()))
 		return 2
 	}
 
@@ -422,7 +421,7 @@ func run() int {
 	defer ui.Close()
 
 	setDefaultTermuiColors(conf) // done before initializing widgets to allow inheriting colors
-	help = w.NewHelpMenu()
+	help = w.NewHelpMenu(tr)
 	if statusbar {
 		bar = w.NewStatusBar()
 	}
