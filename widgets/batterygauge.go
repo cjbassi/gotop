@@ -6,15 +6,15 @@ import (
 
 	"time"
 
+	"github.com/VictoriaMetrics/metrics"
 	"github.com/distatus/battery"
-	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/xxxserxxx/gotop/v4/termui"
 )
 
 type BatteryGauge struct {
 	*termui.Gauge
-	metric prometheus.Gauge
+	metric *metrics.Gauge
 }
 
 func NewBatteryGauge() *BatteryGauge {
@@ -35,25 +35,9 @@ func NewBatteryGauge() *BatteryGauge {
 }
 
 func (b *BatteryGauge) EnableMetric() {
-	bats, err := battery.GetAll()
-	if err != nil {
-		log.Printf("error setting up metrics: %v", err)
-		return
-	}
-	mx := 0.0
-	cu := 0.0
-	for _, bat := range bats {
-		mx += bat.Full
-		cu += bat.Current
-		gauge := prometheus.NewGauge(prometheus.GaugeOpts{
-			Namespace: "gotop",
-			Subsystem: "battery",
-			Name:      "total",
-		})
-		gauge.Set(cu / mx)
-		b.metric = gauge
-		prometheus.MustRegister(gauge)
-	}
+	metrics.NewGauge(makeName("battery", "total"), func() float64 {
+		return float64(b.Percent)
+	})
 }
 
 func (b *BatteryGauge) update() {
@@ -80,7 +64,4 @@ func (b *BatteryGauge) update() {
 	d, _ := time.ParseDuration(fmt.Sprintf("%fh", tn))
 	b.Percent = int((cu / mx) * 100.0)
 	b.Label = fmt.Sprintf(charging, b.Percent, d.Truncate(time.Minute))
-	if b.metric != nil {
-		b.metric.Set(cu / mx)
-	}
 }

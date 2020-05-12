@@ -17,8 +17,8 @@ import (
 
 	//_ "net/http/pprof"
 
+	"github.com/VictoriaMetrics/metrics"
 	ui "github.com/gizak/termui/v3"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/shibukawa/configdir"
 	"github.com/xxxserxxx/opflag"
 
@@ -447,7 +447,9 @@ func run() int {
 
 	if conf.ExportPort != "" {
 		go func() {
-			http.Handle("/metrics", promhttp.Handler())
+			http.HandleFunc("/metrics", func(w http.ResponseWriter, req *http.Request) {
+				metrics.WritePrometheus(w, true)
+			})
 			http.ListenAndServe(conf.ExportPort, nil)
 		}()
 	}
