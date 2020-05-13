@@ -12,7 +12,7 @@ Join us in [\#gotop:matrix.org](https://riot.im/app/#/room/#gotop:matrix.org) ([
 ![](https://github.com/xxxserxxx/gotop/workflows/Build%20Go%20binaries/badge.svg)
 ![](https://github.com/xxxserxxx/gotop/workflows/Create%20pre-release/badge.svg)
 
-![](https://github.com/xxxserxxx/gotop/docs/release.svg)
+![](https://raw.githubusercontent.com/xxxserxxx/gotop/master/docs/release.svg)
 
 See the [mini-blog](/xxxserxxx/gotop/wiki/blog) for updates on the build status, and the [change log](/xxxserxxx/gotop/blob/master/CHANGELOG.md) for release updates.
 
