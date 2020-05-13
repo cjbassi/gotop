@@ -8,7 +8,7 @@ require (
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/mattn/go-runewidth v0.0.4
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
-	github.com/shirou/gopsutil v2.18.11+incompatible
+	github.com/shirou/gopsutil v2.20.3+incompatible
 	github.com/stretchr/testify v1.4.0
 	github.com/xxxserxxx/iSMC v1.0.1
 	github.com/xxxserxxx/opflag v1.0.5
