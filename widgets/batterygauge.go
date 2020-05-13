@@ -14,7 +14,6 @@ import (
 
 type BatteryGauge struct {
 	*termui.Gauge
-	metric *metrics.Gauge
 }
 
 func NewBatteryGauge() *BatteryGauge {
