@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Command line help text is cleaned up.
 - Version bump of gopsutil
 - Prometheus client replaced by [VictoriaMetrics/metrics](https://github.com/VictoriaMetrics/metrics). This eliminated 6 indirect package dependencies and saved 3.5MB (25%) of the compiled binary size.
+- Relicensed to MIT-3
 
 ### Removed
 

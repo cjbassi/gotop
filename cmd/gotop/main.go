@@ -72,8 +72,6 @@ func parseArgs() error {
 	opflag.StringVarP(&conf.NetInterface, "interface", "i", "all", "Select network interface. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using `!`")
 	opflag.StringVarP(&conf.ExportPort, "export", "x", conf.ExportPort, "Enable metrics for export on the specified port.")
 	opflag.BoolVarP(&conf.Mbps, "mbps", "", conf.Mbps, "Show network rate as mbps.")
-	// FIXME Where did this go??
-	//conf.Band = opflag.IntP("bandwidth", "B", 100, "Specify the number of bits per seconds.")
 	opflag.BoolVar(&conf.Test, "test", conf.Test, "Runs tests and exits with success/failure code.")
 	opflag.StringP("", "C", "", "Config file to use instead of default (MUST BE FIRST ARGUMENT)")
 	list := opflag.String("list", "", `List <devices|layouts|colorschemes|paths|keys>
