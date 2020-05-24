@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adds ability to write out a configuration file
 - Adds a command for specifying the configuration file to use
 - Merged cmatsuoka's console font contribution
+- Added contribution from @wcdawn for building on machines w/ no Go/root access
 
 ### Changed
 
@@ -40,6 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extensions are now built with a build tool; this is an interim solution until issues with the Go plugin API are resolved.
 - Command line help text is cleaned up.
 - Version bump of gopsutil
+- Prometheus client replaced by [VictoriaMetrics/metrics](https://github.com/VictoriaMetrics/metrics). This eliminated 6 indirect package dependencies and saved 3.5MB (25%) of the compiled binary size.
+- Relicensed to MIT-3
 
 ### Removed
 

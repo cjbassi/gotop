@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
+	"github.com/VictoriaMetrics/metrics"
 	psDisk "github.com/shirou/gopsutil/disk"
 
 	ui "github.com/xxxserxxx/gotop/v4/termui"
@@ -29,7 +29,6 @@ type DiskWidget struct {
 	*ui.Table
 	updateInterval time.Duration
 	Partitions     map[string]*Partition
-	metric         map[string]prometheus.Gauge
 }
 
 func NewDiskWidget() *DiskWidget {
@@ -63,17 +62,11 @@ func NewDiskWidget() *DiskWidget {
 }
 
 func (disk *DiskWidget) EnableMetric() {
-	disk.metric = make(map[string]prometheus.Gauge)
 	for key, part := range disk.Partitions {
-		gauge := prometheus.NewGauge(prometheus.GaugeOpts{
-			Namespace: "gotop",
-			Subsystem: "disk",
-			Name:      strings.ReplaceAll(key, "/", ":"),
-			//Name:      strings.Replace(strings.Replace(part.Device, "/dev/", "", -1), "mapper/", "", -1),
+		pc := part
+		metrics.NewGauge(makeName("disk", strings.ReplaceAll(key, "/", ":")), func() float64 {
+			return float64(pc.UsedPercent) / 100.0
 		})
-		gauge.Set(float64(part.UsedPercent) / 100.0)
-		prometheus.MustRegister(gauge)
-		disk.metric[key] = gauge
 	}
 }
 
@@ -174,12 +167,5 @@ func (disk *DiskWidget) update() {
 		disk.Rows[i][3] = partition.Free
 		disk.Rows[i][4] = partition.BytesReadRecently
 		disk.Rows[i][5] = partition.BytesWrittenRecently
-		if disk.metric != nil {
-			if disk.metric[key] == nil {
-				log.Printf("ERROR: missing metric %s", key)
-			} else {
-				disk.metric[key].Set(float64(partition.UsedPercent) / 100.0)
-			}
-		}
 	}
 }

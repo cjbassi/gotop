@@ -1,6 +1,11 @@
 name: Build Go binaries
 
-on: push
+on:
+    push:
+        paths-ignore:
+        - 'docs/release.svg'
+        - 'README.md'
+        - 'CHANGELOG.md'
 
 jobs:
   build:

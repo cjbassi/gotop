@@ -2,6 +2,7 @@
 
 package devices
 
+// TODO gopsutil team reports this is not needed; try getting rid of this dep
 import smc "github.com/xxxserxxx/iSMC"
 
 func init() {

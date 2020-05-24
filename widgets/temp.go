@@ -6,8 +6,8 @@ import (
 	"sort"
 	"time"
 
+	"github.com/VictoriaMetrics/metrics"
 	ui "github.com/gizak/termui/v3"
-	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/xxxserxxx/gotop/v4/devices"
 	"github.com/xxxserxxx/gotop/v4/utils"
@@ -28,7 +28,7 @@ type TempWidget struct {
 	TempLowColor   ui.Color
 	TempHighColor  ui.Color
 	TempScale      TempScale
-	tempsMetric    map[string]prometheus.Gauge
+	temps          map[string]float64
 }
 
 func NewTempWidget(tempScale TempScale, filter []string) *TempWidget {
@@ -68,16 +68,12 @@ func NewTempWidget(tempScale TempScale, filter []string) *TempWidget {
 }
 
 func (temp *TempWidget) EnableMetric() {
-	temp.tempsMetric = make(map[string]prometheus.Gauge)
-	for k, v := range temp.Data {
-		gauge := prometheus.NewGauge(prometheus.GaugeOpts{
-			Namespace: "gotop",
-			Subsystem: "temp",
-			Name:      k,
+	temp.temps = make(map[string]float64)
+	for k, _ := range temp.Data {
+		kc := k
+		metrics.NewGauge(makeName("temp", k), func() float64 {
+			return float64(temp.Data[kc])
 		})
-		gauge.Set(float64(v))
-		prometheus.MustRegister(gauge)
-		temp.tempsMetric[k] = gauge
 	}
 }
 
@@ -109,9 +105,6 @@ func (temp *TempWidget) Draw(buf *ui.Buffer) {
 			image.Pt(temp.Inner.Min.X, temp.Inner.Min.Y+y),
 		)
 
-		if temp.tempsMetric != nil {
-			temp.tempsMetric[key].Set(float64(temp.Data[key]))
-		}
 		temperature := fmt.Sprintf("%3d°%c", temp.Data[key], temp.TempScale)
 
 		buf.SetString(

@@ -9,15 +9,20 @@ Another terminal based graphical activity monitor, inspired by [gtop](https://gi
 
 Join us in [\#gotop:matrix.org](https://riot.im/app/#/room/#gotop:matrix.org) ([matrix clients](https://matrix.to/#/#gotop:matrix.org)).
 
+![](https://github.com/xxxserxxx/gotop/workflows/Build%20Go%20binaries/badge.svg)
+![](https://github.com/xxxserxxx/gotop/workflows/Create%20pre-release/badge.svg)
+
+![](https://raw.githubusercontent.com/xxxserxxx/gotop/master/docs/release.svg)
+
+See the [mini-blog](/xxxserxxx/gotop/wiki/blog) for updates on the build status, and the [change log](/xxxserxxx/gotop/blob/master/CHANGELOG.md) for release updates.
+
+
 <img src="./assets/screenshots/demo.gif" />
 <img src="./assets/screenshots/kitchensink.gif" />
 
 </div>
 
 ## Installation
-
-![](https://github.com/xxxserxxx/gotop/workflows/Build%20Go%20binaries/badge.svg)
-![](https://github.com/xxxserxxx/gotop/workflows/Create%20pre-release/badge.svg)
 
 Working and tested on Linux, FreeBSD and MacOS. Windows binaries are provided, but have limited testing. OpenBSD works with some caveats; cross-compiling is difficult and binaries are not provided.
 
@@ -56,6 +61,8 @@ go build -o gotop ./cmd/gotop
 ```
 
 Move `gotop` to somewhere in your `$PATH`.
+
+If Go is not installed or is the wrong version, and you don't have root access or don't want to upgrade Go, a script is provided to download Go and the gotop sources, compile gotop, and then clean up. See `scripts/install_without_root.sh`.
 
 ## Usage
 
@@ -229,6 +236,7 @@ Run `gotop -h` to see the list of all command line options.
 - [shirou/gopsutil](https://github.com/shirou/gopsutil)
 - [goreleaser/nfpm](https://github.com/goreleaser/nfpm)
 - [distatus/battery](https://github.com/distatus/battery)
+- [VictoriaMetrics/metrics](https://github.com/VictoriaMetrics/metrics) Check this out! The API is clean, elegant, introduces many fewer indirect dependencies than the Prometheus client, and adds 50% less size to binaries.
 
 ## History
 

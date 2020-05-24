@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/VictoriaMetrics/metrics"
 	"github.com/distatus/battery"
-	"github.com/prometheus/client_golang/prometheus"
 
 	ui "github.com/xxxserxxx/gotop/v4/termui"
 )
@@ -16,7 +16,6 @@ import (
 type BatteryWidget struct {
 	*ui.LineGraph
 	updateInterval time.Duration
-	metric         []prometheus.Gauge
 }
 
 func NewBatteryWidget(horizontalScale int) *BatteryWidget {
@@ -49,16 +48,14 @@ func (b *BatteryWidget) EnableMetric() {
 		log.Printf("error setting up metrics: %v", err)
 		return
 	}
-	b.metric = make([]prometheus.Gauge, len(bats))
-	for i, bat := range bats {
-		gauge := prometheus.NewGauge(prometheus.GaugeOpts{
-			Namespace: "gotop",
-			Subsystem: "battery",
-			Name:      fmt.Sprintf("%d", i),
+	for i, _ := range bats {
+		id := makeID(i)
+		metrics.NewGauge(makeName("battery", i), func() float64 {
+			if ds, ok := b.Data[id]; ok {
+				return ds[len(ds)-1]
+			}
+			return 0.0
 		})
-		gauge.Set(bat.Current / bat.Full)
-		b.metric[i] = gauge
-		prometheus.MustRegister(gauge)
 	}
 }
 
@@ -97,10 +94,8 @@ func (b *BatteryWidget) update() {
 		id := makeID(i)
 		perc := battery.Current / battery.Full
 		percentFull := math.Abs(perc) * 100.0
+		// TODO: look into this sort of thing; doesn't the array grow forever? Is the widget library truncating it?
 		b.Data[id] = append(b.Data[id], percentFull)
 		b.Labels[id] = fmt.Sprintf("%3.0f%% %.0f/%.0f", percentFull, math.Abs(battery.Current), math.Abs(battery.Full))
-		if b.metric != nil {
-			b.metric[i].Set(perc)
-		}
 	}
 }

@@ -7,7 +7,6 @@ import (
 )
 
 // FIXME: broken % under Linux.  Doesn't reflect reality *at all*.
-// FIXME: gotop CPU use high -- gopsutils again? Try rolling back.
 func init() {
 	f := func(cpus map[string]int, l bool) map[string]error {
 		cpuCount, err := psCpu.Counts(l)

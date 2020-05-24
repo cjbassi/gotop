@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
+	"github.com/VictoriaMetrics/metrics"
 
 	"github.com/xxxserxxx/gotop/v4/devices"
 	ui "github.com/xxxserxxx/gotop/v4/termui"
@@ -14,52 +14,47 @@ import (
 type MemWidget struct {
 	*ui.LineGraph
 	updateInterval time.Duration
-	metrics        map[string]prometheus.Gauge
 }
 
 func NewMemWidget(updateInterval time.Duration, horizontalScale int) *MemWidget {
-	self := &MemWidget{
+	widg := &MemWidget{
 		LineGraph:      ui.NewLineGraph(),
 		updateInterval: updateInterval,
 	}
-	self.Title = " Memory Usage "
-	self.HorizontalScale = horizontalScale
+	widg.Title = " Memory Usage "
+	widg.HorizontalScale = horizontalScale
 	mems := make(map[string]devices.MemoryInfo)
 	devices.UpdateMem(mems)
 	for name, mem := range mems {
-		self.Data[name] = []float64{0}
-		self.renderMemInfo(name, mem)
+		widg.Data[name] = []float64{0}
+		widg.renderMemInfo(name, mem)
 	}
 
 	go func() {
-		for range time.NewTicker(self.updateInterval).C {
-			self.Lock()
+		for range time.NewTicker(widg.updateInterval).C {
+			widg.Lock()
 			devices.UpdateMem(mems)
 			for label, mi := range mems {
-				self.renderMemInfo(label, mi)
-				if self.metrics != nil && self.metrics[label] != nil {
-					self.metrics[label].Set(mi.UsedPercent)
-				}
+				widg.renderMemInfo(label, mi)
 			}
-			self.Unlock()
+			widg.Unlock()
 		}
 	}()
 
-	return self
+	return widg
 }
 
 func (mem *MemWidget) EnableMetric() {
-	mem.metrics = make(map[string]prometheus.Gauge)
 	mems := make(map[string]devices.MemoryInfo)
 	devices.UpdateMem(mems)
-	for l, m := range mems {
-		mem.metrics[l] = prometheus.NewGauge(prometheus.GaugeOpts{
-			Namespace: "gotop",
-			Subsystem: "memory",
-			Name:      l,
+	for l, _ := range mems {
+		lc := l
+		metrics.NewGauge(makeName("memory", l), func() float64 {
+			if ds, ok := mem.Data[lc]; ok {
+				return ds[len(ds)-1]
+			}
+			return 0.0
 		})
-		mem.metrics[l].Set(m.UsedPercent)
-		prometheus.MustRegister(mem.metrics[l])
 	}
 }
 

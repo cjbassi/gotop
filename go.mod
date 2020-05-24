@@ -1,25 +1,19 @@
 module github.com/xxxserxxx/gotop/v4
 
 require (
-	github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6 // indirect
+	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
+	github.com/VictoriaMetrics/metrics v1.11.2
 	github.com/distatus/battery v0.9.0
-	github.com/docopt/docopt.go v0.0.0-20180111231733-ee0de3bc6815
 	github.com/gizak/termui/v3 v3.0.0
-	github.com/go-ole/go-ole v1.2.1 // indirect
+	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/mattn/go-runewidth v0.0.4
-	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
-	github.com/prometheus/client_golang v1.4.1
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/shirou/gopsutil v2.20.3+incompatible
-	github.com/shirou/w32 v0.0.0-20160930032740-bb4de0191aa4 // indirect
 	github.com/stretchr/testify v1.4.0
 	github.com/xxxserxxx/iSMC v1.0.1
 	github.com/xxxserxxx/opflag v1.0.5
-	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a // indirect
-	golang.org/x/tools v0.0.0-20200425043458-8463f397d07c // indirect
-	golang.org/x/tools/gopls v0.4.0 // indirect
-	howett.net/plist v0.0.0-20181124034731-591f970eefbb // indirect
-	mvdan.cc/xurls/v2 v2.2.0 // indirect
+	golang.org/x/sys v0.0.0-20200511232937-7e40ca221e25 // indirect
+	howett.net/plist v0.0.0-20200419221736-3b63eb3a43b5 // indirect
 )
 
 go 1.14

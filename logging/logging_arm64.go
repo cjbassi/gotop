@@ -1,4 +1,4 @@
-// +build arm64
+// +build linux,arm64
 
 package logging
 

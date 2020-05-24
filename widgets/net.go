@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
+	"github.com/VictoriaMetrics/metrics"
 	psNet "github.com/shirou/gopsutil/net"
 
 	ui "github.com/xxxserxxx/gotop/v4/termui"
@@ -28,8 +28,8 @@ type NetWidget struct {
 	totalBytesRecv uint64
 	totalBytesSent uint64
 	NetInterface   []string
-	sentMetric     prometheus.Counter
-	recvMetric     prometheus.Counter
+	sentMetric     *metrics.Counter
+	recvMetric     *metrics.Counter
 	Mbps           bool
 }
 
@@ -66,19 +66,8 @@ func NewNetWidget(netInterface string) *NetWidget {
 }
 
 func (net *NetWidget) EnableMetric() {
-	net.recvMetric = prometheus.NewCounter(prometheus.CounterOpts{
-		Namespace: "gotop",
-		Subsystem: "net",
-		Name:      "recv",
-	})
-	prometheus.MustRegister(net.recvMetric)
-
-	net.sentMetric = prometheus.NewCounter(prometheus.CounterOpts{
-		Namespace: "gotop",
-		Subsystem: "net",
-		Name:      "sent",
-	})
-	prometheus.MustRegister(net.sentMetric)
+	net.recvMetric = metrics.NewCounter(makeName("net", "recv"))
+	net.sentMetric = metrics.NewCounter(makeName("net", "sent"))
 }
 
 func (net *NetWidget) update() {
@@ -138,8 +127,8 @@ func (net *NetWidget) update() {
 		net.Lines[0].Data = append(net.Lines[0].Data, int(recentBytesRecv))
 		net.Lines[1].Data = append(net.Lines[1].Data, int(recentBytesSent))
 		if net.sentMetric != nil {
-			net.sentMetric.Add(float64(recentBytesSent))
-			net.recvMetric.Add(float64(recentBytesRecv))
+			net.sentMetric.Add(int(recentBytesSent))
+			net.recvMetric.Add(int(recentBytesRecv))
 		}
 	}
 
