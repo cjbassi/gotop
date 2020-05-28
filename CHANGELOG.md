@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
+## [3.5.3] - NOT YET RELEASED
+
+### Fixed
+
+- Compile errors on FreeBSD due to golang.org/x/sys API breakages
+- Key bindings now work in FreeBSD (#95)
+
 ## [3.5.2] - 2020-04-28
 
 ### Fixed
