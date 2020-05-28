@@ -9,6 +9,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.4
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/shirou/gopsutil v2.20.3+incompatible
+        github.com/nsf/termbox-go v0.0.0-20200418040025-38ba6e5628f1
 	github.com/stretchr/testify v1.4.0
 	github.com/xxxserxxx/iSMC v1.0.1
 	github.com/xxxserxxx/opflag v1.0.5

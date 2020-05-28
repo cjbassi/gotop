@@ -58,6 +58,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Temperatures on Darwin were all over the place, and wrong (#48)
 - Config file loading from `~/.config/gotop` wasn't working
 - There were a number of minor issues with the config file that have been cleaned up.
+- Compile errors on FreeBSD due to golang.org/x/sys API breakages
+- Key bindings now work in FreeBSD (#95)
 
 ## [3.5.2] - 2020-04-28
 
