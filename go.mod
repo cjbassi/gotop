@@ -7,10 +7,9 @@ require (
 	github.com/gizak/termui/v3 v3.0.0
 	github.com/go-ole/go-ole v1.2.1 // indirect
 	github.com/mattn/go-runewidth v0.0.4
-	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
-	github.com/prometheus/client_golang v1.4.1
-	github.com/shirou/gopsutil v2.18.11+incompatible
-	github.com/shirou/w32 v0.0.0-20160930032740-bb4de0191aa4 // indirect
+	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
+	github.com/shirou/gopsutil v2.20.3+incompatible
+        github.com/nsf/termbox-go v0.0.0-20200418040025-38ba6e5628f1
 	github.com/stretchr/testify v1.4.0
 	howett.net/plist v0.0.0-20181124034731-591f970eefbb // indirect
 )
