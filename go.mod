@@ -13,7 +13,7 @@ require (
 	github.com/stretchr/testify v1.4.0
 	github.com/xxxserxxx/iSMC v1.0.1
 	github.com/xxxserxxx/opflag v1.0.5
-	golang.org/x/sys v0.0.0-20200316230553-a7d97aace0b0 // indirect
+	golang.org/x/sys v0.0.0-20200316230553-a7d97aace0b0
 	howett.net/plist v0.0.0-20200419221736-3b63eb3a43b5 // indirect
 )
 

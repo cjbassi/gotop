@@ -14,11 +14,10 @@ Join us in [\#gotop:matrix.org](https://riot.im/app/#/room/#gotop:matrix.org) ([
 
 ![](https://raw.githubusercontent.com/xxxserxxx/gotop/master/docs/release.svg)
 
-See the [mini-blog](/xxxserxxx/gotop/wiki/blog) for updates on the build status, and the [change log](/xxxserxxx/gotop/blob/master/CHANGELOG.md) for release updates.
+See the [mini-blog](/xxxserxxx/gotop/wiki/Micro-Blog) for updates on the build status, and the [change log](/xxxserxxx/gotop/blob/master/CHANGELOG.md) for release updates.
 
 
 <img src="./assets/screenshots/demo.gif" />
-<img src="./assets/screenshots/kitchensink.gif" />
 
 </div>
 
@@ -219,6 +218,9 @@ Run `gotop -h` to see the list of all command line options.
 
 ## More screen shots
 
+#### '-l kitchensink' + colorscheme
+<img src="./assets/screenshots/kitchensink.gif" />
+
 #### "-l battery"
 <img src="./assets/screenshots/battery.png" />
 
@@ -240,7 +242,7 @@ Run `gotop -h` to see the list of all command line options.
 
 ## History
 
-The original author of gotop started a new tool in Rust, called [ytop](https://github.com/cjbassi/ytop).  This repository is a fork of original gotop project with a new maintainer.
+**ca. 2020-01-25** The original author of gotop started a new tool in Rust, called [ytop](https://github.com/cjbassi/ytop), and deprecated his Go version.  This repository is a fork of original gotop project with a new maintainer to keep the project alive and growing.  An objective of the fork is to maintain a small, focused core while providing a path to extend functionality for less universal use cases; examples of this is sensor support for NVidia graphics cards, and for aggregating data from remote gotop instances.
 
 ## Stargazers over time
 
