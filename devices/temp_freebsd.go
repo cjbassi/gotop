@@ -3,6 +3,7 @@
 package devices
 
 import (
+	"log"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -11,6 +12,10 @@ import (
 )
 
 func init() {
+	if len(devs()) == 0 {
+		log.Println("temp: no thermal sensors found")
+		return
+	}
 	RegisterTemp(update)
 }
 
@@ -42,4 +47,23 @@ func update(temps map[string]int) map[string]error {
 	}
 
 	return errors
+}
+
+func devs() []string {
+	rv := make([]string, 0, len(sensorOIDS))
+	// Check that thermal sensors are really available; they aren't in VMs
+	bs, err := exec.Command("sysctl", "-a").Output()
+	if err != nil {
+		log.Printf("temp: failure to get system information %s", err.Error())
+		return []string{}
+	}
+	for k, _ := range sensorOIDS {
+		idx := strings.Index(string(bs), k)
+		if idx < 0 {
+			log.Printf("temp: no device %s found", k)
+		} else {
+			rv = append(rv, k)
+		}
+	}
+	return rv
 }
