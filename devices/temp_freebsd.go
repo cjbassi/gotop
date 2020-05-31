@@ -64,7 +64,7 @@ func devs() []string {
 	for k, _ := range sensorOIDS {
 		idx := strings.Index(string(bs), k)
 		if idx < 0 {
-			log.Println("temp: no device %s found", k)
+			log.Printf("temp: no device %s found", k)
 		} else {
 			rv = append(rv, k)
 		}
