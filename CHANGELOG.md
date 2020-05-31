@@ -59,6 +59,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Temperatures on Darwin were all over the place, and wrong (#48)
 - Config file loading from `~/.config/gotop` wasn't working
 - There were a number of minor issues with the config file that have been cleaned up.
+- Compile errors on FreeBSD due to golang.org/x/sys API breakages
+- Key bindings now work in FreeBSD (#95)
+
+## [3.5.3] - 2020-05-30
+
+The FreeBSD bugfix release. While there are non-FreeBSD fixes in here, the focus was getting gotop to work properly on FreeBSD.
+
+### Fixed
+
+- Address FreeBSD compile errors resulting to `golang.org/x/sys` API breakages
+- Key bindings now work in FreeBSD (#95)
+- Eliminate repeated logging about missing sensor data on FreeBSD VMs (#97)
+- Investigated #14, a report about gotop's memory not matching `top`'s numbers, and came to the conclusions that (a) `gotop` is more correct in some cases (swap) than `top`, and (b) that the metric `gotop` is using (`hw.physmem`) is probably correct -- or that there's no obviously superior metric. So no change.
 
 ## [3.5.2] - 2020-04-28
 

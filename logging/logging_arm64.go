@@ -1,4 +1,4 @@
-// +build linux,arm64
+// +build !freebsd,arm64
 
 package logging
 
