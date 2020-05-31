@@ -39,11 +39,16 @@ func (b *BatteryGauge) EnableMetric() {
 	})
 }
 
+// Only report battery errors once.
+var errLogged = false
+
 func (b *BatteryGauge) update() {
-	// FIXME: Getting a lot of these in the logs
 	bats, err := battery.GetAll()
 	if err != nil {
-		log.Printf("error setting up batteries: %v", err)
+		if !errLogged {
+			log.Printf("error setting up batteries: %v", err)
+			errLogged = true
+		}
 		return
 	}
 	mx := 0.0

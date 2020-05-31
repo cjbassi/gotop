@@ -61,6 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - There were a number of minor issues with the config file that have been cleaned up.
 - Compile errors on FreeBSD due to golang.org/x/sys API breakages
 - Key bindings now work in FreeBSD (#95)
+- Only report battery sensor errors once (reduce noise in the log, #117)
 
 ## [3.5.3] - 2020-05-30
 
