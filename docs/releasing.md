@@ -3,10 +3,11 @@ Current steps for a release:
 ### gotop
 1. Update Version in main.go 
 2. Update CHANGELOG.md
-3. Tag
-4. Push everything
-5. When the github workflows complete, finish the draft release and publish.
-6. Wait for the [Homebrew](https://github.com/xxxserxxx/homebrew-gotop) and [AUR](https://github.com/xxxserxxx/gotop-linux] projects to finish building.
+3. Update docs/release.svg
+4. Tag
+5. Push everything
+6. When the github workflows complete, finish the draft release and publish.
+7. Wait for the [Homebrew](https://github.com/xxxserxxx/homebrew-gotop) and [AUR](https://github.com/xxxserxxx/gotop-linux] projects to finish building.
     1. check out gotop-linux and run `aurpublish aur` and `aurpublish aur-bin`
     2. update the hashes in the Nix package (see below), test build, push a pull request
     3. notify Homebrew
