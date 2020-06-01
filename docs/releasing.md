@@ -1,23 +1,25 @@
-Current steps for a release:
+# Current steps for a release
 
-### gotop
 1. Update Version in main.go 
 2. Update CHANGELOG.md
 3. Update docs/release.svg
 4. Tag
 5. Push everything
 6. When the github workflows complete, finish the draft release and publish.
-7. Wait for the [Homebrew](https://github.com/xxxserxxx/homebrew-gotop) and [AUR](https://github.com/xxxserxxx/gotop-linux] projects to finish building.
-    1. check out gotop-linux and run `aurpublish aur` and `aurpublish aur-bin`
-    2. update the hashes in the Nix package (see below), test build, push a pull request
+7. Wait for the [AUR](https://github.com/xxxserxxx/gotop-linux] project to finish building.
+    1. update arch (gotop-linux) and run `aurpublish aur` and `aurpublish aur-bin`
+    2. notify Nix
     3. notify Homebrew
 
-Homebrew is automatically updated.  The AUR project still needs secret
-credentials to aurpublish to the AUR repository, so the final publish step is
-still currently manual.
+The AUR project still needs secret credentials to aurpublish to the AUR
+repository, so the final publish step is still currently manual.
 
 Oh, what a tangled web.
 
+
+## Nix 
+
+I haven't yet figured this out, so currently just file a ticket and hope somebody on that end updates the package.
 
 Nix adds new and interesting complexities to the release.
 
