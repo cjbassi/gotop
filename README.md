@@ -14,8 +14,7 @@ Join us in [\#gotop:matrix.org](https://riot.im/app/#/room/#gotop:matrix.org) ([
 
 ![](https://raw.githubusercontent.com/xxxserxxx/gotop/master/docs/release.svg)
 
-See the [mini-blog](/xxxserxxx/gotop/wiki/Micro-Blog) for updates on the build status, and the [change log](/xxxserxxx/gotop/blob/master/CHANGELOG.md) for release updates.
-
+See the [mini-blog](/xxxserxxx/gotop/wiki/Micro-Blog) for updates on the build status, and the [change log](/CHANGELOG.md) for release updates.
 
 <img src="./assets/screenshots/demo.gif" />
 
