@@ -22,6 +22,13 @@ jobs:
           event-type: my-release
           client-payload: '{"tag": "${{ steps.tag_name.outputs.tag }}"}'
 
+      - name: Update and inform Homebrew
+        uses: dawidd6/action-homebrew-bump-formula@v3
+        with:
+          token: ${{ secrets.homebrew }}
+          formula: gotop
+          revision: ${{ steps.tag_name.outputs.tag }}
+
       - name: Update Arch AURs
         uses: peter-evans/repository-dispatch@v1
         with:
@@ -30,12 +37,13 @@ jobs:
           event-type: my-release
           client-payload: '{"tag": "${{ steps.tag_name.outputs.tag }}"}'
 
-      - name: Update and inform Homebrew
-        uses: dawidd6/action-homebrew-bump-formula@v3
+      - name: Trigger extensions build
+        uses: peter-evans/repository-dispatch@v1
         with:
-          token: ${{ secrets.homebrew }}
-          formula: gotop
-          revision: ${{ steps.tag_name.outputs.tag }}
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          repository: xxxserxxx/gotop-builder
+          event-type: my-release
+          client-payload: '{"tag": "${{ steps.tag_name.outputs.tag }}"}'
 
       - name: Update current release badge
         shell: bash
