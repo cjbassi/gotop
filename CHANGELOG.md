@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
-## [4.0.0] PENDING
+## [4.0.0] 2020-06-07 (PENDING)
 
 **Command line options have changed.**
 
@@ -42,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Command line help text is cleaned up.
 - Version bump of gopsutil
 - Prometheus client replaced by [VictoriaMetrics/metrics](https://github.com/VictoriaMetrics/metrics). This eliminated 6 indirect package dependencies and saved 3.5MB (25%) of the compiled binary size.
-- Relicensed to MIT-3
+- Relicensed to MIT-3 (see [#36](https://github.com/xxxserxxx/gotop/issues/36))
 
 ### Removed
 
