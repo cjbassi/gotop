@@ -433,6 +433,7 @@ func run() int {
 		ui.Render(bar)
 	}
 
+	// TODO https://godoc.org/github.com/VictoriaMetrics/metrics#Set
 	if conf.ExportPort != "" {
 		go func() {
 			http.HandleFunc("/metrics", func(w http.ResponseWriter, req *http.Request) {

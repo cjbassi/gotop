@@ -115,6 +115,31 @@ For more information on other topics, see:
 
 **ca. 2020-01-25** The original author of gotop started a new tool in Rust, called [ytop](https://github.com/cjbassi/ytop), and deprecated his Go version.  This repository is a fork of original gotop project with a new maintainer to keep the project alive and growing.  An objective of the fork is to maintain a small, focused core while providing a path to extend functionality for less universal use cases; examples of this is sensor support for NVidia graphics cards, and for aggregating data from remote gotop instances.
 
+## Alternatives
+
+I obviously think gotop is the Bee's Knees, but there are many alternatives. Many of these have been around for years. All of them are terminal-based tools.
+
+- Grandpa [top](http://sourceforge.net/projects/unixtop/). Written 36 years ago, C, installed by default on almost every Unix decendant.
+- [htop](https://hisham.hm/htop/). A prettier top. Similar functionality. 16 years old!
+- [atop](https://www.atoptool.nl/). Detailed process-focused inspection with a table-like view. Been around for 9 long years.
+- [iftop](http://www.ex-parrot.com/~pdw/iftop/), a top for network connections.  More than just data transfer, iftop will show what interfaces are connecting to what IP addresses. Requires root access to run.
+- [iotop](http://guichaz.free.fr/iotop/), top for disk access. Tells you *which* processes are writing to and from disk space, and how much. Also requires root access to run.
+- [nmon](http://nmon.sourceforge.net) a dashboard style top; widgets can be dynamically enabled and disabled, pure ASCII rendering, so it doesn't rely on fancy character sets to draw bars. 
+- [bashtop](https://github.com/aristocratos/bashtop), in pure bash! Beautiful and space efficient, and [deserves special comment](docs/bashtop.md).  If you use anything other than gotop, I'd recommend bashtop.
+- [ytop](https://github.com/cjbassi/ytop), a rewrite of gotop (ca. 3.0) in Rust.  Same great UI, different programming language.
+- [slabtop](https://gitlab.com/procps-ng/procps), part of procps-ng, looks like top but provides kernel slab cache information! Requires root.
+- [systemd-cgtop](https://www.github.com/systemd/systemd), comes with systemd (odds are your system uses systemd, so this is already installed), provides a resource use view of control groups -- basically, which services are using what resources. Does *not* require root to run.
+- [virt-top](https://libvirt.org/) top for virtualized containers (VMs, like QEMU).
+- [ctop](https://bcicen.github.io/ctop/) top for containers (LXC, like docker)
+
+
+### A comment on clones
+
+In a chat room I heard someone refer to gotop as "another one of those fancy language rewrites people do."  I'm not the original author of gotop, so it's easy to not take offense, but I'm going on record as saying that I think these are valuable and useful. They increase software diversity at very little cost, and are a sort of evolutionary mechanism: as people do rewrites, some are worse, but some are better, and users benefit.  As importantly, most developers are really only fluent in a couple of programming languages. We all have *familiarity* with a dozen, and may even have extensive experience with a half-dozen, but if you don't constantly use a language, you start to forget the extended library APIs, your development environment isn't tuned, you're rusty with using the tool sets, and you may have forgotten a lot of the language peculiarities and gotchas. The barrier to entry for contributing to a software project -- to just finding and fixing a bug -- in a language you're not intimate with can be very high. It gets much worse if the project owner is a stickler for quality and style.  So the original gotop author's decision to rewrite his project in Rust is a great thing. He probably made fewer design mistakes in ytop (we always do, on the second rewrite), and Rust developers -- who may have hesitated learning or brushing up on Go to submit an improvement -- have another project to which they can contribute.
+
+Diversity is good. Don't knock free stuff.
+
+
 ## Stargazers over time
 
 [![Stargazers over time](https://starcharts.herokuapp.com/xxxserxxx/gotop.svg)](https://starcharts.herokuapp.com/xxxserxxx/gotop)
