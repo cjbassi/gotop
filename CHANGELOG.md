@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
-## [4.0.0] 2020-06-07 (PENDING)
+## [4.0.0] 2020-06-07
 
 **Command line options have changed.**
 
@@ -62,6 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Compile errors on FreeBSD due to golang.org/x/sys API breakages
 - Key bindings now work in FreeBSD (#95)
 - Only report battery sensor errors once (reduce noise in the log, #117)
+- Fixes a very small memory leak from the spark and histograph widgets (#128)
 
 ## [3.5.3] - 2020-05-30
 

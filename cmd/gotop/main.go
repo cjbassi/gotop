@@ -478,7 +478,7 @@ func getLayout(conf gotop.Config) (io.Reader, error) {
 	}
 }
 
-func runTests(conf gotop.Config) int {
+func runTests(_ gotop.Config) int {
 	fmt.Printf("PASS")
 	return 0
 }

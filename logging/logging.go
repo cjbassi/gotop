@@ -15,6 +15,10 @@ const (
 	LOGFILE = "errors.log"
 )
 
+// New creates a new logger in the default cache directory; the returned
+// WriteCloser should be closed when the program exits. If an error is
+// encountered during file creation, a nil WriteCloser and appropriate
+// error are returned.
 func New(c gotop.Config) (io.WriteCloser, error) {
 	// create the log directory
 	cache := c.ConfigDir.QueryCacheFolder()

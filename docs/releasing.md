@@ -2,7 +2,6 @@
 
 1. Update Version in main.go 
 2. Update CHANGELOG.md
-3. Update docs/release.svg
 4. Tag
 5. Push everything
 6. When the github workflows complete, finish the draft release and publish.

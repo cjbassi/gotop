@@ -12,7 +12,7 @@ Join us in [\#gotop:matrix.org](https://riot.im/app/#/room/#gotop:matrix.org) ([
 ![](https://github.com/xxxserxxx/gotop/workflows/Build%20Go%20binaries/badge.svg)
 ![](https://github.com/xxxserxxx/gotop/workflows/Create%20pre-release/badge.svg)
 
-![](https://raw.githubusercontent.com/xxxserxxx/gotop/master/docs/release.svg)
+<div align="center">Current release: <a href="https://github.com/xxxserxxx/gotop/releases/tag/v4.0.0">v4.0.0</a></div>
 
 See the [mini-blog](https://github.com/xxxserxxx/gotop/wiki/Micro-Blog) for updates on the build status, and the [change log](/CHANGELOG.md) for release updates.
 
@@ -135,9 +135,9 @@ I obviously think gotop is the Bee's Knees, but there are many alternatives. Man
 
 ### A comment on clones
 
-In a chat room I heard someone refer to gotop as "another one of those fancy language rewrites people do."  I'm not the original author of gotop, so it's easy to not take offense, but I'm going on record as saying that I think these are valuable and useful. They increase software diversity at very little cost, and are a sort of evolutionary mechanism: as people do rewrites, some are worse, but some are better, and users benefit.  As importantly, most developers are really only fluent in a couple of programming languages. We all have *familiarity* with a dozen, and may even have extensive experience with a half-dozen, but if you don't constantly use a language, you start to forget the extended library APIs, your development environment isn't tuned, you're rusty with using the tool sets, and you may have forgotten a lot of the language peculiarities and gotchas. The barrier to entry for contributing to a software project -- to just finding and fixing a bug -- in a language you're not intimate with can be very high. It gets much worse if the project owner is a stickler for quality and style.  So the original gotop author's decision to rewrite his project in Rust is a great thing. He probably made fewer design mistakes in ytop (we always do, on the second rewrite), and Rust developers -- who may have hesitated learning or brushing up on Go to submit an improvement -- have another project to which they can contribute.
+In a chat room I heard someone refer to gotop as "another one of those fancy language rewrites people do."  I'm not the original author of gotop, so it's easy to not take offense, but I'm going on record as saying that I disagree with that sentiment: I think these rewrites are valuable, useful, and healthy to the community. They increase software diversity at very little [cost to users](https://en.wikipedia.org/wiki/Information_overload), and are a sort of evolutionary mechanism: as people do rewrites, some are worse, but some are better, and users benefit.  Rewrites provide options, which fight against [monocultures](https://github.com). As importantly, most developers are really only fluent in a couple of programming languages. We all have *familiarity* with a dozen, and may even have extensive experience with a half-dozen, but if you don't constantly use a language, you tend to forget the extended library APIs, your development environment isn't tuned, you're rusty with using the tool sets, and you may have forgotten a lot of the language peculiarities and gotchas. The barrier to entry for contributing to a software project -- to simply finding and fixing a bug -- in a language you're not intimate with can be very high. It gets much worse if the project owner is a stickler for quality and style.  So I believe that gotop's original author's decision to rewrite his project in Rust is a net positive. He probably made fewer design mistakes in ytop (we always do, on the second rewrite), and Rust developers -- who may have hesitated learning or brushing up on Go to submit an improvement -- have another project to which they can contribute.
 
-Diversity is good. Don't knock free stuff.
+Diversity is good. Don't knock the free stuff.
 
 
 ## Stargazers over time
