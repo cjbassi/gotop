@@ -2,13 +2,16 @@
 
 1. Update Version in main.go 
 2. Update CHANGELOG.md
-4. Tag
-5. Push everything
-6. When the github workflows complete, finish the draft release and publish.
-7. Wait for the [AUR](https://github.com/xxxserxxx/gotop-linux] project to finish building.
+3. Tag
+4. Push everything
+5. Wait for the github workflows to complete
+6. Download and verify the correct version of one of the binaries
+7. Finish the draft release and publish.
+8. Check gotop-builder for a successful everything build; if successful, publish.
+10. Wait for the [AUR](https://github.com/xxxserxxx/gotop-linux] project to finish building.
     1. update arch (gotop-linux) and run `aurpublish aur` and `aurpublish aur-bin`
-    2. notify Nix
-    3. notify Homebrew
+11. Notify Nix
+12. Notify Homebrew
 
 The AUR project still needs secret credentials to aurpublish to the AUR
 repository, so the final publish step is still currently manual.
@@ -29,11 +32,4 @@ Nix adds new and interesting complexities to the release.
 3. `cd /mnt`
 8. install & run vgo2nix to update deps.nix
 7. `nix-build -A gotop`
-8. When it fails, copy the hash and update the 
-
-
-For plugin development:
-```
-V=$(git show -s --format=%cI HEAD | cut -b -19 |  tr -cd '[:digit:]')-$(git rev-parse HEAD | cut -b -12)
-go build -ldflags "-X main.Version=$V" -o gotop ./cmd/gotop
-```
+8. When it fails, ...
