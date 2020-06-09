@@ -11,3 +11,5 @@ dist/
 
 build/gotop_*
 build.log
+
+tmp/

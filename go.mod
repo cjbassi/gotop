@@ -11,7 +11,6 @@ require (
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/shirou/gopsutil v2.20.3+incompatible
 	github.com/stretchr/testify v1.4.0
-	github.com/xxxserxxx/iSMC v1.0.1
 	github.com/xxxserxxx/opflag v1.0.5
 	golang.org/x/sys v0.0.0-20200316230553-a7d97aace0b0
 	howett.net/plist v0.0.0-20200419221736-3b63eb3a43b5 // indirect

@@ -9,9 +9,10 @@
 7. Finish the draft release and publish.
 8. Check gotop-builder for a successful everything build; if successful, publish.
 10. Wait for the [AUR](https://github.com/xxxserxxx/gotop-linux] project to finish building.
-    1. update arch (gotop-linux) and run `aurpublish aur` and `aurpublish aur-bin`
+    1. update arch (gotop-linux) and run `aurpublish gotop` and `aurpublish gotop-bin`
+    2. Test install `gotop` and `gotop-bin` with running & version check
 11. Notify Nix
-12. Notify Homebrew
+12. ~~Notify Homebrew~~ Automated now.
 
 The AUR project still needs secret credentials to aurpublish to the AUR
 repository, so the final publish step is still currently manual.
