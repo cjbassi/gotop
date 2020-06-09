@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
+## [4.0.1] 2020-06-08
+
+**Darwin-only release**
+
+### Changed
+
+- The change to remove GPL dependencies did not remove *all* dependencies. This corrects that (#131)
+ 
+
 ## [4.0.0] 2020-06-07
 
 **Command line options have changed.**
