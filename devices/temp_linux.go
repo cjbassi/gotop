@@ -15,6 +15,7 @@ func devs() []string {
 	}
 	sensors, err := host.SensorsTemperatures()
 	if err != nil {
+		// FIXME report the error
 		return []string{}
 	}
 	rv := make([]string, 0, len(sensors))
