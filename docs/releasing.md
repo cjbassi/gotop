@@ -1,22 +1,28 @@
-Current steps for a release:
+# Current steps for a release
 
-### gotop
 1. Update Version in main.go 
 2. Update CHANGELOG.md
 3. Tag
 4. Push everything
-5. When the github workflows complete, finish the draft release and publish.
-6. Wait for the [Homebrew](https://github.com/xxxserxxx/homebrew-gotop) and [AUR](https://github.com/xxxserxxx/gotop-linux] projects to finish building.
-    1. check out gotop-linux and run `aurpublish aur` and `aurpublish aur-bin`
-    2. update the hashes in the Nix package (see below), test build, push a pull request
-    3. notify Homebrew
+5. Wait for the github workflows to complete
+6. Download and verify the correct version of one of the binaries
+7. Finish the draft release and publish.
+8. Check gotop-builder for a successful everything build; if successful, publish.
+10. Wait for the [AUR](https://github.com/xxxserxxx/gotop-linux] project to finish building.
+    1. update arch (gotop-linux) and run `aurpublish gotop` and `aurpublish gotop-bin`
+    2. Test install `gotop` and `gotop-bin` with running & version check
+11. Notify Nix
+12. ~~Notify Homebrew~~ Automated now.
 
-Homebrew is automatically updated.  The AUR project still needs secret
-credentials to aurpublish to the AUR repository, so the final publish step is
-still currently manual.
+The AUR project still needs secret credentials to aurpublish to the AUR
+repository, so the final publish step is still currently manual.
 
 Oh, what a tangled web.
 
+
+## Nix 
+
+I haven't yet figured this out, so currently just file a ticket and hope somebody on that end updates the package.
 
 Nix adds new and interesting complexities to the release.
 
@@ -27,11 +33,4 @@ Nix adds new and interesting complexities to the release.
 3. `cd /mnt`
 8. install & run vgo2nix to update deps.nix
 7. `nix-build -A gotop`
-8. When it fails, copy the hash and update the 
-
-
-For plugin development:
-```
-V=$(git show -s --format=%cI HEAD | cut -b -19 |  tr -cd '[:digit:]')-$(git rev-parse HEAD | cut -b -12)
-go build -ldflags "-X main.Version=$V" -o gotop ./cmd/gotop
-```
+8. When it fails, ...

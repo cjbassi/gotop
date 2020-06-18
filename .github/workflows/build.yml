@@ -1,6 +1,11 @@
 name: Build Go binaries
 
-on: push
+on:
+    push:
+        paths-ignore:
+        - 'docs/release.svg'
+        - 'README.md'
+        - 'CHANGELOG.md'
 
 jobs:
   build:
@@ -14,4 +19,4 @@ jobs:
         env:
             SRCPATH: ./cmd/gotop
         with:
-          args: darwin/amd64/1 linux/amd64 linux/386 linux/arm64 linux/arm7 linux/arm6 linux/arm5 windows/amd64 windows/386 freebsd/amd64 freebsd/386
+          args: darwin/amd64 linux/amd64 linux/386 linux/arm64 linux/arm7 linux/arm6 linux/arm5 windows/amd64 windows/386 freebsd/amd64 freebsd/386

@@ -18,9 +18,9 @@ import (
 
 	//_ "net/http/pprof"
 
+	"github.com/VictoriaMetrics/metrics"
 	jj "github.com/cloudfoundry-attic/jibber_jabber"
 	ui "github.com/gizak/termui/v3"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/shibukawa/configdir"
 	"github.com/xxxserxxx/lingo"
 	"github.com/xxxserxxx/opflag"
@@ -446,9 +446,12 @@ func run() int {
 		ui.Render(bar)
 	}
 
+	// TODO https://godoc.org/github.com/VictoriaMetrics/metrics#Set
 	if conf.ExportPort != "" {
 		go func() {
-			http.Handle("/metrics", promhttp.Handler())
+			http.HandleFunc("/metrics", func(w http.ResponseWriter, req *http.Request) {
+				metrics.WritePrometheus(w, true)
+			})
 			http.ListenAndServe(conf.ExportPort, nil)
 		}()
 	}
@@ -488,7 +491,7 @@ func getLayout(conf gotop.Config) (io.Reader, error) {
 	}
 }
 
-func runTests(conf gotop.Config) int {
+func runTests(_ gotop.Config) int {
 	fmt.Printf("PASS")
 	return 0
 }

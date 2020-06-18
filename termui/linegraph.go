@@ -8,11 +8,18 @@ import (
 	drawille "github.com/xxxserxxx/gotop/v4/termui/drawille-go"
 )
 
-// LineGraph implements a line graph of data points.
+// LineGraph draws a graph like this ⣀⡠⠤⠔⣁ of data points.
 type LineGraph struct {
 	*Block
 
-	Data   map[string][]float64
+	// Data is a size-managed data set for the graph. Each entry is a line;
+	// each sub-array are points in the line. The maximum size of the
+	// sub-arrays is controlled by the size of the canvas. This
+	// array is **not** thread-safe. Do not modify this array, or it's
+	// sub-arrays in threads different than the thread that calls `Draw()`
+	Data map[string][]float64
+	// The labels drawn on the graph for each of the lines; the key is shared
+	// by Data; the value is the text that will be rendered.
 	Labels map[string]string
 
 	HorizontalScale int
@@ -67,8 +74,9 @@ func (self *LineGraph) Draw(buf *Buffer) {
 		// coordinates of last point
 		lastY, lastX := -1, -1
 		// assign colors to `colors` and lines/points to the canvas
+		dx := self.Inner.Dx()
 		for i := len(seriesData) - 1; i >= 0; i-- {
-			x := ((self.Inner.Dx() + 1) * 2) - 1 - (((len(seriesData) - 1) - i) * self.HorizontalScale)
+			x := ((dx + 1) * 2) - 1 - (((len(seriesData) - 1) - i) * self.HorizontalScale)
 			y := ((self.Inner.Dy() + 1) * 4) - 1 - int((float64((self.Inner.Dy())*4)-1)*(seriesData[i]/100))
 			if x < 0 {
 				// render the line to the last point up to the wall
@@ -79,6 +87,9 @@ func (self *LineGraph) Draw(buf *Buffer) {
 							colors[p.X/2][p.Y/4] = seriesLineColor
 						}
 					}
+				}
+				if len(seriesData) > 4*dx {
+					self.Data[seriesName] = seriesData[dx-1:]
 				}
 				break
 			}

@@ -6,15 +6,14 @@ import (
 
 	"time"
 
+	"github.com/VictoriaMetrics/metrics"
 	"github.com/distatus/battery"
-	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/xxxserxxx/gotop/v4/termui"
 )
 
 type BatteryGauge struct {
 	*termui.Gauge
-	metric prometheus.Gauge
 }
 
 func NewBatteryGauge() *BatteryGauge {
@@ -35,32 +34,21 @@ func NewBatteryGauge() *BatteryGauge {
 }
 
 func (b *BatteryGauge) EnableMetric() {
-	bats, err := battery.GetAll()
-	if err != nil {
-		log.Printf(tr.Value("error.metricsetup", "power", err.Error()))
-		return
-	}
-	mx := 0.0
-	cu := 0.0
-	for _, bat := range bats {
-		mx += bat.Full
-		cu += bat.Current
-		gauge := prometheus.NewGauge(prometheus.GaugeOpts{
-			Namespace: "gotop",
-			Subsystem: "battery",
-			Name:      "total",
-		})
-		gauge.Set(cu / mx)
-		b.metric = gauge
-		prometheus.MustRegister(gauge)
-	}
+	metrics.NewGauge(makeName("battery", "total"), func() float64 {
+		return float64(b.Percent)
+	})
 }
 
+// Only report battery errors once.
+var errLogged = false
+
 func (b *BatteryGauge) update() {
-	// FIXME: Getting a lot of these in the logs
 	bats, err := battery.GetAll()
 	if err != nil {
-		log.Printf(tr.Value("error.setup", "power", err.Error()))
+		if !errLogged {
+			log.Printf("error setting up batteries: %v", err)
+			errLogged = true
+		}
 		return
 	}
 	mx := 0.0
@@ -81,7 +69,4 @@ func (b *BatteryGauge) update() {
 	d, _ := time.ParseDuration(fmt.Sprintf("%fh", tn))
 	b.Percent = int((cu / mx) * 100.0)
 	b.Label = fmt.Sprintf(charging, b.Percent, d.Truncate(time.Minute))
-	if b.metric != nil {
-		b.metric.Set(cu / mx)
-	}
 }

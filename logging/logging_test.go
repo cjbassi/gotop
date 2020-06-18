@@ -2,22 +2,21 @@ package logging
 
 import (
 	"io/ioutil"
-	//"log"
 	"os"
-	"path/filepath"
 	"testing"
 
+	"github.com/shibukawa/configdir"
 	"github.com/stretchr/testify/assert"
-	"github.com/xxxserxxx/gotop/v4"
+	gotop "github.com/xxxserxxx/gotop/v4"
 )
 
 func TestLogging(t *testing.T) {
-	tdn := "testdir"
-	path, err := filepath.Abs(tdn)
+	c := gotop.NewConfig()
+	c.ConfigDir = configdir.New("", "gotoptest")
+	c.MaxLogSize = 300
+	path := c.ConfigDir.QueryCacheFolder().Path
+	var err error
 	defer os.RemoveAll(path)
-	c := gotop.Config{
-		MaxLogSize: 300,
-	}
 	wc, err := New(c)
 	assert.NoError(t, err)
 	if err != nil {

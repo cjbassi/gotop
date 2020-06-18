@@ -98,5 +98,9 @@ func (self *SparklineGroup) Draw(buf *Buffer) {
 				image.Pt(self.Inner.Min.X+x-1, self.Inner.Min.Y+sparkY-1),
 			)
 		}
+		dx := self.Inner.Dx()
+		if len(line.Data) > 4*dx {
+			line.Data = line.Data[dx-1:]
+		}
 	}
 }

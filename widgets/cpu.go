@@ -2,11 +2,10 @@ package widgets
 
 import (
 	"fmt"
-	"log"
 	"sync"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
+	"github.com/VictoriaMetrics/metrics"
 	"github.com/xxxserxxx/gotop/v4/devices"
 
 	ui "github.com/xxxserxxx/gotop/v4/termui"
@@ -19,7 +18,7 @@ type CPUWidget struct {
 	ShowPerCPULoad  bool
 	updateInterval  time.Duration
 	updateLock      sync.Mutex
-	metric          map[string]prometheus.Gauge
+	cpuLoads        map[string]float64
 }
 
 var cpuLabels []string
@@ -31,6 +30,7 @@ func NewCPUWidget(updateInterval time.Duration, horizontalScale int, showAverage
 		updateInterval:  updateInterval,
 		ShowAverageLoad: showAverageLoad,
 		ShowPerCPULoad:  showPerCPULoad,
+		cpuLoads:        make(map[string]float64),
 	}
 	self.Title = tr.Value("cpu")
 	self.HorizontalScale = horizontalScale
@@ -66,26 +66,22 @@ func NewCPUWidget(updateInterval time.Duration, horizontalScale int, showAverage
 	return self
 }
 
+const AVRG = "AVRG"
+
 func (cpu *CPUWidget) EnableMetric() {
 	if cpu.ShowAverageLoad {
-		cpu.metric = make(map[string]prometheus.Gauge)
-		cpu.metric["AVRG"] = prometheus.NewGauge(prometheus.GaugeOpts{
-			Subsystem: "cpu",
-			Name:      "avg",
+		metrics.NewGauge(makeName("cpu", " avg"), func() float64 {
+			return cpu.cpuLoads[AVRG]
 		})
 	} else {
 		cpus := make(map[string]int)
 		devices.UpdateCPU(cpus, cpu.updateInterval, cpu.ShowPerCPULoad)
-		cpu.metric = make(map[string]prometheus.Gauge)
 		for key, perc := range cpus {
-			gauge := prometheus.NewGauge(prometheus.GaugeOpts{
-				Namespace: "gotop",
-				Subsystem: "cpu",
-				Name:      key,
+			kc := key
+			cpu.cpuLoads[key] = float64(perc)
+			metrics.NewGauge(makeName("cpu", key), func() float64 {
+				return cpu.cpuLoads[kc]
 			})
-			gauge.Set(float64(perc))
-			prometheus.MustRegister(gauge)
-			cpu.metric[key] = gauge
 		}
 	}
 }
@@ -108,11 +104,9 @@ func (cpu *CPUWidget) update() {
 				val = float64(v)
 				break
 			}
-			cpu.Data["AVRG"] = append(cpu.Data["AVRG"], val)
-			cpu.Labels["AVRG"] = fmt.Sprintf("%3.0f%%", val)
-			if cpu.metric != nil {
-				cpu.metric["AVRG"].Set(val)
-			}
+			cpu.Data[AVRG] = append(cpu.Data[AVRG], val)
+			cpu.Labels[AVRG] = fmt.Sprintf("%3.0f%%", val)
+			cpu.cpuLoads[AVRG] = val
 		}()
 	}
 
@@ -127,13 +121,7 @@ func (cpu *CPUWidget) update() {
 			for key, percent := range cpus {
 				cpu.Data[key] = append(cpu.Data[key], float64(percent))
 				cpu.Labels[key] = fmt.Sprintf("%d%%", percent)
-				if cpu.metric != nil {
-					if cpu.metric[key] == nil {
-						log.Printf(tr.Value("error.nometrics", "cpu", key))
-					} else {
-						cpu.metric[key].Set(float64(percent))
-					}
-				}
+				cpu.cpuLoads[key] = float64(percent)
 			}
 		}()
 	}

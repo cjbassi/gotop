@@ -1,5 +1,10 @@
 package devices
 
+// TODO: https://github.com/elastic/go-sysinfo
+// TODO: https://github.com/mackerelio/go-osstat
+// TODO: https://github.com/akhenakh/statgo
+// TODO: https://github.com/jaypipes/ghw
+
 import (
 	"log"
 	"time"

@@ -1,8 +1,12 @@
 package devices
 
+//go:generate go-bindata -pkg devices -prefix data -o smc.go data
+
 import (
 	"log"
 )
+
+// TODO add thermal history graph. Update when something changes?
 
 var tempUpdates []func(map[string]int) map[string]error
 

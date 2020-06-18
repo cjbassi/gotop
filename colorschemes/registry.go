@@ -17,6 +17,9 @@ func init() {
 	}
 }
 
+// FromName loads a Colorscheme by name; confDir is used to search
+// directories for a scheme matching the name.  The search order
+// is the same as for config files.
 func FromName(confDir configdir.ConfigDir, c string) (Colorscheme, error) {
 	if cs, ok := registry[c]; ok {
 		return cs, nil

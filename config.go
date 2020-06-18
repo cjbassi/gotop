@@ -162,7 +162,6 @@ func load(in io.Reader, conf *Config) error {
 			}
 			conf.Statusbar = bv
 		case netinterface:
-			// FIXME this should be a comma-separated list
 			conf.NetInterface = kv[1]
 		case layout:
 			conf.Layout = kv[1]

@@ -13,7 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
-## [4.0.0] PENDING
+## [4.0.1] 2020-06-08
+
+**Darwin-only release**
+
+### Changed
+
+- The change to remove GPL dependencies did not remove *all* dependencies. This corrects that (#131)
+ 
+
+## [4.0.0] 2020-06-07
 
 **Command line options have changed.**
 
@@ -33,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adds ability to write out a configuration file
 - Adds a command for specifying the configuration file to use
 - Merged cmatsuoka's console font contribution
+- Added contribution from @wcdawn for building on machines w/ no Go/root access
 
 ### Changed
 
@@ -40,6 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extensions are now built with a build tool; this is an interim solution until issues with the Go plugin API are resolved.
 - Command line help text is cleaned up.
 - Version bump of gopsutil
+- Prometheus client replaced by [VictoriaMetrics/metrics](https://github.com/VictoriaMetrics/metrics). This eliminated 6 indirect package dependencies and saved 3.5MB (25%) of the compiled binary size.
+- Relicensed to MIT-3 (see [#36](https://github.com/xxxserxxx/gotop/issues/36))
 
 ### Removed
 
@@ -56,6 +68,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Temperatures on Darwin were all over the place, and wrong (#48)
 - Config file loading from `~/.config/gotop` wasn't working
 - There were a number of minor issues with the config file that have been cleaned up.
+- Compile errors on FreeBSD due to golang.org/x/sys API breakages
+- Key bindings now work in FreeBSD (#95)
+- Only report battery sensor errors once (reduce noise in the log, #117)
+- Fixes a very small memory leak from the spark and histograph widgets (#128)
+
+## [3.5.3] - 2020-05-30
+
+The FreeBSD bugfix release. While there are non-FreeBSD fixes in here, the focus was getting gotop to work properly on FreeBSD.
+
+### Fixed
+
+- Address FreeBSD compile errors resulting to `golang.org/x/sys` API breakages
+- Key bindings now work in FreeBSD (#95)
+- Eliminate repeated logging about missing sensor data on FreeBSD VMs (#97)
+- Investigated #14, a report about gotop's memory not matching `top`'s numbers, and came to the conclusions that (a) `gotop` is more correct in some cases (swap) than `top`, and (b) that the metric `gotop` is using (`hw.physmem`) is probably correct -- or that there's no obviously superior metric. So no change.
 
 ## [3.5.2] - 2020-04-28
 
