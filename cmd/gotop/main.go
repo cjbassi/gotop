@@ -346,7 +346,8 @@ func main() {
 		if ec < 2 {
 			logpath := filepath.Join(conf.ConfigDir.QueryCacheFolder().Path, logging.LOGFILE)
 			fmt.Println(tr.Value("error.checklog", logpath))
-			fmt.Println(ioutil.ReadFile(logpath))
+			bs, _ := ioutil.ReadFile(logpath)
+			fmt.Println(string(bs))
 		}
 	}
 	os.Exit(ec)

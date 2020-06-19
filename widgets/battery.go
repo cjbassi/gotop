@@ -23,7 +23,7 @@ func NewBatteryWidget(horizontalScale int) *BatteryWidget {
 		LineGraph:      ui.NewLineGraph(),
 		updateInterval: time.Minute,
 	}
-	self.Title = tr.Value("widget.battery")
+	self.Title = tr.Value("widget.label.battery")
 	self.HorizontalScale = horizontalScale
 
 	// intentional duplicate
@@ -60,7 +60,7 @@ func (b *BatteryWidget) EnableMetric() {
 }
 
 func makeID(i int) string {
-	return tr.Value("widget.batt") + strconv.Itoa(i)
+	return tr.Value("widget.label.batt") + strconv.Itoa(i)
 }
 
 func (b *BatteryWidget) Scale(i int) {

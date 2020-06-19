@@ -10,7 +10,7 @@ import (
 func getProcs() ([]Proc, error) {
 	psProcs, err := psProc.Processes()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get processes from gopsutil: %v", err)
+		return nil, fmt.Errorf(tr.Value("widget.proc.err.gopsutil", err.Error()))
 	}
 
 	procs := make([]Proc, len(psProcs))
@@ -18,15 +18,15 @@ func getProcs() ([]Proc, error) {
 		pid := psProc.Pid
 		command, err := psProc.Name()
 		if err != nil {
-			log.Printf("failed to get process command from gopsutil: %v. psProc: %v. i: %v. pid: %v", err, psProc, i, pid)
+			log.Println(tr.Value("widget.proc.err.getcmd", err, psProc, i, pid))
 		}
 		cpu, err := psProc.CPUPercent()
 		if err != nil {
-			log.Printf("failed to get process cpu usage from gopsutil: %v. psProc: %v. i: %v. pid: %v", err, psProc, i, pid)
+			log.Println(tr.Value("widget.proc.err.cpupercent", err, psProc, i, pid))
 		}
 		mem, err := psProc.MemoryPercent()
 		if err != nil {
-			log.Printf("failed to get process memeory usage from gopsutil: %v. psProc: %v. i: %v. pid: %v", err, psProc, i, pid)
+			log.Println(tr.Value("widget.proc.err.mempercent", err, psProc, i, pid))
 		}
 
 		procs[i] = Proc{

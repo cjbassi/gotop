@@ -1,0 +1,137 @@
+configfile="CFG FLE"
+usage="egasU: {0} [snoitpo]\n\nsnoitpO:\n"
+total="latoT"
+
+
+[help]
+paths="redro ni ,rof dehcraes era ,elif gifnoc eht dna ,stuoyal & semehcsroloc elbadaoL:"
+log="ni si elif gol ehT {0}"
+written="ot nettirw gifnoC {0}"
+
+
+[args]
+help=".neercs siht wohS"
+color=".emehcsroloc a teS"
+scale="0> ,rotcaf elacs hparG"
+version=".tixe dna noisrev tnirP"
+percpu=".tegdiw UPC eht ni UPC hcae wohS"
+cpuavg=".tegdiw UPC eht ni UPC egareva wohS"
+temp=".tiehnerhaf ni serutarepmet wohS.tiehnerhaf ni serutarepmet wohS"
+statusbar=".emit eht htiw rabsutats a wohS"
+rate=".sm001 yreve hserfer = \"sm001\"  .etunim yreve hserfer = \"m1\"  .detpecca stinu emit tsoM .ycneuqerf hserfeR"
+layout="Name of layout spec file for the UI. Use \"-\" to pipe."
+net="gnisu derongi eb osla nac secafretnI .seulav detarapes ammoc gnisu denifed eb nac secafretni lareveS .ecafretni krowten tceleS \"!\""
+export=".trop deificeps eht no tropxe rof scirtem elbanE"
+mbps=".spbm sa etar krowten wohS"
+test=".edoc eruliaf/sseccus htiw stixe dna stset snuR"
+conffile=")TNEMUGRA TSRIF EB TSUM( tluafed fo daetsni esu ot elif gifnoC"
+list="""
+>syek|shtap|semehcsroloc|stuoyal|secived< tsiL
+stegdiw elbaretlif rof seman ecived tuo stnirP :secived   
+stuoyal ni-dliub stsiL :stuoyal   
+semehcsroloc ni-tliub stsiL :semehcsroloc   
+shtap hcraes elif noitarugifnoc tuo tsiL :shtap   
+tuoyal a ni desu eb nac taht stegdiW :stegdiw   
+.sgnidnib draobyek eht wohS :syek   """
+write=".elif gifnoc tluafed a tuo etirW"
+
+
+[error]
+configparse="elif gifnoc esrap ot deliaf: {0}"
+cliparse="sgra ILC gnisrap: {0}"
+logsetup="elif gol putes ot deliaf: {0}"
+unknownopt="noitpo nwonknU \"{0}\"; secived ro ,shtap ,syek ,semehcsroloc ,stuoyal yrt\n"
+writefail="elif noitarugifnoc etirw ot deliaF: {0}"
+checklog="morf ;deretnuocne srorre {0}:"
+metricsetup="pu gnittes rorre {0} scirtem: {1}"
+nometrics="rof scirtem on {0} {0}"
+fatalfetch="gnihctef rorre lataf {0} ofni: {1}"
+recovfetch="gnihctef rorre elbarevocer {0} gnippiks ;ofni {0}: {0}"
+nodevfound="elbasu on {0} dnuof"
+setuperr="pu gnittes rorre {0}: {1}"
+
+
+[widget.label]
+disk=" egasU ksiD "
+cpu=" egasU UPC "
+gauge=" leveL rewoP "
+battery=" sutatS yrettaB "
+batt=" yrettaB "
+temp=" serutarepmeT "
+net=" egasU krowteN "
+netint=" egasU krowteN: {0} "
+mem=" egasU yromeM "
+help="""
+>c-C< ro q :tiuQ
+
+:noitagivan ssecorP
+pu :>pU< dna k -  
+nwod :>nwoD< dna j -  
+pu egap flah :>u-C< -  
+nwod egap flah :>d-C< -  
+pu egap lluf :>b-C< -  
+nwod egap lluf :>f-C< -  
+pot ot pmuj :>emoH< dna gg -  
+mottob ot pmuj :>dnE< dna G -  
+
+:snoitca ssecorP
+gnipuorg ssecorp elggot :>baT< -  
+)51( MRETGIS htiw sessecorp fo puorg ro ssecorp detceles llik :dd -  
+)3( TIUQGIS htiw sessecorp fo puorg ro ssecorp detceles llik :3d -  
+)9( LLIKGIS htiw sessecorp fo puorg ro ssecorp detceles llik :9d -  
+
+:gnitros ssecorP
+UPC :c -  
+meM :m -  
+DIP :p -  
+
+:gniretlif ssecorP
+retlif gnitide trats :/ -  
+:)gnitide elihw( -  
+retlif tpecca :>retnE< -    
+retlif raelc :>epacsE< dna >c-C< -    
+
+:gnilacs hparg meM dna UPC
+ni elacs :h -  
+tuo elacs :l -  
+
+:krowteN
+dnoces rep setyb delacs dna spbm neewteb elggot :b -  
+"""
+
+
+[widget.net.err]
+netactivity="lituspog morf ytivitca krowten teg ot deliaf: {0}"
+negvalrecv=":vceRsetyBtnecer .lituspog morf atad krowten deviecer yltnecer rof eulav evitagen :rorre {0}"
+negvalsent=":tneSsetyBtnecer .lituspog morf atad krowten tnes yltnecer rof eulav evitagen :rorre {0}"
+
+
+[widget.disk]
+disk="ksiD"
+mount="tnuoM"
+used="desU"
+free="eerF"
+rs="s/R"
+ws="s/W"
+
+
+[widget.proc]
+filter=" :retliF "
+label=" sessecorP "
+[widget.proc.header]
+count="tnuoC"
+command="dnammoC"
+cpu="%UPC"
+mem="%meM"
+pid="DIP"
+[widget.proc.err]
+count=":lituspog morf tnuoc UPC teg ot deliaf {0}"
+retrieve=":sessecorp eveirter ot deliaf {0}"
+ps=":dnammoc 'sp' etucexe ot deliaf {0}"
+gopsutil=":lituspog morf sessecorp teg ot deliaf {0}"
+pidconv=":tni ot DIP trevnoc ot deliaf {0}. enil: {1}"
+cpuconv=":taolf ot egasu UPC trevnoc ot deliaf {0}. :enil {1}"
+memconv=":taolf ot egasu meM trevnoc ot deliaf {0}. :enil {1}"
+getcmd=":lituspog morf dnammoc ssecorp teg ot deliaf {0}. corPsp: {1}. i: {2}. dip: {3}"
+cpupercent="lituspog morf egasu upc ssecorp teg ot deliaf: {0}. corPsp: {1}. i: {2}. dip: {3}"
+mempercent="spog morf egasu yroemem ssecorp teg ot deliafutil: {0}. corPsp: {1}. i: {2}. dip: {3}"

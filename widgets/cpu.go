@@ -32,7 +32,7 @@ func NewCPUWidget(updateInterval time.Duration, horizontalScale int, showAverage
 		ShowPerCPULoad:  showPerCPULoad,
 		cpuLoads:        make(map[string]float64),
 	}
-	self.Title = tr.Value("cpu")
+	self.Title = tr.Value("widget.label.cpu")
 	self.HorizontalScale = horizontalScale
 
 	if !(self.ShowAverageLoad || self.ShowPerCPULoad) {

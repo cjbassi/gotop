@@ -1,5 +1,6 @@
 configfile="Config file"
 usage="Usage: {0} [options]\n\nOptions:\n"
+total="Total"
 
 
 [help]
@@ -35,10 +36,102 @@ List <devices|layouts|colorschemes|paths|keys>
 write="Write out a default config file."
 
 
-[errors]
+[error]
 configparse="failed to parse config file: {0}"
 cliparse="parsing CLI args: {0}"
 logsetup="failed to setup log file: {0}"
 unknownopt="Unknown option \"{0}\"; try layouts, colorschemes, keys, paths, or devices\n"
 writefail="Failed to write configuration file: {0}"
 checklog="errors encountered; from {0}:"
+metricsetup="error setting up {0} metrics: {1}"
+nometrics="no metrics for {0} {0}"
+fatalfetch="fatal error fetching {0} info: {1}"
+recovfetch="recoverable error fetching {0} info; skipping {0}: {0}"
+nodevfound="no usable {0} found"
+setuperr="error setting up {0}: {1}"
+
+
+[widget.label]
+disk=" Disk Usage "
+cpu=" CPU Usage "
+gauge=" Power Level "
+battery=" Battery Status "
+batt=" Battery "
+temp=" Temperatures "
+net=" Network Usage "
+netint=" Network Usage: {0} "
+mem=" Memory Usage "
+help="""
+Quit: q or <C-c>
+
+Process navigation:
+  - k and <Up>: up
+  - j and <Down>: down
+  - <C-u>: half page up
+  - <C-d>: half page down
+  - <C-b>: full page up
+  - <C-f>: full page down
+  - gg and <Home>: jump to top
+  - G and <End>: jump to bottom
+
+Process actions:
+  - <Tab>: toggle process grouping
+  - dd: kill selected process or group of processes with SIGTERM (15)
+  - d3: kill selected process or group of processes with SIGQUIT (3)
+  - d9: kill selected process or group of processes with SIGKILL (9)
+
+Process sorting:
+  - c: CPU
+  - m: Mem
+  - p: PID
+
+Process filtering:
+  - /: start editing filter
+  - (while editing):
+    - <Enter>: accept filter
+    - <C-c> and <Escape>: clear filter
+
+CPU and Mem graph scaling:
+  - h: scale in
+  - l: scale out
+
+Network:
+  - b: toggle between mbps and scaled bytes per second
+"""
+
+
+[widget.net.err]
+netactivity="failed to get network activity from gopsutil: {0}"
+negvalrecv="error: negative value for recently received network data from gopsutil. recentBytesRecv: {0}"
+negvalsent="error: negative value for recently sent network data from gopsutil. recentBytesSent: {0}"
+
+
+[widget.disk]
+disk="Disk"
+mount="Mount"
+used="Used"
+free="Free"
+rs="R/s"
+ws="W/s"
+
+
+[widget.proc]
+filter=" Filter: "
+label=" Processes "
+[widget.proc.header]
+count="Count"
+command="Command"
+cpu="CPU%"
+mem="Mem%"
+pid="PID"
+[widget.proc.err]
+count="failed to get CPU count from gopsutil: {0}"
+retrieve="failed to retrieve processes: {0}"
+ps="failed to execute 'ps' command: {0}"
+gopsutil="failed to get processes from gopsutil: {0}"
+pidconv="failed to convert PID to int: {0}. line: {1}"
+cpuconv="failed to convert CPU usage to float: {0}. line: {1}"
+memconv="failed to convert Mem usage to float: {0}. line: {1}"
+getcmd="failed to get process command from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+cpupercent="failed to get process cpu usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+mempercent="failed to get process memeory usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"

@@ -11,7 +11,7 @@ import (
 func getProcs() ([]Proc, error) {
 	output, err := exec.Command("ps", "-axo", "pid:10,comm:50,pcpu:5,pmem:5,args").Output()
 	if err != nil {
-		return nil, fmt.Errorf("failed to execute 'ps' command: %v", err)
+		return nil, fmt.Errorf(tr.Value("widget.proc.err.ps", err.Error()))
 	}
 
 	// converts to []string, removing trailing newline and header
@@ -21,15 +21,15 @@ func getProcs() ([]Proc, error) {
 	for _, line := range linesOfProcStrings {
 		pid, err := strconv.Atoi(strings.TrimSpace(line[0:10]))
 		if err != nil {
-			log.Printf("failed to convert PID to int: %v. line: %v", err, line)
+			log.Println(tr.Value("widget.proc.err.pidconv", err.Error(), line))
 		}
 		cpu, err := strconv.ParseFloat(strings.TrimSpace(line[63:68]), 64)
 		if err != nil {
-			log.Printf("failed to convert CPU usage to float: %v. line: %v", err, line)
+			log.Println(tr.Value("widget.proc.err.cpuconv", err.Error(), line))
 		}
 		mem, err := strconv.ParseFloat(strings.TrimSpace(line[69:74]), 64)
 		if err != nil {
-			log.Printf("failed to convert Mem usage to float: %v. line: %v", err, line)
+			log.Println(tr.Value("widget.proc.err.memconv", err.Error(), line))
 		}
 		proc := Proc{
 			Pid:         pid,

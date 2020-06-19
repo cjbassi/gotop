@@ -51,7 +51,7 @@ type ProcWidget struct {
 func NewProcWidget() *ProcWidget {
 	cpuCount, err := psCPU.Counts(false)
 	if err != nil {
-		log.Printf("failed to get CPU count from gopsutil: %v", err)
+		log.Println(tr.Value("error.proc.err.count", err.Error()))
 	}
 	self := &ProcWidget{
 		Table:            ui.NewTable(),
@@ -63,14 +63,14 @@ func NewProcWidget() *ProcWidget {
 	}
 	self.entry = &ui.Entry{
 		Style: self.TitleStyle,
-		Label: " Filter: ",
+		Label: tr.Value("widget.proc.filter"),
 		Value: "",
 		UpdateCallback: func(val string) {
 			self.filter = val
 			self.update()
 		},
 	}
-	self.Title = " Processes "
+	self.Title = tr.Value("widget.proc.label")
 	self.ShowCursor = true
 	self.ShowLocation = true
 	self.ColGap = 3
@@ -137,7 +137,7 @@ func (proc *ProcWidget) filterProcs(procs []Proc) []Proc {
 func (proc *ProcWidget) update() {
 	procs, err := getProcs()
 	if err != nil {
-		log.Printf("failed to retrieve processes: %v", err)
+		log.Printf(tr.Value("widget.proc.error.retrieve", err.Error()))
 		return
 	}
 
@@ -157,10 +157,15 @@ func (proc *ProcWidget) update() {
 // sortProcs sorts either the grouped or ungrouped []Process based on the sortMethod.
 // Called with every update, when the sort method is changed, and when processes are grouped and ungrouped.
 func (proc *ProcWidget) sortProcs() {
-	proc.Header = []string{"Count", "Command", "CPU%", "Mem%"}
+	proc.Header = []string{
+		tr.Value("widget.proc.header.count"),
+		tr.Value("widget.proc.header.command"),
+		tr.Value("widget.proc.header.cpu"),
+		tr.Value("widget.proc.header.mem"),
+	}
 
 	if !proc.showGroupedProcs {
-		proc.Header[0] = "PID"
+		proc.Header[0] = tr.Value("widget.proc.header.pid")
 	}
 
 	var procs *[]Proc
