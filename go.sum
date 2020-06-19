@@ -39,6 +39,8 @@ github.com/valyala/histogram v1.0.1 h1:FzA7n2Tz/wKRMejgu3PV1vw3htAklTjjuoI6z3d4K
 github.com/valyala/histogram v1.0.1/go.mod h1:lQy0xA4wUz2+IUnf97SivorsJIp8FxsnRd6x25q7Mto=
 github.com/xxxserxxx/lingo v1.0.1 h1:lPexOb0HEqYB50EaJdjaYFNATT8JhTcXljbQmCuXygE=
 github.com/xxxserxxx/lingo v1.0.1/go.mod h1:C2teIFiBLAmEhpLzRkwk7wP5R0eOoveXVYqD+5KOkAs=
+github.com/xxxserxxx/lingo v1.1.0 h1:UaA0oNyen0vGWNHD6eow+uCfBu7hhypwb28RxQSnprY=
+github.com/xxxserxxx/lingo v1.1.0/go.mod h1:C2teIFiBLAmEhpLzRkwk7wP5R0eOoveXVYqD+5KOkAs=
 github.com/xxxserxxx/opflag v1.0.5 h1:2H4Qtl1qe+dSkEcGt+fBe2mQ8z14MgkWPqcLaoa6k90=
 github.com/xxxserxxx/opflag v1.0.5/go.mod h1:GWZtb3/tGGj5W1GE/JTyJAuqgxDxl1+jqDGAGM+P/p4=
 golang.org/x/sys v0.0.0-20200316230553-a7d97aace0b0 h1:4Khi5GeNOkZS5DqSBRn4Sy7BE6GuxwOqARPqfurkdNk=

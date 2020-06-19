@@ -69,6 +69,10 @@ Move `gotop` to somewhere in your `$PATH`.
 
 If Go is not installed or is the wrong version, and you don't have root access or don't want to upgrade Go, a script is provided to download Go and the gotop sources, compile gotop, and then clean up. See `scripts/install_without_root.sh`.
 
+#### go generate
+
+Apple SMC tags are embedded in a text file that is compiled into the executable; the same happens with the language translations.  When the file `devices/data/sm.tsv` or any translations in `translations/dicts/` change, `go generate` should be re-run.
+
 ## Usage
 
 Run with `-h` to get an extensive list of command line arguments.  Many of these can be configured by creating a configuration file; see the next section for more information.  Key bindings can be viewed while gotop is running by pressing the `?` key, or they can be printed out by using the `--list keys` command.

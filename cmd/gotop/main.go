@@ -30,6 +30,7 @@ import (
 	"github.com/xxxserxxx/gotop/v4/devices"
 	"github.com/xxxserxxx/gotop/v4/layout"
 	"github.com/xxxserxxx/gotop/v4/logging"
+	"github.com/xxxserxxx/gotop/v4/translations"
 	w "github.com/xxxserxxx/gotop/v4/widgets"
 )
 
@@ -354,7 +355,7 @@ func main() {
 }
 
 func run() int {
-	ling, err := lingo.New("en_US", "translations", nil)
+	ling, err := lingo.New("en_US", "translations", translations.AssetFile())
 	if err != nil {
 		fmt.Printf("failed to load language files: %s\n", err)
 		return 2

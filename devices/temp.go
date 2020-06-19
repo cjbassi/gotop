@@ -1,7 +1,5 @@
 package devices
 
-//go:generate go-bindata -pkg devices -prefix data -o smc.go data
-
 import (
 	"log"
 )
