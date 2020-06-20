@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	ui "github.com/gizak/termui/v3"
-	"github.com/xxxserxxx/lingo"
+	lingo "github.com/jdkeke142/lingo-toml"
 )
 
 var tr lingo.Translations
@@ -17,7 +17,7 @@ type HelpMenu struct {
 
 func NewHelpMenu(tra lingo.Translations) *HelpMenu {
 	tr = tra
-	keyBinds = tr.Value("widgets.help")
+	keyBinds = tr.Value("help.help")
 	return &HelpMenu{
 		Block: *ui.NewBlock(),
 	}

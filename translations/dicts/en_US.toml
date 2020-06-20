@@ -7,6 +7,64 @@ total="Total"
 paths="Loadable colorschemes & layouts, and the config file, are searched for, in order:"
 log="The log file is in {0}"
 written="Config written to {0}"
+help="""
+Quit: q or <C-c>
+
+Process navigation:
+  - k and <Up>: up
+  - j and <Down>: down
+  - <C-u>: half page up
+  - <C-d>: half page down
+  - <C-b>: full page up
+  - <C-f>: full page down
+  - gg and <Home>: jump to top
+  - G and <End>: jump to bottom
+
+Process actions:
+  - <Tab>: toggle process grouping
+  - dd: kill selected process or group of processes with SIGTERM (15)
+  - d3: kill selected process or group of processes with SIGQUIT (3)
+  - d9: kill selected process or group of processes with SIGKILL (9)
+
+Process sorting:
+  - c: CPU
+  - m: Mem
+  - p: PID
+
+Process filtering:
+  - /: start editing filter
+  - (while editing):
+    - <Enter>: accept filter
+    - <C-c> and <Escape>: clear filter
+
+CPU and Mem graph scaling:
+  - h: scale in
+  - l: scale out
+
+Network:
+  - b: toggle between mbps and scaled bytes per second
+"""
+layouts = """Built-in layouts:
+   default
+   minimal
+   battery
+   kitchensink"""
+colorschemes = """Built-in colorschemes:
+   default
+   default-dark (for white background)
+   solarized
+   solarized16-dark
+   solarized16-light
+   monokai
+   vice"""
+widgets = """Widgets that can be used in layouts:
+   cpu   - CPU load graph
+   mem   - Physical & swap memory use graph
+   temp  - Sensor temperatures
+   disk  - Physical disk partition use
+   power - A battery bar
+   net   - Network load
+   procs - Interactive process list"""
 
 
 [args]
@@ -61,43 +119,6 @@ temp=" Temperatures "
 net=" Network Usage "
 netint=" Network Usage: {0} "
 mem=" Memory Usage "
-help="""
-Quit: q or <C-c>
-
-Process navigation:
-  - k and <Up>: up
-  - j and <Down>: down
-  - <C-u>: half page up
-  - <C-d>: half page down
-  - <C-b>: full page up
-  - <C-f>: full page down
-  - gg and <Home>: jump to top
-  - G and <End>: jump to bottom
-
-Process actions:
-  - <Tab>: toggle process grouping
-  - dd: kill selected process or group of processes with SIGTERM (15)
-  - d3: kill selected process or group of processes with SIGQUIT (3)
-  - d9: kill selected process or group of processes with SIGKILL (9)
-
-Process sorting:
-  - c: CPU
-  - m: Mem
-  - p: PID
-
-Process filtering:
-  - /: start editing filter
-  - (while editing):
-    - <Enter>: accept filter
-    - <C-c> and <Escape>: clear filter
-
-CPU and Mem graph scaling:
-  - h: scale in
-  - l: scale out
-
-Network:
-  - b: toggle between mbps and scaled bytes per second
-"""
 
 
 [widget.net.err]

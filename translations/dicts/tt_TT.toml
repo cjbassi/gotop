@@ -7,6 +7,64 @@ total="latoT"
 paths="redro ni ,rof dehcraes era ,elif gifnoc eht dna ,stuoyal & semehcsroloc elbadaoL:"
 log="ni si elif gol ehT {0}"
 written="ot nettirw gifnoC {0}"
+help="""
+>c-C< ro q :tiuQ
+
+:noitagivan ssecorP
+pu :>pU< dna k -  
+nwod :>nwoD< dna j -  
+pu egap flah :>u-C< -  
+nwod egap flah :>d-C< -  
+pu egap lluf :>b-C< -  
+nwod egap lluf :>f-C< -  
+pot ot pmuj :>emoH< dna gg -  
+mottob ot pmuj :>dnE< dna G -  
+
+:snoitca ssecorP
+gnipuorg ssecorp elggot :>baT< -  
+)51( MRETGIS htiw sessecorp fo puorg ro ssecorp detceles llik :dd -  
+)3( TIUQGIS htiw sessecorp fo puorg ro ssecorp detceles llik :3d -  
+)9( LLIKGIS htiw sessecorp fo puorg ro ssecorp detceles llik :9d -  
+
+:gnitros ssecorP
+UPC :c -  
+meM :m -  
+DIP :p -  
+
+:gniretlif ssecorP
+retlif gnitide trats :/ -  
+:)gnitide elihw( -  
+retlif tpecca :>retnE< -    
+retlif raelc :>epacsE< dna >c-C< -    
+
+:gnilacs hparg meM dna UPC
+ni elacs :h -  
+tuo elacs :l -  
+
+:krowteN
+dnoces rep setyb delacs dna spbm neewteb elggot :b -  
+"""
+layouts = """stuoyal ni-tliuB:
+   tluafed
+   laminim
+   yrettab
+   knisnehctik"""
+colorschemes = """semehcsroloc ni-tliuB:
+   tluafed
+   )dnuorgkcab etihw rof( krad-tluafed
+   deziralos
+   krad-61deziralos
+   thgil-61deziralos
+   iakonom
+   eciv"""
+widgets = """stuoyal ni desu eb nac taht stegdiW:
+   hparg daol UPC -   upc
+   hparg esu yromem paws & lacisyhP -   mem
+   serutarepmet rosneS -  pmet
+   esu noititrap ksid lacisyhP -  ksid
+   rab yrettab A - rewop
+   daol krowteN -   ten
+   tsil ssecorp evitcaretnI - scorp"""
 
 
 [args]
@@ -61,43 +119,6 @@ temp=" serutarepmeT "
 net=" egasU krowteN "
 netint=" egasU krowteN: {0} "
 mem=" egasU yromeM "
-help="""
->c-C< ro q :tiuQ
-
-:noitagivan ssecorP
-pu :>pU< dna k -  
-nwod :>nwoD< dna j -  
-pu egap flah :>u-C< -  
-nwod egap flah :>d-C< -  
-pu egap lluf :>b-C< -  
-nwod egap lluf :>f-C< -  
-pot ot pmuj :>emoH< dna gg -  
-mottob ot pmuj :>dnE< dna G -  
-
-:snoitca ssecorP
-gnipuorg ssecorp elggot :>baT< -  
-)51( MRETGIS htiw sessecorp fo puorg ro ssecorp detceles llik :dd -  
-)3( TIUQGIS htiw sessecorp fo puorg ro ssecorp detceles llik :3d -  
-)9( LLIKGIS htiw sessecorp fo puorg ro ssecorp detceles llik :9d -  
-
-:gnitros ssecorP
-UPC :c -  
-meM :m -  
-DIP :p -  
-
-:gniretlif ssecorP
-retlif gnitide trats :/ -  
-:)gnitide elihw( -  
-retlif tpecca :>retnE< -    
-retlif raelc :>epacsE< dna >c-C< -    
-
-:gnilacs hparg meM dna UPC
-ni elacs :h -  
-tuo elacs :l -  
-
-:krowteN
-dnoces rep setyb delacs dna spbm neewteb elggot :b -  
-"""
 
 
 [widget.net.err]

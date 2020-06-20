@@ -21,8 +21,8 @@ import (
 	"github.com/VictoriaMetrics/metrics"
 	jj "github.com/cloudfoundry-attic/jibber_jabber"
 	ui "github.com/gizak/termui/v3"
+	"github.com/jdkeke142/lingo-toml"
 	"github.com/shibukawa/configdir"
-	"github.com/xxxserxxx/lingo"
 	"github.com/xxxserxxx/opflag"
 
 	"github.com/xxxserxxx/gotop/v4"
@@ -107,9 +107,9 @@ func parseArgs() error {
 	if *list != "" {
 		switch *list {
 		case "layouts":
-			fmt.Println(_layouts)
+			fmt.Println(tr.Value("help.layouts"))
 		case "colorschemes":
-			fmt.Println(_colorschemes)
+			fmt.Println(tr.Value("help.colorschemes"))
 		case "paths":
 			fmt.Println(tr.Value("help.paths"))
 			paths := make([]string, 0)
@@ -122,9 +122,9 @@ func parseArgs() error {
 		case "devices":
 			listDevices()
 		case "keys":
-			fmt.Println(tr.Value("widget.help"))
+			fmt.Println(tr.Value("help.help"))
 		case "widgets":
-			fmt.Println(_widgets)
+			fmt.Println(tr.Value("help.widgets"))
 		default:
 			fmt.Printf(tr.Value("error.unknownopt", *list))
 			os.Exit(1)
@@ -508,25 +508,3 @@ func listDevices() {
 		}
 	}
 }
-
-const _layouts = `Built-in layouts:
-   default
-   minimal
-   battery
-   kitchensink`
-const _colorschemes = `Built-in colorschemes:
-   default
-   default-dark (for white background)
-   solarized
-   solarized16-dark
-   solarized16-light
-   monokai
-   vice`
-const _widgets = `Widgets that can be used in layouts:
-   cpu   - CPU load graph
-   mem   - Physical & swap memory use graph
-   temp  - Sensor temperatures
-   disk  - Physical disk partition use
-   power - A battery bar
-   net   - Network load
-   procs - Interactive process list`
