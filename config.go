@@ -16,6 +16,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jdkeke142/lingo-toml"
 	"github.com/shibukawa/configdir"
 	"github.com/xxxserxxx/gotop/v4/colorschemes"
 	"github.com/xxxserxxx/gotop/v4/widgets"
@@ -43,6 +44,7 @@ type Config struct {
 	Test                 bool
 	ExtensionVars        map[string]string
 	ConfigFile           string
+	Tr                   lingo.Translations
 }
 
 func NewConfig() Config {
@@ -100,18 +102,15 @@ func load(in io.Reader, conf *Config) error {
 		}
 		kv := strings.Split(l, "=")
 		if len(kv) != 2 {
-			return fmt.Errorf("bad config file syntax; should be KEY=VALUE, was %s", l)
+			return fmt.Errorf(conf.Tr.Value("config.err.configsyntax", l))
 		}
 		key := strings.ToLower(kv[0])
+		ln := strconv.Itoa(lineNo)
 		switch key {
 		default:
 			conf.ExtensionVars[key] = kv[1]
-		case "configdir":
-			log.Printf("configdir is deprecated.  Ignored configdir=%s", kv[1])
-		case "logdir":
-			log.Printf("logdir is deprecated.  Ignored logdir=%s", kv[1])
-		case "logfile":
-			log.Printf("logfile is deprecated.  Ignored logfile=%s", kv[1])
+		case "configdir", "logdir", "logfile":
+			log.Printf(conf.Tr.Value("config.err.deprecation", ln, key, kv[1]))
 		case graphhorizontalscale:
 			iv, err := strconv.Atoi(kv[1])
 			if err != nil {
@@ -121,31 +120,31 @@ func load(in io.Reader, conf *Config) error {
 		case helpvisible:
 			bv, err := strconv.ParseBool(kv[1])
 			if err != nil {
-				return fmt.Errorf("line %d: %v", lineNo, err)
+				return fmt.Errorf(conf.Tr.Value("config.err.line", ln, err.Error()))
 			}
 			conf.HelpVisible = bv
 		case colorscheme:
 			cs, err := colorschemes.FromName(conf.ConfigDir, kv[1])
 			if err != nil {
-				return fmt.Errorf("line %d: %v", lineNo, err)
+				return fmt.Errorf(conf.Tr.Value("config.err.line", ln, err.Error()))
 			}
 			conf.Colorscheme = cs
 		case updateinterval:
 			iv, err := strconv.Atoi(kv[1])
 			if err != nil {
-				return err
+				return fmt.Errorf(conf.Tr.Value("config.err.line", ln, err.Error()))
 			}
 			conf.UpdateInterval = time.Duration(iv)
 		case averagecpu:
 			bv, err := strconv.ParseBool(kv[1])
 			if err != nil {
-				return fmt.Errorf("line %d: %v", lineNo, err)
+				return fmt.Errorf(conf.Tr.Value("config.err.line", ln, err.Error()))
 			}
 			conf.AverageLoad = bv
 		case percpuload:
 			bv, err := strconv.ParseBool(kv[1])
 			if err != nil {
-				return fmt.Errorf("line %d: %v", lineNo, err)
+				return fmt.Errorf(conf.Tr.Value("config.err.line", ln, err.Error()))
 			}
 			conf.PercpuLoad = bv
 		case tempscale:
@@ -156,12 +155,12 @@ func load(in io.Reader, conf *Config) error {
 				conf.TempScale = 'F'
 			default:
 				conf.TempScale = 'C'
-				return fmt.Errorf("invalid TempScale value %s", kv[1])
+				return fmt.Errorf(conf.Tr.Value("config.err.tempscale", kv[1]))
 			}
 		case statusbar:
 			bv, err := strconv.ParseBool(kv[1])
 			if err != nil {
-				return fmt.Errorf("line %d: %v", lineNo, err)
+				return fmt.Errorf(conf.Tr.Value("config.err.line", ln, err.Error()))
 			}
 			conf.Statusbar = bv
 		case netinterface:
@@ -171,7 +170,7 @@ func load(in io.Reader, conf *Config) error {
 		case maxlogsize:
 			iv, err := strconv.Atoi(kv[1])
 			if err != nil {
-				return err
+				return fmt.Errorf(conf.Tr.Value("config.err.line", ln, err.Error()))
 			}
 			conf.MaxLogSize = int64(iv)
 		case export:

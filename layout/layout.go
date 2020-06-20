@@ -3,7 +3,9 @@ package layout
 import (
 	"log"
 	"sort"
+	"strings"
 
+	"github.com/jdkeke142/lingo-toml"
 	"github.com/xxxserxxx/gotop/v4"
 	"github.com/xxxserxxx/gotop/v4/widgets"
 
@@ -28,8 +30,10 @@ type MyGrid struct {
 }
 
 var widgetNames []string = []string{"cpu", "disk", "mem", "temp", "net", "procs", "batt"}
+var tr lingo.Translations
 
 func Layout(wl layout, c gotop.Config) (*MyGrid, error) {
+	tr = c.Tr
 	rowDefs := wl.Rows
 	uiRows := make([][]interface{}, 0)
 	numRows := countNumRows(wl.Rows)
@@ -197,7 +201,7 @@ func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 		b.BarColor = ui.Color(c.Colorscheme.ProcCursor)
 		w = b
 	default:
-		log.Printf("Invalid widget name %s.  Must be one of %v", widRule.Widget, widgetNames)
+		log.Printf(tr.Value("layout.error.widget", widRule.Widget, strings.Join(widgetNames, ",")))
 		return ui.NewBlock()
 	}
 	if c.ExportPort != "" {

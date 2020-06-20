@@ -37,6 +37,7 @@ func NewDiskWidget() *DiskWidget {
 		updateInterval: time.Second,
 		Partitions:     make(map[string]*Partition),
 	}
+	self.Table.Tr = tr
 	self.Title = tr.Value("widget.label.disk")
 	self.Header = []string{tr.Value("disk.disk"), tr.Value("disk.mount"), tr.Value("disk.used"), tr.Value("disk.free"), tr.Value("disk.rs"), tr.Value("disk.ws")}
 	self.ColGap = 2

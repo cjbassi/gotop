@@ -368,7 +368,9 @@ func run() int {
 	lang = strings.Replace(lang, "-", "_", -1)
 	// Get the locale from the os
 	tr = ling.TranslationsForLocale(lang)
+	colorschemes.SetTr(tr)
 	conf = gotop.NewConfig()
+	conf.Tr = tr
 	// Find the config file; look in (1) local, (2) user, (3) global
 	// Check the last argument first
 	fs := flag.NewFlagSet("config", flag.ContinueOnError)
@@ -483,7 +485,7 @@ func getLayout(conf gotop.Config) (io.Reader, error) {
 			for _, d := range conf.ConfigDir.QueryFolders(configdir.Existing) {
 				paths = append(paths, d.Path)
 			}
-			return nil, fmt.Errorf("unable find layout file %s in %s", conf.Layout, strings.Join(paths, ", "))
+			return nil, fmt.Errorf(tr.Value("error.findlayout", conf.Layout, strings.Join(paths, ", ")))
 		}
 		lo, err := folder.ReadFile(conf.Layout)
 		if err != nil {

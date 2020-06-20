@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"sync"
 
+	"github.com/jdkeke142/lingo-toml"
 	"github.com/xxxserxxx/gotop/v4"
 )
 
@@ -29,6 +30,7 @@ func New(c gotop.Config) (io.WriteCloser, error) {
 	w := &RotateWriter{
 		filename:   filepath.Join(cache.Path, LOGFILE),
 		maxLogSize: c.MaxLogSize,
+		tr:         c.Tr,
 	}
 	err = w.rotate()
 	if err != nil {
@@ -48,6 +50,7 @@ type RotateWriter struct {
 	filename   string // should be set to the actual filename
 	fp         *os.File
 	maxLogSize int64
+	tr         lingo.Translations
 }
 
 func (w *RotateWriter) Close() error {
@@ -103,7 +106,7 @@ func (w *RotateWriter) rotate() (err error) {
 	// open the log file
 	w.fp, err = os.OpenFile(w.filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0660)
 	if err != nil {
-		return fmt.Errorf("failed to open log file %s: %v", w.filename, err)
+		return fmt.Errorf(w.tr.Value("error.logopen", w.filename, err.Error()))
 	}
 
 	return nil

@@ -24,7 +24,7 @@ func (sb *StatusBar) Draw(buf *ui.Buffer) {
 
 	hostname, err := os.Hostname()
 	if err != nil {
-		log.Printf("could not get hostname: %v", err)
+		log.Printf(tr.Value("error.nohostname", err.Error()))
 		return
 	}
 	buf.SetString(

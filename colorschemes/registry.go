@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/jdkeke142/lingo-toml"
 	"github.com/shibukawa/configdir"
 )
 
@@ -15,6 +16,13 @@ func init() {
 	if registry == nil {
 		registry = make(map[string]Colorscheme)
 	}
+}
+
+var tr lingo.Translations
+
+// Set the translation library
+func SetTr(tra lingo.Translations) {
+	tr = tra
 }
 
 // FromName loads a Colorscheme by name; confDir is used to search
@@ -46,15 +54,15 @@ func getCustomColorscheme(confDir configdir.ConfigDir, name string) (Colorscheme
 		for _, d := range confDir.QueryFolders(configdir.Existing) {
 			paths = append(paths, d.Path)
 		}
-		return cs, fmt.Errorf("failed to find colorscheme file %s in %s", fn, strings.Join(paths, ", "))
+		return cs, fmt.Errorf(tr.Value("error.colorschemefile", fn, strings.Join(paths, ", ")))
 	}
 	dat, err := folder.ReadFile(fn)
 	if err != nil {
-		return cs, fmt.Errorf("failed to read colorscheme file %s: %v", filepath.Join(folder.Path, fn), err)
+		return cs, fmt.Errorf(tr.Value("error.colorschemeload", filepath.Join(folder.Path, fn), err.Error()))
 	}
 	err = json.Unmarshal(dat, &cs)
 	if err != nil {
-		return cs, fmt.Errorf("failed to parse colorscheme file: %v", err)
+		return cs, fmt.Errorf(tr.Value("error.colorschemeparse", err.Error()))
 	}
 	return cs, nil
 }

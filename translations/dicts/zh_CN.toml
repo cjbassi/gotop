@@ -44,6 +44,30 @@ CPU 和内存图形比例:
 网络:
   - b: 在 mbps 和 每秒字节数 之间切换
 """
+# TRANSLATORS: Please don't translate the layout **names**
+layouts = """Built-in layouts:
+   default
+   minimal
+   battery
+   kitchensink"""
+# TRANSLATORS: Please don't translate the colorcheme **names**
+colorschemes = """Built-in colorschemes:
+   default
+   default-dark (for white background)
+   solarized
+   solarized16-dark
+   solarized16-light
+   monokai
+   vice"""
+# TRANSLATORS: Please don't translate the widget **names**
+widgets = """Widgets that can be used in layouts:
+   cpu   - CPU load graph
+   mem   - Physical & swap memory use graph
+   temp  - Sensor temperatures
+   disk  - Physical disk partition use
+   power - A battery bar
+   net   - Network load
+   procs - Interactive process list"""
 
 
 [args]
@@ -64,29 +88,47 @@ test="执行测试并返回成功或失败码。"
 conffile="用于替代缺省参数的配置文件（必须是第一个参数）"
 list="""
 List <devices|layouts|colorschemes|paths|keys>
-   devices: 显示可用于过滤的设备名
-   layouts: 列出所有内置布局方案
-   colorschemes: 列出所有内置配色方案
-   paths: 列出配置文件的搜索路径
-   widgets: 所有可被用于布局的组件
-   keys: 显示所有热键。"""
-write="将当前配置写入缺省配置文件。"
+   devices: Prints out device names for filterable widgets
+   layouts: Lists build-in layouts
+   colorschemes: Lists built-in colorschemes
+   paths: List out configuration file search paths
+   widgets: Widgets that can be used in a layout
+   keys: Show the keyboard bindings."""
+write="Write out a default config file."
+
+
+[config.err]
+configsyntax="0| bad config file syntax; should be KEY=VALUE, was {0}"
+deprecation="1| line {0}: '{1}' is deprecated.  Ignored {1}={2}"
+line="2| line #{0}: {1}"
+tempscale="3| invalid TempScale value {0}"
 
 
 [error]
-configparse="failed to parse config file: {0}"
-cliparse="parsing CLI args: {0}"
-logsetup="failed to setup log file: {0}"
-unknownopt="Unknown option \"{0}\"; try layouts, colorschemes, keys, paths, or devices\n"
-writefail="Failed to write configuration file: {0}"
-checklog="errors encountered; from {0}:"
-metricsetup="error setting up {0} metrics: {1}"
-nometrics="no metrics for {0} {0}"
-fatalfetch="fatal error fetching {0} info: {1}"
-recovfetch="recoverable error fetching {0} info; skipping {0}: {0}"
-nodevfound="no usable {0} found"
-setuperr="error setting up {0}: {1}"
+configparse="4| failed to parse config file: {0}"
+cliparse="5| parsing CLI args: {0}"
+logsetup="6| failed to setup log file: {0}"
+unknownopt="7| Unknown option \"{0}\"; try layouts, colorschemes, keys, paths, or devices\n"
+writefail="8| Failed to write configuration file: {0}"
+checklog="9| errors encountered; from {0}:"
+metricsetup="10| error setting up {0} metrics: {1}"
+nometrics="11| no metrics for {0} {1}"
+fatalfetch="12| fatal error fetching {0} info: {1}"
+recovfetch="13| recoverable error fetching {0} info; skipping {0}: {1}"
+nodevfound="14| no usable {0} found"
+setuperr="15| error setting up {0}: {1}"
+colorschemefile="16| failed to find colorscheme file {0} in {1}"
+colorschemeread="17| failed to read colorscheme file {0}: {1}"
+colorschemeparse="18| failed to parse colorscheme file: {0}"
+findlayout="19| failed to read colorscheme file {0}: {1}"
+logopen="20| failed to open log file {0}: {1}"
+table="21| table widget TopRow value less than 0. TopRow: {0}"
+nohostname="22| could not get hostname: {0}"
 
+[layout.error]
+widget="23| Invalid widget name {0}.  Must be one of {1}"
+format="24| Layout error on line {0}: format must be {1}. Error parsing {2} as a int. Word was {3}. Using a row height of 1."
+slashes="25| Layout warning on line {0}: too many '/' in word {1}; ignoring extra junk."
 
 [widget.label]
 disk=" 磁盘使用率 "
@@ -101,9 +143,9 @@ mem=" 内存使用率 "
 
 
 [widget.net.err]
-netactivity="failed to get network activity from gopsutil: {0}"
-negvalrecv="error: negative value for recently received network data from gopsutil. recentBytesRecv: {0}"
-negvalsent="error: negative value for recently sent network data from gopsutil. recentBytesSent: {0}"
+netactivity="26| failed to get network activity from gopsutil: {0}"
+negvalrecv="27| error: negative value for recently received network data from gopsutil. recentBytesRecv: {0}"
+negvalsent="28| error: negative value for recently sent network data from gopsutil. recentBytesSent: {0}"
 
 
 [widget.disk]
@@ -125,13 +167,14 @@ cpu="CPU%"
 mem="内存%"
 pid="进程标识"
 [widget.proc.err]
-count="failed to get CPU count from gopsutil: {0}"
-retrieve="failed to retrieve processes: {0}"
-ps="failed to execute 'ps' command: {0}"
-gopsutil="failed to get processes from gopsutil: {0}"
-pidconv="failed to convert PID to int: {0}. line: {1}"
-cpuconv="failed to convert CPU usage to float: {0}. line: {1}"
-memconv="failed to convert Mem usage to float: {0}. line: {1}"
-getcmd="failed to get process command from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
-cpupercent="failed to get process cpu usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
-mempercent="failed to get process memeory usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+count="29| failed to get CPU count from gopsutil: {0}"
+retrieve="30| failed to retrieve processes: {0}"
+ps="31| failed to execute 'ps' command: {0}"
+gopsutil="32| failed to get processes from gopsutil: {0}"
+pidconv="33| failed to convert PID to int: {0}. line: {1}"
+cpuconv="34| failed to convert CPU usage to float: {0}. line: {1}"
+memconv="35| failed to convert Mem usage to float: {0}. line: {1}"
+getcmd="36| failed to get process command from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+cpupercent="37| failed to get process cpu usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+mempercent="38| failed to get process memeory usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+parse="39| failed to parse output: {0}"
