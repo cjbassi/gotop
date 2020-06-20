@@ -1,4 +1,4 @@
-configfile=" 配置文件"
+configfile="配置文件"
 usage="使用方法: {0} [选项]\n\n选项:\n"
 total="总计"
 
@@ -91,7 +91,7 @@ help="""
     - <Enter>: 保存过滤器
     - <C-c> 或 <Escape>: 清除过滤器
 
-CPU 和内存图形缩放:
+CPU 和内存图形比例:
   - h: 放大比例
   - l: 缩小比例
 
