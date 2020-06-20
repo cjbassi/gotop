@@ -1,6 +1,6 @@
 configfile="配置文件"
 usage="使用方法: {0} [选项]\n\n选项:\n"
-total="Total"
+total="总计"
 
 
 [help]
@@ -11,8 +11,8 @@ written="配置文件已写入 {0}"
 
 [args]
 help="显示当前内容。"
-color="制定配色方案。"
-scale="图形缩放比例，>0"
+color="配色方案。"
+scale="图形比例尺度，>0"
 version="显示版本并退出。"
 percpu="在 CPU 组件中显示每个 CPU。"
 cpuavg="在 CPU 组件中平均 CPU。"
@@ -22,18 +22,18 @@ rate="刷新频率。常见的时间单位皆可用。\"1m\" = 每分钟刷新�
 layout="布局描述文件名。使用 \"-\" 连接。"
 net="选择网卡。多个网卡用逗号分隔。使用 \"!\" 忽略指定网卡。"
 export="在指定端口上启用指标输出。"
-mbps="显示网速为 mbps."
+mbps="显示网速为 mbps。"
 test="执行测试并返回成功或失败码。"
 conffile="用于替代缺省参数的配置文件（必须是第一个参数）"
 list="""
 List <devices|layouts|colorschemes|paths|keys>
-   devices: Prints out device names for filterable widgets
-   layouts: Lists build-in layouts
-   colorschemes: Lists built-in colorschemes
-   paths: List out configuration file search paths
-   widgets: Widgets that can be used in a layout
-   keys: Show the keyboard bindings."""
-write="Write out a default config file."
+   devices: 显示可用于过滤的设备名
+   layouts: 列出所有内置布局方案
+   colorschemes: 列出所有内置配色方案
+   paths: 列出配置文件的搜索路径
+   widgets: 所有可被用于布局的组件
+   keys: 显示所有热键。"""
+write="将当前配置写入缺省配置文件。"
 
 
 [error]
@@ -52,52 +52,51 @@ setuperr="error setting up {0}: {1}"
 
 
 [widget.label]
-disk=" Disk Usage "
-cpu=" CPU Usage "
-gauge=" Power Level "
-battery=" Battery Status "
-batt=" Battery "
-# INSERTED JUST FOR TEST
-temp=" 显示华氏温度。 "
-net=" Network Usage "
-netint=" Network Usage: {0} "
-mem=" Memory Usage "
+disk=" 磁盘使用率 "
+cpu=" CPU 使用率 "
+gauge=" 功率 "
+battery=" 电池状态 "
+batt=" 电池 "
+temp=" 温度 "
+net=" 网络使用率 "
+netint=" 网络使用率: {0} "
+mem=" 内存使用率 "
 help="""
-Quit: q or <C-c>
+退出: q or <C-c>
 
-Process navigation:
-  - k and <Up>: up
-  - j and <Down>: down
-  - <C-u>: half page up
-  - <C-d>: half page down
-  - <C-b>: full page up
-  - <C-f>: full page down
-  - gg and <Home>: jump to top
-  - G and <End>: jump to bottom
+进程导航:
+  - k 或 <Up>: 上一行
+  - j 或 <Down>: 下一行
+  - <C-u>: 上半页
+  - <C-d>: 下半页
+  - <C-b>: 上一页
+  - <C-f>: 下一页
+  - gg 或 <Home>: 到顶部
+  - G 或 <End>: 到底部
 
-Process actions:
-  - <Tab>: toggle process grouping
-  - dd: kill selected process or group of processes with SIGTERM (15)
-  - d3: kill selected process or group of processes with SIGQUIT (3)
-  - d9: kill selected process or group of processes with SIGKILL (9)
+进程操作:
+  - <Tab>: 切换进程组
+  - dd: 发送信号 SIGTERM (15) 终止进程或进程组
+  - d3: 发送信号 SIGTERM (3) 终止进程或进程组
+  - d9: 发送信号 SIGTERM (9) 终止进程或进程组
 
-Process sorting:
+进程排序:
   - c: CPU
-  - m: Mem
-  - p: PID
+  - m: 内存
+  - p: 进程标识
 
-Process filtering:
-  - /: start editing filter
-  - (while editing):
-    - <Enter>: accept filter
-    - <C-c> and <Escape>: clear filter
+进程过滤:
+  - /: 开始编辑过滤器
+  - (编辑时):
+    - <Enter>: 保存过滤器
+    - <C-c> 或 <Escape>: 清除过滤器
 
-CPU and Mem graph scaling:
-  - h: scale in
-  - l: scale out
+CPU 和内存图形比例:
+  - h: 放大比例
+  - l: 缩小比例
 
-Network:
-  - b: toggle between mbps and scaled bytes per second
+网络:
+  - b: 在 mbps 和 每秒字节数 之间切换
 """
 
 
@@ -108,23 +107,23 @@ negvalsent="error: negative value for recently sent network data from gopsutil. 
 
 
 [widget.disk]
-disk="Disk"
-mount="Mount"
-used="Used"
-free="Free"
+disk="磁盘"
+mount="文件系统"
+used="已使用"
+free="空闲"
 rs="R/s"
 ws="W/s"
 
 
 [widget.proc]
-filter=" Filter: "
-label=" Processes "
+filter=" 过滤器: "
+label=" 进程 "
 [widget.proc.header]
-count="Count"
-command="Command"
+count="个数"
+command="命令"
 cpu="CPU%"
-mem="Mem%"
-pid="PID"
+mem="内存%"
+pid="进程标识"
 [widget.proc.err]
 count="failed to get CPU count from gopsutil: {0}"
 retrieve="failed to retrieve processes: {0}"
