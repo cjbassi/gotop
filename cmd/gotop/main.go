@@ -362,8 +362,7 @@ func run() int {
 	}
 	lang, err := jj.DetectIETF()
 	if err != nil {
-		fmt.Printf("failed to get language setting from environment: %s\n", err)
-		return 2
+		lang = "en_US"
 	}
 	lang = strings.Replace(lang, "-", "_", -1)
 	// Get the locale from the os
