@@ -45,29 +45,29 @@ CPU 和内存图形比例:
   - b: 在 mbps 和 每秒字节数 之间切换
 """
 # TRANSLATORS: Please don't translate the layout **names**
-layouts = """Built-in layouts:
+layouts = """内建布局方案:
    default
    minimal
    battery
    kitchensink"""
 # TRANSLATORS: Please don't translate the colorcheme **names**
-colorschemes = """Built-in colorschemes:
+colorschemes = """内建配色方案:
    default
-   default-dark (for white background)
+   default-dark (用于白色背景)
    solarized
    solarized16-dark
    solarized16-light
    monokai
    vice"""
 # TRANSLATORS: Please don't translate the widget **names**
-widgets = """Widgets that can be used in layouts:
-   cpu   - CPU load graph
-   mem   - Physical & swap memory use graph
-   temp  - Sensor temperatures
-   disk  - Physical disk partition use
-   power - A battery bar
-   net   - Network load
-   procs - Interactive process list"""
+widgets = """可被用于布局方案的组件名:
+   cpu   - CPU 负载图
+   mem   - 物理内存和交换内存使用率图
+   temp  - 传感器温度
+   disk  - 物理磁盘和分区使用率
+   power - 电池状态
+   net   - 网络负载
+   procs - 可交互进程列表"""
 
 
 [args]
