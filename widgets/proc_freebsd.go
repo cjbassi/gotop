@@ -42,15 +42,18 @@ func getProcs() ([]Proc, error) {
 		}
 		pid, err := strconv.Atoi(strings.TrimSpace(process.Pid))
 		if err != nil {
-			log.Printf(tr.Value("widget.proc.err.pidconv", err.Error(), process))
+			sp := fmt.Sprintf("%v", process)
+			log.Printf(tr.Value("widget.proc.err.pidconv", err.Error(), sp))
 		}
 		cpu, err := strconv.ParseFloat(utils.ConvertLocalizedString(process.CPU), 32)
 		if err != nil {
-			log.Printf(tr.Value("widget.proc.err.cpuconv", err.Error(), process))
+			sp := fmt.Sprintf("%v", process)
+			log.Printf(tr.Value("widget.proc.err.cpuconv", err.Error(), sp))
 		}
 		mem, err := strconv.ParseFloat(utils.ConvertLocalizedString(process.Mem), 32)
 		if err != nil {
-			log.Printf(tr.Value("widget.proc.err.memconv", err.Error(), process))
+			sp := fmt.Sprintf("%v", process)
+			log.Printf(tr.Value("widget.proc.err.memconv", err.Error(), sp))
 		}
 		proc := Proc{
 			Pid:         pid,
