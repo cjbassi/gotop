@@ -88,13 +88,13 @@ test="执行测试并返回成功或失败码。"
 conffile="用于替代缺省参数的配置文件（必须是第一个参数）"
 list="""
 List <devices|layouts|colorschemes|paths|keys>
-   devices: Prints out device names for filterable widgets
-   layouts: Lists build-in layouts
-   colorschemes: Lists built-in colorschemes
-   paths: List out configuration file search paths
-   widgets: Widgets that can be used in a layout
-   keys: Show the keyboard bindings."""
-write="Write out a default config file."
+   devices: 显示可用于过滤的设备名
+   layouts: 列出所有内置布局方案
+   colorschemes: 列出所有内置配色方案
+   paths: 列出配置文件的搜索路径
+   widgets: 所有可被用于布局的组件
+   keys: 显示所有热键。"""
+write="将当前配置写入缺省配置文件。"
 
 
 [config.err]
@@ -153,8 +153,8 @@ disk="磁盘"
 mount="文件系统"
 used="已使用"
 free="空闲"
-rs="R/s"
-ws="W/s"
+rs="读/秒"
+ws="写/秒"
 
 
 [widget.proc]
