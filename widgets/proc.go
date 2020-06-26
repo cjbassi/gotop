@@ -9,9 +9,8 @@ import (
 	"strings"
 	"time"
 
-	psCPU "github.com/shirou/gopsutil/cpu"
-
 	tui "github.com/gizak/termui/v3"
+	"github.com/xxxserxxx/gotop/v4/devices"
 	ui "github.com/xxxserxxx/gotop/v4/termui"
 	"github.com/xxxserxxx/gotop/v4/utils"
 )
@@ -49,7 +48,7 @@ type ProcWidget struct {
 }
 
 func NewProcWidget() *ProcWidget {
-	cpuCount, err := psCPU.Counts(false)
+	cpuCount, err := devices.CpuCount()
 	if err != nil {
 		log.Printf("failed to get CPU count from gopsutil: %v", err)
 	}

@@ -9,7 +9,7 @@ import (
 // FIXME: broken % under Linux.  Doesn't reflect reality *at all*.
 func init() {
 	f := func(cpus map[string]int, l bool) map[string]error {
-		cpuCount, err := psCpu.Counts(l)
+		cpuCount, err := CpuCount()
 		if err != nil {
 			return nil
 		}
