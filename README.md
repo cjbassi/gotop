@@ -69,11 +69,6 @@ go build -o gotop \
 	./cmd/gotop
 ```
 
-	go build \
-		-gcflags "all=-trimpath=${PWD}" \
-		-asmflags "all=-trimpath=${PWD}" \
-		-ldflags "-X main.Version=v${VERSION} -X main.BuildDate=${BUILDDATE} -extldflags ${LDFLAGS}" \
- 		./cmd/gotop
 Move `gotop` to somewhere in your `$PATH`.
 
 If Go is not installed or is the wrong version, and you don't have root access or don't want to upgrade Go, a script is provided to download Go and the gotop sources, compile gotop, and then clean up. See `scripts/install_without_root.sh`.
