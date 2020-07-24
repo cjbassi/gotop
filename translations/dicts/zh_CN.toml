@@ -133,7 +133,7 @@ slashes="25| Layout warning on line {0}: too many '/' in word {1}; ignoring extr
 [widget.label]
 disk=" 磁盘使用率 "
 cpu=" CPU 使用率 "
-gauge=" 功率 "
+gauge=" 电量 "
 battery=" 电池状态 "
 batt=" 电池 "
 temp=" 温度 "
