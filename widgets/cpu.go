@@ -120,7 +120,7 @@ func (cpu *CPUWidget) update() {
 			defer cpu.updateLock.Unlock()
 			for key, percent := range cpus {
 				cpu.Data[key] = append(cpu.Data[key], float64(percent))
-				cpu.Labels[key] = fmt.Sprintf("%d%%", percent)
+				cpu.Labels[key] = fmt.Sprintf("%3d%%", percent)
 				cpu.cpuLoads[key] = float64(percent)
 			}
 		}()
