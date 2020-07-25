@@ -6,7 +6,6 @@ import (
 	psCpu "github.com/shirou/gopsutil/cpu"
 )
 
-// FIXME: broken % under Linux.  Doesn't reflect reality *at all*.
 func init() {
 	f := func(cpus map[string]int, l bool) map[string]error {
 		cpuCount, err := CpuCount()

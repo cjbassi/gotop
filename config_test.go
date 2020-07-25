@@ -9,7 +9,6 @@ import (
 	"github.com/xxxserxxx/gotop/v4/widgets"
 )
 
-// FIXME This is totally broken since the updates
 func TestParse(t *testing.T) {
 	tests := []struct {
 		i string

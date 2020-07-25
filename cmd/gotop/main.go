@@ -332,7 +332,6 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 	}
 }
 
-// TODO: state:merge #135 linux console font (cmatsuoka/console-font)
 func main() {
 	// TODO: Make this an option, for performance testing
 	//go func() {
