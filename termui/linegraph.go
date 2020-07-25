@@ -25,6 +25,7 @@ type LineGraph struct {
 	HorizontalScale int
 
 	LineColors       map[string]Color
+	LabelStyles      map[string]Modifier
 	DefaultLineColor Color
 }
 
@@ -37,7 +38,8 @@ func NewLineGraph() *LineGraph {
 
 		HorizontalScale: 5,
 
-		LineColors: make(map[string]Color),
+		LineColors:  make(map[string]Color),
+		LabelStyles: make(map[string]Modifier),
 	}
 }
 
@@ -136,6 +138,10 @@ func (self *LineGraph) Draw(buf *Buffer) {
 		if !ok {
 			seriesLineColor = self.DefaultLineColor
 		}
+		seriesLabelStyle, ok := self.LabelStyles[seriesName]
+		if !ok {
+			seriesLabelStyle = ModifierClear
+		}
 
 		// render key ontop, but let braille be drawn over space characters
 		str := seriesName + " " + self.Labels[seriesName]
@@ -145,7 +151,7 @@ func (self *LineGraph) Draw(buf *Buffer) {
 		for k, char := range str {
 			if char != ' ' {
 				buf.SetCell(
-					NewCell(char, NewStyle(seriesLineColor)),
+					NewCell(char, NewStyle(seriesLineColor, ColorClear, seriesLabelStyle)),
 					image.Pt(xoff+self.Inner.Min.X+2+k, yoff+self.Inner.Min.Y+i+1),
 				)
 			}
