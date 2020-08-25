@@ -1,180 +1,182 @@
-configfile="Config file"
-usage="Usage: {0} [options]\n\nOptions:\n"
-total="Total"
+configfile="Argododosiero"
+usage="Uzado: {0} [ebloj]\n\nEbloj:\n"
+total="Sumo"
 
 
 [help]
-paths="Loadable colorschemes & layouts, and the config file, are searched for, in order:"
-log="The log file is in {0}"
-written="Config written to {0}"
+paths="Ŝarĝebla kloraj skemoj & enpaĝigoj, kaj la argododosiero, estas orda serĉatigis:"
+log="Logodosiero troviĝas ĉe {0}"
+written="Argordo skribiĝis ĉe {0}"
 help="""
-Quit: q or <C-c>
+Eliri: q aŭ <C-c>
 
-Process navigation:
-  - k and <Up>: up
-  - j and <Down>: down
-  - <C-u>: half page up
-  - <C-d>: half page down
-  - <C-b>: full page up
-  - <C-f>: full page down
-  - gg and <Home>: jump to top
-  - G and <End>: jump to bottom
+Proceza navigadoj:
+  - k kaj <Supren>: supren
+  - j kaj <Malsupren>: malsupren
+  - <C-u>: duona paĝo supren
+  - <C-d>: duona paĝo malsupren
+  - <C-b>: plena paĝo supren
+  - <C-f>: plena paĝo malsupren
+  - gg kaj <Hejmo>: salti al supron
+  - G kaj <Fino>: salti al malsupron
 
-Process actions:
-  - <Tab>: toggle process grouping
-  - dd: kill selected process or group of processes with SIGTERM (15)
-  - d3: kill selected process or group of processes with SIGQUIT (3)
-  - d9: kill selected process or group of processes with SIGKILL (9)
+Proceza agoj:
+  - <Langeto>: alterni procezon grupigi
+  - dd: fini la elektitajn procezojn aŭ procezon grupigon kun SIGTERM (15)
+  - d3: fini la elektitajn procezojn aŭ procezon grupigon kun SIGQUIT (3)
+  - d9: fini la elektitajn procezojn aŭ procezon grupigon kun SIGKILL (9)
 
-Process sorting:
+Proceza ordigoj:
   - c: CPU
-  - m: Mem
+  - m: Memoro
   - p: PID
 
-Process filtering:
-  - /: start editing filter
-  - (while editing):
-    - <Enter>: accept filter
-    - <C-c> and <Escape>: clear filter
+Proceza filtradoj:
+  - /: komenci redakti filtrilon
+  - (dum redaktadi):
+    - <Eniri>: akcepti filtrilon
+    - <C-c> kaj <Eskapi>: eliri filtrilon
 
-CPU and Mem graph scaling:
-  - h: scale in
-  - l: scale out
+CPU kaj Memora grafilo skali:
+  - h: zomi
+  - l: malzomi
 
-Network:
-  - b: toggle between mbps and scaled bytes per second
+Reto:
+  - b: alterni inter mbps kaj skale bajtoj por dua
 """
 # TRANSLATORS: Please don't translate the layout **names**
-layouts = """Built-in layouts:
+layouts = """Enkonstruitaj enpaĝigoj:
    default
    minimal
    battery
    kitchensink"""
-# TRANSLATORS: Please don't translate the colorcheme **names**
-colorschemes = """Built-in colorschemes:
+# TRANSLATORS: Please don't translate the colorscheme **names**
+colorschemes = """Enkonstruitaj kloraj skemoj:
    default
-   default-dark (for white background)
+   default-dark (por blanka fono)
    solarized
    solarized16-dark
    solarized16-light
    monokai
    vice"""
 # TRANSLATORS: Please don't translate the widget **names**
-widgets = """Widgets that can be used in layouts:
-   cpu   - CPU load graph
-   mem   - Physical & swap memory use graph
-   temp  - Sensor temperatures
-   disk  - Physical disk partition use
-   power - A battery bar
-   net   - Network load
-   procs - Interactive process list"""
+widgets = """Enpaĝigaj Fenestraĵoj:
+   cpu   - CPU ŝarĝa grafilo
+   mem   - Fizika kay interŝanĝa memora grafilo
+   temp  - Temperatura sensiloj
+   disk  - Fizikaj diskdispartigaj uzadilo
+   power - Bateria mezurilo
+   net   - Retuzadilo
+   procs - Interaga proceza listo"""
 
 
 [args]
-help="Show this screen."
-color="Set a colorscheme."
-scale="Graph scale factor, >0"
-version="Print version and exit."
-percpu="Show each CPU in the CPU widget."
-cpuavg="Show average CPU in the CPU widget."
-temp="Show temperatures in fahrenheit.Show temperatures in fahrenheit."
-statusbar="Show a statusbar with the time."
-rate="Refresh frequency. Most time units accepted.  \"1m\" = refresh every minute.  \"100ms\" = refresh every 100ms."
-layout="Name of layout spec file for the UI. Use \"-\" to pipe."
-net="Select network interface. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using \"!\""
-export="Enable metrics for export on the specified port."
-mbps="Show network rate as mbps."
-test="Runs tests and exits with success/failure code."
-conffile="Config file to use instead of default (MUST BE FIRST ARGUMENT)"
+help="Ĉi tiun informoj."
+color="Agordi kloraj skemoj."
+scale="Agordi grafilan skalon, >0"
+version="Montri version kaj eliri."
+percpu="Montri ĉiun CPU en la CPU-fenestraĵo."
+cpuavg="Montri duonan CPU en la CPU-fenestraĵo."
+temp="Montri temperaturojn en fahrenheit."
+statusbar="Montri statusbarbaron kun la tempo."
+rate="Refreŝiga ofteco. Plej multaj unuoj akceptitaj. \"1m\" = refreŝigi ĉiun minuton. \"100ms\" = refreŝigi ĉiun dekonon minuton."
+layout="Nomo de aranĝa specifa dosiero por la UI. Uzu \"-\" por pipi."
+net="Elekti retinterfacon. Multaj interfacoj povas esti difinitaj per komparaj valoroj. Interfacoj ankaŭ povas esti ignorataj per \"!\""
+export="Ebligu metrikojn por eksportado en la specifita haveno."
+mbps="Montri reta takson kiel mbps."
+test="Ekzekutas testojn kaj forirojn kun sukceso / fiaska kodo."
+conffile="Agordi dosiero por uzi anstataŭ defaŭlte (DEVAS ESTI UNUA ARGUMENTO)"
+# TRANSLATORS: Please don't translate the list entries
 list="""
 List <devices|layouts|colorschemes|paths|keys>
-   devices: Prints out device names for filterable widgets
-   layouts: Lists build-in layouts
-   colorschemes: Lists built-in colorschemes
-   paths: List out configuration file search paths
-   widgets: Widgets that can be used in a layout
-   keys: Show the keyboard bindings."""
-write="Write out a default config file."
+   devices: Montras nomojn de aparatoj por filteblaj fenestraĵoj
+   layouts: Listigas enkonstruajn aranĝojn
+   colorschemes: Listas enkonstruitajn kloraj skemoj
+   paths: Enlistigu agordajn serĉajn vojojn de agordo
+   widgets: Fenestraĵoj uzeblaj en aranĝo
+   keys: Montri la klavarajn ligojn."""
+write="Skribu defaŭltan agordan dosieron."
 
 
 [config.err]
-configsyntax="0| bad config file syntax; should be KEY=VALUE, was {0}"
-deprecation="1| line {0}: '{1}' is deprecated.  Ignored {1}={2}"
-line="2| line #{0}: {1}"
-tempscale="3| invalid TempScale value {0}"
+configsyntax="0| malbona agordo dosiero-sintakso; estu ŜLOSI=VALORO, estis {0}"
+deprecation="1| linio {0}: '{1}' malakceptas. Ignorita {1}={2}"
+line="2| linio #{0}: {1}"
+tempscale="3| malvalida TempScale-valoro {0}"
 
 
 [error]
-configparse="4| failed to parse config file: {0}"
-cliparse="5| parsing CLI args: {0}"
-logsetup="6| failed to setup log file: {0}"
-unknownopt="7| Unknown option \"{0}\"; try layouts, colorschemes, keys, paths, or devices\n"
-writefail="8| Failed to write configuration file: {0}"
-checklog="9| errors encountered; from {0}:"
-metricsetup="10| error setting up {0} metrics: {1}"
-nometrics="11| no metrics for {0} {1}"
-fatalfetch="12| fatal error fetching {0} info: {1}"
-recovfetch="13| recoverable error fetching {0} info; skipping {0}: {1}"
-nodevfound="14| no usable {0} found"
-setuperr="15| error setting up {0}: {1}"
-colorschemefile="16| failed to find colorscheme file {0} in {1}"
-colorschemeread="17| failed to read colorscheme file {0}: {1}"
-colorschemeparse="18| failed to parse colorscheme file: {0}"
-findlayout="19| failed to read colorscheme file {0}: {1}"
-logopen="20| failed to open log file {0}: {1}"
-table="21| table widget TopRow value less than 0. TopRow: {0}"
-nohostname="22| could not get hostname: {0}"
+configparse="4| malsukcesis pari agordi dosiero: {0}"
+cliparse="5| analizante CLI-argumentojn: {0}"
+logsetup="6| malsukcesis agordi registro dosiero: {0}"
+unknownopt="7| Nekonata opcio \"{0}\"; provu layouts, colorschemes, keys, paths, aŭ devices"
+writefail="8| Malsukcesis skribi agordan dosieron: {0}"
+checklog="9| eraroj renkontitaj; de {0}:"
+metricsetup="10| eraro agordante {0} metrikojn: {1}"
+nometrics="11| neniuj metrikoj por {0} {1}"
+fatalfetch="12| fatala eraro elprenanta {0} info: {1}"
+recovfetch="13| reakirebla eraro elprenanta {0} info; saltante {0}: {1}"
+nodevfound="14| neniu uzebla {0} trovita"
+setuperr="15| eraro agordante {0}: {1}"
+colorschemefile="16| malsukcesis trovi kloraj skemoj dosiero {0} en {1}"
+colorschemeread="17| malsukcesis legi kloraj skemoj dosiero {0}: {1}"
+colorschemeparse="18| Fiaskis analizi kloraj skemoj dosiero: {0}"
+findlayout="19| malsukcesis legi kloraj skemoj dosiero {0}: {1}"
+logopen="20| malsukcesis malfermi enskribi dosieron {0}: {1}"
+table="21| Tabla fenestraĵo TopRow-valoro malpli ol 0. TopRow: {0}"
+nohostname="22| Ne povis akiri hostname: {0}"
 
 [layout.error]
-widget="23| Invalid widget name {0}.  Must be one of {1}"
-format="24| Layout error on line {0}: format must be {1}. Error parsing {2} as a int. Word was {3}. Using a row height of 1."
-slashes="25| Layout warning on line {0}: too many '/' in word {1}; ignoring extra junk."
+widget="23| Malvalida fenestra nomo {0}. Devas esti unu el {1}"
+format="24| Eraro pri aranĝo sur linio {0}: formato devas esti {1}. Eraro analizante {2} kiel int. Vorto estis {3}. Uzante vicon alteco de 1."
+slashes="25| Averto pri aranĝo sur linio {0}: tro multaj '/' en vorto {1}; ignorante kroman rubon."
 
 [widget.label]
-disk=" Disk Usage "
-cpu=" CPU Usage "
-gauge=" Power Level "
-battery=" Battery Status "
-batt=" Battery "
-temp=" Temperatures "
-net=" Network Usage "
-netint=" Network Usage: {0} "
-mem=" Memory Usage "
+disk=" Disk Usado "
+cpu=" CPU Usado "
+gauge=" Potencnivelo "
+battery=" Bateria Statuso "
+batt=" Baterio "
+temp=" Temperaturoj "
+net=" Reta Usado "
+netint=" Reta Usado: {0} "
+mem=" Memoro Usado "
 
 
 [widget.net.err]
-netactivity="26| failed to get network activity from gopsutil: {0}"
-negvalrecv="27| error: negative value for recently received network data from gopsutil. recentBytesRecv: {0}"
-negvalsent="28| error: negative value for recently sent network data from gopsutil. recentBytesSent: {0}"
+netactivity="26| malsukcesis ricevi retactiveco de gopsutil: {0}"
+negvalrecv="27| eraro: negativa valoro por ĵus ricevitaj retdatumoj de gopsutil. RecentBytesRecv: {0}"
+negvalsent="28| eraro: negativa valoro por ĵus senditaj retdatumoj de gopsutil. RecentBytesSent: {0}"
 
 
 [widget.disk]
-disk="Disk"
-mount="Mount"
-used="Used"
-free="Free"
+disk="Disko"
+mount="Monto"
+used="Uzita"
+free="Senpaga"
 rs="R/s"
 ws="W/s"
 
 
 [widget.proc]
-filter=" Filter: "
-label=" Processes "
+filter=" Filtrilo: "
+label=" Procezoj "
 [widget.proc.header]
-count="Count"
-command="Command"
+count="Kalkulo"
+command="Komando"
 cpu="CPU%"
 mem="Mem%"
 pid="PID"
+
 [widget.proc.err]
-count="29| failed to get CPU count from gopsutil: {0}"
-retrieve="30| failed to retrieve processes: {0}"
-ps="31| failed to execute 'ps' command: {0}"
-gopsutil="32| failed to get processes from gopsutil: {0}"
-pidconv="33| failed to convert PID to int: {0}. line: {1}"
-cpuconv="34| failed to convert CPU usage to float: {0}. line: {1}"
-memconv="35| failed to convert Mem usage to float: {0}. line: {1}"
-getcmd="36| failed to get process command from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
-cpupercent="37| failed to get process cpu usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
-mempercent="38| failed to get process memeory usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
-parse="39| failed to parse output: {0}"
+count="29| malsukcesis akiri CPU-kalkuladon de gopsutil: {0}"
+retrieve="30| ne sukcesis akiri procezojn: {0}"
+ps="31| malsukcesis plenumi komandon 'ps': {0}"
+gopsutil="32| malsukcesis akiri procezojn de gopsutilo: {0}"
+pidconv="33| malsukcesis konverti PID al int: {0}. linio: {1}"
+cpuconv="34| malsukcesis konverti CPU-uzon al flosilo: {0}. linio: {1}"
+memconv="35| malsukcesis konverti Mem-uzon al flosilo: {0}. linio: {1}"
+getcmd="36| malsukcesis akiri procezan komandon de gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+cpupercent="37| malsukcesis ricevi uzadon de proceso cpu de gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+mempercent="38| malsukcesis ricevi uzadon de proceza memoro de gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+parse="39| ne sukcesis analizi eliron: {0}"

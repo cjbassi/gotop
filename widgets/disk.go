@@ -39,7 +39,7 @@ func NewDiskWidget() *DiskWidget {
 	}
 	self.Table.Tr = tr
 	self.Title = tr.Value("widget.label.disk")
-	self.Header = []string{tr.Value("disk.disk"), tr.Value("disk.mount"), tr.Value("disk.used"), tr.Value("disk.free"), tr.Value("disk.rs"), tr.Value("disk.ws")}
+	self.Header = []string{tr.Value("widget.disk.disk"), tr.Value("widget.disk.mount"), tr.Value("widget.disk.used"), tr.Value("widget.disk.free"), tr.Value("widget.disk.rs"), tr.Value("widget.disk.ws")}
 	self.ColGap = 2
 	self.ColResizer = func() {
 		self.ColWidths = []int{
