@@ -8,7 +8,7 @@ import (
 
 func init() {
 	f := func(cpus map[string]int, l bool) map[string]error {
-		cpuCount, err := psCpu.Counts(l)
+		cpuCount, err := CpuCount()
 		if err != nil {
 			return nil
 		}

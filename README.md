@@ -62,7 +62,11 @@ gotop should build with most versions of Go.  If you have a version other than 1
 git clone https://github.com/xxxserxxx/gotop.git
 cd gotop
 sed -i '/^go/d' go.mod          # Do this if you have go != 1.14
-go build -o gotop ./cmd/gotop
+VERS="$(git tag -l --sort=-v:refname | sed 's/v\([^-].*\)/\1/g' | head -1 | tr -d '-' ).$(git describe --long --tags | sed 's/\([^-].*\)-\([0-9]*\)-\(g.*\)/r\2.\3/g' | tr -d '-')"
+DAT=$(date +%Y%m%dT%H%M%S)
+go build -o gotop \
+	-ldflags "-X main.Version=v${VERS} -X main.BuildDate=${DAT}" \
+	./cmd/gotop
 ```
 
 Move `gotop` to somewhere in your `$PATH`.

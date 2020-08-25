@@ -51,6 +51,10 @@ func (b *BatteryGauge) update() {
 		}
 		return
 	}
+	if len(bats) < 1 {
+		b.Label = fmt.Sprintf("N/A")
+		return
+	}
 	mx := 0.0
 	cu := 0.0
 	charging := "%d%% ⚡%s"
