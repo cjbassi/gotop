@@ -182,14 +182,15 @@ func (self *ProcWidget) ToggleShowingGroupedProcs() {
 	self.convertProcsToTableRows()
 }
 
-// KillProc kills a process or group of processes depending on if we're displaying the processes grouped or not.
-func (self *ProcWidget) KillProc() {
+// KillProc kills a process or group of processes depending on if we're
+// displaying the processes grouped or not.
+func (self *ProcWidget) KillProc(sigName string) {
 	self.SelectedItem = ""
 	command := "kill"
 	if self.UniqueCol == 1 {
 		command = "pkill"
 	}
-	cmd := exec.Command(command, self.Rows[self.SelectedRow][self.UniqueCol])
+	cmd := exec.Command(command, "--signal", sigName, self.Rows[self.SelectedRow][self.UniqueCol])
 	cmd.Start()
 	cmd.Wait()
 }
