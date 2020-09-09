@@ -65,7 +65,7 @@ func parseArgs() error {
 	versioN := opflag.BoolP("", "V", false, "Print version and exit.")
 	opflag.BoolVarP(&conf.PercpuLoad, "percpu", "p", conf.PercpuLoad, "Show each CPU in the CPU widget.")
 	opflag.BoolVarP(&conf.AverageLoad, "averagecpu", "a", conf.AverageLoad, "Show average CPU in the CPU widget.")
-	fahrenheit := opflag.BoolP("fahrenheit", "f", conf.TempScale == 'F', "Show temperatures in fahrenheit.Show temperatures in fahrenheit.")
+	fahrenheit := opflag.BoolP("fahrenheit", "f", conf.TempScale == 'F', "Show temperatures in fahrenheit.")
 	opflag.BoolVarP(&conf.Statusbar, "statusbar", "s", conf.Statusbar, "Show a statusbar with the time.")
 	opflag.DurationVarP(&conf.UpdateInterval, "rate", "r", conf.UpdateInterval, "Refresh frequency. Most time units accepted.  `1m` = refresh every minute.  `100ms` = refresh every 100ms.")
 	opflag.StringVarP(&conf.Layout, "layout", "l", conf.Layout, `Name of layout spec file for the UI. Use "-" to pipe.`)
@@ -506,7 +506,8 @@ const _colorschemes = `Built-in colorschemes:
    solarized16-dark
    solarized16-light
    monokai
-   vice`
+   vice
+   nord`
 const _widgets = `Widgets that can be used in layouts:
    cpu   - CPU load graph
    mem   - Physical & swap memory use graph
