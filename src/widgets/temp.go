@@ -11,11 +11,11 @@ import (
 	"github.com/cjbassi/gotop/src/utils"
 )
 
-type TempScale int
+type TempScale rune
 
 const (
-	Celcius    TempScale = 0
-	Fahrenheit           = 1
+	Celcius    TempScale = 'C'
+	Fahrenheit           = 'F'
 )
 
 type TempWidget struct {
@@ -83,19 +83,12 @@ func (self *TempWidget) Draw(buf *ui.Buffer) {
 			image.Pt(self.Inner.Min.X, self.Inner.Min.Y+y),
 		)
 
-		switch self.TempScale {
-		case Fahrenheit:
-			buf.SetString(
-				fmt.Sprintf("%3dF", self.Data[key]),
-				ui.NewStyle(fg),
-				image.Pt(self.Inner.Max.X-4, self.Inner.Min.Y+y),
-			)
-		case Celcius:
-			buf.SetString(
-				fmt.Sprintf("%3dC", self.Data[key]),
-				ui.NewStyle(fg),
-				image.Pt(self.Inner.Max.X-4, self.Inner.Min.Y+y),
-			)
-		}
+		temperature := fmt.Sprintf("%3d°%c", self.Data[key], self.TempScale)
+
+		buf.SetString(
+			temperature,
+			ui.NewStyle(fg),
+			image.Pt(self.Inner.Max.X-(len(temperature)-1), self.Inner.Min.Y+y),
+		)
 	}
 }
