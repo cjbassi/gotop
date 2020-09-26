@@ -61,6 +61,20 @@ var (
 	bar  *w.StatusBar
 )
 
+// ConfigFile holds data from the config.json file.
+// Allowing for customization without the need for termianl arguments.
+type ConfigFile struct {
+	Colorscheme    string `json:"colorscheme"`
+	UpdateInterval int64  `json:"updateInterval"`
+	MinimalMode    bool   `json:"minimalMode"`
+	AverageLoad    bool   `json:"averageLoad"`
+	PercpuLoad     bool   `json:"percpuLoad"`
+	isFahrenheit   bool   `json:"isFahrenheit"`
+	Battery        bool   `json:"battery"`
+	Statusbar      bool   `json:"statusbar"`
+	NetInterface   string `json:"netInterface"`
+}
+
 func parseArgs() error {
 	usage := `
 Usage: gotop [options]
@@ -119,6 +133,51 @@ Colorschemes:
 		tempScale = w.Fahrenheit
 	}
 	netInterface, _ = args["--interface"].(string)
+
+	return nil
+}
+
+// parseConfig convert the config.json and sets the appropriate variables
+// for customization in place of using the terminal arguments.
+func parseConfig() error {
+	// if user enters shell arguments skif the config file.
+	if len(os.Args) > 1 {
+		return nil
+	}
+
+	jsonBytes, err := ioutil.ReadFile("config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var config ConfigFile
+	err = json.Unmarshal(jsonBytes, &config)
+	if err != nil {
+		stderrLogger.Fatalf("failed to unmarshel json: %v", err)
+	}
+
+	if err := handleColorscheme(config.Colorscheme); err != nil {
+		return err
+	}
+
+	averageLoad = config.AverageLoad
+	percpuLoad = config.PercpuLoad
+	battery = config.Battery
+	minimalMode = config.MinimalMode
+	statusbar = config.Statusbar
+	netInterface = config.NetInterface
+
+	rateStr := config.UpdateInterval
+	rate := float64(rateStr)
+	if rate < 1 {
+		updateInterval = time.Second * time.Duration(1/rate)
+	} else {
+		updateInterval = time.Second / time.Duration(rate)
+	}
+
+	if config.isFahrenheit {
+		tempScale = w.Fahrenheit
+	}
 
 	return nil
 }
@@ -424,6 +483,10 @@ func setupLogfile() (*os.File, error) {
 func main() {
 	if err := parseArgs(); err != nil {
 		stderrLogger.Fatalf("failed to parse cli args: %v", err)
+	}
+
+	if err := parseConfig(); err != nil {
+		stderrLogger.Fatalf("failed to parse the config file: %v", err)
 	}
 
 	logfile, err := setupLogfile()
