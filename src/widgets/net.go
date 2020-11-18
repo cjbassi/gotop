@@ -3,6 +3,7 @@ package widgets
 import (
 	"fmt"
 	"log"
+	"math"
 	"time"
 
 	psNet "github.com/shirou/gopsutil/net"
@@ -28,7 +29,7 @@ type NetWidget struct {
 	NetInterface   string
 }
 
-func NewNetWidget(netInterface string) *NetWidget {
+func NewNetWidget(netInterface string, bandwidth uint64) *NetWidget {
 	recvSparkline := ui.NewSparkline()
 	recvSparkline.Data = []int{}
 
@@ -46,12 +47,12 @@ func NewNetWidget(netInterface string) *NetWidget {
 		self.Title = fmt.Sprintf(" Network Usage: %s ", netInterface)
 	}
 
-	self.update()
+	self.update(bandwidth)
 
 	go func() {
 		for range time.NewTicker(self.updateInterval).C {
 			self.Lock()
-			self.update()
+			self.update(bandwidth)
 			self.Unlock()
 		}
 	}()
@@ -59,7 +60,7 @@ func NewNetWidget(netInterface string) *NetWidget {
 	return self
 }
 
-func (self *NetWidget) update() {
+func (self *NetWidget) update(bandwidth uint64) {
 	interfaces, err := psNet.IOCounters(true)
 	if err != nil {
 		log.Printf("failed to get network activity from gopsutil: %v", err)
@@ -94,8 +95,15 @@ func (self *NetWidget) update() {
 			recentBytesSent = 0
 		}
 
-		self.Lines[0].Data = append(self.Lines[0].Data, int(recentBytesRecv))
-		self.Lines[1].Data = append(self.Lines[1].Data, int(recentBytesSent))
+		if bandwidth == 0 {
+			self.Lines[0].Data = append(self.Lines[0].Data, int(recentBytesRecv))
+			self.Lines[1].Data = append(self.Lines[1].Data, int(recentBytesSent))
+		}
+
+		if bandwidth > 0 {
+			self.Lines[0].Data = append(self.Lines[0].Data, getPercentage(recentBytesRecv, bandwidth))
+			self.Lines[1].Data = append(self.Lines[1].Data, getPercentage(recentBytesSent, bandwidth))
+		}
 	}
 
 	// used in later calls to update
@@ -117,4 +125,14 @@ func (self *NetWidget) update() {
 		self.Lines[i].Title1 = fmt.Sprintf(" Total %s: %5.1f %s", label, totalConverted, unitTotal)
 		self.Lines[i].Title2 = fmt.Sprintf(" %s/s: %9.1f %2s/s", label, recentConverted, unitRecent)
 	}
+}
+
+// getPercentage is used to calculate the percentage of the total bandwidth
+// entered by the user on launch or in the configuration file.
+func getPercentage(bits, bandwidth uint64) int {
+	total := float64(bits)
+	// 1048576 is the total bits in a mebibit
+	cap := float64(bandwidth * 1048576)
+	percent := math.Floor((total / cap) * 100)
+	return int(percent)
 }

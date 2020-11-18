@@ -48,6 +48,7 @@ var (
 	battery        = false
 	statusbar      = false
 	netInterface   = w.NET_INTERFACE_ALL
+	bandwidth      uint64
 
 	cpu  *w.CpuWidget
 	batt *w.BatteryWidget
@@ -77,6 +78,7 @@ Options:
   -s, --statusbar       Show a statusbar with the time.
   -b, --battery         Show battery level widget ('minimal' turns off).
   -i, --interface=NAME  Select network interface [default: all].
+  -B, --bandwidth=bits	Specify the number of bits per seconds.
 
 Colorschemes:
   default
@@ -119,6 +121,13 @@ Colorschemes:
 		tempScale = w.Fahrenheit
 	}
 	netInterface, _ = args["--interface"].(string)
+	bandString, _ := args["--bandwidth"].(string)
+	if bandString == "" {
+		return nil
+	}
+	if bandwidth, err = strconv.ParseUint(bandString, 10, 64); err != nil {
+		log.Fatalf("Could not parse Uint from user input: %v", err)
+	}
 
 	return nil
 }
@@ -264,7 +273,7 @@ func initWidgets() {
 		if battery {
 			batt = w.NewBatteryWidget(graphHorizontalScale)
 		}
-		net = w.NewNetWidget(netInterface)
+		net = w.NewNetWidget(netInterface, bandwidth)
 		disk = w.NewDiskWidget()
 		temp = w.NewTempWidget(tempScale)
 	}
