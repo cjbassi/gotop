@@ -26,8 +26,10 @@ func NewMemWidget(updateInterval time.Duration, horizontalScale int) *MemWidget 
 	mems := make(map[string]devices.MemoryInfo)
 	devices.UpdateMem(mems)
 	for name, mem := range mems {
-		widg.Data[name] = []float64{0}
-		widg.renderMemInfo(name, mem)
+		if mem.Total > 0 {
+			widg.Data[name] = []float64{0}
+			widg.renderMemInfo(name, mem)
+		}
 	}
 
 	go func() {
@@ -35,7 +37,9 @@ func NewMemWidget(updateInterval time.Duration, horizontalScale int) *MemWidget 
 			widg.Lock()
 			devices.UpdateMem(mems)
 			for label, mi := range mems {
-				widg.renderMemInfo(label, mi)
+				if mi.Total > 0 {
+					widg.renderMemInfo(label, mi)
+				}
 			}
 			widg.Unlock()
 		}
@@ -47,7 +51,7 @@ func NewMemWidget(updateInterval time.Duration, horizontalScale int) *MemWidget 
 func (mem *MemWidget) EnableMetric() {
 	mems := make(map[string]devices.MemoryInfo)
 	devices.UpdateMem(mems)
-	for l, _ := range mems {
+	for l := range mems {
 		lc := l
 		metrics.NewGauge(makeName("memory", l), func() float64 {
 			if ds, ok := mem.Data[lc]; ok {
