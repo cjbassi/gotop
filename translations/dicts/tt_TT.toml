@@ -1,0 +1,180 @@
+configfile="CFG FLE"
+usage="egasU: {0} [snoitpo]\n\nsnoitpO:\n"
+total="latoT"
+
+
+[help]
+paths="redro ni ,rof dehcraes era ,elif gifnoc eht dna ,stuoyal & semehcsroloc elbadaoL:"
+log="ni si elif gol ehT {0}"
+written="ot nettirw gifnoC {0}"
+help="""
+>c-C< ro q :tiuQ
+
+:noitagivan ssecorP
+pu :>pU< dna k -  
+nwod :>nwoD< dna j -  
+pu egap flah :>u-C< -  
+nwod egap flah :>d-C< -  
+pu egap lluf :>b-C< -  
+nwod egap lluf :>f-C< -  
+pot ot pmuj :>emoH< dna gg -  
+mottob ot pmuj :>dnE< dna G -  
+
+:snoitca ssecorP
+gnipuorg ssecorp elggot :>baT< -  
+)51( MRETGIS htiw sessecorp fo puorg ro ssecorp detceles llik :dd -  
+)3( TIUQGIS htiw sessecorp fo puorg ro ssecorp detceles llik :3d -  
+)9( LLIKGIS htiw sessecorp fo puorg ro ssecorp detceles llik :9d -  
+
+:gnitros ssecorP
+UPC :c -  
+meM :m -  
+DIP :p -  
+
+:gniretlif ssecorP
+retlif gnitide trats :/ -  
+:)gnitide elihw( -  
+retlif tpecca :>retnE< -    
+retlif raelc :>epacsE< dna >c-C< -    
+
+:gnilacs hparg meM dna UPC
+ni elacs :h -  
+tuo elacs :l -  
+
+:krowteN
+dnoces rep setyb delacs dna spbm neewteb elggot :b -  
+"""
+# TRANSLATORS: Please don't translate the layout **names**
+layouts = """stuoyal ni-tliuB:
+   tluafed
+   laminim
+   yrettab
+   knisnehctik"""
+# TRANSLATORS: Please don't translate the colorcheme **names**
+colorschemes = """semehcsroloc ni-tliuB:
+   tluafed
+   )dnuorgkcab etihw rof( krad-tluafed
+   deziralos
+   krad-61deziralos
+   thgil-61deziralos
+   iakonom
+   eciv"""
+# TRANSLATORS: Please don't translate the widget **names**
+widgets = """stuoyal ni desu eb nac taht stegdiW:
+   hparg daol UPC -   upc
+   hparg esu yromem paws & lacisyhP -   mem
+   serutarepmet rosneS -  pmet
+   esu noititrap ksid lacisyhP -  ksid
+   rab yrettab A - rewop
+   daol krowteN -   ten
+   tsil ssecorp evitcaretnI - scorp"""
+
+
+[args]
+help=".neercs siht wohS"
+color=".emehcsroloc a teS"
+scale="0> ,rotcaf elacs hparG"
+version=".tixe dna noisrev tnirP"
+percpu=".tegdiw UPC eht ni UPC hcae wohS"
+cpuavg=".tegdiw UPC eht ni UPC egareva wohS"
+temp=".tiehnerhaf ni serutarepmet wohS.tiehnerhaf ni serutarepmet wohS"
+statusbar=".emit eht htiw rabsutats a wohS"
+rate=".sm001 yreve hserfer = \"sm001\"  .etunim yreve hserfer = \"m1\"  .detpecca stinu emit tsoM .ycneuqerf hserfeR"
+layout="Name of layout spec file for the UI. Use \"-\" to pipe."
+net="gnisu derongi eb osla nac secafretnI .seulav detarapes ammoc gnisu denifed eb nac secafretni lareveS .ecafretni krowten tceleS \"!\""
+export=".trop deificeps eht no tropxe rof scirtem elbanE"
+mbps=".spbm sa etar krowten wohS"
+test=".edoc eruliaf/sseccus htiw stixe dna stset snuR"
+conffile=")TNEMUGRA TSRIF EB TSUM( tluafed fo daetsni esu ot elif gifnoC"
+list="""
+>syek|shtap|semehcsroloc|stuoyal|secived< tsiL
+stegdiw elbaretlif rof seman ecived tuo stnirP :secived   
+stuoyal ni-dliub stsiL :stuoyal   
+semehcsroloc ni-tliub stsiL :semehcsroloc   
+shtap hcraes elif noitarugifnoc tuo tsiL :shtap   
+tuoyal a ni desu eb nac taht stegdiW :stegdiw   
+.sgnidnib draobyek eht wohS :syek   """
+write=".elif gifnoc tluafed a tuo etirW"
+
+
+[config.err]
+configsyntax="0| saw ,EULAV=YEK eb dluohs ;xatnys elif gifnoc dab {0}"
+deprecation="1| enil {0}: '{1}' derongI  .detacerped si {1}={2}"
+line="2| enil #{0}: {1}"
+tempscale="3| eulav elacSpmeT dilavni {0}"
+
+
+[error]
+configparse="4| elif gifnoc esrap ot deliaf: {0}"
+cliparse="8| sgra ILC gnisrap: {0}"
+logsetup="9| elif gol putes ot deliaf: {0}"
+unknownopt="10| noitpo nwonknU \"{0}\"; secived ro ,shtap ,syek ,semehcsroloc ,stuoyal yrt\n"
+writefail="11| elif noitarugifnoc etirw ot deliaF: {0}"
+checklog="12| morf ;deretnuocne srorre {0}:"
+metricsetup="13| pu gnittes rorre {0} scirtem: {1}"
+nometrics="14| rof scirtem on {0} {1}"
+fatalfetch="15| gnihctef rorre lataf {0} ofni: {1}"
+recovfetch="16| gnihctef rorre elbarevocer {0} gnippiks ;ofni {0}: {1}"
+nodevfound="17| elbasu on {0} dnuof"
+setuperr="18| pu gnittes rorre {0}: {1}"
+colorschemefile="19| elif emehcsroloc dnif ot deliaf {0} ni {1}"
+colorschemeread="20| elif emehcsroloc daer ot deliaf {0}: {1}"
+colorschemeparse="21| elif emehcsroloc esrap ot deliaf: {0}"
+findlayout="22| elif emehcsroloc daer ot deliaf {0}: {1}"
+logopen="22| elif gol nepo ot deliaf {0}: {1}"
+table="22| woRpoT .0 naht ssel eulav woRpoT tegdiw elbat: {0}"
+nohostname="22| emantsoh teg ton dluoc: {0}"
+
+[layout.error]
+widget="23| eman tegdiw dilavnI {0}.  fo eno eb tsuM {1}"
+format="24| enil no rorre tuoyaL {0}: eb tsum tamrof {1}. gnisrap rorrE {2} saw droW .tni a sa {3}. 1 fo thgieh wor a gnisU."
+slashes="25| enil no gninraw tuoyaL {0}: drow ni '/' ynam oot {1}; knuj artxe gnirongi."
+
+[widget.label]
+disk=" egasU ksiD "
+cpu=" egasU UPC "
+gauge=" leveL rewoP "
+battery=" sutatS yrettaB "
+batt=" yrettaB "
+temp=" serutarepmeT "
+net=" egasU krowteN "
+netint=" egasU krowteN: {0} "
+mem=" egasU yromeM "
+
+
+[widget.net.err]
+netactivity="26| lituspog morf ytivitca krowten teg ot deliaf: {0}"
+negvalrecv="27| :vceRsetyBtnecer .lituspog morf atad krowten deviecer yltnecer rof eulav evitagen :rorre {0}"
+negvalsent="28| :tneSsetyBtnecer .lituspog morf atad krowten tnes yltnecer rof eulav evitagen :rorre {0}"
+
+
+[widget.disk]
+disk="ksiD"
+mount="tnuoM"
+used="desU"
+free="eerF"
+rs="s/R"
+ws="s/W"
+
+
+[widget.proc]
+filter=" :retliF "
+label=" sessecorP "
+[widget.proc.header]
+count="tnuoC"
+command="dnammoC"
+cpu="%UPC"
+mem="%meM"
+pid="DIP"
+[widget.proc.err]
+count="29| :lituspog morf tnuoc UPC teg ot deliaf {0}"
+retrieve="30| :sessecorp eveirter ot deliaf {0}"
+ps="31| :dnammoc 'sp' etucexe ot deliaf {0}"
+gopsutil="32| :lituspog morf sessecorp teg ot deliaf {0}"
+pidconv="33| :tni ot DIP trevnoc ot deliaf {0}. enil: {1}"
+cpuconv="34| :taolf ot egasu UPC trevnoc ot deliaf {0}. :enil {1}"
+memconv="35| :taolf ot egasu meM trevnoc ot deliaf {0}. :enil {1}"
+getcmd="36| :lituspog morf dnammoc ssecorp teg ot deliaf {0}. corPsp: {1}. i: {2}. dip: {3}"
+cpupercent="37| lituspog morf egasu upc ssecorp teg ot deliaf: {0}. corPsp: {1}. i: {2}. dip: {3}"
+mempercent="38| spog morf egasu yroemem ssecorp teg ot deliafutil: {0}. corPsp: {1}. i: {2}. dip: {3}"
+parse="39| tuptuo esrap ot deliaf: {0}"

@@ -47,9 +47,9 @@ func NewNetWidget(netInterface string) *NetWidget {
 		updateInterval: time.Second,
 		NetInterface:   strings.Split(netInterface, ","),
 	}
-	self.Title = " Network Usage "
+	self.Title = tr.Value("widget.label.net")
 	if netInterface != "all" {
-		self.Title = fmt.Sprintf(" Network Usage: %s ", netInterface)
+		self.Title = tr.Value("widget.label.netint", netInterface)
 	}
 
 	self.update()
@@ -73,7 +73,7 @@ func (net *NetWidget) EnableMetric() {
 func (net *NetWidget) update() {
 	interfaces, err := psNet.IOCounters(true)
 	if err != nil {
-		log.Printf("failed to get network activity from gopsutil: %v", err)
+		log.Println(tr.Value("widget.net.err.netactivity", err.Error()))
 		return
 	}
 
@@ -114,12 +114,14 @@ func (net *NetWidget) update() {
 		recentBytesSent = totalBytesSent - net.totalBytesSent
 
 		if int(recentBytesRecv) < 0 {
-			log.Printf("error: negative value for recently received network data from gopsutil. recentBytesRecv: %v", recentBytesRecv)
+			v := fmt.Sprintf("%d", recentBytesRecv)
+			log.Println(tr.Value("widget.net.err.negvalrecv", v))
 			// recover from error
 			recentBytesRecv = 0
 		}
 		if int(recentBytesSent) < 0 {
-			log.Printf("error: negative value for recently sent network data from gopsutil. recentBytesSent: %v", recentBytesSent)
+			v := fmt.Sprintf("%d", recentBytesSent)
+			log.Printf(tr.Value("widget.net.err.negvalsent", v))
 			// recover from error
 			recentBytesSent = 0
 		}
@@ -160,7 +162,7 @@ func (net *NetWidget) update() {
 			recentConverted, unitRecent = utils.ConvertBytes(recent)
 		}
 
-		net.Lines[i].Title1 = fmt.Sprintf(" Total %s: %5.1f %s", label, totalConverted, unitTotal)
+		net.Lines[i].Title1 = fmt.Sprintf(" %s %s: %5.1f %s", tr.Value("total"), label, totalConverted, unitTotal)
 		net.Lines[i].Title2 = fmt.Sprintf(format, rate, recentConverted, unitRecent)
 	}
 }

@@ -35,7 +35,7 @@ func NewCPUWidget(updateInterval time.Duration, horizontalScale int, showAverage
 		average:         ewma.NewMovingAverage(),
 	}
 	self.LabelStyles[AVRG] = termui.ModifierBold
-	self.Title = " CPU Usage "
+	self.Title = tr.Value("widget.label.cpu")
 	self.HorizontalScale = horizontalScale
 
 	if !(self.ShowAverageLoad || self.ShowPerCPULoad) {

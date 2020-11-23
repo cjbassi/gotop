@@ -5,8 +5,10 @@ import (
 	"image"
 	"log"
 	"strings"
+	"strconv"
 
 	. "github.com/gizak/termui/v3"
+	"github.com/jdkeke142/lingo-toml"
 )
 
 type Table struct {
@@ -30,6 +32,8 @@ type Table struct {
 	TopRow       int // used to indicate where in the table we are scrolled at
 
 	ColResizer func()
+
+	Tr lingo.Translations
 }
 
 // NewTable returns a new Table instance
@@ -79,7 +83,8 @@ func (self *Table) Draw(buf *Buffer) {
 	}
 
 	if self.TopRow < 0 {
-		log.Printf("table widget TopRow value less than 0. TopRow: %v", self.TopRow)
+		r := strconv.Itoa(self.TopRow)
+		log.Printf(self.Tr.Value("error.table", r))
 		return
 	}
 

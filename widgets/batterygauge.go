@@ -18,7 +18,7 @@ type BatteryGauge struct {
 
 func NewBatteryGauge() *BatteryGauge {
 	self := &BatteryGauge{Gauge: termui.NewGauge()}
-	self.Title = " Power Level "
+	self.Title = tr.Value("widget.label.gauge")
 
 	self.update()
 

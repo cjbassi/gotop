@@ -3,14 +3,15 @@ package widgets
 import (
 	"fmt"
 	"log"
+	"strconv"
 
-	psProc "github.com/shirou/gopsutil/process"
+	"github.com/shirou/gopsutil/process"
 )
 
 func getProcs() ([]Proc, error) {
-	psProcs, err := psProc.Processes()
+	psProcs, err := process.Processes()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get processes from gopsutil: %v", err)
+		return nil, fmt.Errorf(tr.Value("widget.proc.err.gopsutil", err.Error()))
 	}
 
 	procs := make([]Proc, len(psProcs))
@@ -18,15 +19,24 @@ func getProcs() ([]Proc, error) {
 		pid := psProc.Pid
 		command, err := psProc.Name()
 		if err != nil {
-			log.Printf("failed to get process command from gopsutil: %v. psProc: %v. i: %v. pid: %v", err, psProc, i, pid)
+			sps := fmt.Sprintf("%v", psProc)
+			si := strconv.Itoa(i)
+			spid := fmt.Sprintf("%d", pid)
+			log.Println(tr.Value("widget.proc.err.getcmd", err.Error(), sps, si, spid))
 		}
 		cpu, err := psProc.CPUPercent()
 		if err != nil {
-			log.Printf("failed to get process cpu usage from gopsutil: %v. psProc: %v. i: %v. pid: %v", err, psProc, i, pid)
+			sps := fmt.Sprintf("%v", psProc)
+			si := strconv.Itoa(i)
+			spid := fmt.Sprintf("%d", pid)
+			log.Println(tr.Value("widget.proc.err.cpupercent", err.Error(), sps, si, spid))
 		}
 		mem, err := psProc.MemoryPercent()
 		if err != nil {
-			log.Printf("failed to get process memeory usage from gopsutil: %v. psProc: %v. i: %v. pid: %v", err, psProc, i, pid)
+			sps := fmt.Sprintf("%v", psProc)
+			si := strconv.Itoa(i)
+			spid := fmt.Sprintf("%d", pid)
+			log.Println(tr.Value("widget.proc.err.mempercent", err.Error(), sps, si, spid))
 		}
 
 		procs[i] = Proc{

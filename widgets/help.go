@@ -5,52 +5,19 @@ import (
 	"strings"
 
 	ui "github.com/gizak/termui/v3"
+	lingo "github.com/jdkeke142/lingo-toml"
 )
 
-// KEYBINDS is the help text for the in-program shortcuts
-const KEYBINDS = `
-Quit: q or <C-c>
-
-Process navigation:
-  - k and <Up>: up
-  - j and <Down>: down
-  - <C-u>: half page up
-  - <C-d>: half page down
-  - <C-b>: full page up
-  - <C-f>: full page down
-  - gg and <Home>: jump to top
-  - G and <End>: jump to bottom
-
-Process actions:
-  - <Tab>: toggle process grouping
-  - dd: kill selected process or group of processes with SIGTERM (15)
-  - d3: kill selected process or group of processes with SIGQUIT (3)
-  - d9: kill selected process or group of processes with SIGKILL (9)
-
-Process sorting:
-  - c: CPU
-  - m: Mem
-  - p: PID
-
-Process filtering:
-  - /: start editing filter
-  - (while editing):
-    - <Enter>: accept filter
-    - <C-c> and <Escape>: clear filter
-
-CPU and Mem graph scaling:
-  - h: scale in
-  - l: scale out
-
-Network:
-  - b: toggle between mbps and scaled bytes per second
-`
+var tr lingo.Translations
+var keyBinds string
 
 type HelpMenu struct {
 	ui.Block
 }
 
-func NewHelpMenu() *HelpMenu {
+func NewHelpMenu(tra lingo.Translations) *HelpMenu {
+	tr = tra
+	keyBinds = tr.Value("help.help")
 	return &HelpMenu{
 		Block: *ui.NewBlock(),
 	}
@@ -58,12 +25,12 @@ func NewHelpMenu() *HelpMenu {
 
 func (help *HelpMenu) Resize(termWidth, termHeight int) {
 	textWidth := 53
-	for _, line := range strings.Split(KEYBINDS, "\n") {
+	for _, line := range strings.Split(keyBinds, "\n") {
 		if textWidth < len(line) {
 			textWidth = len(line) + 2
 		}
 	}
-	textHeight := strings.Count(KEYBINDS, "\n") + 1
+	textHeight := strings.Count(keyBinds, "\n") + 1
 	x := (termWidth - textWidth) / 2
 	y := (termHeight - textHeight) / 2
 
@@ -73,7 +40,7 @@ func (help *HelpMenu) Resize(termWidth, termHeight int) {
 func (help *HelpMenu) Draw(buf *ui.Buffer) {
 	help.Block.Draw(buf)
 
-	for y, line := range strings.Split(KEYBINDS, "\n") {
+	for y, line := range strings.Split(keyBinds, "\n") {
 		for x, rune := range line {
 			buf.SetCell(
 				ui.NewCell(rune, ui.Theme.Default),

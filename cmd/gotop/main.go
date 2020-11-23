@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -18,7 +19,9 @@ import (
 	//_ "net/http/pprof"
 
 	"github.com/VictoriaMetrics/metrics"
+	jj "github.com/cloudfoundry-attic/jibber_jabber"
 	ui "github.com/gizak/termui/v3"
+	"github.com/jdkeke142/lingo-toml"
 	"github.com/shibukawa/configdir"
 	"github.com/xxxserxxx/opflag"
 
@@ -27,7 +30,7 @@ import (
 	"github.com/xxxserxxx/gotop/v4/devices"
 	"github.com/xxxserxxx/gotop/v4/layout"
 	"github.com/xxxserxxx/gotop/v4/logging"
-	"github.com/xxxserxxx/gotop/v4/widgets"
+	"github.com/xxxserxxx/gotop/v4/translations"
 	w "github.com/xxxserxxx/gotop/v4/widgets"
 )
 
@@ -50,6 +53,7 @@ var (
 	bar          *w.StatusBar
 	statusbar    bool
 	stderrLogger = log.New(os.Stderr, "", 0)
+	tr           lingo.Translations
 )
 
 func parseArgs() error {
@@ -58,33 +62,27 @@ func parseArgs() error {
 	for i, p := range cds {
 		cpaths[i] = p.Path
 	}
-	help := opflag.BoolP("help", "h", false, "Show this screen.")
-	color := opflag.StringP("color", "c", conf.Colorscheme.Name, "Set a colorscheme.")
-	opflag.IntVarP(&conf.GraphHorizontalScale, "graphscale", "S", conf.GraphHorizontalScale, "Graph scale factor, >0")
-	version := opflag.BoolP("version", "v", false, "Print version and exit.")
-	versioN := opflag.BoolP("", "V", false, "Print version and exit.")
-	opflag.BoolVarP(&conf.PercpuLoad, "percpu", "p", conf.PercpuLoad, "Show each CPU in the CPU widget.")
-	opflag.BoolVarP(&conf.AverageLoad, "averagecpu", "a", conf.AverageLoad, "Show average CPU in the CPU widget.")
-	fahrenheit := opflag.BoolP("fahrenheit", "f", conf.TempScale == 'F', "Show temperatures in fahrenheit.Show temperatures in fahrenheit.")
-	opflag.BoolVarP(&conf.Statusbar, "statusbar", "s", conf.Statusbar, "Show a statusbar with the time.")
-	opflag.DurationVarP(&conf.UpdateInterval, "rate", "r", conf.UpdateInterval, "Refresh frequency. Most time units accepted.  `1m` = refresh every minute.  `100ms` = refresh every 100ms.")
-	opflag.StringVarP(&conf.Layout, "layout", "l", conf.Layout, `Name of layout spec file for the UI. Use "-" to pipe.`)
-	opflag.StringVarP(&conf.NetInterface, "interface", "i", "all", "Select network interface. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using `!`")
-	opflag.StringVarP(&conf.ExportPort, "export", "x", conf.ExportPort, "Enable metrics for export on the specified port.")
-	opflag.BoolVarP(&conf.Mbps, "mbps", "", conf.Mbps, "Show network rate as mbps.")
-	opflag.BoolVar(&conf.Test, "test", conf.Test, "Runs tests and exits with success/failure code.")
-	opflag.StringP("", "C", "", "Config file to use instead of default (MUST BE FIRST ARGUMENT)")
-	list := opflag.String("list", "", `List <devices|layouts|colorschemes|paths|keys>
-         devices: Prints out device names for filterable widgets
-         layouts: Lists build-in layouts
-         colorschemes: Lists built-in colorschemes
-         paths: List out configuration file search paths
-         widgets: Widgets that can be used in a layout
-         keys: Show the keyboard bindings.`)
-	wc := opflag.Bool("write-config", false, "Write out a default config file.")
+	help := opflag.BoolP("help", "h", false, tr.Value("args.help"))
+	color := opflag.StringP("color", "c", conf.Colorscheme.Name, tr.Value("args.color"))
+	opflag.IntVarP(&conf.GraphHorizontalScale, "graphscale", "S", conf.GraphHorizontalScale, tr.Value("args.scale"))
+	version := opflag.BoolP("version", "v", false, tr.Value("args.version"))
+	versioN := opflag.BoolP("", "V", false, tr.Value("args.version"))
+	opflag.BoolVarP(&conf.PercpuLoad, "percpu", "p", conf.PercpuLoad, tr.Value("args.percpu"))
+	opflag.BoolVarP(&conf.AverageLoad, "averagecpu", "a", conf.AverageLoad, tr.Value("args.cpuavg"))
+	fahrenheit := opflag.BoolP("fahrenheit", "f", conf.TempScale == 'F', tr.Value("args.temp"))
+	opflag.BoolVarP(&conf.Statusbar, "statusbar", "s", conf.Statusbar, tr.Value("args.statusbar"))
+	opflag.DurationVarP(&conf.UpdateInterval, "rate", "r", conf.UpdateInterval, tr.Value("args.rate"))
+	opflag.StringVarP(&conf.Layout, "layout", "l", conf.Layout, tr.Value("args.layout"))
+	opflag.StringVarP(&conf.NetInterface, "interface", "i", "all", tr.Value("args.net"))
+	opflag.StringVarP(&conf.ExportPort, "export", "x", conf.ExportPort, tr.Value("args.export"))
+	opflag.BoolVarP(&conf.Mbps, "mbps", "", conf.Mbps, tr.Value("args.mbps"))
+	opflag.BoolVar(&conf.Test, "test", conf.Test, tr.Value("args.test"))
+	opflag.StringP("", "C", "", tr.Value("args.conffile"))
+	list := opflag.String("list", "", tr.Value("args.list"))
+	wc := opflag.Bool("write-config", false, tr.Value("args.write"))
 	opflag.SortFlags = false
 	opflag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: %s [options]\n\nOptions:\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, tr.Value("usage", os.Args[0]))
 		opflag.PrintDefaults()
 	}
 	opflag.Parse()
@@ -109,25 +107,26 @@ func parseArgs() error {
 	if *list != "" {
 		switch *list {
 		case "layouts":
-			fmt.Println(_layouts)
+			fmt.Println(tr.Value("help.layouts"))
 		case "colorschemes":
-			fmt.Println(_colorschemes)
+			fmt.Println(tr.Value("help.colorschemes"))
 		case "paths":
-			fmt.Println("Loadable colorschemes & layouts, and the config file, are searched for, in order:")
+			fmt.Println(tr.Value("help.paths"))
 			paths := make([]string, 0)
 			for _, d := range conf.ConfigDir.QueryFolders(configdir.All) {
 				paths = append(paths, d.Path)
 			}
 			fmt.Println(strings.Join(paths, "\n"))
-			fmt.Printf("\nThe log file is in %s\n", filepath.Join(conf.ConfigDir.QueryCacheFolder().Path, logging.LOGFILE))
+			fmt.Println()
+			fmt.Println(tr.Value("help.log", filepath.Join(conf.ConfigDir.QueryCacheFolder().Path, logging.LOGFILE)))
 		case "devices":
 			listDevices()
 		case "keys":
-			fmt.Println(widgets.KEYBINDS)
+			fmt.Println(tr.Value("help.help"))
 		case "widgets":
-			fmt.Println(_widgets)
+			fmt.Println(tr.Value("help.widgets"))
 		default:
-			fmt.Printf("Unknown option \"%s\"; try layouts, colorschemes, keys, paths, or devices\n", *list)
+			fmt.Printf(tr.Value("error.unknownopt", *list))
 			os.Exit(1)
 		}
 		os.Exit(0)
@@ -135,10 +134,10 @@ func parseArgs() error {
 	if *wc {
 		path, err := conf.Write()
 		if err != nil {
-			fmt.Printf("Failed to write configuration file: %s\n", err)
+			fmt.Println(tr.Value("error.writefail", err.Error()))
 			os.Exit(1)
 		}
-		fmt.Printf("Config written to %s\n", path)
+		fmt.Println(tr.Value("help.written", path))
 		os.Exit(0)
 	}
 	return nil
@@ -345,38 +344,55 @@ func main() {
 	ec := run()
 	if ec > 0 {
 		if ec < 2 {
-			fmt.Printf("errors encountered; check the log file %s\n", filepath.Join(conf.ConfigDir.QueryCacheFolder().Path, logging.LOGFILE))
+			logpath := filepath.Join(conf.ConfigDir.QueryCacheFolder().Path, logging.LOGFILE)
+			fmt.Println(tr.Value("error.checklog", logpath))
+			bs, _ := ioutil.ReadFile(logpath)
+			fmt.Println(string(bs))
 		}
 	}
 	os.Exit(ec)
 }
 
 func run() int {
+	ling, err := lingo.New("en_US", "translations", translations.AssetFile())
+	if err != nil {
+		fmt.Printf("failed to load language files: %s\n", err)
+		return 2
+	}
+	lang, err := jj.DetectIETF()
+	if err != nil {
+		lang = "en_US"
+	}
+	lang = strings.Replace(lang, "-", "_", -1)
+	// Get the locale from the os
+	tr = ling.TranslationsForLocale(lang)
+	colorschemes.SetTr(tr)
 	conf = gotop.NewConfig()
+	conf.Tr = tr
 	// Find the config file; look in (1) local, (2) user, (3) global
 	// Check the last argument first
 	fs := flag.NewFlagSet("config", flag.ContinueOnError)
-	cfg := fs.String("C", "", "Config file")
+	cfg := fs.String("C", "", tr.Value("configfile"))
 	fs.SetOutput(bufio.NewWriter(nil))
 	fs.Parse(os.Args[1:])
 	if *cfg != "" {
 		conf.ConfigFile = *cfg
 	}
-	err := conf.Load()
+	err = conf.Load()
 	if err != nil {
-		fmt.Printf("failed to parse config file: %s\n", err)
+		fmt.Println(tr.Value("error.configparse", err.Error()))
 		return 2
 	}
 	// Override with command line arguments
 	err = parseArgs()
 	if err != nil {
-		fmt.Printf("parsing CLI args: %s\n", err)
+		fmt.Println(tr.Value("error.cliparse", err.Error()))
 		return 2
 	}
 
 	logfile, err := logging.New(conf)
 	if err != nil {
-		fmt.Printf("failed to setup log file: %v\n", err)
+		fmt.Println(tr.Value("logsetup", err.Error()))
 		return 2
 	}
 	defer logfile.Close()
@@ -407,7 +423,7 @@ func run() int {
 	defer ui.Close()
 
 	setDefaultTermuiColors(conf) // done before initializing widgets to allow inheriting colors
-	help = w.NewHelpMenu()
+	help = w.NewHelpMenu(tr)
 	if statusbar {
 		bar = w.NewStatusBar()
 	}
@@ -467,7 +483,7 @@ func getLayout(conf gotop.Config) (io.Reader, error) {
 			for _, d := range conf.ConfigDir.QueryFolders(configdir.Existing) {
 				paths = append(paths, d.Path)
 			}
-			return nil, fmt.Errorf("unable find layout file %s in %s", conf.Layout, strings.Join(paths, ", "))
+			return nil, fmt.Errorf(tr.Value("error.findlayout", conf.Layout, strings.Join(paths, ", ")))
 		}
 		lo, err := folder.ReadFile(conf.Layout)
 		if err != nil {
@@ -492,25 +508,3 @@ func listDevices() {
 		}
 	}
 }
-
-const _layouts = `Built-in layouts:
-   default
-   minimal
-   battery
-   kitchensink`
-const _colorschemes = `Built-in colorschemes:
-   default
-   default-dark (for white background)
-   solarized
-   solarized16-dark
-   solarized16-light
-   monokai
-   vice`
-const _widgets = `Widgets that can be used in layouts:
-   cpu   - CPU load graph
-   mem   - Physical & swap memory use graph
-   temp  - Sensor temperatures
-   disk  - Physical disk partition use
-   power - A battery bar
-   net   - Network load
-   procs - Interactive process list`

@@ -21,7 +21,7 @@ func NewMemWidget(updateInterval time.Duration, horizontalScale int) *MemWidget 
 		LineGraph:      ui.NewLineGraph(),
 		updateInterval: updateInterval,
 	}
-	widg.Title = " Memory Usage "
+	widg.Title = tr.Value("widget.label.mem")
 	widg.HorizontalScale = horizontalScale
 	mems := make(map[string]devices.MemoryInfo)
 	devices.UpdateMem(mems)

@@ -37,8 +37,9 @@ func NewDiskWidget() *DiskWidget {
 		updateInterval: time.Second,
 		Partitions:     make(map[string]*Partition),
 	}
-	self.Title = " Disk Usage "
-	self.Header = []string{"Disk", "Mount", "Used", "Free", "R/s", "W/s"}
+	self.Table.Tr = tr
+	self.Title = tr.Value("widget.label.disk")
+	self.Header = []string{tr.Value("widget.disk.disk"), tr.Value("widget.disk.mount"), tr.Value("widget.disk.used"), tr.Value("widget.disk.free"), tr.Value("widget.disk.rs"), tr.Value("widget.disk.ws")}
 	self.ColGap = 2
 	self.ColResizer = func() {
 		self.ColWidths = []int{
@@ -73,7 +74,7 @@ func (disk *DiskWidget) EnableMetric() {
 func (disk *DiskWidget) update() {
 	partitions, err := psDisk.Partitions(false)
 	if err != nil {
-		log.Printf("failed to get disk partitions from gopsutil: %v", err)
+		log.Printf(tr.Value("error.setup", "disk-partitions", err.Error()))
 		return
 	}
 
@@ -118,7 +119,7 @@ func (disk *DiskWidget) update() {
 	for _, partition := range disk.Partitions {
 		usage, err := psDisk.Usage(partition.MountPoint)
 		if err != nil {
-			log.Printf("failed to get partition usage statistics from gopsutil: %v. partition: %v", err, partition)
+			log.Printf(tr.Value("error.recovfetch", "partition-"+partition.MountPoint+"-usage", err.Error()))
 			continue
 		}
 		partition.UsedPercent = uint32(usage.UsedPercent + 0.5)
@@ -127,7 +128,7 @@ func (disk *DiskWidget) update() {
 
 		ioCounters, err := psDisk.IOCounters(partition.Device)
 		if err != nil {
-			log.Printf("failed to get partition read/write info from gopsutil: %v. partition: %v", err, partition)
+			log.Printf(tr.Value("error.recovfetch", "partition-"+partition.Device+"-rw", err.Error()))
 			continue
 		}
 		ioCounter := ioCounters[strings.Replace(partition.Device, "/dev/", "", -1)]

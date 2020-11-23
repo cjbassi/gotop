@@ -1,0 +1,180 @@
+configfile="配置文件"
+usage="使用方法: {0} [选项]\n\n选项:\n"
+total="总计"
+
+
+[help]
+paths="按顺序从以下位置优先读取配色方案、布局方案和配置文件:"
+log="日志文件位于 {0}"
+written="配置文件已写入 {0}"
+help="""
+退出: q or <C-c>
+
+进程导航:
+  - k 或 <Up>: 上一行
+  - j 或 <Down>: 下一行
+  - <C-u>: 上半页
+  - <C-d>: 下半页
+  - <C-b>: 上一页
+  - <C-f>: 下一页
+  - gg 或 <Home>: 到顶部
+  - G 或 <End>: 到底部
+
+进程操作:
+  - <Tab>: 切换进程组
+  - dd: 发送信号 SIGTERM (15) 终止进程或进程组
+  - d3: 发送信号 SIGTERM (3) 终止进程或进程组
+  - d9: 发送信号 SIGTERM (9) 终止进程或进程组
+
+进程排序:
+  - c: CPU
+  - m: 内存
+  - p: 进程标识
+
+进程过滤:
+  - /: 开始编辑过滤器
+  - (编辑时):
+    - <Enter>: 保存过滤器
+    - <C-c> 或 <Escape>: 清除过滤器
+
+CPU 和内存图形比例:
+  - h: 放大比例
+  - l: 缩小比例
+
+网络:
+  - b: 在 mbps 和 每秒字节数 之间切换
+"""
+# TRANSLATORS: Please don't translate the layout **names**
+layouts = """内建布局方案:
+   default
+   minimal
+   battery
+   kitchensink"""
+# TRANSLATORS: Please don't translate the colorcheme **names**
+colorschemes = """内建配色方案:
+   default
+   default-dark (用于白色背景)
+   solarized
+   solarized16-dark
+   solarized16-light
+   monokai
+   vice"""
+# TRANSLATORS: Please don't translate the widget **names**
+widgets = """可被用于布局方案的组件名:
+   cpu   - CPU 负载图
+   mem   - 物理内存和交换内存使用率图
+   temp  - 传感器温度
+   disk  - 物理磁盘和分区使用率
+   power - 电池状态
+   net   - 网络负载
+   procs - 可交互进程列表"""
+
+
+[args]
+help="显示当前内容。"
+color="配色方案。"
+scale="图形比例尺度，>0"
+version="显示版本并退出。"
+percpu="在 CPU 组件中显示每个 CPU。"
+cpuavg="在 CPU 组件中平均 CPU。"
+temp="显示华氏温度。"
+statusbar="显示时间状态栏。"
+rate="刷新频率。常见的时间单位皆可用。\"1m\" = 每分钟刷新。\"100ms\" = 每100毫秒刷新。"
+layout="布局描述文件名。使用 \"-\" 连接。"
+net="选择网卡。多个网卡用逗号分隔。使用 \"!\" 忽略指定网卡。"
+export="在指定端口上启用指标输出。"
+mbps="显示网速为 mbps。"
+test="执行测试并返回成功或失败码。"
+conffile="用于替代缺省参数的配置文件（必须是第一个参数）"
+list="""
+列出 <devices|layouts|colorschemes|paths|keys>
+   devices: 显示可用于过滤的设备名
+   layouts: 列出所有内置布局方案
+   colorschemes: 列出所有内置配色方案
+   paths: 列出配置文件的搜索路径
+   widgets: 所有可被用于布局的组件
+   keys: 显示所有热键。"""
+write="将当前配置写入缺省配置文件。"
+
+
+[config.err]
+configsyntax="0| bad config file syntax; should be KEY=VALUE, was {0}"
+deprecation="1| line {0}: '{1}' is deprecated.  Ignored {1}={2}"
+line="2| line #{0}: {1}"
+tempscale="3| invalid TempScale value {0}"
+
+
+[error]
+configparse="4| failed to parse config file: {0}"
+cliparse="5| parsing CLI args: {0}"
+logsetup="6| failed to setup log file: {0}"
+unknownopt="7| Unknown option \"{0}\"; try layouts, colorschemes, keys, paths, or devices\n"
+writefail="8| Failed to write configuration file: {0}"
+checklog="9| errors encountered; from {0}:"
+metricsetup="10| error setting up {0} metrics: {1}"
+nometrics="11| no metrics for {0} {1}"
+fatalfetch="12| fatal error fetching {0} info: {1}"
+recovfetch="13| recoverable error fetching {0} info; skipping {0}: {1}"
+nodevfound="14| no usable {0} found"
+setuperr="15| error setting up {0}: {1}"
+colorschemefile="16| failed to find colorscheme file {0} in {1}"
+colorschemeread="17| failed to read colorscheme file {0}: {1}"
+colorschemeparse="18| failed to parse colorscheme file: {0}"
+findlayout="19| failed to read colorscheme file {0}: {1}"
+logopen="20| failed to open log file {0}: {1}"
+table="21| table widget TopRow value less than 0. TopRow: {0}"
+nohostname="22| could not get hostname: {0}"
+
+[layout.error]
+widget="23| Invalid widget name {0}.  Must be one of {1}"
+format="24| Layout error on line {0}: format must be {1}. Error parsing {2} as a int. Word was {3}. Using a row height of 1."
+slashes="25| Layout warning on line {0}: too many '/' in word {1}; ignoring extra junk."
+
+[widget.label]
+disk=" 磁盘使用率 "
+cpu=" CPU 使用率 "
+gauge=" 电量 "
+battery=" 电池状态 "
+batt=" 电池 "
+temp=" 温度 "
+net=" 网络使用率 "
+netint=" 网络使用率: {0} "
+mem=" 内存使用率 "
+
+
+[widget.net.err]
+netactivity="26| failed to get network activity from gopsutil: {0}"
+negvalrecv="27| error: negative value for recently received network data from gopsutil. recentBytesRecv: {0}"
+negvalsent="28| error: negative value for recently sent network data from gopsutil. recentBytesSent: {0}"
+
+
+[widget.disk]
+disk="磁盘"
+mount="文件系统"
+used="已使用"
+free="空闲"
+rs="读/秒"
+ws="写/秒"
+
+
+[widget.proc]
+filter=" 过滤器: "
+label=" 进程 "
+[widget.proc.header]
+count="个数"
+command="命令"
+cpu="CPU%"
+mem="内存%"
+pid="进程标识"
+[widget.proc.err]
+count="29| failed to get CPU count from gopsutil: {0}"
+retrieve="30| failed to retrieve processes: {0}"
+ps="31| failed to execute 'ps' command: {0}"
+gopsutil="32| failed to get processes from gopsutil: {0}"
+pidconv="33| failed to convert PID to int: {0}. line: {1}"
+cpuconv="34| failed to convert CPU usage to float: {0}. line: {1}"
+memconv="35| failed to convert Mem usage to float: {0}. line: {1}"
+getcmd="36| failed to get process command from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+cpupercent="37| failed to get process cpu usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+mempercent="38| failed to get process memeory usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+parse="39| failed to parse output: {0}"

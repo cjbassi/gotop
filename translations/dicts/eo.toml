@@ -1,0 +1,182 @@
+configfile="Argododosiero"
+usage="Uzado: {0} [ebloj]\n\nEbloj:\n"
+total="Sumo"
+
+
+[help]
+paths="Ŝarĝebla kloraj skemoj & enpaĝigoj, kaj la argododosiero, estas orda serĉatigis:"
+log="Logodosiero troviĝas ĉe {0}"
+written="Argordo skribiĝis ĉe {0}"
+help="""
+Eliri: q aŭ <C-c>
+
+Proceza navigadoj:
+  - k kaj <Supren>: supren
+  - j kaj <Malsupren>: malsupren
+  - <C-u>: duona paĝo supren
+  - <C-d>: duona paĝo malsupren
+  - <C-b>: plena paĝo supren
+  - <C-f>: plena paĝo malsupren
+  - gg kaj <Hejmo>: salti al supron
+  - G kaj <Fino>: salti al malsupron
+
+Proceza agoj:
+  - <Langeto>: alterni procezon grupigi
+  - dd: fini la elektitajn procezojn aŭ procezon grupigon kun SIGTERM (15)
+  - d3: fini la elektitajn procezojn aŭ procezon grupigon kun SIGQUIT (3)
+  - d9: fini la elektitajn procezojn aŭ procezon grupigon kun SIGKILL (9)
+
+Proceza ordigoj:
+  - c: CPU
+  - m: Memoro
+  - p: PID
+
+Proceza filtradoj:
+  - /: komenci redakti filtrilon
+  - (dum redaktadi):
+    - <Eniri>: akcepti filtrilon
+    - <C-c> kaj <Eskapi>: eliri filtrilon
+
+CPU kaj Memora grafilo skali:
+  - h: zomi
+  - l: malzomi
+
+Reto:
+  - b: alterni inter mbps kaj skale bajtoj por dua
+"""
+# TRANSLATORS: Please don't translate the layout **names**
+layouts = """Enkonstruitaj enpaĝigoj:
+   default
+   minimal
+   battery
+   kitchensink"""
+# TRANSLATORS: Please don't translate the colorscheme **names**
+colorschemes = """Enkonstruitaj kloraj skemoj:
+   default
+   default-dark (por blanka fono)
+   solarized
+   solarized16-dark
+   solarized16-light
+   monokai
+   vice"""
+# TRANSLATORS: Please don't translate the widget **names**
+widgets = """Enpaĝigaj Fenestraĵoj:
+   cpu   - CPU ŝarĝa grafilo
+   mem   - Fizika kay interŝanĝa memora grafilo
+   temp  - Temperatura sensiloj
+   disk  - Fizikaj diskdispartigaj uzadilo
+   power - Bateria mezurilo
+   net   - Retuzadilo
+   procs - Interaga proceza listo"""
+
+
+[args]
+help="Ĉi tiun informoj."
+color="Agordi kloraj skemoj."
+scale="Agordi grafilan skalon, >0"
+version="Montri version kaj eliri."
+percpu="Montri ĉiun CPU en la CPU-fenestraĵo."
+cpuavg="Montri duonan CPU en la CPU-fenestraĵo."
+temp="Montri temperaturojn en fahrenheit."
+statusbar="Montri statusbarbaron kun la tempo."
+rate="Refreŝiga ofteco. Plej multaj unuoj akceptitaj. \"1m\" = refreŝigi ĉiun minuton. \"100ms\" = refreŝigi ĉiun dekonon minuton."
+layout="Nomo de aranĝa specifa dosiero por la UI. Uzu \"-\" por pipi."
+net="Elekti retinterfacon. Multaj interfacoj povas esti difinitaj per komparaj valoroj. Interfacoj ankaŭ povas esti ignorataj per \"!\""
+export="Ebligu metrikojn por eksportado en la specifita haveno."
+mbps="Montri reta takson kiel mbps."
+test="Ekzekutas testojn kaj forirojn kun sukceso / fiaska kodo."
+conffile="Agordi dosiero por uzi anstataŭ defaŭlte (DEVAS ESTI UNUA ARGUMENTO)"
+# TRANSLATORS: Please don't translate the list entries
+list="""
+List <devices|layouts|colorschemes|paths|keys>
+   devices: Montras nomojn de aparatoj por filteblaj fenestraĵoj
+   layouts: Listigas enkonstruajn aranĝojn
+   colorschemes: Listas enkonstruitajn kloraj skemoj
+   paths: Enlistigu agordajn serĉajn vojojn de agordo
+   widgets: Fenestraĵoj uzeblaj en aranĝo
+   keys: Montri la klavarajn ligojn."""
+write="Skribu defaŭltan agordan dosieron."
+
+
+[config.err]
+configsyntax="0| malbona agordo dosiero-sintakso; estu ŜLOSI=VALORO, estis {0}"
+deprecation="1| linio {0}: '{1}' malakceptas. Ignorita {1}={2}"
+line="2| linio #{0}: {1}"
+tempscale="3| malvalida TempScale-valoro {0}"
+
+
+[error]
+configparse="4| malsukcesis pari agordi dosiero: {0}"
+cliparse="5| analizante CLI-argumentojn: {0}"
+logsetup="6| malsukcesis agordi registro dosiero: {0}"
+unknownopt="7| Nekonata opcio \"{0}\"; provu layouts, colorschemes, keys, paths, aŭ devices"
+writefail="8| Malsukcesis skribi agordan dosieron: {0}"
+checklog="9| eraroj renkontitaj; de {0}:"
+metricsetup="10| eraro agordante {0} metrikojn: {1}"
+nometrics="11| neniuj metrikoj por {0} {1}"
+fatalfetch="12| fatala eraro elprenanta {0} info: {1}"
+recovfetch="13| reakirebla eraro elprenanta {0} info; saltante {0}: {1}"
+nodevfound="14| neniu uzebla {0} trovita"
+setuperr="15| eraro agordante {0}: {1}"
+colorschemefile="16| malsukcesis trovi kloraj skemoj dosiero {0} en {1}"
+colorschemeread="17| malsukcesis legi kloraj skemoj dosiero {0}: {1}"
+colorschemeparse="18| Fiaskis analizi kloraj skemoj dosiero: {0}"
+findlayout="19| malsukcesis legi kloraj skemoj dosiero {0}: {1}"
+logopen="20| malsukcesis malfermi enskribi dosieron {0}: {1}"
+table="21| Tabla fenestraĵo TopRow-valoro malpli ol 0. TopRow: {0}"
+nohostname="22| Ne povis akiri hostname: {0}"
+
+[layout.error]
+widget="23| Malvalida fenestra nomo {0}. Devas esti unu el {1}"
+format="24| Eraro pri aranĝo sur linio {0}: formato devas esti {1}. Eraro analizante {2} kiel int. Vorto estis {3}. Uzante vicon alteco de 1."
+slashes="25| Averto pri aranĝo sur linio {0}: tro multaj '/' en vorto {1}; ignorante kroman rubon."
+
+[widget.label]
+disk=" Disk Usado "
+cpu=" CPU Usado "
+gauge=" Potencnivelo "
+battery=" Bateria Statuso "
+batt=" Baterio "
+temp=" Temperaturoj "
+net=" Reta Usado "
+netint=" Reta Usado: {0} "
+mem=" Memoro Usado "
+
+
+[widget.net.err]
+netactivity="26| malsukcesis ricevi retactiveco de gopsutil: {0}"
+negvalrecv="27| eraro: negativa valoro por ĵus ricevitaj retdatumoj de gopsutil. RecentBytesRecv: {0}"
+negvalsent="28| eraro: negativa valoro por ĵus senditaj retdatumoj de gopsutil. RecentBytesSent: {0}"
+
+
+[widget.disk]
+disk="Disko"
+mount="Monto"
+used="Uzita"
+free="Senpaga"
+rs="R/s"
+ws="W/s"
+
+
+[widget.proc]
+filter=" Filtrilo: "
+label=" Procezoj "
+[widget.proc.header]
+count="Kalkulo"
+command="Komando"
+cpu="CPU%"
+mem="Mem%"
+pid="PID"
+
+[widget.proc.err]
+count="29| malsukcesis akiri CPU-kalkuladon de gopsutil: {0}"
+retrieve="30| ne sukcesis akiri procezojn: {0}"
+ps="31| malsukcesis plenumi komandon 'ps': {0}"
+gopsutil="32| malsukcesis akiri procezojn de gopsutilo: {0}"
+pidconv="33| malsukcesis konverti PID al int: {0}. linio: {1}"
+cpuconv="34| malsukcesis konverti CPU-uzon al flosilo: {0}. linio: {1}"
+memconv="35| malsukcesis konverti Mem-uzon al flosilo: {0}. linio: {1}"
+getcmd="36| malsukcesis akiri procezan komandon de gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+cpupercent="37| malsukcesis ricevi uzadon de proceso cpu de gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+mempercent="38| malsukcesis ricevi uzadon de proceza memoro de gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+parse="39| ne sukcesis analizi eliron: {0}"

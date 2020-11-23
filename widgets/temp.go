@@ -39,7 +39,7 @@ func NewTempWidget(tempScale TempScale, filter []string) *TempWidget {
 		TempThreshold:  80,
 		TempScale:      tempScale,
 	}
-	self.Title = " Temperatures "
+	self.Title = tr.Value("widget.label.temp")
 	if len(filter) > 0 {
 		for _, t := range filter {
 			self.Data[t] = 0

@@ -2,6 +2,7 @@ package devices
 
 import (
 	"log"
+	"github.com/jdkeke142/lingo-toml"
 )
 
 const (
@@ -15,6 +16,7 @@ var _shutdownFuncs []func() error
 var _devs map[string][]string
 var _defaults map[string][]string
 var _startup []func(map[string]string) error
+var tr lingo.Translations
 
 // RegisterShutdown stores a function to be called by gotop on exit, allowing
 // extensions to properly release resources.  Extensions should register a
@@ -85,4 +87,8 @@ func Devices(domain string, all bool) []string {
 		return _devs[domain]
 	}
 	return _defaults[domain]
+}
+
+func SetTr(tra lingo.Translations) {
+	tr = tra
 }

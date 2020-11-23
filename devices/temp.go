@@ -1,7 +1,5 @@
 package devices
 
-//go:generate go-bindata -pkg devices -prefix data -o smc.go data
-
 import (
 	"log"
 )
@@ -19,7 +17,7 @@ func UpdateTemps(temps map[string]int) {
 		errs := f(temps)
 		if errs != nil {
 			for k, e := range errs {
-				log.Printf("error updating temp for %s: %s", k, e)
+				log.Printf(tr.Value("error.recovfetch", "temp", k, e.Error()))
 			}
 		}
 	}

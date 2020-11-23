@@ -83,7 +83,8 @@ func ParseLayout(i io.Reader) layout {
 			if len(rs) > 1 {
 				v, e := strconv.Atoi(rs[0])
 				if e != nil {
-					log.Printf("Layout error on line %d: format must be INT:STRING/INT. Error parsing %s as a int. Word was %s. Using a row height of 1.", lineNo, rs[0], w)
+					ln := strconv.Itoa(lineNo)
+					log.Printf(tr.Value("layout.error.format", "INT:STRING/INT", ln, rs[0], w))
 					v = 1
 				}
 				if v < 1 {
@@ -99,7 +100,8 @@ func ParseLayout(i io.Reader) layout {
 			if len(ks) > 1 {
 				weight, e := strconv.Atoi(ks[1])
 				if e != nil {
-					log.Printf("Layout error on line %d: format must be STRING/INT. Error parsing %s as a int. Word was %s. Using a weight of 1 for widget.", lineNo, ks[1], w)
+					ln := strconv.Itoa(lineNo)
+					log.Printf(tr.Value("layout.error.format", "STRING/INT", ln, ks[1], w))
 					weight = 1
 				}
 				if weight < 1 {
@@ -107,7 +109,8 @@ func ParseLayout(i io.Reader) layout {
 				}
 				wr.Weight = float64(weight)
 				if len(ks) > 2 {
-					log.Printf("Layout warning on line %d: too many '/' in word %s; ignoring extra junk.", lineNo, w)
+					ln := strconv.Itoa(lineNo)
+					log.Printf(tr.Value("layout.error.slashes", ln, w))
 				}
 				weightTotal += weight
 			} else {
