@@ -58,7 +58,8 @@ colorschemes = """Built-in colorschemes:
    solarized16-dark
    solarized16-light
    monokai
-   vice"""
+   vice
+   nord"""
 # TRANSLATORS: Please don't translate the widget **names**
 widgets = """Widgets that can be used in layouts:
    cpu   - CPU load graph
@@ -77,7 +78,7 @@ scale="Stellen den Skalierungsfaktor ein, >0"
 version="Zeigen die Version aus und beenden."
 percpu="Show each CPU in the CPU widget."
 cpuavg="Show average CPU in the CPU widget."
-temp="Show temperatures in fahrenheit.Show temperatures in fahrenheit."
+temp="Show temperatures in fahrenheit."
 statusbar="Show a statusbar with the time."
 rate="Refresh frequency. Most time units accepted.  \"1m\" = refresh every minute.  \"100ms\" = refresh every 100ms."
 layout="Name of layout spec file for the UI. Use \"-\" to pipe."

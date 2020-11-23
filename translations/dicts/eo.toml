@@ -58,7 +58,8 @@ colorschemes = """Enkonstruitaj kloraj skemoj:
    solarized16-dark
    solarized16-light
    monokai
-   vice"""
+   vice
+   nord"""
 # TRANSLATORS: Please don't translate the widget **names**
 widgets = """Enpaĝigaj Fenestraĵoj:
    cpu   - CPU ŝarĝa grafilo
