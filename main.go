@@ -216,13 +216,19 @@ func setWidgetColors() {
 	}
 	sort.Strings(keys)
 	i := 0
+	automaticcolors := false
+
+	if len(keys) > len(colorscheme.CPULines) {
+		automaticcolors = true
+	}
+
 	for _, v := range keys {
-		if i >= len(colorscheme.CPULines) {
-			// assuming colorscheme for CPU lines is not empty
-			i = 0
+		if automaticcolors {
+			cpu.LineColors[v] = ui.Color(i + 1)
+		} else {
+			c := colorscheme.CPULines[i]
+			cpu.LineColors[v] = ui.Color(c)
 		}
-		c := colorscheme.CPULines[i]
-		cpu.LineColors[v] = ui.Color(c)
 		i++
 	}
 
