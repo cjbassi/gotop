@@ -113,14 +113,15 @@ To make a custom colorscheme, check out the [template](./colorschemes/template.g
 `-V`, `--version` Print version and exit.  
 `-p`, `--percpu` Show each CPU in the CPU widget.  
 `-a`, `--averagecpu` Show average CPU in the CPU widget.  
+`-f`, `--fahrenheit` Show temperatures in fahrenheit.  
 `-s`, `--statusbar` Show a statusbar with the time.  
-`-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/screenshots/battery.png)
+`-b`, `--battery` Show battery level widget (`minimal` turns off). [preview](./assets/screenshots/battery.png)  
 `-i`, `--interface=NAME` Select network interface [default: all].
 
 ## Built With
 
 - [gizak/termui](https://github.com/gizak/termui)
-  - [nsf/termbox](https://github.com/nsf/termbox-go)
+- [nsf/termbox](https://github.com/nsf/termbox-go)
 - [exrook/drawille-go](https://github.com/exrook/drawille-go)
 - [shirou/gopsutil](https://github.com/shirou/gopsutil)
 - [goreleaser/nfpm](https://github.com/goreleaser/nfpm)
