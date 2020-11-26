@@ -44,7 +44,7 @@ var (
 	minimalMode    = false
 	averageLoad    = false
 	percpuLoad     = false
-	tempScale      = w.Celcius
+	tempScale      = w.Celsius
 	battery        = false
 	statusbar      = false
 	netInterface   = w.NET_INTERFACE_ALL

@@ -58,13 +58,13 @@ func collectSensors() ([]sensorMeasurement, error) {
 func (self *TempWidget) update() {
 	sensors, err := collectSensors()
 	if err != nil {
-		log.Printf("error recieved from gopsutil: %v", err)
+		log.Printf("error received from gopsutil: %v", err)
 	}
 	for _, sensor := range sensors {
 		switch self.TempScale {
 		case Fahrenheit:
 			self.Data[sensor.name] = utils.CelsiusToFahrenheit(int(sensor.temperature))
-		case Celcius:
+		case Celsius:
 			self.Data[sensor.name] = int(sensor.temperature)
 		}
 	}
