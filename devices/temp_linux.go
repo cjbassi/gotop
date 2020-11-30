@@ -3,6 +3,7 @@
 package devices
 
 import (
+	"log"
 	"strings"
 
 	"github.com/shirou/gopsutil/host"
@@ -15,8 +16,11 @@ func devs() []string {
 	}
 	sensors, err := host.SensorsTemperatures()
 	if err != nil {
-		// FIXME report the error
-		return []string{}
+		log.Printf("gopsutil reports %s", err)
+		if len(sensors) == 0 {
+			log.Printf("no temperature sensors returned")
+			return []string{}
+		}
 	}
 	rv := make([]string, 0, len(sensors))
 	for _, sensor := range sensors {
