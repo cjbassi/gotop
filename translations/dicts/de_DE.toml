@@ -1,74 +1,74 @@
-configfile="Config file"
-usage="Usage: {0} [options]\n\nOptions:\n"
-total="Total"
+configfile="Konfigurationsdatei"
+usage="Verwendung: {0} [optionen]\n\nOptionen:\n"
+total="Gesamt"
 
 
 [help]
-paths="Loadable colorschemes & layouts, and the config file, are searched for, in order:"
-log="The log file is in {0}"
-written="Config written to {0}"
+paths="Nach ladbaren Farbschemata und Layouts sowie der Konfigurationsdatei wird in der folgenden Reihenfolge gesucht:"
+log="Die Protokolldatei befindet sich in {0}"
+written="Konfiguration geschrieben auf {0}"
 help="""
-Quit: q or <C-c>
+Beenden: q oder <C-c>
 
-Process navigation:
-  - k and <Up>: up
-  - j and <Down>: down
-  - <C-u>: half page up
-  - <C-d>: half page down
-  - <C-b>: full page up
-  - <C-f>: full page down
-  - gg and <Home>: jump to top
-  - G and <End>: jump to bottom
+Prozessnavigation:
+  - k und <Up>: oben
+  - j und <Down>: nieder
+  - <C-u>: halbe Seite nach oben
+  - <C-d>: halbe Seite nach unten
+  - <C-b>: ganze Seite nach oben
+  - <C-f>: ganze Seite nach unten
+  - gg und <Home>: nach oben springen
+  - G und <End>: nach unten springen
 
 Process actions:
-  - <Tab>: toggle process grouping
-  - dd: kill selected process or group of processes with SIGTERM (15)
-  - d3: kill selected process or group of processes with SIGQUIT (3)
-  - d9: kill selected process or group of processes with SIGKILL (9)
+  - <Tab>: Prozessgruppierung umschalten
+  - dd: Beende einen ausgewählten Prozess oder eine Gruppe von Prozessen mit SIGTERM (15)
+  - d3: Beende einen ausgewählten Prozess oder eine Gruppe von Prozessen mit SIGQUIT (3)
+  - d9: töte einen ausgewählten Prozess oder eine Gruppe von Prozessen mit SIGKILL (9)
 
-Process sorting:
+Prozesssortierung:
   - c: CPU
   - m: Mem
   - p: PID
 
-Process filtering:
-  - /: start editing filter
-  - (while editing):
-    - <Enter>: accept filter
-    - <C-c> and <Escape>: clear filter
+Prozessfilterung:
+  - /: Filter bearbeiten
+  - (während der Bearbeitung):
+    - <Enter>: Filter akzeptieren
+    - <C-c> und <Escape>: Filter löschen
 
-CPU and Mem graph scaling:
-  - h: scale in
-  - l: scale out
+CPU- und Mem-Graph-Skalierung:
+  - h: skalieren in
+  - l: skalieren
 
-Network:
-  - b: toggle between mbps and scaled bytes per second
+Netzwerk:
+  - b: Umschalten zwischen MBit / s und skalierten Bytes pro Sekunde
 """
-# TRANSLATORS: Please don't translate the layout **names**
-layouts = """Built-in layouts:
+# ÜBERSETZER: Bitte übersetzen Sie die Layout-**Namen** nicht
+layouts = """Eingebaute Layouts:
    default
    minimal
    battery
    kitchensink"""
-# TRANSLATORS: Please don't translate the colorcheme **names**
-colorschemes = """Built-in colorschemes:
+# ÜBERSETZER: Bitte übersetzen Sie die Farbschema-**Namen** nicht
+colorschemes = """Eingebaute Farbschemata:
    default
-   default-dark (for white background)
+   default-dark (für weißen Hintergrund)
    solarized
    solarized16-dark
    solarized16-light
    monokai
    vice
    nord"""
-# TRANSLATORS: Please don't translate the widget **names**
-widgets = """Widgets that can be used in layouts:
-   cpu   - CPU load graph
-   mem   - Physical & swap memory use graph
-   temp  - Sensor temperatures
-   disk  - Physical disk partition use
-   power - A battery bar
-   net   - Network load
-   procs - Interactive process list"""
+# ÜBERSETZER: Bitte übersetzen Sie die Widget-**Namen** nicht
+widgets = """Widgets, die in Layouts verwendet werden können:
+   cpu   - CPU-Lastdiagramm
+   mem   - Physische & Swap-Speicher verwenden Grafik
+   temp  - Sensortemperaturen
+   disk  - Verwendung der physischen Festplattenpartition
+   power - Eine Batteriestange
+   net   - Netzwerklast
+   procs - Interaktive Prozessliste"""
 
 
 [args]
@@ -76,106 +76,106 @@ help="Hilfetext anzeigen."
 color="Ein Farbschema feststellen."
 scale="Stellen den Skalierungsfaktor ein, >0"
 version="Zeigen die Version aus und beenden."
-percpu="Show each CPU in the CPU widget."
-cpuavg="Show average CPU in the CPU widget."
-temp="Show temperatures in fahrenheit."
-statusbar="Show a statusbar with the time."
-rate="Refresh frequency. Most time units accepted.  \"1m\" = refresh every minute.  \"100ms\" = refresh every 100ms."
-layout="Name of layout spec file for the UI. Use \"-\" to pipe."
-net="Select network interface. Several interfaces can be defined using comma separated values. Interfaces can also be ignored using \"!\""
-export="Enable metrics for export on the specified port."
-mbps="Show network rate as mbps."
-test="Runs tests and exits with success/failure code."
-conffile="Config file to use instead of default (MUST BE FIRST ARGUMENT)"
+percpu="Zeigen Sie jede CPU im CPU-Widget an."
+cpuavg="Durchschnittliche CPU im CPU-Widget anzeigen."
+temp="Temperaturen in Fahrenheit anzeigen."
+statusbar="Zeigen Sie eine Statusleiste mit der Uhrzeit an."
+rate="Frequenz aktualisieren. Die meisten Zeiteinheiten werden akzeptiert. \"1m\" = jede Minute aktualisieren. \"100 ms\" = alle 100 ms aktualisieren."
+layout="Name der Layoutspezifikationsdatei für die Benutzeroberfläche. Verwenden Sie \"-\", um zu leiten."
+net="Wählen Sie die Netzwerkschnittstelle. Mehrere Schnittstellen können mit durch Kommas getrennten Werten definiert werden. Schnittstellen können auch mit ignoriert werden \"!\""
+export="Aktivieren Sie Metriken für den Export auf dem angegebenen Port."
+mbps="Netzwerkrate als MBit / s anzeigen."
+test="Führt Tests aus und beendet das Programm mit Erfolgs- / Fehlercode."
+conffile="Konfigurationsdatei, die anstelle der Standardeinstellung verwendet werden soll (MUSS DAS ERSTE ARGUMENT SEIN)"
 list="""
 List <devices|layouts|colorschemes|paths|keys>
-   devices: Prints out device names for filterable widgets
-   layouts: Lists build-in layouts
-   colorschemes: Lists built-in colorschemes
-   paths: List out configuration file search paths
-   widgets: Widgets that can be used in a layout
-   keys: Show the keyboard bindings."""
-write="Write out a default config file."
+   devices: Druckt Gerätenamen für filterbare Widgets aus
+   layouts: Listet integrierte Layouts auf
+   colorschemes: Listet integrierte Farbschemata auf
+   paths: Listen Sie die Suchpfade für Konfigurationsdateien auf
+   widgets: Widgets, die in einem Layout verwendet werden können
+   keys: Zeigen Sie die Tastaturbindungen an."""
+write="Schreiben Sie eine Standardkonfigurationsdatei."
 
 
 [config.err]
-configsyntax="0| bad config file syntax; should be KEY=VALUE, was {0}"
-deprecation="1| line {0}: '{1}' is deprecated.  Ignored {1}={2}"
-line="2| line #{0}: {1}"
-tempscale="3| invalid TempScale value {0}"
+configsyntax="0| schlechte Syntax der Konfigurationsdatei; sollte KEY=VALUE sein, war {0}"
+deprecation="1| Zeile {0}: '{1}' ist veraltet. Ignoriert {1}={2}"
+line="2| Zeile #{0}: {1}"
+tempscale="3| ungültiger TempScale-Wert {0}"
 
 
 [error]
-configparse="4| failed to parse config file: {0}"
-cliparse="5| parsing CLI args: {0}"
-logsetup="6| failed to setup log file: {0}"
-unknownopt="7| Unknown option \"{0}\"; try layouts, colorschemes, keys, paths, or devices\n"
-writefail="8| Failed to write configuration file: {0}"
-checklog="9| errors encountered; from {0}:"
-metricsetup="10| error setting up {0} metrics: {1}"
-nometrics="11| no metrics for {0} {1}"
-fatalfetch="12| fatal error fetching {0} info: {1}"
-recovfetch="13| recoverable error fetching {0} info; skipping {0}: {1}"
-nodevfound="14| no usable {0} found"
-setuperr="15| error setting up {0}: {1}"
-colorschemefile="16| failed to find colorscheme file {0} in {1}"
-colorschemeread="17| failed to read colorscheme file {0}: {1}"
-colorschemeparse="18| failed to parse colorscheme file: {0}"
-findlayout="19| failed to read colorscheme file {0}: {1}"
-logopen="20| failed to open log file {0}: {1}"
-table="21| table widget TopRow value less than 0. TopRow: {0}"
-nohostname="22| could not get hostname: {0}"
+configparse="4| Konfigurationsdatei konnte nicht analysiert werden: {0}"
+cliparse="5| Analysieren von CLI-Argumenten: {0}"
+logsetup="6| Protokolldatei konnte nicht eingerichtet werden: {0}"
+unknownopt="7| Unbekannte Option \"{0}\"; Probieren Sie layouts, colorschemes, keys, paths oder devices aus\n"
+writefail="8| Konfigurationsdatei konnte nicht geschrieben werden: {0}"
+checklog="9| aufgetretene Fehler; von {0}:"
+metricsetup="10| Fehler beim Einrichten von {0}-Metriken: {1}"
+nometrics="11| Keine Metriken für {0} {1}"
+fatalfetch="12| Schwerwiegender Fehler beim Abrufen von {0}-Informationen: {1}"
+recovfetch="13| behebbarer Fehler beim Abrufen von {0}-Informationen; überspringen {0}: {1}"
+nodevfound="14| Keine verwendbare {0} gefunden"
+setuperr="15| Fehler beim Einrichten {0}: {1}"
+colorschemefile="16| Farbschemadatei konnte nicht gefunden werden {0} in {1}"
+colorschemeread="17| Farbschemadatei konnte nicht gelesen werden {0}: {1}"
+colorschemeparse="18| Farbschemadatei konnte nicht analysiert werden: {0}"
+findlayout="19| Farbschemadatei konnte nicht gelesen werden {0}: {1}"
+logopen="20| Protokolldatei konnte nicht geöffnet werden {0}: {1}"
+table="21| Tabellen-Widget TopRow-Wert kleiner als 0. TopRow: {0}"
+nohostname="22| Hostname konnte nicht abgerufen werden: {0}"
 
 [layout.error]
-widget="23| Invalid widget name {0}.  Must be one of {1}"
-format="24| Layout error on line {0}: format must be {1}. Error parsing {2} as a int. Word was {3}. Using a row height of 1."
-slashes="25| Layout warning on line {0}: too many '/' in word {1}; ignoring extra junk."
+widget="23| Ungültiger Widget-Name {0}. Muss einer von sein {1}"
+format="24| Layoutfehler in Zeile {0}: Format muss {1} sein. Fehler beim Parsen von {2} als int. Das Wort war {3}. Verwenden Sie eine Zeilenhöhe von 1."
+slashes="25 | Layoutwarnung in Zeile {0}: zu viele '/' in Wort {1}; zusätzlichen Müll ignorieren."
 
 [widget.label]
-disk=" Disk Usage "
-cpu=" CPU Usage "
-gauge=" Power Level "
-battery=" Battery Status "
-batt=" Battery "
-temp=" Temperatures "
-net=" Network Usage "
-netint=" Network Usage: {0} "
-mem=" Memory Usage "
+disk=" Festplattennutzung "
+cpu=" CPU auslastung "
+gauge=" Leistungspegel "
+battery=" Batteriestatus "
+batt=" Batterie "
+temp=" Temperaturen "
+net=" Netzwerknutzung "
+netint=" Netzwerknutzung: {0} "
+mem=" Speichernutzung "
 
 
 [widget.net.err]
-netactivity="26| failed to get network activity from gopsutil: {0}"
-negvalrecv="27| error: negative value for recently received network data from gopsutil. recentBytesRecv: {0}"
-negvalsent="28| error: negative value for recently sent network data from gopsutil. recentBytesSent: {0}"
+netactivity="26 | Netzwerkaktivität von gopsutil konnte nicht abgerufen werden: {0}"
+negvalrecv="27 | Fehler: negativer Wert für kürzlich empfangene Netzwerkdaten von gopsutil. RecentBytesRecv: {0}"
+negvalsent="28 | Fehler: negativer Wert für kürzlich gesendete Netzwerkdaten von gopsutil. RecentBytesSent: {0}"
 
 
 [widget.disk]
-disk="Disk"
-mount="Mount"
-used="Used"
-free="Free"
-rs="R/s"
-ws="W/s"
+disk="Scheibe"
+mount="Montieren"
+used="Gebraucht"
+free="Kostenlos"
+rs="R / s"
+ws="W / s"
 
 
 [widget.proc]
 filter=" Filter: "
-label=" Processes "
+label=" Prozesse "
 [widget.proc.header]
-count="Count"
-command="Command"
+count="Anzahl"
+command="Befehl"
 cpu="CPU%"
 mem="Mem%"
 pid="PID"
 [widget.proc.err]
-count="29| failed to get CPU count from gopsutil: {0}"
-retrieve="30| failed to retrieve processes: {0}"
-ps="31| failed to execute 'ps' command: {0}"
-gopsutil="32| failed to get processes from gopsutil: {0}"
-pidconv="33| failed to convert PID to int: {0}. line: {1}"
-cpuconv="34| failed to convert CPU usage to float: {0}. line: {1}"
-memconv="35| failed to convert Mem usage to float: {0}. line: {1}"
-getcmd="36| failed to get process command from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
-cpupercent="37| failed to get process cpu usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
-mempercent="38| failed to get process memeory usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
-parse="39| failed to parse output: {0}"
+count="29 | CPU-Anzahl konnte nicht von gopsutil abgerufen werden: {0}"
+retrieve="30 | Prozesse konnten nicht abgerufen werden: {0}"
+ps="31 | Befehl 'ps' konnte nicht ausgeführt werden: {0}"
+gopsutil="32 | Prozesse konnten nicht von gopsutil abgerufen werden: {0}"
+pidconv="33 | Konvertierung der PID in int: {0} fehlgeschlagen. Linie 1}"
+cpuconv="34 | Konvertierung der CPU-Auslastung in float fehlgeschlagen: {0}. Linie 1}"
+memconv="35 | Die Verwendung von Mem konnte nicht in float konvertiert werden: {0}. Linie 1}"
+getcmd="36 | Prozessbefehl von gopsutil konnte nicht abgerufen werden: {0}. psProc: {1}. i: {2}. pid: {3}"
+cpupercent="37 | Fehler beim Abrufen der Prozess-CPU-Nutzung von gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+mempercent="38 | Prozessspeicherauslastung konnte nicht von gopsutil abgerufen werden: {0}. psProc: {1}. i: {2}. pid: {3}"
+parse="39 | Ausgabe konnte nicht analysiert werden: {0}"

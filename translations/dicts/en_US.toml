@@ -87,10 +87,11 @@ export="Enable metrics for export on the specified port."
 mbps="Show network rate as mbps."
 test="Runs tests and exits with success/failure code."
 conffile="Config file to use instead of default (MUST BE FIRST ARGUMENT)"
+# TRANSLATORS: Please don't translate the **labels** ("devices", "layouts") as they don't change in the code.
 list="""
 List <devices|layouts|colorschemes|paths|keys>
    devices: Prints out device names for filterable widgets
-   layouts: Lists build-in layouts
+   layouts: Lists built-in layouts
    colorschemes: Lists built-in colorschemes
    paths: List out configuration file search paths
    widgets: Widgets that can be used in a layout
