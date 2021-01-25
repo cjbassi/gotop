@@ -13,6 +13,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
+## [4.1.0] 2021-01-25
+
+The minor version bump reflects the addition of I18N. If you are using one of the languages that has a translation, and your environment is set to that language, the UI will be different.  Translations are very welcome!
+
+Thanks to the people who submitted PRs and translations to this release.
+
+### Added
+
+- Adds multilingual support.  German, Chinese (zh_CN), Esperanto (#120)
+
+### Changed
+
+- The uploaded license was a 2-clause BSD, which is functionally equivalent; however, since the contributor agreement was for MIT, to make it clean the uploaded license file was changed to the Festival variant of MIT. (#147)
+- Per-process CPU use was averaged over the entire process lifetime.  While more of a semantic difference than a bug, it was a unintuitive and not particularly useful. CPU averages are now weighted moving averages over time, with more recent use having more weight.
+- iSMC was still in the code; iSMC violates the MIT license, and this has been cleaned out.
+- Versions are now embedded during the package build, rather than being hard-coded. More info in #140
+
+### Fixed
+
+- No temperatures displayed (#130), a recurring issue.
+- Cannot show the CPU usages of the processes (#135)
+- power widget consumes all RAM (#134)
+- Disk usage not showing up at all (#27)
+- Missing CPU: Lists 7 of 8 expected (#19)
+
+
 ## [4.0.1] 2020-06-08
 
 **Darwin-only release**

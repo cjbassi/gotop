@@ -1,6 +1,6 @@
 # Current steps for a release
 
-1. Update Version in main.go 
+1. ~~Update Version in main.go~~ (now set in package build)
 2. Update CHANGELOG.md
 3. Tag
 4. Push everything
