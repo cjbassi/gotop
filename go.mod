@@ -20,3 +20,5 @@ require (
 )
 
 go 1.14
+
+replace github.com/jdkeke142/lingo-toml => github.com/xxxserxxx/lingo v0.0.0-20210125170606-5858cf2e409d

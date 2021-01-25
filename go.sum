@@ -18,7 +18,6 @@ github.com/gizak/termui/v3 v3.1.0 h1:ZZmVDgwHl7gR7elfKf1xc4IudXZ5qqfDh4wExk4Iajc
 github.com/gizak/termui/v3 v3.1.0/go.mod h1:bXQEBkJpzxUAKf0+xq9MSWAvWZlE7c+aidmyFlkYTrY=
 github.com/go-ole/go-ole v1.2.4 h1:nNBDSCOigTSiarFpYE9J/KtEA1IOW4CNeqT9TQDqCxI=
 github.com/go-ole/go-ole v1.2.4/go.mod h1:XCwSNxSkXRo4vlyPy93sltvi/qJq0jqQhjqQNIwKuxM=
-github.com/jdkeke142/lingo-toml v0.0.0-20200508150411-0ad65ccb786d/go.mod h1:Kji1cjs9t6xDSLWuz6vP6ockOTT1rIdMLnNryfHXVuw=
 github.com/jdkeke142/lingo-toml v0.0.0-20200705162942-3520fe0dec06 h1:Mzc7Br3CA20ztYUP68pghZgaVTkumWNzgmEAo8etfbE=
 github.com/jdkeke142/lingo-toml v0.0.0-20200705162942-3520fe0dec06/go.mod h1:Kji1cjs9t6xDSLWuz6vP6ockOTT1rIdMLnNryfHXVuw=
 github.com/jessevdk/go-flags v1.4.0/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJSGM75WSRxI=
@@ -39,6 +38,8 @@ github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0 h1:Xuk8ma/ibJ1
 github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0/go.mod h1:7AwjWCpdPhkSmNAgUv5C7EJ4AbmjEB3r047r3DXWu3Y=
 github.com/shirou/gopsutil v2.20.3+incompatible h1:0JVooMPsT7A7HqEYdydp/OfjSOYSjhXV7w1hkKj/NPQ=
 github.com/shirou/gopsutil v2.20.3+incompatible/go.mod h1:5b4v6he4MtMOwMlS0TUMTu2PcXUg8+E1lC7eC3UO/RA=
+github.com/shurcooL/httpfs v0.0.0-20190707220628-8d4bc4ba7749 h1:bUGsEnyNbVPw06Bs80sCeARAlK8lhwqGyi6UT8ymuGk=
+github.com/shurcooL/httpfs v0.0.0-20190707220628-8d4bc4ba7749/go.mod h1:ZY1cvUeJuFPAdZ/B6v7RHavJWZn2YPVFQ1OSXhCGOkg=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJyk=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
@@ -46,8 +47,8 @@ github.com/valyala/fastrand v1.0.0 h1:LUKT9aKer2dVQNUi3waewTbKV+7H17kvWFNKs2Obdk
 github.com/valyala/fastrand v1.0.0/go.mod h1:HWqCzkrkg6QXT8V2EXWvXCoow7vLwOFN002oeRzjapQ=
 github.com/valyala/histogram v1.0.1 h1:FzA7n2Tz/wKRMejgu3PV1vw3htAklTjjuoI6z3d4KDg=
 github.com/valyala/histogram v1.0.1/go.mod h1:lQy0xA4wUz2+IUnf97SivorsJIp8FxsnRd6x25q7Mto=
-github.com/xxxserxxx/lingo v0.0.0-20200619152803-440e0ec753ec h1:72Kid6wRHf4IZq0oJyJZGo4FuIyJeKqN4n9MEh2l744=
-github.com/xxxserxxx/lingo v0.0.0-20200619152803-440e0ec753ec/go.mod h1:Kji1cjs9t6xDSLWuz6vP6ockOTT1rIdMLnNryfHXVuw=
+github.com/xxxserxxx/lingo v0.0.0-20210125170606-5858cf2e409d h1:AMZd3NBq6ivnxE8w7CGOl3jFXX2aT3tkKptXEL1xHYA=
+github.com/xxxserxxx/lingo v0.0.0-20210125170606-5858cf2e409d/go.mod h1:R5dUtmikrDRJHLdiy7nTWQWp44RhYKJ+sOSb0UtsoUk=
 github.com/xxxserxxx/opflag v1.0.5 h1:2H4Qtl1qe+dSkEcGt+fBe2mQ8z14MgkWPqcLaoa6k90=
 github.com/xxxserxxx/opflag v1.0.5/go.mod h1:GWZtb3/tGGj5W1GE/JTyJAuqgxDxl1+jqDGAGM+P/p4=
 golang.org/x/sys v0.0.0-20200316230553-a7d97aace0b0 h1:4Khi5GeNOkZS5DqSBRn4Sy7BE6GuxwOqARPqfurkdNk=

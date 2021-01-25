@@ -354,7 +354,7 @@ func main() {
 }
 
 func run() int {
-	ling, err := lingo.New("en_US", "translations", translations.AssetFile())
+	ling, err := lingo.New("en_US", "", translations.AssetFile())
 	if err != nil {
 		fmt.Printf("failed to load language files: %s\n", err)
 		return 2
