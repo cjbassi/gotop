@@ -38,7 +38,7 @@ If you install gotop by hand, or you download or create new layouts or colorsche
 
 ### Extension builds
 
-An evolving mechanism in gotop are extensions. This is designed to allow gotop to support feature sets that are not universally needed without blowing up the application for average users with usused features.  Examples are support for specific hardware sets like video cards, or things that are just obviously not a core objective of the application, like remote server monitoring.
+An evolving mechanism in gotop are extensions. This is designed to allow gotop to support feature sets that are not universally needed without blowing up the application for average users with unused features.  Examples are support for specific hardware sets like video cards, or things that are just obviously not a core objective of the application, like remote server monitoring.
 
 The path to these extensions is a tool called [gotop-builder](https://github.com/xxxserxxx/gotop-builder). It is easy to use and depends only on having Go installed.  You can read more about it on the project page, where you can also find binaries for Linux that have *all* extensions built in. If you want less than an all-inclusive build, or one for a different OS/architecture, you can use gotop-builder itself to create your own.
 
@@ -128,7 +128,7 @@ For more information on other topics, see:
 
 I obviously think gotop is the Bee's Knees, but there are many alternatives. Many of these have been around for years. All of them are terminal-based tools.
 
-- Grandpa [top](http://sourceforge.net/projects/unixtop/). Written 36 years ago, C, installed by default on almost every Unix decendant.
+- Grandpa [top](http://sourceforge.net/projects/unixtop/). Written 36 years ago, C, installed by default on almost every Unix descendant.
 - [htop](https://hisham.hm/htop/). A prettier top. Similar functionality. 16 years old!
 - [atop](https://www.atoptool.nl/). Detailed process-focused inspection with a table-like view. Been around for 9 long years.
 - [iftop](http://www.ex-parrot.com/~pdw/iftop/), a top for network connections.  More than just data transfer, iftop will show what interfaces are connecting to what IP addresses. Requires root access to run.
