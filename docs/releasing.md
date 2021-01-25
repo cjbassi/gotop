@@ -9,8 +9,13 @@
 7. Finish the draft release and publish.
 8. Check gotop-builder for a successful everything build; if successful, publish.
 10. Wait for the [AUR](https://github.com/xxxserxxx/gotop-linux) project to finish building.
-    1. update arch (gotop-linux) and run `aurpublish gotop` and `aurpublish gotop-bin`
-    2. Test install `gotop` and `gotop-bin` with running & version check
+	1.  Update package versions in gotop and gotop-bin
+	2.  namcap PKGBUILD
+	3.  updpkgsums
+	4.  makepkg --printsrcinfo > .SRCINFO
+	5.  git commit -a
+	6.  git push
+	7.  Test install `gotop`, `gotop-bin`, and `gotop-git` with running & version check
 11. Notify Nix
 12. ~~Notify Homebrew~~ Automated now.
 

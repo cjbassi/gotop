@@ -27,7 +27,7 @@ jobs:
         with:
           token: ${{ secrets.homebrew }}
           formula: gotop
-          revision: ${{ steps.tag_name.outputs.tag }}
+          tag: ${{ steps.tag_name.outputs.tag }}
 
       - name: Update Arch AURs
         uses: peter-evans/repository-dispatch@v1
