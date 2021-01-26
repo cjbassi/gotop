@@ -25,9 +25,7 @@ func devs() []string {
 	rv := make([]string, 0, len(sensors))
 	for _, sensor := range sensors {
 		label := sensor.SensorKey
-		if strings.Contains(sensor.SensorKey, "input") {
-			label = sensor.SensorKey[:strings.Index(sensor.SensorKey, "_input")]
-		}
+		label = strings.TrimSuffix(sensor.SensorKey, "_input")
 		rv = append(rv, label)
 		sensorMap[sensor.SensorKey] = label
 	}
