@@ -89,13 +89,14 @@ test="Ekzekutas testojn kaj forirojn kun sukceso / fiaska kodo."
 conffile="Agordi dosiero por uzi anstataŭ defaŭlte (DEVAS ESTI UNUA ARGUMENTO)"
 # TRANSLATORS: Please don't translate the list entries
 list="""
-List <devices|layouts|colorschemes|paths|keys>
+List <devices|layouts|colorschemes|paths|keys|langs>
    devices: Montras nomojn de aparatoj por filteblaj fenestraĵoj
    layouts: Listigas enkonstruajn aranĝojn
    colorschemes: Listas enkonstruitajn kloraj skemoj
    paths: Enlistigu agordajn serĉajn vojojn de agordo
    widgets: Fenestraĵoj uzeblaj en aranĝo
-   keys: Montri la klavarajn ligojn."""
+   keys: Montri la klavarajn ligojn.
+   langs: Montru subtenatajn lingvajn tradukojn."""
 write="Skribu defaŭltan agordan dosieron."
 
 

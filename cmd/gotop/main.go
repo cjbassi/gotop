@@ -125,6 +125,15 @@ func parseArgs() error {
 			fmt.Println(tr.Value("help.help"))
 		case "widgets":
 			fmt.Println(tr.Value("help.widgets"))
+		case "langs":
+			vs, err := translations.AssetDir("")
+			if err != nil {
+				return err
+			}
+			for _, v := range vs {
+				v = strings.TrimSuffix(v, ".toml")
+				fmt.Println(v)
+			}
 		default:
 			fmt.Printf(tr.Value("error.unknownopt", *list))
 			os.Exit(1)

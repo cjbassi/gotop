@@ -87,13 +87,14 @@ mbps=".spbm sa etar krowten wohS"
 test=".edoc eruliaf/sseccus htiw stixe dna stset snuR"
 conffile=")TNEMUGRA TSRIF EB TSUM( tluafed fo daetsni esu ot elif gifnoC"
 list="""
->syek|shtap|semehcsroloc|stuoyal|secived< tsiL
+>snart|syek|shtap|semehcsroloc|stuoyal|secived< tsiL
 stegdiw elbaretlif rof seman ecived tuo stnirP :secived   
 stuoyal ni-dliub stsiL :stuoyal   
 semehcsroloc ni-tliub stsiL :semehcsroloc   
 shtap hcraes elif noitarugifnoc tuo tsiL :shtap   
 tuoyal a ni desu eb nac taht stegdiW :stegdiw   
-.sgnidnib draobyek eht wohS :syek   """
+.sgnidnib draobyek eht wohS :syek
+.snoitalsnart egaugnal detroppus wohS :sgnal"""
 write=".elif gifnoc tluafed a tuo etirW"
 
 

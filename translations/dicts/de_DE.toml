@@ -88,13 +88,14 @@ mbps="Netzwerkrate als MBit / s anzeigen."
 test="Führt Tests aus und beendet das Programm mit Erfolgs- / Fehlercode."
 conffile="Konfigurationsdatei, die anstelle der Standardeinstellung verwendet werden soll (MUSS DAS ERSTE ARGUMENT SEIN)"
 list="""
-List <devices|layouts|colorschemes|paths|keys>
+List <devices|layouts|colorschemes|paths|keys|langs>
    devices: Druckt Gerätenamen für filterbare Widgets aus
    layouts: Listet integrierte Layouts auf
    colorschemes: Listet integrierte Farbschemata auf
    paths: Listen Sie die Suchpfade für Konfigurationsdateien auf
    widgets: Widgets, die in einem Layout verwendet werden können
-   keys: Zeigen Sie die Tastaturbindungen an."""
+   keys: Zeigen Sie die Tastaturbindungen an.
+   langs: Unterstützte Sprachübersetzungen anzeigen."""
 write="Schreiben Sie eine Standardkonfigurationsdatei."
 
 
