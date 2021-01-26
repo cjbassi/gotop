@@ -19,7 +19,6 @@ func getProcs() ([]Proc, error) {
 
 	procs := []Proc{}
 	for _, line := range linesOfProcStrings {
-		log.Printf("line is '%s', pid is '%s', cpu is '%s', mem is '%s'", line, strings.TrimSpace(line[0:10]), strings.TrimSpace(line[63:68]), strings.TrimSpace(line[69:74]))
 		pid, err := strconv.Atoi(strings.TrimSpace(line[0:10]))
 		if err != nil {
 			log.Println(tr.Value("widget.proc.err.pidconv", err.Error(), line))

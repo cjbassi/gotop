@@ -51,7 +51,6 @@ var (
 	conf         gotop.Config
 	help         *w.HelpMenu
 	bar          *w.StatusBar
-	statusbar    bool
 	stderrLogger = log.New(os.Stderr, "", 0)
 	tr           lingo.Translations
 )
@@ -176,7 +175,7 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 		case <-drawTicker:
 			if !c.HelpVisible {
 				ui.Render(grid)
-				if statusbar {
+				if c.Statusbar {
 					ui.Render(bar)
 				}
 			}
@@ -193,7 +192,7 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 			case "<Resize>":
 				payload := e.Payload.(ui.Resize)
 				termWidth, termHeight := payload.Width, payload.Height
-				if statusbar {
+				if c.Statusbar {
 					grid.SetRect(0, 0, termWidth, termHeight-1)
 					bar.SetRect(0, termHeight-1, termWidth, termHeight)
 				} else {
@@ -238,7 +237,7 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 					}
 				case "<Resize>":
 					ui.Render(grid)
-					if statusbar {
+					if c.Statusbar {
 						ui.Render(bar)
 					}
 				case "<MouseLeft>":
@@ -433,7 +432,7 @@ func run() int {
 
 	setDefaultTermuiColors(conf) // done before initializing widgets to allow inheriting colors
 	help = w.NewHelpMenu(tr)
-	if statusbar {
+	if conf.Statusbar {
 		bar = w.NewStatusBar()
 	}
 
@@ -444,7 +443,7 @@ func run() int {
 	}
 
 	termWidth, termHeight := ui.TerminalDimensions()
-	if statusbar {
+	if conf.Statusbar {
 		grid.SetRect(0, 0, termWidth, termHeight-1)
 	} else {
 		grid.SetRect(0, 0, termWidth, termHeight)
@@ -452,7 +451,7 @@ func run() int {
 	help.Resize(termWidth, termHeight)
 
 	ui.Render(grid)
-	if statusbar {
+	if conf.Statusbar {
 		bar.SetRect(0, termHeight-1, termWidth, termHeight)
 		ui.Render(bar)
 	}
