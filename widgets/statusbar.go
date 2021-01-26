@@ -44,6 +44,8 @@ func (sb *StatusBar) Draw(buf *ui.Buffer) {
 		),
 	)
 
+	// i, e := host.Info()
+	// i.Uptime // Number of seconds since boot
 	buf.SetString(
 		"gotop",
 		ui.Theme.Default,

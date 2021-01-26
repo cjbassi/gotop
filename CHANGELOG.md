@@ -13,6 +13,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
+## [4.1.1] 
+
+### Added
+
+- Show available translations in help text (#157)
+
+### Changed
+
+- Bumped `gopsutils` to v3.20.12
+- Bumped `battery` to v0.10.0
+
+### Fixed
+
+- CPU name sorting in load widget (#161)
+- The status bar got lost at some point; it's back
+- Errors from any battery prevented display of all battery information
+
+
 ## [4.1.0] 2021-01-25
 
 The minor version bump reflects the addition of I18N. If you are using one of the languages that has a translation, and your environment is set to that language, the UI will be different.  Translations are very welcome!
