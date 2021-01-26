@@ -91,6 +91,9 @@ func (b *BatteryWidget) update() {
 		}
 	}
 	for i, battery := range batteries {
+		if battery.Full == 0.0 {
+			continue
+		}
 		id := makeID(i)
 		perc := battery.Current / battery.Full
 		percentFull := math.Abs(perc) * 100.0

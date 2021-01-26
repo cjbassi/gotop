@@ -49,7 +49,6 @@ func (b *BatteryGauge) update() {
 			log.Printf("error setting up batteries: %v", err)
 			errLogged = true
 		}
-		return
 	}
 	if len(bats) < 1 {
 		b.Label = fmt.Sprintf("N/A")
@@ -60,6 +59,9 @@ func (b *BatteryGauge) update() {
 	charging := "%d%% ⚡%s"
 	rate := 0.0
 	for _, bat := range bats {
+		if bat.Full == 0.0 {
+			continue
+		}
 		mx += bat.Full
 		cu += bat.Current
 		if rate < bat.ChargeRate {
