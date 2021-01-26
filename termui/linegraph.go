@@ -3,6 +3,8 @@ package termui
 import (
 	"image"
 	"sort"
+	"strconv"
+	"unicode"
 
 	. "github.com/gizak/termui/v3"
 	drawille "github.com/xxxserxxx/gotop/v4/termui/drawille-go"
@@ -27,6 +29,8 @@ type LineGraph struct {
 	LineColors       map[string]Color
 	LabelStyles      map[string]Modifier
 	DefaultLineColor Color
+
+	seriesList numbered
 }
 
 func NewLineGraph() *LineGraph {
@@ -54,18 +58,20 @@ func (self *LineGraph) Draw(buf *Buffer) {
 		colors[i] = make([]Color, self.Inner.Dy()+2)
 	}
 
-	// sort the series so that overlapping data will overlap the same way each time
-	seriesList := make([]string, len(self.Data))
-	i := 0
-	for seriesName := range self.Data {
-		seriesList[i] = seriesName
-		i++
+	if len(self.seriesList) != len(self.Data) {
+		// sort the series so that overlapping data will overlap the same way each time
+		self.seriesList = make(numbered, len(self.Data))
+		i := 0
+		for seriesName := range self.Data {
+			self.seriesList[i] = seriesName
+			i++
+		}
+		sort.Sort(self.seriesList)
 	}
-	sort.Strings(seriesList)
 
 	// draw lines in reverse order so that the first color defined in the colorscheme is on top
-	for i := len(seriesList) - 1; i >= 0; i-- {
-		seriesName := seriesList[i]
+	for i := len(self.seriesList) - 1; i >= 0; i-- {
+		seriesName := self.seriesList[i]
 		seriesData := self.Data[seriesName]
 		seriesLineColor, ok := self.LineColors[seriesName]
 		if !ok {
@@ -128,7 +134,7 @@ func (self *LineGraph) Draw(buf *Buffer) {
 	maxWid := 0
 	xoff := 0 // X offset for additional columns of text
 	yoff := 0 // Y offset for resetting column to top of widget
-	for i, seriesName := range seriesList {
+	for i, seriesName := range self.seriesList {
 		if yoff+i+2 > self.Inner.Dy() {
 			xoff += maxWid + 2
 			yoff = -i
@@ -158,4 +164,64 @@ func (self *LineGraph) Draw(buf *Buffer) {
 		}
 
 	}
+}
+
+// A string containing an integer
+type numbered []string
+
+func (n numbered) Len() int      { return len(n) }
+func (n numbered) Swap(i, j int) { n[i], n[j] = n[j], n[i] }
+func (n numbered) Less(i, j int) bool {
+	a := n[i]
+	b := n[j]
+	for i := 0; i < len(a); i++ {
+		ac := a[i]
+		if unicode.IsDigit(rune(ac)) {
+			j := i + 1
+			for ; j < len(a); j++ {
+				if !unicode.IsDigit(rune(a[j])) {
+					break
+				}
+				if j >= len(b) {
+					return false
+				}
+				if !unicode.IsDigit(rune(b[j])) {
+					return false
+				}
+			}
+			an, err := strconv.Atoi(a[i:j])
+			if err != nil {
+				return true
+			}
+			if j > len(b) {
+				return false
+			}
+			for ; j < len(b); j++ {
+				if !unicode.IsDigit(rune(b[j])) {
+					break
+				}
+			}
+			bn, err := strconv.Atoi(b[i:j])
+			if err != nil {
+				return true
+			}
+			if an < bn {
+				return true
+			} else if bn < an {
+				return false
+			}
+			i = j
+		}
+		if i >= len(a) {
+			return true
+		} else if i >= len(b) {
+			return false
+		}
+		if ac < b[i] {
+			return true
+		} else if b[i] < ac {
+			return false
+		}
+	}
+	return true
 }
