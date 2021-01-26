@@ -14,6 +14,14 @@ jobs:
         run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF##*/})"
         id: tag_name
 
+      - name: Trigger extensions build
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          repository: xxxserxxx/gotop-builder
+          event-type: my-release
+          client-payload: '{"tag": "${{ steps.tag_name.outputs.tag }}"}'
+
       - name: Update Homebrew recipe
         uses: peter-evans/repository-dispatch@v1
         with:
@@ -34,13 +42,5 @@ jobs:
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           repository: xxxserxxx/gotop-linux
-          event-type: my-release
-          client-payload: '{"tag": "${{ steps.tag_name.outputs.tag }}"}'
-
-      - name: Trigger extensions build
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          repository: xxxserxxx/gotop-builder
           event-type: my-release
           client-payload: '{"tag": "${{ steps.tag_name.outputs.tag }}"}'

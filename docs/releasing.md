@@ -16,6 +16,7 @@
 	5.  git commit -a
 	6.  git push
 	7.  Test install `gotop`, `gotop-bin`, and `gotop-git` with running & version check
+
 11. Notify Nix
 12. ~~Notify Homebrew~~ Automated now.
 
@@ -24,6 +25,15 @@ repository, so the final publish step is still currently manual.
 
 Oh, what a tangled web.
 
+```
+for p in builder nvidia remote; do
+curl -H "Accept: application/vnd.github.everest-preview+json" \
+	-H "Authorization: token ${TOKEN}" \
+	--request POST \
+	--data "{'event_type': 'my-release', 'client_payload': {'tag': '${TAG}'}}" \
+	https://api.github.com/repos/xxxserxxx/gotop-${p}/dispatches
+done
+```
 
 ## Nix 
 
