@@ -7,12 +7,13 @@
 
 Another terminal based graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!
 
-Join us in [\#gotop:matrix.org](https://riot.im/app/#/room/#gotop:matrix.org) ([matrix clients](https://matrix.to/#/#gotop:matrix.org)).
+Join us in [\#gotop:matrix.org](https://app.element.io/#/room/#gotop:matrix.org) ![](https://img.shields.io/matrix/gotop:matrix.org) ([matrix clients](https://matrix.to/#/#gotop:matrix.org)).
 
 ![](https://github.com/xxxserxxx/gotop/workflows/Build%20Go%20binaries/badge.svg)
-![](https://github.com/xxxserxxx/gotop/workflows/Create%20pre-release/badge.svg)
-
-<div id="release" align="center">Current release: <a href="https://github.com/xxxserxxx/gotop/releases/tag/v4.0.1">v4.0.1</a></div>
+![](https://img.shields.io/github/v/release/xxxserxxx/gotop)
+![](https://img.shields.io/github/release-date/xxxserxxx/gotop)
+![](https://img.shields.io/librariesio/github/xxxserxxx/gotop)
+![](https://img.shields.io/github/commit-activity/m/xxxserxxx/gotop)
 
 See the [mini-blog](https://github.com/xxxserxxx/gotop/wiki/Micro-Blog) for updates on the build status, and the [change log](/CHANGELOG.md) for release updates.
 
