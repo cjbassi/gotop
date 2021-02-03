@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jdkeke142/lingo-toml"
+	"github.com/xxxserxxx/lingo"
 	"github.com/shibukawa/configdir"
 	"github.com/xxxserxxx/gotop/v4/colorschemes"
 	"github.com/xxxserxxx/gotop/v4/widgets"

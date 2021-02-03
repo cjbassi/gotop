@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jdkeke142/lingo-toml"
+	"github.com/xxxserxxx/lingo"
 	"github.com/shibukawa/configdir"
 )
 

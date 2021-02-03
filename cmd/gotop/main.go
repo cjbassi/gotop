@@ -21,7 +21,7 @@ import (
 	"github.com/VictoriaMetrics/metrics"
 	jj "github.com/cloudfoundry-attic/jibber_jabber"
 	ui "github.com/gizak/termui/v3"
-	"github.com/jdkeke142/lingo-toml"
+	"github.com/xxxserxxx/lingo"
 	"github.com/shibukawa/configdir"
 	"github.com/xxxserxxx/opflag"
 

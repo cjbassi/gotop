@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	ui "github.com/gizak/termui/v3"
-	lingo "github.com/jdkeke142/lingo-toml"
+	lingo "github.com/xxxserxxx/lingo"
 )
 
 var tr lingo.Translations

@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/jdkeke142/lingo-toml"
+	"github.com/xxxserxxx/lingo"
 	"github.com/xxxserxxx/gotop/v4"
 )
 

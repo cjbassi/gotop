@@ -9,7 +9,7 @@ require (
 	github.com/distatus/battery v0.10.0
 	github.com/gizak/termui/v3 v3.1.0
 	github.com/go-ole/go-ole v1.2.4 // indirect
-	github.com/jdkeke142/lingo-toml v0.0.0-20200705162942-3520fe0dec06
+	github.com/xxxserxxx/lingo v0.0.0-20210203173221-1a343cae68e0
 	github.com/mattn/go-runewidth v0.0.4
 	github.com/nsf/termbox-go v0.0.0-20200418040025-38ba6e5628f1 // indirect
 	github.com/onsi/ginkgo v1.14.2 // indirect
@@ -23,5 +23,3 @@ require (
 )
 
 go 1.14
-
-replace github.com/jdkeke142/lingo-toml => github.com/xxxserxxx/lingo v0.0.0-20210125170606-5858cf2e409d

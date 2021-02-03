@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/jdkeke142/lingo-toml"
+	"github.com/xxxserxxx/lingo"
 	"github.com/xxxserxxx/gotop/v4"
 	"github.com/xxxserxxx/gotop/v4/widgets"
 

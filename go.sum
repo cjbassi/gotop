@@ -79,6 +79,8 @@ github.com/valyala/histogram v1.0.1 h1:FzA7n2Tz/wKRMejgu3PV1vw3htAklTjjuoI6z3d4K
 github.com/valyala/histogram v1.0.1/go.mod h1:lQy0xA4wUz2+IUnf97SivorsJIp8FxsnRd6x25q7Mto=
 github.com/xxxserxxx/lingo v0.0.0-20210125170606-5858cf2e409d h1:AMZd3NBq6ivnxE8w7CGOl3jFXX2aT3tkKptXEL1xHYA=
 github.com/xxxserxxx/lingo v0.0.0-20210125170606-5858cf2e409d/go.mod h1:R5dUtmikrDRJHLdiy7nTWQWp44RhYKJ+sOSb0UtsoUk=
+github.com/xxxserxxx/lingo v0.0.0-20210203173221-1a343cae68e0 h1:Ru3WVLMLIpKyJ+RovEnjD/Kl2I7dnyhkldJPUc8eKdE=
+github.com/xxxserxxx/lingo v0.0.0-20210203173221-1a343cae68e0/go.mod h1:SMupCha07PWCBui+1FLLBSJ9BybFvGiXdyogAMbUcFg=
 github.com/xxxserxxx/opflag v1.0.5 h1:2H4Qtl1qe+dSkEcGt+fBe2mQ8z14MgkWPqcLaoa6k90=
 github.com/xxxserxxx/opflag v1.0.5/go.mod h1:GWZtb3/tGGj5W1GE/JTyJAuqgxDxl1+jqDGAGM+P/p4=
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
