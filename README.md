@@ -35,6 +35,9 @@ If you install gotop by hand, or you download or create new layouts or colorsche
     ```
 - **OSX**: gotop is in *homebrew-core*.  `brew install gotop`.  Make sure to uninstall and untap any previous installations or taps.
 - **Prebuilt binaries**: Binaries for most systems can be downloaded from [the github releases page](https://github.com/xxxserxxx/gotop/releases). RPM and DEB packages are also provided.
+- **Prebuild binaries with extensions**:
+	-  [NVidia GPU support](https://github.com/xxxserxxx/gotop-nvidia/releases)
+	-  [Remote gotop support](https://github.com/xxxserxxx/gotop-remote/releases)
 - **Source**: This requires Go >= 1.14. `go get -u github.com/xxxserxxx/gotop/cmd/gotop`
 
 ### Extension builds
@@ -43,6 +46,12 @@ An evolving mechanism in gotop are extensions. This is designed to allow gotop t
 
 The path to these extensions is a tool called [gotop-builder](https://github.com/xxxserxxx/gotop-builder). It is easy to use and depends only on having Go installed.  You can read more about it on the project page, where you can also find binaries for Linux that have *all* extensions built in. If you want less than an all-inclusive build, or one for a different OS/architecture, you can use gotop-builder itself to create your own.
 
+There are currently two extensions:
+
+-   Support for [NVidia GPUs](https://github.com/xxxserxxx/gotop-nvidia), which add GPU usage, memory, and temperature data to the respective widgets
+-   Support for [remote devices](https://github.com/xxxserxxx/gotop-remote), which allows running gotop on a remote machine and seeing the sensors from that as if they were local sensors.
+
+There are builds for those binaries for Linux in each of the repositories.
 
 ### Console Users
 
