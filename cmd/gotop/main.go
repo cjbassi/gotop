@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/fs"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -21,8 +22,8 @@ import (
 	"github.com/VictoriaMetrics/metrics"
 	jj "github.com/cloudfoundry-attic/jibber_jabber"
 	ui "github.com/gizak/termui/v3"
-	"github.com/xxxserxxx/lingo"
 	"github.com/shibukawa/configdir"
+	"github.com/xxxserxxx/lingo/v2"
 	"github.com/xxxserxxx/opflag"
 
 	"github.com/xxxserxxx/gotop/v4"
@@ -30,7 +31,6 @@ import (
 	"github.com/xxxserxxx/gotop/v4/devices"
 	"github.com/xxxserxxx/gotop/v4/layout"
 	"github.com/xxxserxxx/gotop/v4/logging"
-	"github.com/xxxserxxx/gotop/v4/translations"
 	w "github.com/xxxserxxx/gotop/v4/widgets"
 )
 
@@ -125,13 +125,21 @@ func parseArgs() error {
 		case "widgets":
 			fmt.Println(tr.Value("help.widgets"))
 		case "langs":
-			vs, err := translations.AssetDir("")
+			err := fs.WalkDir(gotop.Dicts, ".", func(pth string, info fs.DirEntry, err error) error {
+				if err != nil {
+					return err
+				}
+				if info.IsDir() { // We skip these
+					return nil
+				}
+				fileName := info.Name()
+				if !strings.HasSuffix(fileName, ".toml") {
+					fmt.Println(strings.TrimSuffix(fileName, ".toml"))
+				}
+				return nil
+			})
 			if err != nil {
 				return err
-			}
-			for _, v := range vs {
-				v = strings.TrimSuffix(v, ".toml")
-				fmt.Println(v)
 			}
 		default:
 			fmt.Printf(tr.Value("error.unknownopt", *list))
@@ -362,7 +370,7 @@ func main() {
 }
 
 func run() int {
-	ling, err := lingo.New("en_US", "", translations.AssetFile())
+	ling, err := lingo.New("en_US", ".", gotop.Dicts)
 	if err != nil {
 		fmt.Printf("failed to load language files: %s\n", err)
 		return 2

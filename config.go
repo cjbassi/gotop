@@ -6,6 +6,7 @@ package gotop
 import (
 	"bufio"
 	"bytes"
+	"embed"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -16,11 +17,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/xxxserxxx/lingo"
 	"github.com/shibukawa/configdir"
 	"github.com/xxxserxxx/gotop/v4/colorschemes"
 	"github.com/xxxserxxx/gotop/v4/widgets"
+	"github.com/xxxserxxx/lingo/v2"
 )
+
+//go:embed "dicts/*.toml"
+var Dicts embed.FS
 
 // CONFFILE is the name of the default config file
 const CONFFILE = "gotop.conf"

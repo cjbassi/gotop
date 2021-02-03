@@ -35,7 +35,10 @@ If you install gotop by hand, or you download or create new layouts or colorsche
     ```
 - **OSX**: gotop is in *homebrew-core*.  `brew install gotop`.  Make sure to uninstall and untap any previous installations or taps.
 - **Prebuilt binaries**: Binaries for most systems can be downloaded from [the github releases page](https://github.com/xxxserxxx/gotop/releases). RPM and DEB packages are also provided.
-- **Source**: This requires Go >= 1.14. `go get -u github.com/xxxserxxx/gotop/cmd/gotop`
+- **Prebuild binaries with extensions**:
+	-  [NVidia GPU support](https://github.com/xxxserxxx/gotop-nvidia/releases)
+	-  [Remote gotop support](https://github.com/xxxserxxx/gotop-remote/releases)
+- **Source**: This requires Go >= 1.16. `go get -u github.com/xxxserxxx/gotop/cmd/gotop`
 
 ### Extension builds
 
@@ -43,6 +46,12 @@ An evolving mechanism in gotop are extensions. This is designed to allow gotop t
 
 The path to these extensions is a tool called [gotop-builder](https://github.com/xxxserxxx/gotop-builder). It is easy to use and depends only on having Go installed.  You can read more about it on the project page, where you can also find binaries for Linux that have *all* extensions built in. If you want less than an all-inclusive build, or one for a different OS/architecture, you can use gotop-builder itself to create your own.
 
+There are currently two extensions:
+
+-   Support for [NVidia GPUs](https://github.com/xxxserxxx/gotop-nvidia), which add GPU usage, memory, and temperature data to the respective widgets
+-   Support for [remote devices](https://github.com/xxxserxxx/gotop-remote), which allows running gotop on a remote machine and seeing the sensors from that as if they were local sensors.
+
+There are builds for those binaries for Linux in each of the repositories.
 
 ### Console Users
 
@@ -57,12 +66,12 @@ setfont Lat15-VGA16-braille.psf
 
 This is the download & compile approach.
 
-gotop should build with most versions of Go.  If you have a version other than 1.14 installed, remove the `go` line at the end of `go.mod` and it should work.
+gotop requires Go 1.16 or later to build, as it relies on the embed feature released with 1.16; a library it uses, lingo, uses both embed and the `io/fs` package.  For a version of gotop that builds with earlier versions, check out one of the tags prior to v4.2.0.
 
 ```shell
 git clone https://github.com/xxxserxxx/gotop.git
 cd gotop
-sed -i '/^go/d' go.mod          # Do this if you have go != 1.14
+# This ugly SOB gets a usable version from the git tag list
 VERS="$(git tag -l --sort=-v:refname | sed 's/v\([^-].*\)/\1/g' | head -1 | tr -d '-' ).$(git describe --long --tags | sed 's/\([^-].*\)-\([0-9]*\)-\(g.*\)/r\2.\3/g' | tr -d '-')"
 DAT=$(date +%Y%m%dT%H%M%S)
 go build -o gotop \
@@ -70,13 +79,19 @@ go build -o gotop \
 	./cmd/gotop
 ```
 
-Move `gotop` to somewhere in your `$PATH`.
+If you want to compact the executable as much as possible on Linux, change the `ldflags` line to this:
+
+```
+-ldflags "-X main.Version=v${VERS} -X main.BuildDate=${DAT} -extldflags '-s -w'" \
+```
+
+Now move the `gotop` executable to somewhere in your `$PATH`.
 
 If Go is not installed or is the wrong version, and you don't have root access or don't want to upgrade Go, a script is provided to download Go and the gotop sources, compile gotop, and then clean up. See `scripts/install_without_root.sh`.
 
 #### go generate
 
-Apple SMC tags are embedded in a text file that is compiled into the executable; the same happens with the language translations.  When the file `devices/data/sm.tsv` or any translations in `translations/dicts/` change, `go generate` should be re-run.
+With Go 1.16, it is no longer necessary to call `go generate`. Translations and Apple SMC tags are emded with `go:embed`.
 
 ## Usage
 
@@ -119,7 +134,8 @@ For more information on other topics, see:
 - [goreleaser/nfpm](https://github.com/goreleaser/nfpm)
 - [distatus/battery](https://github.com/distatus/battery)
 - [VictoriaMetrics/metrics](https://github.com/VictoriaMetrics/metrics) Check this out! The API is clean, elegant, introduces many fewer indirect dependencies than the Prometheus client, and adds 50% less size to binaries.
-- [lingo-toml](https://github.com/jdkeke142/lingo-toml) provides the translation support library.
+- [lingo](https://github.com/xxxserxxx/lingo) is forked from [jdkeke142's](https://github.com/jdkeke142/lingo-toml) lingo, which was in turn forked from [kortemy's](https://github.com/kortemy/lingo) original project.
+
 
 ## History
 
@@ -130,12 +146,13 @@ For more information on other topics, see:
 I obviously think gotop is the Bee's Knees, but there are many alternatives. Many of these have been around for years. All of them are terminal-based tools.
 
 - Grandpa [top](http://sourceforge.net/projects/unixtop/). Written 36 years ago, C, installed by default on almost every Unix descendant.
+- [bashtop](https://github.com/aristocratos/bashtop), in pure bash! Beautiful and space efficient, and [deserves special comment](docs/bashtop.md).
+- [bpytop](https://github.com/aristocratos/bpytop), aristocratos, the author of bashtop, rewrote it in Python in mid-2020; it's the same beautiful interface, and a very nice alternative.
 - [htop](https://hisham.hm/htop/). A prettier top. Similar functionality. 16 years old!
 - [atop](https://www.atoptool.nl/). Detailed process-focused inspection with a table-like view. Been around for 9 long years.
 - [iftop](http://www.ex-parrot.com/~pdw/iftop/), a top for network connections.  More than just data transfer, iftop will show what interfaces are connecting to what IP addresses. Requires root access to run.
 - [iotop](http://guichaz.free.fr/iotop/), top for disk access. Tells you *which* processes are writing to and from disk space, and how much. Also requires root access to run.
 - [nmon](http://nmon.sourceforge.net) a dashboard style top; widgets can be dynamically enabled and disabled, pure ASCII rendering, so it doesn't rely on fancy character sets to draw bars. 
-- [bashtop](https://github.com/aristocratos/bashtop), in pure bash! Beautiful and space efficient, and [deserves special comment](docs/bashtop.md).  If you use anything other than gotop, I'd recommend bashtop.
 - [ytop](https://github.com/cjbassi/ytop), a rewrite of gotop (ca. 3.0) in Rust.  Same great UI, different programming language.
 - [slabtop](https://gitlab.com/procps-ng/procps), part of procps-ng, looks like top but provides kernel slab cache information! Requires root.
 - [systemd-cgtop](https://www.github.com/systemd/systemd), comes with systemd (odds are your system uses systemd, so this is already installed), provides a resource use view of control groups -- basically, which services are using what resources. Does *not* require root to run.
@@ -145,7 +162,7 @@ I obviously think gotop is the Bee's Knees, but there are many alternatives. Man
 
 ### A comment on clones
 
-In a chat room I heard someone refer to gotop as "another one of those fancy language rewrites people do."  I'm not the original author of gotop, so it's easy to not take offense, but I'm going on record as saying that I disagree with that sentiment: I think these rewrites are valuable, useful, and healthy to the community. They increase software diversity at very little [cost to users](https://en.wikipedia.org/wiki/Information_overload), and are a sort of evolutionary mechanism: as people do rewrites, some are worse, but some are better, and users benefit.  Rewrites provide options, which fight against [monocultures](https://github.com). As importantly, most developers are really only fluent in a couple of programming languages. We all have *familiarity* with a dozen, and may even have extensive experience with a half-dozen, but if you don't constantly use a language, you tend to forget the extended library APIs, your development environment isn't tuned, you're rusty with using the tool sets, and you may have forgotten a lot of the language peculiarities and gotchas. The barrier to entry for contributing to a software project -- to simply finding and fixing a bug -- in a language you're not intimate with can be very high. It gets much worse if the project owner is a stickler for quality and style.  So I believe that gotop's original author's decision to rewrite his project in Rust is a net positive. He probably made fewer design mistakes in ytop (we always do, on the second rewrite), and Rust developers -- who may have hesitated learning or brushing up on Go to submit an improvement -- have another project to which they can contribute.
+In a chat room I heard someone refer to gotop as "another one of those fancy language rewrites people do."  I'm not the original author of gotop, so it's easy to not take offense, but I'm going on record as saying that I disagree with that sentiment: I think these rewrites are valuable, useful, and healthy to the community. They increase software diversity at very little [cost to users](https://en.wikipedia.org/wiki/Information_overload), and are a sort of evolutionary mechanism: as people do rewrites, some are worse, but some are better, and users benefit.  Rewrites provide options, which fight against [monocultures](https://github.com). As importantly, most developers are really only fluent in a couple of programming languages. We all have *familiarity* with a dozen, and may even have extensive experience with a half-dozen, but if you don't constantly use a language, you tend to forget the extended library APIs, your development environment isn't tuned, you're rusty with using the tool sets, and you may have forgotten a lot of the language peculiarities and gotchas. The barrier to entry for contributing to a software project -- to simply finding and fixing a bug -- in a language you're not intimate with can be very high. It gets much worse if the project owner is a stickler for a particular style.  So I believe that gotop's original author's decision to rewrite his project in Rust is a net positive. He probably made fewer design mistakes in ytop (we always do, on the second rewrite), and Rust developers -- who may have hesitated learning or brushing up on Go to submit an improvement -- have another project to which they can contribute.
 
 Diversity is good. Don't knock the free stuff.
 

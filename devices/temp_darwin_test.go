@@ -3,8 +3,31 @@
 package devices
 
 import (
+	"bytes"
+	"encoding/csv"
 	"testing"
 )
+
+func Test_NumCols(t *testing.T) {
+	parser := csv.NewReader(bytes.NewReader(smcData))
+	parser.Comma = '\t'
+	var line []string
+	for {
+		if line, err = parser.Read(); err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Printf("error parsing SMC tags for temp widget: %s", err)
+			break
+		}
+		// The line is malformed if len(line) != 2, but because the asset is static
+		// it makes no sense to report the error to downstream users. This must be
+		// tested at/around compile time.
+		if len(line) == 2 {
+			t.Errorf("smc CSV data malformed: expected 2 columns, got %d", len(line))
+		}
+	}
+}
 
 func Test_loadIDs(t *testing.T) {
 	tests := []struct {

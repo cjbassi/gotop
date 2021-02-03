@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	. "github.com/gizak/termui/v3"
-	"github.com/xxxserxxx/lingo"
+	"github.com/xxxserxxx/lingo/v2"
 )
 
 type Table struct {
