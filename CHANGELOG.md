@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
-## [4.1.1] 
+## [4.1.1] 2021-02-03 
 
 ### Added
 
@@ -21,11 +21,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Add more badges in README
+- Replaces a dependency with a fork, because `go get` -- unlike `go build` -- ignores `replace` directives in `go.mod`
+- Adds links to the extension projects in the README (#159)
+- Missing thermal sensors on FreeBSD were being reported as errors, when they aren't. (#152)
+- Small performance optimization
+- github workflow changes to improve failure modes
 - Bumped `gopsutils` to v3.20.12
 - Bumped `battery` to v0.10.0
+- Debug logging was left on (again) causing chatter in logs
 
 ### Fixed
 
+- No temperatures on Raspberry Pi (#6)
 - CPU name sorting in load widget (#161)
 - The status bar got lost at some point; it's back
 - Errors from any battery prevented display of all battery information
