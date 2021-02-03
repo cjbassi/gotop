@@ -63,11 +63,16 @@ func devs() []string {
 	}
 	for k, _ := range sensorOIDS {
 		idx := strings.Index(string(bs), k)
-		if idx < 0 {
-			log.Printf(tr.Value("error.nodevfound", k))
-		} else {
+		if idx >= 0 {
 			rv = append(rv, k)
 		}
+	}
+	if len(rv) == 0 {
+		oids := make([]string, 0, len(sensorOIDS))
+		for k, _ := range sensorOIDS {
+			oids = append(oids, k)
+		}
+		log.Printf(tr.Value("error.nodevfound", strings.Join(oids, ", ")))
 	}
 	return rv
 }
