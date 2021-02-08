@@ -1,0 +1,183 @@
+configfile="Fichier de configuration"
+usage="Utilisation: {0} [options]\n\nOptions:\n"
+total="Total"
+
+
+[help]
+paths="Les jeux de couleurs et dispositions à charger, et le fichier de configuration, sont recherchées, dans l'ordre :"
+log="Le fichier de log est dans {0}"
+written="Configuration écrite dans {0}"
+help="""
+Quitter: q ou <C-c>
+
+Navigation dans les processus:
+  - k et <Up>: vers le haut
+  - j et <Down>: vers le bas
+  - <C-u>: une demi-page vers le haut
+  - <C-d>: une demi-page vers le bas
+  - <C-b>: une page entière vers le haut
+  - <C-f>: une page entière vers le bas
+  - gg et <Home>: saut au début
+  - G et <End>: saut à la fin
+
+Action sur les processus:
+  - <Tab>: basculer le regroupement
+  - dd: envoyer SIGTERM (15) au processus ou groupe de processus sélectionné
+  - d3: envoyer SIGQUIT (3) au processus ou groupe de processus sélectionné
+  - d9: envoyer SIGKILL (9) au processus ou groupe de processus sélectionné
+
+Tri des processus:
+  - c: CPU
+  - m: Mem
+  - p: PID
+
+Filtrage des processus:
+  - /: commencer l'édition du filtre
+  - (pendant l'édition):
+    - <Enter>: accepter le filtre
+    - <C-c> et <Escape>: effacer le filtre
+
+Mise à l'échelle du graphe CPU et Mem :
+  - h: approcher
+  - l: éloigner
+
+Réseau:
+  - b: basculer entre mbps et octets par seconde à l'échelle
+  """
+# TRANSLATORS: Please don't translate the layout **names**
+layouts = """dispositions intégrées:
+   default
+   minimal
+   battery
+   kitchensink"""
+# TRANSLATORS: Please don't translate the colorcheme **names**
+colorschemes = """Jeux de couleurs intégrés:
+   default
+   default-dark (pour arrière-plan clair)
+   solarized
+   solarized16-dark
+   solarized16-light
+   monokai
+   vice
+   nord"""
+# TRANSLATORS: Please don't translate the widget **names**
+widgets = """Widgets pouvant être utilisés dans les dispositions:
+   cpu   - graphe de la charge CPU
+   mem   - Taux d'occupation de la mémoire physique et de l'espace d'échange
+   temp  - températures des capteurs
+   disk  - Taux d'occupation des partitions disque physiques
+   power - Une jauge de batterie
+   net   - Charge réseau
+   procs - Liste des processus interactive"""
+
+
+[args]
+help="Montrer cet écran."
+color="Sélectionner un jeu de couleurs."
+scale="Facteur de mise à l'échelle, >0"
+version="Afficher la version et sortir."
+percpu="Montrer chaque CPU dans le widget CPU."
+cpuavg="Montrer le CPU moyen dans le widget CPU."
+temp="Montrer les températures en fahrenheit."
+statusbar="Montrer une barre d'état avec l'heure."
+rate="Fréquence de rafraîchissement. La plupart des unités de temps sont acceptées.  \"1m\" = rafraîchir toutes les minutes.  \"100ms\" = rafraîchir toutes les 100ms."
+layout="Nom du fichier de spécification de disposition pour l'interface utilisateur. Utiliser \"-\" pour l'entrée standard."
+net="Choisir l'interface réseau. Plusieurs interfaces peuvent être décrites en les séparant par des virgules. Elles peuvent aussi être ignorées avec \"!\""
+export="Activer l'export des mesures sur le port indiqué."
+mbps="Montrer le débit réseau en mbps."
+test="Lancer les tests et sortir avec le code de succès ou d'échec."
+conffile="Fichier de configuration à utiliser au lieu du fichier par défaut (DOIT ÊTRE PASSÉ EN PREMIER)"
+# TRANSLATORS: Please don't translate the **labels** ("devices", "layouts") as they don't change in the code.
+list="""
+Énumérer <devices|layouts|colorschemes|paths|keys|langs>
+   devices: Afficher les noms des appareils pour les widgets qui ont un filtre
+   layouts: Énumérer les dispositions intégrées
+   colorschemes: Énumérer les jeux de couleurs intégrés
+   paths: Énumérer les chemins de recherche pour le fichier de configuration
+   widgets: Widgets pouvant être utilisés dans une disposition
+   keys: Montrer les raccourcis clavier.
+   langs: Montrer les langues disponibles."""
+write="Écrire un fichier de configuration par défaut"
+
+
+[config.err]
+configsyntax="0| syntaxe incorrecte dans le fichier de configuration ; devrait être KEY=VALUE, fut {0}"
+deprecation="1| ligne {0}: '{1}' est obsolète.  {1}={2} ignoré"
+line="2| ligne #{0}: {1}"
+tempscale="3| valeur TempScale invalide : {0}"
+
+
+[error]
+configparse="4| l'analyse du fichier de configuration a échoué: {0}"
+cliparse="5| analyse des arguments de la ligne de commande: {0}"
+logsetup="6| échec de mise en place du fichier log: {0}"
+unknownopt="7| Option inconnue \"{0}\"; essayez layouts, colorschemes, keys, paths, or devices\n"
+writefail="8| L'écriture du fichier de configuration a échoué: {0}"
+checklog="9| des erreurs ont été rencontrées ; depuis {0}:"
+metricsetup="10| erreur en mettant en place les mesures {0} {1}"
+nometrics="11| Pas de mesures {0} {1}"
+fatalfetch="12| erreur fatale en récupérant l'information {0} : {1}"
+recovfetch="13| erreur non fatale en récupérant l'information {0}; {0} laissé tomber: {1}"
+nodevfound="14| aucun {0} utilisable trouvé"
+setuperr="15| erreur en mettant en place {0}: {1}"
+colorschemefile="16| impossible de trouver le fichier de jeu de couleurs {0} dans {1}"
+colorschemeread="17| impossible de lire le fichier de jeu de couleurs {0} : {1}"
+colorschemeparse="18| impossible d'analyser le fichier de jeu de couleurs: {0}"
+findlayout="19| impossible de lire le fichier de disposition {0}: {1}"
+logopen="20| impossible d'ouvrir le fichier de log {0}: {1}"
+table="21| valeur TopRow inférieure à 0. TopRow: {0}"
+nohostname="22| ne peut obtenir le nom d'hôte: {0}"
+
+[layout.error]
+widget="23| Nom de widget invalide {0}.  Doit être l'un de {1}"
+format="24| Erreur de disposition à la ligne {0}: Le format doit être {1}. Erreur en interprétant {2} comme un entier. Le mot était {3}. En utilisant une hauteur de ligne 1."
+slashes="25| Avertissement de disposition à la ligne {0}: trop de '/' dans le mot {1}; Excès ignoré."
+
+[widget.label]
+disk=" Occupation disque "
+cpu=" Occupation CPU "
+gauge=" Niveau de puissance "
+battery=" État de la batterie "
+batt=" Batterie "
+temp=" Températures "
+net=" Occupation réseau "
+netint=" Occupation réseau : {0} "
+mem=" Occupation mémoire "
+
+
+[widget.net.err]
+netactivity="26| Impossible d'obtenir l'activité réseau auprès de gopsutil : {0}"
+negvalrecv="27| error: valeur négative pour les données réseau récemment reçues de gopsutil. recentBytesRecv: {0}"
+negvalsent="28| error: valeur négative pour les données réseau récemment envoyées de gopsutil. recentBytesSent: {0}"
+
+
+[widget.disk]
+disk="Disque"
+mount="Point de montage"
+used="Occupé"
+free="Libre"
+rs="L/s"
+ws="É/s"
+
+
+[widget.proc]
+filter=" Filtre: "
+label=" Processus "
+[widget.proc.header]
+count="Nombre"
+command="Commande"
+cpu="% CPU"
+mem="% Mem"
+pid="PID"
+[widget.proc.err]
+count="29| impossible d'obtenir le nombre de CPU auprès de gopsutil: {0}"
+retrieve="30| impossible de récupérer processus: {0}"
+ps="31| impossible d'exécuter la commande 'ps': {0}"
+gopsutil="32| impossible d'obtenir les processus auprès de gopsutil: {0}"
+pidconv="33| impossible de convertir le PID en entier: {0}. ligne: {1}"
+cpuconv="34| impossible de convertir l'occupation CPU en flottant: {0}. ligne: {1}"
+memconv="35| impossible de convertir l'occupation Mem en flottant: {0}. ligne: {1}"
+getcmd="36| impossible d'obtenir la commande du processus auprès de gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+cpupercent="37| impossible d'obtenir l'occupation CPU du processus auprès de gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+mempercent="38| impossible d'obtenir l'occupation mémoire du processus auprès de gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+parse="39| impossible d'analyser la sortie: {0}"
