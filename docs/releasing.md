@@ -8,7 +8,20 @@
 6. Download and verify the correct version of one of the binaries
 7. Finish the draft release and publish.
 8. Check gotop-builder for a successful everything build; if successful, publish.
-10. Wait for the [AUR](https://github.com/xxxserxxx/gotop-linux) project to finish building.
+9. Notify Nix
+10. ~~Notify Homebrew~~ Automated now.
+11. Trigger extensions:
+	```
+	for p in builder nvidia remote linux; do
+	curl -H "Accept: application/vnd.github.everest-preview+json" \
+	     -H "Authorization: token ${TOKEN}" \
+	     --request POST \
+	     --data "{'event_type': 'my-release', 'client_payload': {'tag': '${TAG}'}}" \
+	     https://api.github.com/repos/xxxserxxx/gotop-${p}/dispatches
+	done
+	```
+	and then go in and mark each release as not a pre-release.
+12. Wait for the [AUR](https://github.com/xxxserxxx/gotop-linux) project to finish building.
 	1.  Update package versions in gotop and gotop-bin
 	2.  namcap PKGBUILD
 	3.  updpkgsums
@@ -17,23 +30,9 @@
 	6.  git push
 	7.  Test install `gotop`, `gotop-bin`, and `gotop-git` with running & version check
 
-11. Notify Nix
-12. ~~Notify Homebrew~~ Automated now.
-
 The AUR project still needs secret credentials to aurpublish to the AUR
 repository, so the final publish step is still currently manual.
 
-Oh, what a tangled web.
-
-```
-for p in builder nvidia remote; do
-curl -H "Accept: application/vnd.github.everest-preview+json" \
-	-H "Authorization: token ${TOKEN}" \
-	--request POST \
-	--data "{'event_type': 'my-release', 'client_payload': {'tag': '${TAG}'}}" \
-	https://api.github.com/repos/xxxserxxx/gotop-${p}/dispatches
-done
-```
 
 ## Nix 
 
