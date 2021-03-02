@@ -21,8 +21,8 @@ import (
 	"github.com/VictoriaMetrics/metrics"
 	jj "github.com/cloudfoundry-attic/jibber_jabber"
 	ui "github.com/gizak/termui/v3"
-	"github.com/xxxserxxx/lingo"
 	"github.com/shibukawa/configdir"
+	"github.com/xxxserxxx/lingo"
 	"github.com/xxxserxxx/opflag"
 
 	"github.com/xxxserxxx/gotop/v4"
@@ -405,12 +405,9 @@ func run() int {
 	}
 	defer logfile.Close()
 
-	errs := devices.Startup(conf.ExtensionVars)
-	if len(errs) > 0 {
-		for _, err := range errs {
-			stderrLogger.Print(err)
-		}
-		return 1
+	// device initialization errors do not stop execution
+	for _, err := range devices.Startup(conf.ExtensionVars) {
+		stderrLogger.Print(err)
 	}
 
 	lstream, err := getLayout(conf)
