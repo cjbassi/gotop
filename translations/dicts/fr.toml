@@ -87,6 +87,8 @@ export="Activer l'export des mesures sur le port indiqué."
 mbps="Montrer le débit réseau en mbps."
 test="Lancer les tests et sortir avec le code de succès ou d'échec."
 conffile="Fichier de configuration à utiliser au lieu du fichier par défaut (DOIT ÊTRE PASSÉ EN PREMIER)"
+nvidia="Activer les métriques GPU NVidia"
+nvidiarefresh="Rafraîchir la fréquence. La plupart des unités de temps sont acceptées."
 # TRANSLATORS: Please don't translate the **labels** ("devices", "layouts") as they don't change in the code.
 list="""
 Énumérer <devices|layouts|colorschemes|paths|keys|langs>

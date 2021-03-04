@@ -77,6 +77,7 @@ func parseArgs() error {
 	opflag.BoolVarP(&conf.Mbps, "mbps", "", conf.Mbps, tr.Value("args.mbps"))
 	opflag.BoolVar(&conf.Test, "test", conf.Test, tr.Value("args.test"))
 	opflag.StringP("", "C", "", tr.Value("args.conffile"))
+	opflag.BoolVarP(&conf.Nvidia, "nvidia", "", conf.Nvidia, "Enable NVidia GPU support")
 	list := opflag.String("list", "", tr.Value("args.list"))
 	wc := opflag.Bool("write-config", false, tr.Value("args.write"))
 	opflag.SortFlags = false
@@ -138,6 +139,9 @@ func parseArgs() error {
 			os.Exit(1)
 		}
 		os.Exit(0)
+	}
+	if conf.Nvidia {
+		conf.ExtensionVars["nvidia"] = "true"
 	}
 	if *wc {
 		path, err := conf.Write()

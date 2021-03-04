@@ -87,6 +87,8 @@ export="在指定端口上启用指标输出。"
 mbps="显示网速为 mbps。"
 test="执行测试并返回成功或失败码。"
 conffile="用于替代缺省参数的配置文件（必须是第一个参数）"
+nvidia="启用NVidia GPU指标"
+nvidiarefresh="刷新频率。接受了大多数时间单位。"
 list="""
 列出 <devices|layouts|colorschemes|paths|keys|langs>
    devices: 显示可用于过滤的设备名

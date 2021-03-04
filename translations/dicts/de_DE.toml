@@ -87,6 +87,8 @@ export="Aktivieren Sie Metriken für den Export auf dem angegebenen Port."
 mbps="Netzwerkrate als MBit / s anzeigen."
 test="Führt Tests aus und beendet das Programm mit Erfolgs- / Fehlercode."
 conffile="Konfigurationsdatei, die anstelle der Standardeinstellung verwendet werden soll (MUSS DAS ERSTE ARGUMENT SEIN)"
+nvidia="Aktivieren Sie die NVidia-GPU-Metriken"
+nvidiarefresh="Frequenz aktualisieren. Die meisten Zeiteinheiten werden akzeptiert."
 list="""
 List <devices|layouts|colorschemes|paths|keys|langs>
    devices: Druckt Gerätenamen für filterbare Widgets aus

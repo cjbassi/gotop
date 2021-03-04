@@ -16,10 +16,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/xxxserxxx/lingo"
 	"github.com/shibukawa/configdir"
 	"github.com/xxxserxxx/gotop/v4/colorschemes"
 	"github.com/xxxserxxx/gotop/v4/widgets"
+	"github.com/xxxserxxx/lingo"
 )
 
 // CONFFILE is the name of the default config file
@@ -45,6 +45,8 @@ type Config struct {
 	ExtensionVars        map[string]string
 	ConfigFile           string
 	Tr                   lingo.Translations
+	Nvidia               bool
+	NvidiaRefresh        time.Duration
 }
 
 func NewConfig() Config {
@@ -179,6 +181,12 @@ func load(in io.Reader, conf *Config) error {
 			conf.Mbps = true
 		case temperatures:
 			conf.Temps = strings.Split(kv[1], ",")
+		case nvidia:
+			nv, err := strconv.ParseBool(kv[1])
+			if err != nil {
+				return fmt.Errorf(conf.Tr.Value("config.err.line", ln, err.Error()))
+			}
+			conf.Nvidia = nv
 		}
 	}
 
@@ -252,6 +260,10 @@ func marshal(c *Config) []byte {
 		fmt.Fprint(buff, "#")
 	}
 	fmt.Fprintf(buff, "%s=%s\n", temperatures, strings.Join(c.Temps, ","))
+	fmt.Fprintln(buff, "# Enable NVidia GPU metrics.")
+	fmt.Fprintf(buff, "%s=%t\n", nvidia, c.Nvidia)
+	fmt.Fprintln(buff, "# To configure the NVidia refresh rate, set a duration:")
+	fmt.Fprintln(buff, "#nvidiarefresh=30s")
 	return buff.Bytes()
 }
 
@@ -270,4 +282,5 @@ const (
 	export               = "metricsexportport"
 	mbps                 = "mbps"
 	temperatures         = "temperatures"
+	nvidia               = "nvidia"
 )

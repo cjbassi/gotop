@@ -87,6 +87,8 @@ export="Ebligu metrikojn por eksportado en la specifita haveno."
 mbps="Montri reta takson kiel mbps."
 test="Ekzekutas testojn kaj forirojn kun sukceso / fiaska kodo."
 conffile="Agordi dosiero por uzi anstataŭ defaŭlte (DEVAS ESTI UNUA ARGUMENTO)"
+nvidia="Ebligu NVidia GPU-metrikojn"
+nvidiarefresh="Refreŝigi oftecon. Plej multaj tempunuoj akceptis."
 # TRANSLATORS: Please don't translate the list entries
 list="""
 List <devices|layouts|colorschemes|paths|keys|langs>

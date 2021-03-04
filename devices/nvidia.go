@@ -9,8 +9,6 @@ import (
 	"strconv"
 	"sync"
 	"time"
-
-	"github.com/xxxserxxx/opflag"
 )
 
 // Set up variables and register this plug-in with the main code.
@@ -27,7 +25,6 @@ import (
 // tool periodically and puts the results into hashes; the update functions
 // then just sync data from those hashes into the return data.
 func init() {
-	opflag.BoolVarP(&nvidia, "nvidia", "", false, "Enable NVidia GPU support")
 	RegisterStartup(startNVidia)
 }
 
@@ -73,7 +70,7 @@ func updateNvidiaUsage(cpus map[string]int, _ bool) map[string]error {
 // `nvidia-refresh` arg, which is expected to be a time.Duration value and
 // sets how frequently the nvidia tool is called to refresh the date.
 func startNVidia(vars map[string]string) error {
-	if !nvidia {
+	if vars["nvidia"] != "true" {
 		return nil
 	}
 	_, err := exec.Command("nvidia-smi", "-L").Output()
@@ -180,5 +177,3 @@ func update() {
 		}
 	}
 }
-
-var nvidia bool
