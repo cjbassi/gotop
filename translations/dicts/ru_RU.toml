@@ -124,7 +124,7 @@ nohostname="22| Не удалось получить название хоста
 
 [layout.error]
 widget="23| Неправильное название виджета {0}.  Должно быть одним из {1}"
-format="24| Ошибка раскладки на строчке {0}: формат должен быть {1}. Ошибка парсинга {2} как целое число. Слово было {3}. Используется высота ряда 1."
+format="24| Ошибка раскладки на строчке {0}: формат должен быть {1}. Ошибка парсинга {2} типа int. Слово было {3}. Используется высота ряда 1."
 slashes="25| Предупреждение о раскладке на строчке {0}: слишком много '/' в слове {1}; игнорируется лишнее."
 
 [widget.label]
@@ -140,9 +140,9 @@ mem=" Использование Памяти "
 
 
 [widget.net.err]
-netactivity="26| failed to get network activity from gopsutil: {0}"
-negvalrecv="27| error: negative value for recently received network data from gopsutil. recentBytesRecv: {0}"
-negvalsent="28| error: negative value for recently sent network data from gopsutil. recentBytesSent: {0}"
+netactivity="26| Не удалось получить активность сети из gopsutil: {0}"
+negvalrecv="27| ошибка: отрицательное значение для недавно полученных данных из gopsutil. recentBytesRecv: {0}"
+negvalsent="28| ошибка: отрицательное значение для недавно полученных данных из gopsutil. recentBytesSent: {0}"
 
 
 [widget.disk]
@@ -164,13 +164,13 @@ cpu="CPU%"
 mem="Память%"
 pid="PID"
 [widget.proc.err]
-count="29| failed to get CPU count from gopsutil: {0}"
-retrieve="30| failed to retrieve processes: {0}"
-ps="31| failed to execute 'ps' command: {0}"
-gopsutil="32| failed to get processes from gopsutil: {0}"
-pidconv="33| failed to convert PID to int: {0}. line: {1}"
-cpuconv="34| failed to convert CPU usage to float: {0}. line: {1}"
-memconv="35| failed to convert Mem usage to float: {0}. line: {1}"
+count="29| Не удалось получить количество CPU из gopsutil: {0}"
+retrieve="30| Не удалось получить данные о процессе: {0}"
+ps="31| Не удалось выполнить команду 'ps': {0}"
+gopsutil="32| Не удалось получить процессы из gopsutil: {0}"
+pidconv="33| Не удалось перевести PID в int: {0}. line: {1}"
+cpuconv="34| Не удалось перевести использование CPU в float: {0}. line: {1}"
+memconv="35| Не удалось перевести использование Памяти в float: {0}. line: {1}"
 getcmd="36| failed to get process command from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
 cpupercent="37| failed to get process cpu usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
 mempercent="38| failed to get process memeory usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
