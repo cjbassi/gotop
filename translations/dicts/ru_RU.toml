@@ -123,20 +123,20 @@ table="21| Значения виджета TopRow меньше чем 0. TopRow:
 nohostname="22| Не удалось получить название хоста: {0}"
 
 [layout.error]
-widget="23| Invalid widget name {0}.  Must be one of {1}"
-format="24| Layout error on line {0}: format must be {1}. Error parsing {2} as a int. Word was {3}. Using a row height of 1."
-slashes="25| Layout warning on line {0}: too many '/' in word {1}; ignoring extra junk."
+widget="23| Неправильное название виджета {0}.  Должно быть одним из {1}"
+format="24| Ошибка раскладки на строчке {0}: формат должен быть {1}. Ошибка парсинга {2} как целое число. Слово было {3}. Используется высота ряда 1."
+slashes="25| Предупреждение о раскладке на строчке {0}: слишком много '/' в слове {1}; игнорируется лишнее."
 
 [widget.label]
-disk=" Disk Usage "
-cpu=" CPU Usage "
-gauge=" Power Level "
-battery=" Battery Status "
-batt=" Battery "
-temp=" Temperatures "
-net=" Network Usage "
-netint=" Network Usage: {0} "
-mem=" Memory Usage "
+disk=" Использование Диска "
+cpu=" Использование CPU "
+gauge=" Заряд батареи "
+battery=" Статус батареи "
+batt=" Батарея "
+temp=" Температуры "
+net=" Нагрузка сети "
+netint=" Нагрузка сети: {0} "
+mem=" Использование Памяти "
 
 
 [widget.net.err]
