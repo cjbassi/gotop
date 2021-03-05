@@ -87,40 +87,40 @@ list="""
    devices: Выводит названия устройств для фильтруемых объектов
    layouts: Выводит встроенные раскладки
    colorschemes: Выводит встроенные палитры
-   paths: List out configuration file search paths
-   widgets: Widgets that can be used in a layout
-   keys: Show the keyboard bindings.
-   langs: Show supported language translations."""
-write="Write out a default config file."
+   paths: Выводит пути для поиска конфигурации
+   widgets: Виджеты, которые можно исопльзовать в раскладке
+   keys: Показывает хоткеи
+   langs: Показывает поддерживаемые переводы."""
+write="Написать файл конфигурации по умолчанию."
 
 
 [config.err]
-configsyntax="0| bad config file syntax; should be KEY=VALUE, was {0}"
-deprecation="1| line {0}: '{1}' is deprecated.  Ignored {1}={2}"
+configsyntax="0| Синтаксическая ошибка в файле; должно быть KEY=VALUE, сейчас {0}"
+deprecation="1| Строчка {0}: '{1}' устарел. Игнорирутеся {1}={2}"
 line="2| line #{0}: {1}"
-tempscale="3| invalid TempScale value {0}"
+tempscale="3| неправильное значение TempScale {0}"
 
 
 [error]
-configparse="4| failed to parse config file: {0}"
-cliparse="5| parsing CLI args: {0}"
-logsetup="6| failed to setup log file: {0}"
-unknownopt="7| Unknown option \"{0}\"; try layouts, colorschemes, keys, paths, or devices\n"
-writefail="8| Failed to write configuration file: {0}"
-checklog="9| errors encountered; from {0}:"
-metricsetup="10| error setting up {0} metrics: {1}"
-nometrics="11| no metrics for {0} {1}"
-fatalfetch="12| fatal error fetching {0} info: {1}"
-recovfetch="13| recoverable error fetching {0} info; skipping {0}: {1}"
-nodevfound="14| no usable {0} found"
-setuperr="15| error setting up {0}: {1}"
-colorschemefile="16| failed to find colorscheme file {0} in {1}"
-colorschemeread="17| failed to read colorscheme file {0}: {1}"
-colorschemeparse="18| failed to parse colorscheme file: {0}"
-findlayout="19| failed to find layout file {0}: {1}"
-logopen="20| failed to open log file {0}: {1}"
-table="21| table widget TopRow value less than 0. TopRow: {0}"
-nohostname="22| could not get hostname: {0}"
+configparse="4| не удалось пропарсить файл конфигурации: {0}"
+cliparse="5| парсинг CLI аргументов: {0}"
+logsetup="6| не удалось создать файл логов: {0}"
+unknownopt="7| Неизвестная опция \"{0}\"; Попробуйте layouts, colorschemes, keys, paths, или devices\n"
+writefail="8| Не удалось записать в файл конфигурации: {0}"
+checklog="9| Обнаружены ошибки; из {0}:"
+metricsetup="10| Ошибка при установке {0} метрик: {1}"
+nometrics="11| Нет метрик {0} {1}"
+fatalfetch="12| Фатальная ошибка при отслеживании {0} информации: {1}"
+recovfetch="13| Ошибка при отслеживании {0} информции; пропуск {0}: {1}"
+nodevfound="14| не найдено {0}"
+setuperr="15| Ошибка при установке {0}: {1}"
+colorschemefile="16| Ошибка при нахождении палитры {0} в {1}"
+colorschemeread="17| Ошибка при чтении палитры {0}: {1}"
+colorschemeparse="18| Ошибка при парсинге палитры: {0}"
+findlayout="19| Не удалось найти файл раскладки {0}: {1}"
+logopen="20| Не удалось открыть файл логов {0}: {1}"
+table="21| Значения виджета TopRow меньше чем 0. TopRow: {0}"
+nohostname="22| Не удалось получить название хоста: {0}"
 
 [layout.error]
 widget="23| Invalid widget name {0}.  Must be one of {1}"
@@ -146,22 +146,22 @@ negvalsent="28| error: negative value for recently sent network data from gopsut
 
 
 [widget.disk]
-disk="Disk"
+disk="Диск"
 mount="Mount"
-used="Used"
-free="Free"
-rs="R/s"
-ws="W/s"
+used="Использовано"
+free="Свободно"
+rs="Чтение/с"
+ws="Запись/с"
 
 
 [widget.proc]
-filter=" Filter: "
-label=" Processes "
+filter=" Фильтр: "
+label=" Процессы "
 [widget.proc.header]
-count="Count"
-command="Command"
+count="Счётчик"
+command="Команда"
 cpu="CPU%"
-mem="Mem%"
+mem="Память%"
 pid="PID"
 [widget.proc.err]
 count="29| failed to get CPU count from gopsutil: {0}"
