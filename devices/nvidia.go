@@ -96,13 +96,13 @@ func startNVidia(vars map[string]string) error {
 		}
 	}
 	// update once to populate the device names, for the widgets.
-	update()
+	updateNvidia()
 	// Fork off a long-running job to call the nvidia tool periodically,
 	// parse out the values, and put them in the cache.
 	go func() {
 		timer := time.Tick(refresh)
 		for range timer {
-			update()
+			updateNvidia()
 		}
 	}()
 	return nil
@@ -121,7 +121,7 @@ var (
 
 var nvidiaLock sync.Mutex
 
-// update calls the nvidia tool, parses the output, and caches the results
+// updateNvidia calls the nvidia tool, parses the output, and caches the results
 // in the various _* maps. The metric data parsed is: name, index,
 // temperature.gpu, utilization.gpu, utilization.memory, memory.total,
 // memory.free, memory.used
@@ -130,8 +130,8 @@ var nvidiaLock sync.Mutex
 // error and returns immediately. We expect exec errors only when the tool
 // isn't available, or when it fails for some reason; no exec error cases
 // are recoverable. This does **not** stop the cache job; that will continue
-// to run and continue to call update().
-func update() {
+// to run and continue to call updateNvidia().
+func updateNvidia() {
 	bs, err := exec.Command(
 		"nvidia-smi",
 		"--query-gpu=name,index,temperature.gpu,utilization.gpu,memory.total,memory.used",
