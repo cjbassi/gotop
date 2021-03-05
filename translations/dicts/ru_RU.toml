@@ -1,0 +1,177 @@
+configfile="Файл конфигурации"
+usage="Использование: {0} [options]\n\Опции:\n"
+total="Total"
+
+
+[help]
+paths="Загружаемые палитры и раскладки, и файл конфигурации, ищутся, по очереди:"
+log="Файл с логами в {0}"
+written="Конфигурация пишется в {0}"
+help="""
+Выйти: q or <C-c>
+Навигация по процессам:
+  - k и <Up>: вверх
+  - j и <Down>: вниз
+  - <C-u>: вверх на пол страницы
+  - <C-d>: вниз на пол страницы
+  - <C-b>: вверх на всю страницу
+  - <C-f>: вниз на всю страницу
+  - gg and <Home>: наверх
+  - G and <End>: вниз
+Действия с процессами:
+  - <Tab>: Переключение группировки процессов
+  - dd: убить выбранный процесс или группу процессов с помощью SIGTERM (15)
+  - d3: убить выбранный процесс или группу процессов с помощью SIGQUIT (3)
+  - d9: убить выбранный процесс или группу процессов с помощью SIGKILL (9)
+Сортировка процессов:
+  - c: CPU
+  - m: Память
+  - p: PID
+Фильтр процессов:
+  - /: начать редактирование фильтра
+  - (в течение редактирования):
+    - <Enter>: принять фильтр
+    - <C-c> and <Escape>: очистить фильтр
+Масштабирование графиков CPU и памяти:
+  - h: увеличить масштаб
+  - l: уменьшить масштаб
+Сеть:
+  - b: переключить mbps и масштабированные бит/с
+"""
+# TRANSLATORS: Please don't translate the layout **names**
+layouts = """Встроенные раскладки:
+   default
+   minimal
+   battery
+   kitchensink"""
+# TRANSLATORS: Please don't translate the colorcheme **names**
+colorschemes = """Встроенные палитры:
+   default
+   default-dark (for white background)
+   solarized
+   solarized16-dark
+   solarized16-light
+   monokai
+   vice
+   nord"""
+# TRANSLATORS: Please don't translate the widget **names**
+widgets = """Виджеты, которые можно использовать в раскладке:
+   cpu   - CPU load graph
+   mem   - Physical & swap memory use graph
+   temp  - Sensor temperatures
+   disk  - Physical disk partition use
+   power - A battery bar
+   net   - Network load
+   procs - Interactive process list"""
+
+
+[args]
+help="Показать этот экран."
+color="Поставить палитру."
+scale="Уровень масштабирования графиков, >0"
+version="Напечатать версию и выйти."
+percpu="Показать каждый CPU в CPU виджете."
+cpuavg="Показать средний CPU в CPU виджете."
+temp="Показать температуру в фаренгейтах."
+statusbar="Показать статусбар со временем."
+rate="Частота обновления. Поддерживается большинство единиц измерения.  \"1m\" = обновлять каждую минуту.  \"100ms\" = обновлять каждые 100мс."
+layout="Название файла спецификации для раскладки. Используйте \"-\" для нескольких раскладок."
+net="Выбрать сетевой интерфейс. Несколько интерфейсов можно определить через запятую. Для игнорирования определённых интерфейсов используйте \"!\""
+export="Включить метрику для экспорта на указанном порту."
+mbps="Показать скорость сети в мб/с"
+test="Запуск тестов и выход с успешным/провальным кодом."
+conffile="Файл конфигурации вместо того, что по умолчанию (ДОЛЖЕН БЫТЬ ПЕРВЫМ АРГУМЕНТОМ)"
+# TRANSLATORS: Please don't translate the **labels** ("devices", "layouts") as they don't change in the code.
+list="""
+Перечислить <devices|layouts|colorschemes|paths|keys|langs>
+   devices: Выводит названия устройств для фильтруемых объектов
+   layouts: Выводит встроенные раскладки
+   colorschemes: Выводит встроенные палитры
+   paths: List out configuration file search paths
+   widgets: Widgets that can be used in a layout
+   keys: Show the keyboard bindings.
+   langs: Show supported language translations."""
+write="Write out a default config file."
+
+
+[config.err]
+configsyntax="0| bad config file syntax; should be KEY=VALUE, was {0}"
+deprecation="1| line {0}: '{1}' is deprecated.  Ignored {1}={2}"
+line="2| line #{0}: {1}"
+tempscale="3| invalid TempScale value {0}"
+
+
+[error]
+configparse="4| failed to parse config file: {0}"
+cliparse="5| parsing CLI args: {0}"
+logsetup="6| failed to setup log file: {0}"
+unknownopt="7| Unknown option \"{0}\"; try layouts, colorschemes, keys, paths, or devices\n"
+writefail="8| Failed to write configuration file: {0}"
+checklog="9| errors encountered; from {0}:"
+metricsetup="10| error setting up {0} metrics: {1}"
+nometrics="11| no metrics for {0} {1}"
+fatalfetch="12| fatal error fetching {0} info: {1}"
+recovfetch="13| recoverable error fetching {0} info; skipping {0}: {1}"
+nodevfound="14| no usable {0} found"
+setuperr="15| error setting up {0}: {1}"
+colorschemefile="16| failed to find colorscheme file {0} in {1}"
+colorschemeread="17| failed to read colorscheme file {0}: {1}"
+colorschemeparse="18| failed to parse colorscheme file: {0}"
+findlayout="19| failed to find layout file {0}: {1}"
+logopen="20| failed to open log file {0}: {1}"
+table="21| table widget TopRow value less than 0. TopRow: {0}"
+nohostname="22| could not get hostname: {0}"
+
+[layout.error]
+widget="23| Invalid widget name {0}.  Must be one of {1}"
+format="24| Layout error on line {0}: format must be {1}. Error parsing {2} as a int. Word was {3}. Using a row height of 1."
+slashes="25| Layout warning on line {0}: too many '/' in word {1}; ignoring extra junk."
+
+[widget.label]
+disk=" Disk Usage "
+cpu=" CPU Usage "
+gauge=" Power Level "
+battery=" Battery Status "
+batt=" Battery "
+temp=" Temperatures "
+net=" Network Usage "
+netint=" Network Usage: {0} "
+mem=" Memory Usage "
+
+
+[widget.net.err]
+netactivity="26| failed to get network activity from gopsutil: {0}"
+negvalrecv="27| error: negative value for recently received network data from gopsutil. recentBytesRecv: {0}"
+negvalsent="28| error: negative value for recently sent network data from gopsutil. recentBytesSent: {0}"
+
+
+[widget.disk]
+disk="Disk"
+mount="Mount"
+used="Used"
+free="Free"
+rs="R/s"
+ws="W/s"
+
+
+[widget.proc]
+filter=" Filter: "
+label=" Processes "
+[widget.proc.header]
+count="Count"
+command="Command"
+cpu="CPU%"
+mem="Mem%"
+pid="PID"
+[widget.proc.err]
+count="29| failed to get CPU count from gopsutil: {0}"
+retrieve="30| failed to retrieve processes: {0}"
+ps="31| failed to execute 'ps' command: {0}"
+gopsutil="32| failed to get processes from gopsutil: {0}"
+pidconv="33| failed to convert PID to int: {0}. line: {1}"
+cpuconv="34| failed to convert CPU usage to float: {0}. line: {1}"
+memconv="35| failed to convert Mem usage to float: {0}. line: {1}"
+getcmd="36| failed to get process command from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+cpupercent="37| failed to get process cpu usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+mempercent="38| failed to get process memeory usage from gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+parse="39| failed to parse output: {0}"
