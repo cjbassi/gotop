@@ -1,5 +1,5 @@
 configfile="Файл конфигурации"
-usage="Использование: {0} [options]\n\Опции:\n"
+usage="Использование: {0} [options]\n\nОпции:\n"
 total="Total"
 
 
