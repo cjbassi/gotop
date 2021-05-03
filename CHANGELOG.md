@@ -13,6 +13,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
+## [4.1.2] 
+
+### Added
+
+- French and Russion translations (thank you @lourkeur and @talentlessguy!)
+- nvidia support merged in from extension
+- remote support merged in from extension
+
+### Changed
+
+- Upgrade to Go 1.16. This eliminates go:generate for the language files, which
+  means gotop no longer builds with Go < 1.16.
+
+### Fixed
+
+- German translation corrected (thanks @plgruener!)
+- Extra spaces in help text (#167)
+- Crash with German translation (#166)
+- Bad error message for missing layouts (#164)
+
 ## [4.1.1] 2021-02-03 
 
 ### Added

@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/gizak/termui/v3/widgets"
-	lingo "github.com/xxxserxxx/lingo"
+	"github.com/xxxserxxx/lingo/v2"
 )
 
 // Used by all widgets

@@ -13,3 +13,4 @@ build/gotop_*
 build.log
 
 tmp/
+dist/

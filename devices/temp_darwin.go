@@ -4,9 +4,11 @@ package devices
 
 import (
 	"bytes"
+	_ "embed"
 	"encoding/csv"
 	"github.com/shirou/gopsutil/host"
 	"io"
+	"log"
 )
 
 // All possible thermometers
@@ -19,7 +21,7 @@ func devs() []string {
 	ids := loadIDs()
 	sensors, err := host.SensorsTemperatures()
 	if err != nil {
-		// FIXME log an error here
+		log.Printf("error getting sensor list for temps: %s", err)
 		return []string{}
 	}
 	rv := make([]string, 0, len(sensors))
@@ -30,7 +32,7 @@ func devs() []string {
 			continue
 		}
 		if label, ok := ids[sensor.SensorKey]; ok {
-    			sensorMap[sensor.SensorKey] = label
+			sensorMap[sensor.SensorKey] = label
 			rv = append(rv, label)
 		}
 	}
@@ -46,22 +48,25 @@ func defs() []string {
 	return rv
 }
 
+//go:embed "smc.tsv"
+var smcData []byte
+
 // loadIDs parses the embedded smc.tsv data that maps Darwin SMC
 // sensor IDs to their human-readable labels into an array and returns the
 // array. The array keys are the 4-letter sensor keys; the values are the
 // human labels.
 func loadIDs() map[string]string {
 	rv := make(map[string]string)
-	data, err := Asset("smc.tsv")
-	parser := csv.NewReader(bytes.NewReader(data))
+	parser := csv.NewReader(bytes.NewReader(smcData))
 	parser.Comma = '\t'
 	var line []string
+	var err error
 	for {
 		if line, err = parser.Read(); err == io.EOF {
 			break
 		}
 		if err != nil {
-			// FIXME log an error here
+			log.Printf("error parsing SMC tags for temp widget: %s", err)
 			break
 		}
 		// The line is malformed if len(line) != 2, but because the asset is static
