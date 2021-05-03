@@ -35,7 +35,7 @@ If you install gotop by hand, or you download or create new layouts or colorsche
     ```
 - **OSX**: gotop is in *homebrew-core*.  `brew install gotop`.  Make sure to uninstall and untap any previous installations or taps.
 - **Prebuilt binaries**: Binaries for most systems can be downloaded from [the github releases page](https://github.com/xxxserxxx/gotop/releases). RPM and DEB packages are also provided.
-- **Source**: gotop requires Go >= 1.14: `go get -u github.com/xxxserxxx/gotop/cmd/gotop`
+- **Source**: gotop requires Go >= 1.14: `go get -u github.com/xxxserxxx/gotop/v4/cmd/gotop`
 
 ### Extension builds
 
