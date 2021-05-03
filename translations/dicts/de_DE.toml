@@ -4,27 +4,27 @@ total="Gesamt"
 
 
 [help]
-paths="Nach ladbaren Farbschemata und Layouts sowie der Konfigurationsdatei wird in der folgenden Reihenfolge gesucht:"
+paths="Nach Farbschemata und Layouts sowie der Konfigurationsdatei wird in der folgenden Reihenfolge gesucht:"
 log="Die Protokolldatei befindet sich in {0}"
-written="Konfiguration geschrieben auf {0}"
+written="Konfiguration geschrieben nach {0}"
 help="""
 Beenden: q oder <C-c>
 
 Prozessnavigation:
-  - k und <Up>: oben
-  - j und <Down>: nieder
+  - k und <Up>: Zeile nach oben
+  - j und <Down>: Zeile nach unten
   - <C-u>: halbe Seite nach oben
   - <C-d>: halbe Seite nach unten
   - <C-b>: ganze Seite nach oben
   - <C-f>: ganze Seite nach unten
-  - gg und <Home>: nach oben springen
-  - G und <End>: nach unten springen
+  - gg und <Home>: an den Anfang springen
+  - G und <End>: an das Ende springen
 
 Process actions:
   - <Tab>: Prozessgruppierung umschalten
-  - dd: Beende einen ausgewählten Prozess oder eine Gruppe von Prozessen mit SIGTERM (15)
-  - d3: Beende einen ausgewählten Prozess oder eine Gruppe von Prozessen mit SIGQUIT (3)
-  - d9: töte einen ausgewählten Prozess oder eine Gruppe von Prozessen mit SIGKILL (9)
+  - dd: Beende ausgewählten Prozess oder Gruppe von Prozessen mit SIGTERM (15)
+  - d3: Beende ausgewählten Prozess oder Gruppe von Prozessen mit SIGQUIT (3)
+  - d9: töte ausgewählten Prozess oder Gruppe von Prozessen mit SIGKILL (9)
 
 Prozesssortierung:
   - c: CPU
@@ -38,11 +38,11 @@ Prozessfilterung:
     - <C-c> und <Escape>: Filter löschen
 
 CPU- und Mem-Graph-Skalierung:
-  - h: skalieren in
-  - l: skalieren
+  - h: Skalierung vergrößern
+  - l: Skalierung verkleinern
 
 Netzwerk:
-  - b: Umschalten zwischen MBit / s und skalierten Bytes pro Sekunde
+  - b: Umschalten zwischen MBit/s und skalierten Bytes pro Sekunde
 """
 # ÜBERSETZER: Bitte übersetzen Sie die Layout-**Namen** nicht
 layouts = """Eingebaute Layouts:
@@ -62,63 +62,63 @@ colorschemes = """Eingebaute Farbschemata:
    nord"""
 # ÜBERSETZER: Bitte übersetzen Sie die Widget-**Namen** nicht
 widgets = """Widgets, die in Layouts verwendet werden können:
-   cpu   - CPU-Lastdiagramm
-   mem   - Physische & Swap-Speicher verwenden Grafik
+   cpu   - CPU-Auslastungsgraph
+   mem   - Physischer- & Swap-Speicher Auslastungsgraph
    temp  - Sensortemperaturen
-   disk  - Verwendung der physischen Festplattenpartition
-   power - Eine Batteriestange
+   disk  - Belegung der physischen Festplattenpartitionen
+   power - Batterieladung
    net   - Netzwerklast
    procs - Interaktive Prozessliste"""
 
 
 [args]
-help="Hilfetext anzeigen."
-color="Ein Farbschema feststellen."
-scale="Stellen den Skalierungsfaktor ein, >0"
-version="Zeigen die Version aus und beenden."
-percpu="Zeigen Sie jede CPU im CPU-Widget an."
+help="Diese Hilfe anzeigen."
+color="Farbschema einstellen."
+scale="Skalierungsfaktor der Graphen, >0"
+version="Versionsangabe und Beenden."
+percpu="Jede CPU im CPU-Widget anzeigen."
 cpuavg="Durchschnittliche CPU im CPU-Widget anzeigen."
 temp="Temperaturen in Fahrenheit anzeigen."
-statusbar="Zeigen Sie eine Statusleiste mit der Uhrzeit an."
+statusbar="Statusleiste mit Uhrzeit anzeigen."
 rate="Frequenz aktualisieren. Die meisten Zeiteinheiten werden akzeptiert. \"1m\" = jede Minute aktualisieren. \"100 ms\" = alle 100 ms aktualisieren."
-layout="Name der Layoutspezifikationsdatei für die Benutzeroberfläche. Verwenden Sie \"-\", um zu leiten."
-net="Wählen Sie die Netzwerkschnittstelle. Mehrere Schnittstellen können mit durch Kommas getrennten Werten definiert werden. Schnittstellen können auch mit ignoriert werden \"!\""
-export="Aktivieren Sie Metriken für den Export auf dem angegebenen Port."
-mbps="Netzwerkrate als MBit / s anzeigen."
-test="Führt Tests aus und beendet das Programm mit Erfolgs- / Fehlercode."
-conffile="Konfigurationsdatei, die anstelle der Standardeinstellung verwendet werden soll (MUSS DAS ERSTE ARGUMENT SEIN)"
-nvidia="Aktivieren Sie die NVidia-GPU-Metriken"
+layout="Name der Layoutspezifikationsdatei für die Benutzeroberfläche. \"-\" liest aus Standard-Eingabe."
+net="Netzwerkschnittstelle auswählen. Mehrere Schnittstellen können durch Kommata getrennt werden. Schnittstellen mit \"!\" werden ignoriert."
+export="Metriken für den Export auf dem angegebenen Port aktivieren."
+mbps="Netzwerkrate als MBit/s anzeigen."
+test="Tests ausführen und mit Erfolgs- oder Fehlercode beenden."
+conffile="Konfigurationsdatei, die anstelle der Standardeinstellung verwendet werden soll (muss ERSTES ARGUMENT sein)."
+nvidia="NVidia-GPU-Metriken aktivieren."
 nvidiarefresh="Frequenz aktualisieren. Die meisten Zeiteinheiten werden akzeptiert."
 list="""
-List <devices|layouts|colorschemes|paths|keys|langs>
-   devices: Druckt Gerätenamen für filterbare Widgets aus
-   layouts: Listet integrierte Layouts auf
-   colorschemes: Listet integrierte Farbschemata auf
-   paths: Listen Sie die Suchpfade für Konfigurationsdateien auf
-   widgets: Widgets, die in einem Layout verwendet werden können
-   keys: Zeigen Sie die Tastaturbindungen an.
-   langs: Unterstützte Sprachübersetzungen anzeigen."""
-write="Schreiben Sie eine Standardkonfigurationsdatei."
+Auflisten von <devices|layouts|colorschemes|paths|keys|langs>
+   devices: Gerätenamen für filterbare Widgets
+   layouts: eingebaute Layouts
+   colorschemes: eingebaute Farbschemata
+   paths: Suchpfade für Konfigurationsdateien
+   widgets: verwendbare Widgets für Layouts
+   keys: Tastaturkürzel
+   langs: Übersetzungen"""
+write="Standard-Konfigurationsdatei schreiben."
 
 
 [config.err]
-configsyntax="0| schlechte Syntax der Konfigurationsdatei; sollte KEY=VALUE sein, war {0}"
+configsyntax="0| Fehlerhafte Syntax der Konfigurationsdatei: sollte KEY=VALUE sein, war {0}"
 deprecation="1| Zeile {0}: '{1}' ist veraltet. Ignoriert {1}={2}"
 line="2| Zeile #{0}: {1}"
-tempscale="3| ungültiger TempScale-Wert {0}"
+tempscale="3| Ungültiger TempScale-Wert {0}"
 
 
 [error]
-configparse="4| Konfigurationsdatei konnte nicht analysiert werden: {0}"
-cliparse="5| Analysieren von CLI-Argumenten: {0}"
-logsetup="6| Protokolldatei konnte nicht eingerichtet werden: {0}"
-unknownopt="7| Unbekannte Option \"{0}\"; Probieren Sie layouts, colorschemes, keys, paths oder devices aus\n"
+configparse="4| Fehler beim Einlesen der Konfigurationsdatei: {0}"
+cliparse="5| Einlesen der CLI-Argumente: {0}"
+logsetup="6| Fehler beim Einrichten der Protokolldatei: {0}"
+unknownopt="7| Unbekannte Option \"{0}\". Mögliche Optionen: layouts, colorschemes, keys, paths, devices\n"
 writefail="8| Konfigurationsdatei konnte nicht geschrieben werden: {0}"
-checklog="9| aufgetretene Fehler; von {0}:"
+checklog="9| Aufgetretene Fehler; von {0}:"
 metricsetup="10| Fehler beim Einrichten von {0}-Metriken: {1}"
 nometrics="11| Keine Metriken für {0} {1}"
 fatalfetch="12| Schwerwiegender Fehler beim Abrufen von {0}-Informationen: {1}"
-recovfetch="13| behebbarer Fehler beim Abrufen von {0}-Informationen; überspringen {0}: {1}"
+recovfetch="13| Behebbarer Fehler beim Abrufen von {0}-Informationen; überspringen {0}: {1}"
 nodevfound="14| Keine verwendbare {0} gefunden"
 setuperr="15| Fehler beim Einrichten {0}: {1}"
 colorschemefile="16| Farbschemadatei konnte nicht gefunden werden {0} in {1}"
@@ -136,7 +136,7 @@ slashes="25 | Layoutwarnung in Zeile {0}: zu viele '/' in Wort {1}; zusätzliche
 
 [widget.label]
 disk=" Festplattennutzung "
-cpu=" CPU auslastung "
+cpu=" CPU-Auslastung "
 gauge=" Leistungspegel "
 battery=" Batteriestatus "
 batt=" Batterie "
@@ -147,18 +147,18 @@ mem=" Speichernutzung "
 
 
 [widget.net.err]
-netactivity="26 | Netzwerkaktivität von gopsutil konnte nicht abgerufen werden: {0}"
+netactivity="26 | Fehler beim Abrufen der Netzwerkaktivität von gopsutil: {0}"
 negvalrecv="27 | Fehler: negativer Wert für kürzlich empfangene Netzwerkdaten von gopsutil. RecentBytesRecv: {0}"
 negvalsent="28 | Fehler: negativer Wert für kürzlich gesendete Netzwerkdaten von gopsutil. RecentBytesSent: {0}"
 
 
 [widget.disk]
-disk="Scheibe"
-mount="Montieren"
-used="Gebraucht"
-free="Kostenlos"
-rs="R / s"
-ws="W / s"
+disk="Festplatte"
+mount="Einhängepunkt"
+used="Benutzt"
+free="Frei"
+rs="R/s"
+ws="W/s"
 
 
 [widget.proc]
@@ -171,14 +171,14 @@ cpu="CPU%"
 mem="Mem%"
 pid="PID"
 [widget.proc.err]
-count="29 | CPU-Anzahl konnte nicht von gopsutil abgerufen werden: {0}"
-retrieve="30 | Prozesse konnten nicht abgerufen werden: {0}"
-ps="31 | Befehl 'ps' konnte nicht ausgeführt werden: {0}"
-gopsutil="32 | Prozesse konnten nicht von gopsutil abgerufen werden: {0}"
-pidconv="33 | Konvertierung der PID in int: {0} fehlgeschlagen. Linie 1}"
-cpuconv="34 | Konvertierung der CPU-Auslastung in float fehlgeschlagen: {0}. Linie 1}"
-memconv="35 | Die Verwendung von Mem konnte nicht in float konvertiert werden: {0}. Linie 1}"
-getcmd="36 | Prozessbefehl von gopsutil konnte nicht abgerufen werden: {0}. psProc: {1}. i: {2}. pid: {3}"
-cpupercent="37 | Fehler beim Abrufen der Prozess-CPU-Nutzung von gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
-mempercent="38 | Prozessspeicherauslastung konnte nicht von gopsutil abgerufen werden: {0}. psProc: {1}. i: {2}. pid: {3}"
+count="29 | Fehler beim Abrufen der CPU-Anzahl von gopsutil: {0}"
+retrieve="30 | Fehler beim Abrufen der Prozesse: {0}"
+ps="31 | Fehler bei Ausführung von 'ps': {0}"
+gopsutil="32 | Fehler beim Abrufen der Prozesse von gopsutil: {0}"
+pidconv="33 | Konvertierung der PID in int: {0} fehlgeschlagen. Zeile 1}"
+cpuconv="34 | Konvertierung der CPU-Auslastung in float fehlgeschlagen: {0}. Zeile 1}"
+memconv="35 | Konvertierung der Speicher-Auslastung in float fehlgeschlagen: {0}. Zeile 1}"
+getcmd="36 | Fehler beim Abrufen des Prozessbefehls von gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+cpupercent="37 | Fehler beim Abrufen der Prozess-CPU-Auslastung von gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+mempercent="38 | Fehler beim Abrufen der Prozess-Speicher-Auslastung von gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
 parse="39 | Ausgabe konnte nicht analysiert werden: {0}"
