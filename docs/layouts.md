@@ -71,7 +71,7 @@ and these are separated by spaces.
 Yes, you're clever enough to break the layout algorithm, but if you try to
 build massive edifices, you're in for disappointment.
 
-To list all built-in color schemes, call:
+To list all built-in layouts, call:
 
 ```
 gotop --list layouts
