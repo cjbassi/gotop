@@ -1,0 +1,185 @@
+configfile="Archivo de configuración"
+usage="Uso: {0} [opciones]\n\nOpciones:\n"
+total="Total"
+
+
+[help]
+paths="Esquemas de colores & diseños, y el archivo de configuración, cargables se buscan en orden:"
+log="El archivo de registro está en {0}"
+written="Configuración escrita en {0}"
+help="""
+Abandonar: q o <C-c>
+
+Navegación de procesos:
+  - k y <Up>: arriba
+  - j y <Down>: abajo
+  - <C-u>: media página arriba
+  - <C-d>: media página abajo
+  - <C-b>: página completa arriba
+  - <C-f>: página completa abajo
+  - gg y <Home>: saltar al principio
+  - G y <End>: saltar al final
+
+Acciones de proceso :
+  - <Tab>: alternar agrupación de procesos
+  - dd: mandar señal SIGTERM (15) a un proceso o grupo de procesos
+  - d3: mandar señal SIGQUIT (3) a un proceso o grupo de procesos
+  - d9: mandar señal SIGKILL (9) a un proceso o grupo de procesos
+
+Ordenación de procesos:
+  - c: CPU
+  - m: Mem
+  - p: PID
+
+Filtrado de procesos:
+  - /: empezar a editar el filtro
+  - (mientras editas):
+    - <Enter>: aceptar filtro
+    - <C-c> y <Escape>: despejar filtro
+
+escala de gráfico CPU y Mem:
+  - h: disminuir tamaño
+  - l: aumentar tamaño
+
+Red:
+  - b: alternar entre mbps y bytes escalados por segundo
+"""
+# TRANSLATORS: Please don't translate the layout **names**
+layouts = """Diseños incorporados:
+   default
+   minimal
+   battery
+   kitchensink"""
+# TRANSLATORS: Please don't translate the colorcheme **names**
+colorschemes = """Esquemas de colores incorporados:
+   default
+   default-dark (para fondo blanco)
+   solarized
+   solarized16-dark
+   solarized16-light
+   monokai
+   vice
+   nord"""
+# TRANSLATORS: Please don't translate the widget **names**
+widgets = """Widgets que se pueden usar en diseños:
+   cpu   - CPU load graph
+   mem   - Physical & swap memory use graph
+   temp  - Sensor temperatures
+   disk  - Physical disk partition use
+   power - A battery bar
+   net   - Network load
+   procs - Interactive process list"""
+
+
+[args]
+help="Mostrar esta pantalla."
+color="Establecer una esquema de colores ."
+scale="Factor de escala de gráfico, >0"
+version="Imprimir versión y salir."
+percpu="Muestra cada CPU en el widget de CPU."
+cpuavg="Mostrar uso de CPU promedio en el widget de CPU."
+temp="Mostrar temperaturas en grados Fahrenheit."
+statusbar="Muestra una barra de estado con la hora."
+rate="Actualizar frecuencia. Se aceptan la mayoría de las unidades de tiempo.  \"1m\" = actualizar cada minuto.  \"100ms\" = actualizar cada 100ms."
+layout="Nombre de archivo de especificaciones de diseño para la interfaz de usuario. Use \"-\" para pipe."
+net="Seleccionar interfaz de red. Se pueden definir varias interfaces utilizando valores separados por comas. Interfaces también se pueden ignorar usando \"!\""
+export="Habilitar métricas para exportar en el puerto especificado."
+mbps="Muestra la velocidad de la red como mbps."
+test="Ejecuta pruebas y sale con código de éxito / error."
+conffile="Archivo de configuración para usar en lugar de predeterminado (DEBE SER EL PRIMER ARGUMENTO)"
+nvidia="Habilitar métrica de NVidia GPU"
+nvidiarefresh="Frecuencia de actualización. Se aceptan la mayoría de las unidades de tiempo."
+# TRANSLATORS: Please don't translate the **labels** ("devices", "layouts") as they don't change in the code.
+list="""
+Lista <devices|layouts|colorschemes|paths|keys|langs>
+   devices: Imprime los nombres de los dispositivos para los widgets filtrables
+   layouts: Enumera diseños incorporados
+   colorschemes: Enumera esquemas de colores incorporados 
+   paths: Enumera las rutas de búsqueda de archivo de configuración
+   widgets: Widgets que se pueden usar en un diseño
+   keys: Mostrar las asociaciones de teclas.
+   langs: Mostrar traducciones disponibles."""
+write="Escribe un archivo de configuración predeterminado."
+
+
+[config.err]
+configsyntax="0| mal sintaxis en el archivo de configuración; debiera ser CLAVE=VALOR, era {0}"
+deprecation="1| línea {0}: '{1}' es obsoleto. {1}={2} ignorado"
+line="2| línea #{0}: {1}"
+tempscale="3| valor TempScale inválido {0}"
+
+
+[error]
+configparse="4| falla durante el análisis de archivo de configuración: {0}"
+cliparse="5| analizando argumentos CLI: {0}"
+logsetup="6| fallo durante configurazion el archivo de registro: {0}"
+unknownopt="7| Opción desconocida \"{0}\"; intentar diseños, esquemas de color, clave, paths, o dispositivos\n"
+writefail="8| falla escribiendo el archivo de configuración : {0}"
+checklog="9| errores encontrados; de {0}:"
+metricsetup="10| error al configurar {0} métrica: {1}"
+nometrics="11| sin métricas para {0} {1}"
+fatalfetch="12| error fatal al recuperar {0} info: {1}"
+recovfetch="13| error recuperable al recuperar {0} info; ignorando {0}: {1}"
+nodevfound="14| no utilizable {0} encontrado"
+setuperr="15| error al configurar {0}: {1}"
+colorschemefile="16| no se pudo encontrar el archivo de esquema de colores {0} in {1}"
+colorschemeread="17| no se pudo leer el archivo de esquema de colores {0}: {1}"
+colorschemeparse="18| no se pudo analizar el archivo de esquema de colores: {0}"
+findlayout="19| no se pudo encontrar el archivo de diseño {0}: {1}"
+logopen="20| no se pudo abrir el archivo de registro {0}: {1}"
+table="21| valor de TopRow de widget de tabla menos de 0. TopRow: {0}"
+nohostname="22| no se pudo obtener el nombre de máquina: {0}"
+
+[layout.error]
+widget="23| Nombre de widget no válido {0}.  Debe ser uno de {1}"
+format="24| Error de diseño en línea {0}: el formato debe ser {1}. Error al analizar {2} como un entero. La palabra era {3}. Usando una altura de fila de 1."
+slashes="25| Advertencia de diseño en línea {0}: Demasiados '/' en palabra {1}; ignorando la basura extra."
+
+[widget.label]
+disk=" Uso de Disco "
+cpu=" Uso de CPU "
+gauge=" Nivel de Potencia "
+battery=" Estado de Batería "
+batt=" Batería "
+temp=" Temperaturas "
+net=" Uso de Red  "
+netint=" Uso de Red: {0} "
+mem=" Uso de Memoria "
+
+
+[widget.net.err]
+netactivity="26| no se pudo obtener la actividad de la red de gopsutil: {0}"
+negvalrecv="27| error: valor negativo para los datos de red recibidos recientemente desde gopsutil. recentBytesRecv: {0}"
+negvalsent="28| error: valor negativo para los datos de red enviados recientemente desde gopsutil. recentBytesSent: {0}"
+
+
+[widget.disk]
+disk="Disco"
+mount="Montar"
+used="Usado"
+free="Libre"
+rs="L/s"
+ws="E/s"
+
+
+[widget.proc]
+filter=" Filtro: "
+label=" Procesos "
+[widget.proc.header]
+count="Cuenta"
+command="Comando"
+cpu="% CPU"
+mem="% Mem"
+pid="PID"
+[widget.proc.err]
+count="29| falla obteniendo el recuento de CPU desde gopsutil: {0}"
+retrieve="30| falla recuperando los procesos : {0}"
+ps="31| falla al ejecutar comando 'ps': {0}"
+gopsutil="32| falla obteniendo los procesos desde gopsutil: {0}"
+pidconv="33| falla al convertir PID a un entero: {0}. línea: {1}"
+cpuconv="34| falla al convertir utilización CPU a un número de coma flotante: {0}. línea: {1}"
+memconv="35| falla al convertir utilización Mem a un número de coma flotante: {0}. línea: {1}"
+getcmd="36| falla obteniendo comando de proceso desde gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+cpupercent="37| falla obteniendo utilización CPU de proceso desde gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+mempercent="38| falla obteniendo utilización de memoria de proceso desde gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+parse="39| falla analizando salida : {0}"
