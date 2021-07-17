@@ -91,13 +91,13 @@ nvidia="NVidia-GPU-Metriken aktivieren."
 nvidiarefresh="Frequenz aktualisieren. Die meisten Zeiteinheiten werden akzeptiert."
 list="""
 Auflisten von <devices|layouts|colorschemes|paths|keys|langs>
-   devices: Gerätenamen für filterbare Widgets
-   layouts: eingebaute Layouts
-   colorschemes: eingebaute Farbschemata
-   paths: Suchpfade für Konfigurationsdateien
-   widgets: verwendbare Widgets für Layouts
-   keys: Tastaturkürzel
-   langs: Übersetzungen"""
+      devices: Gerätenamen für filterbare Widgets
+      layouts: eingebaute Layouts
+      colorschemes: eingebaute Farbschemata
+      paths: Suchpfade für Konfigurationsdateien
+      widgets: verwendbare Widgets für Layouts
+      keys: Tastaturkürzel
+      langs: Übersetzungen"""
 write="Standard-Konfigurationsdatei schreiben."
 
 

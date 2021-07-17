@@ -92,13 +92,13 @@ nvidiarefresh="Refreŝigi oftecon. Plej multaj tempunuoj akceptis."
 # TRANSLATORS: Please don't translate the list entries
 list="""
 List <devices|layouts|colorschemes|paths|keys|langs>
-   devices: Montras nomojn de aparatoj por filteblaj fenestraĵoj
-   layouts: Listigas enkonstruajn aranĝojn
-   colorschemes: Listas enkonstruitajn kloraj skemoj
-   paths: Enlistigu agordajn serĉajn vojojn de agordo
-   widgets: Fenestraĵoj uzeblaj en aranĝo
-   keys: Montri la klavarajn ligojn.
-   langs: Montru subtenatajn lingvajn tradukojn."""
+      devices: Montras nomojn de aparatoj por filteblaj fenestraĵoj
+      layouts: Listigas enkonstruajn aranĝojn
+      colorschemes: Listas enkonstruitajn kloraj skemoj
+      paths: Enlistigu agordajn serĉajn vojojn de agordo
+      widgets: Fenestraĵoj uzeblaj en aranĝo
+      keys: Montri la klavarajn ligojn.
+      langs: Montru subtenatajn lingvajn tradukojn."""
 write="Skribu defaŭltan agordan dosieron."
 
 

@@ -92,13 +92,13 @@ nvidiarefresh="Frecuencia de actualización. Se aceptan la mayoría de las unida
 # TRANSLATORS: Please don't translate the **labels** ("devices", "layouts") as they don't change in the code.
 list="""
 Lista <devices|layouts|colorschemes|paths|keys|langs>
-   devices: Imprime los nombres de los dispositivos para los widgets filtrables
-   layouts: Enumera diseños incorporados
-   colorschemes: Enumera esquemas de colores incorporados 
-   paths: Enumera las rutas de búsqueda de archivo de configuración
-   widgets: Widgets que se pueden usar en un diseño
-   keys: Mostrar las asociaciones de teclas.
-   langs: Mostrar traducciones disponibles."""
+      devices: Imprime los nombres de los dispositivos para los widgets filtrables
+      layouts: Enumera diseños incorporados
+      colorschemes: Enumera esquemas de colores incorporados 
+      paths: Enumera las rutas de búsqueda de archivo de configuración
+      widgets: Widgets que se pueden usar en un diseño
+      keys: Mostrar las asociaciones de teclas.
+      langs: Mostrar traducciones disponibles."""
 write="Escribe un archivo de configuración predeterminado."
 
 

@@ -92,13 +92,13 @@ nvidiarefresh="Refresh frequency. Most time units accepted."
 # TRANSLATORS: Please don't translate the **labels** ("devices", "layouts") as they don't change in the code.
 list="""
 List <devices|layouts|colorschemes|paths|keys|langs>
-   devices: Prints out device names for filterable widgets
-   layouts: Lists built-in layouts
-   colorschemes: Lists built-in colorschemes
-   paths: List out configuration file search paths
-   widgets: Widgets that can be used in a layout
-   keys: Show the keyboard bindings.
-   langs: Show supported language translations."""
+      devices: Prints out device names for filterable widgets
+      layouts: Lists built-in layouts
+      colorschemes: Lists built-in colorschemes
+      paths: List out configuration file search paths
+      widgets: Widgets that can be used in a layout
+      keys: Show the keyboard bindings.
+      langs: Show supported language translations."""
 write="Write out a default config file."
 
 

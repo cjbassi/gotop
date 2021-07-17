@@ -84,6 +84,7 @@ func parseArgs() error {
 	opflag.Usage = func() {
 		fmt.Fprintf(os.Stderr, tr.Value("usage", os.Args[0]))
 		opflag.PrintDefaults()
+		fmt.Fprintf(os.Stderr, "Project home: https://github.com/xxxserxxx/gotop\n")
 	}
 	opflag.Parse()
 	if *version || *versioN {
@@ -351,6 +352,7 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 	}
 }
 
+// FIXME CPU use regression
 func main() {
 	// TODO: Make this an option, for performance testing
 	//go func() {

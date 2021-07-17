@@ -92,13 +92,13 @@ nvidiarefresh="Rafraîchir la fréquence. La plupart des unités de temps sont a
 # TRANSLATORS: Please don't translate the **labels** ("devices", "layouts") as they don't change in the code.
 list="""
 Énumérer <devices|layouts|colorschemes|paths|keys|langs>
-   devices: Afficher les noms des appareils pour les widgets qui ont un filtre
-   layouts: Énumérer les dispositions intégrées
-   colorschemes: Énumérer les jeux de couleurs intégrés
-   paths: Énumérer les chemins de recherche pour le fichier de configuration
-   widgets: Widgets pouvant être utilisés dans une disposition
-   keys: Montrer les raccourcis clavier.
-   langs: Montrer les langues disponibles."""
+      devices: Afficher les noms des appareils pour les widgets qui ont un filtre
+      layouts: Énumérer les dispositions intégrées
+      colorschemes: Énumérer les jeux de couleurs intégrés
+      paths: Énumérer les chemins de recherche pour le fichier de configuration
+      widgets: Widgets pouvant être utilisés dans une disposition
+      keys: Montrer les raccourcis clavier.
+      langs: Montrer les langues disponibles."""
 write="Écrire un fichier de configuration par défaut"
 
 

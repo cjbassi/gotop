@@ -91,13 +91,13 @@ nvidia="启用NVidia GPU指标"
 nvidiarefresh="刷新频率。接受了大多数时间单位。"
 list="""
 列出 <devices|layouts|colorschemes|paths|keys|langs>
-   devices: 显示可用于过滤的设备名
-   layouts: 列出所有内置布局方案
-   colorschemes: 列出所有内置配色方案
-   paths: 列出配置文件的搜索路径
-   widgets: 所有可被用于布局的组件
-   keys: 显示所有热键
-   langs: 显示支持的语言翻译."""
+      devices: 显示可用于过滤的设备名
+      layouts: 列出所有内置布局方案
+      colorschemes: 列出所有内置配色方案
+      paths: 列出配置文件的搜索路径
+      widgets: 所有可被用于布局的组件
+      keys: 显示所有热键
+      langs: 显示支持的语言翻译."""
 write="将当前配置写入缺省配置文件。"
 
 
