@@ -134,7 +134,7 @@ func parseArgs() error {
 					return nil
 				}
 				fileName := info.Name()
-				if !strings.HasSuffix(fileName, ".toml") {
+				if strings.HasSuffix(fileName, ".toml") {
 					fmt.Println(strings.TrimSuffix(fileName, ".toml"))
 				}
 				return nil
