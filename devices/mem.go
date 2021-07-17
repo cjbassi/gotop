@@ -4,6 +4,7 @@ import "log"
 
 var memFuncs []func(map[string]MemoryInfo) map[string]error
 
+// TODO Colors are wrong for #mem > 2
 type MemoryInfo struct {
 	Total       uint64
 	Used        uint64
