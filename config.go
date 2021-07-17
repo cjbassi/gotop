@@ -1,8 +1,5 @@
 package gotop
 
-//go:generate go-bindata -fs -pkg translations -prefix translations/dicts -o translations/dicts.go translations/dicts
-//go:generate go-bindata -pkg devices -prefix devices/data -o devices/smc.go devices/data
-
 import (
 	"bufio"
 	"bytes"
