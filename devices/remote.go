@@ -23,8 +23,9 @@ var remoteLock sync.Mutex
 // TODO network resiliency; I believe it currently crashes gotop when the network goes down
 // TODO Replace custom decoder with https://github.com/prometheus/common/blob/master/expfmt/decode.go
 // TODO MQTT / Stomp / MsgPack
+// FIXME high CPU use when remote goes offline
+// FIXME higher CPU use when using remote in general
 func init() {
-	// TODO add this to help text
 	opflag.StringVarP(&name, "remote-name", "", "", "Remote: name of remote gotop")
 	opflag.StringVarP(&remote_url, "remote-url", "", "", "Remote: URL of remote gotop")
 	opflag.DurationVarP(&sleep, "remote-refresh", "", 0, "Remote: Frequency to refresh data, in seconds")

@@ -20,6 +20,7 @@ import (
 	"github.com/xxxserxxx/lingo/v2"
 )
 
+// FIXME github action uses old(er) Go version that doesn't have embed
 //go:embed "dicts/*.toml"
 var Dicts embed.FS
 
@@ -50,6 +51,7 @@ type Config struct {
 	NvidiaRefresh        time.Duration
 }
 
+// FIXME parsing can't handle blank lines
 func NewConfig() Config {
 	cd := configdir.New("", "gotop")
 	cd.LocalPath, _ = filepath.Abs(".")

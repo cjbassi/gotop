@@ -12,6 +12,7 @@ import (
 	ui "github.com/xxxserxxx/gotop/v4/termui"
 )
 
+// TODO Maybe group CPUs in columns if space permits
 type CPUWidget struct {
 	*ui.LineGraph
 	CPUCount        int
