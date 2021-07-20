@@ -14,9 +14,9 @@ jobs:
         uses: actions/checkout@master
 
       - name: Make binaries
-        uses: xxxserxxx/actions/golang-build@master
+        uses: xxxserxxx/actions/golang-build@v2.0.1
         with:
-          args: darwin/amd64/1 linux/amd64 linux/386 linux/arm64 linux/arm7 linux/arm6 linux/arm5 windows/amd64 windows/386 freebsd/amd64 freebsd/386
+          args: darwin/amd64/1 darwin/arm64/1 linux/amd64 linux/386 linux/arm64 linux/arm7 linux/arm6 linux/arm5 windows/amd64/1 windows/386/1 freebsd/amd64/1
         env:
           COMPRESS_FILES: true
           SRCPATH: ./cmd/gotop
