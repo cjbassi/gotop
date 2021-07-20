@@ -35,12 +35,9 @@ If you install gotop by hand, or you download or create new layouts or colorsche
     ```
 - **OSX**: gotop is in *homebrew-core*.  `brew install gotop`.  Make sure to uninstall and untap any previous installations or taps.
 - **Prebuilt binaries**: Binaries for most systems can be downloaded from [the github releases page](https://github.com/xxxserxxx/gotop/releases). RPM and DEB packages are also provided.
-- **Prebuild binaries with extensions**:
-	-  [NVidia GPU support](https://github.com/xxxserxxx/gotop-nvidia/releases)
-	-  [Remote gotop support](https://github.com/xxxserxxx/gotop-remote/releases)
-- **Source**: This requires Go >= 1.16. `go get -u github.com/xxxserxxx/gotop/v4/cmd/gotop`
+- **Source**: This requires Go >= 1.16. `go install github.com/xxxserxxx/gotop/v4/cmd/gotop`
 
-### Extension builds
+### Extensions update
 
 Extensions have proven problematic; go plugins are not usable in real-world cases, and the solution I had running for a while was hacky, at best. Consequently, extensions have been moved into the main code base for now.
 
@@ -98,12 +95,21 @@ In addition to the key bindings, the mouse can be used to control the process li
 
 For more information on other topics, see:
 
-- [Layouts](docs/layouts.md)
-- [Configuration](docs/configuration.md)
-- [Color schemes](docs/colorschemes.md)
-- [Device filtering](docs/devices.md)
-- [Extensions](docs/extensions.md)
+- [Layouts](https://github.com/xxxserxxx/gotop/blob/master/docs/layouts.md)
+- [Configuration](https://github.com/xxxserxxx/gotop/blob/master/docs/configuration.md)
+- [Color schemes](https://github.com/xxxserxxx/gotop/blob/master/docs/colorschemes.md)
+- [Device filtering](https://github.com/xxxserxxx/gotop/blob/master/docs/devices.md)
+- [Extensions](https://github.com/xxxserxxx/gotop/blob/master/docs/extensions.md)
 
+Monitoring remote machines
+--------------------------
+
+gotop can monitor gotops running on remote machines and display (some of the)
+metrics within a single instance. gotop expects to be behind a proxy, or within
+a secure intranet, so while it's not exactly hard to set up, it's also not
+trivial. An example set-up is explained in the 
+[Remote Monitoring](https://github.com/xxxserxxx/gotop/blob/master/docs/remote-monitoring.md) 
+document.
 
 ## More screen shots
 
