@@ -35,7 +35,7 @@ If you install gotop by hand, or you download or create new layouts or colorsche
     ```
 - **OSX**: gotop is in *homebrew-core*.  `brew install gotop`.  Make sure to uninstall and untap any previous installations or taps.
 - **Prebuilt binaries**: Binaries for most systems can be downloaded from [the github releases page](https://github.com/xxxserxxx/gotop/releases). RPM and DEB packages are also provided.
-- **Source**: This requires Go >= 1.16. `go install github.com/xxxserxxx/gotop/v4/cmd/gotop`
+- **Source**: This requires Go >= 1.16. `go install github.com/xxxserxxx/gotop/v4/cmd/gotop@latest`
 
 ### Extensions update
 
@@ -147,7 +147,7 @@ I obviously think gotop is the Bee's Knees, but there are many alternatives. Man
 
 - Grandpa [top](http://sourceforge.net/projects/unixtop/). Written 36 years ago, C, installed by default on almost every Unix descendant.
 - [bashtop](https://github.com/aristocratos/bashtop), in pure bash! Beautiful and space efficient, and [deserves special comment](docs/bashtop.md).
-- [bpytop](https://github.com/aristocratos/bpytop), aristocratos, the author of bashtop, rewrote it in Python in mid-2020; it's the same beautiful interface, and a very nice alternative.
+- [bpytop](https://github.com/aristocratos/bpytop), @aristocratos, the author of bashtop, rewrote it in Python in mid-2020; it's the same beautiful interface, and a very nice alternative.
 - [htop](https://hisham.hm/htop/). A prettier top. Similar functionality. 16 years old!
 - [atop](https://www.atoptool.nl/). Detailed process-focused inspection with a table-like view. Been around for 9 long years.
 - [iftop](http://www.ex-parrot.com/~pdw/iftop/), a top for network connections.  More than just data transfer, iftop will show what interfaces are connecting to what IP addresses. Requires root access to run.
