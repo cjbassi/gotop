@@ -82,7 +82,7 @@ If Go is not installed or is the wrong version, and you don't have root access o
 
 #### go generate
 
-With Go 1.16, it is no longer necessary to call `go generate`. Translations and Apple SMC tags are emded with `go:embed`.
+With Go 1.16, it is no longer necessary to call `go generate`. Translations and Apple SMC tags are embedded with `go:embed`.
 
 ## Usage
 
