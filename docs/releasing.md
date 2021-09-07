@@ -1,38 +1,17 @@
 # Current steps for a release
 
-1. ~~Update Version in main.go~~ (now set in package build)
-2. Update CHANGELOG.md
-3. Tag
-4. Push everything
-5. Wait for the github workflows to complete
-6. Download and verify the correct version of one of the binaries
-7. Finish the draft release and publish.
-8. Check gotop-builder for a successful everything build; if successful, publish.
-9. Notify Nix
-10. ~~Notify Homebrew~~ Automated now.
-11. Trigger extensions:
-	```
-	for p in builder nvidia remote linux; do
-	curl -H "Accept: application/vnd.github.everest-preview+json" \
-	     -H "Authorization: token ${TOKEN}" \
-	     --request POST \
-	     --data "{'event_type': 'my-release', 'client_payload': {'tag': '${TAG}'}}" \
-	     https://api.github.com/repos/xxxserxxx/gotop-${p}/dispatches
-	done
-	```
-	and then go in and mark each release as not a pre-release.
-12. Wait for the [AUR](https://github.com/xxxserxxx/gotop-linux) project to finish building.
-	1.  Update package versions in gotop and gotop-bin
-	2.  namcap PKGBUILD
-	3.  updpkgsums
-	4.  makepkg --printsrcinfo > .SRCINFO
-	5.  git commit -a
-	6.  git push
-	7.  Test install `gotop`, `gotop-bin`, and `gotop-git` with running & version check
-
-The AUR project still needs secret credentials to aurpublish to the AUR
-repository, so the final publish step is still currently manual.
-
+1. Update CHANGELOG.md
+2. Tag
+3. Push everything
+4. Wait for the github workflows to complete
+5. Download and verify the correct version of one of the binaries
+6. Finish the draft release and publish.
+7. Check gotop-builder for a successful everything build; if successful, publish.
+8. Notify Nix
+9. ~~Notify Homebrew~~ ~~Automated now.~~ Automation broke. Notify manually.
+10. Do the Arch release.
+	1. cd actions/arch-package
+	2. VERSION=v4.1.2 ./run.sh
 
 ## Nix 
 

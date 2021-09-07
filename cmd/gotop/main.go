@@ -353,6 +353,7 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 }
 
 // FIXME CPU use regression
+// TODO add CPU freq
 func main() {
 	// TODO: Make this an option, for performance testing
 	//go func() {
