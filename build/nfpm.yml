@@ -1,15 +1,27 @@
-name: "gotop"
-arch: "amd64"
-platform: "linux"
-version: "v${VERSION}"
-section: "default"
-priority: "extra"
-maintainer: "Sean Russell <ser@ser1.net>"
-description: |
-  A terminal based graphical activity monitor inspired by gtop and vtop
-vendor: "Sean Russell"
-homepage: "https://github.com/xxxserxxx/gotop"
-license: "GNU Affero General Public License v3.0"
-bindir: "/usr/local/bin"
-files:
-  build/gotop: "/usr/local/bin/gotop"
+name: gotop
+arch: amd64
+platform: linux
+version: v${VERSION}
+version_schema: semver
+version_metadata: git
+section: default
+priority: extra
+maintainer: Sean Russell <ser@ser1.net>
+description: A terminal based graphical activity monitor inspired by gtop and vtop
+vendor: Sean Russell
+homepage: https://github.com/xxxserxxx/gotop
+license: The MIT License (Festival variant)
+contents:
+  # The executable
+  - src: gotop
+    dst: /usr/bin/gotop
+
+  # Default configuration
+  - src: build/gotop.conf
+    dst: /etc/gotop/gotop.conf
+    type: config|noreplace
+
+  # Contributed layouts
+  - src: layouts/htop
+    dst: /etc/gotop/htop
+    type: config|noreplace
