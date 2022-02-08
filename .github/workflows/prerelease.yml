@@ -36,3 +36,5 @@ jobs:
           files: |
             .release/*.tgz
             .release/*.zip
+            .release/*.rpm
+            .release/*.deb
