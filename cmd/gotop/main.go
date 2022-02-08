@@ -101,11 +101,13 @@ func parseArgs() error {
 		opflag.Usage()
 		os.Exit(0)
 	}
-	cs, err := colorschemes.FromName(conf.ConfigDir, *color)
-	if err != nil {
-		return err
+	if *color != "" {
+		cs, err := colorschemes.FromName(conf.ConfigDir, *color)
+		if err != nil {
+			return err
+		}
+		conf.Colorscheme = cs
 	}
-	conf.Colorscheme = cs
 	if *fahrenheit {
 		conf.TempScale = 'F'
 	} else {
