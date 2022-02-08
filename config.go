@@ -34,20 +34,26 @@ type Config struct {
 	Colorscheme          colorschemes.Colorscheme
 	UpdateInterval       time.Duration
 	AverageLoad          bool
+	NoAverageLoad        bool
 	PercpuLoad           bool
+	NoPercpuLoad         bool
 	Statusbar            bool
+	NoStatusbar          bool
 	TempScale            widgets.TempScale
 	NetInterface         string
 	Layout               string
 	MaxLogSize           int64
 	ExportPort           string
 	Mbps                 bool
+	NoMbps               bool
 	Temps                []string
 	Test                 bool
+	NoTest               bool
 	ExtensionVars        map[string]string
 	ConfigFile           string
 	Tr                   lingo.Translations
 	Nvidia               bool
+	NoNvidia             bool
 	NvidiaRefresh        time.Duration
 }
 
@@ -61,9 +67,15 @@ func NewConfig() Config {
 		HelpVisible:          false,
 		UpdateInterval:       time.Second,
 		AverageLoad:          false,
+		NoAverageLoad:        false,
 		PercpuLoad:           true,
+		NoPercpuLoad:         false,
 		TempScale:            widgets.Celsius,
 		Statusbar:            false,
+		NoStatusbar:          false,
+		NoMbps:               false,
+		NoTest:               false,
+		NoNvidia:             false,
 		NetInterface:         widgets.NetInterfaceAll,
 		MaxLogSize:           5000000,
 		Layout:               "default",

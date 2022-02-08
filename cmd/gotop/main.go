@@ -67,17 +67,23 @@ func parseArgs() error {
 	version := opflag.BoolP("version", "v", false, tr.Value("args.version"))
 	versioN := opflag.BoolP("", "V", false, tr.Value("args.version"))
 	opflag.BoolVarP(&conf.PercpuLoad, "percpu", "p", conf.PercpuLoad, tr.Value("args.percpu"))
+	opflag.BoolVar(&conf.NoPercpuLoad, "no-percpu", conf.NoPercpuLoad, tr.Value("args.no-percpu"))
 	opflag.BoolVarP(&conf.AverageLoad, "averagecpu", "a", conf.AverageLoad, tr.Value("args.cpuavg"))
+	opflag.BoolVar(&conf.NoAverageLoad, "no-averagecpu", conf.NoAverageLoad, tr.Value("args.no-cpuavg"))
 	fahrenheit := opflag.BoolP("fahrenheit", "f", conf.TempScale == 'F', tr.Value("args.temp"))
 	opflag.BoolVarP(&conf.Statusbar, "statusbar", "s", conf.Statusbar, tr.Value("args.statusbar"))
+	opflag.BoolVar(&conf.NoStatusbar, "no-statusbar", conf.NoStatusbar, tr.Value("args.no-statusbar"))
 	opflag.DurationVarP(&conf.UpdateInterval, "rate", "r", conf.UpdateInterval, tr.Value("args.rate"))
 	opflag.StringVarP(&conf.Layout, "layout", "l", conf.Layout, tr.Value("args.layout"))
 	opflag.StringVarP(&conf.NetInterface, "interface", "i", "all", tr.Value("args.net"))
 	opflag.StringVarP(&conf.ExportPort, "export", "x", conf.ExportPort, tr.Value("args.export"))
 	opflag.BoolVarP(&conf.Mbps, "mbps", "", conf.Mbps, tr.Value("args.mbps"))
+	opflag.BoolVar(&conf.NoMbps, "no-mbps", conf.NoMbps, tr.Value("args.no-mbps"))
 	opflag.BoolVar(&conf.Test, "test", conf.Test, tr.Value("args.test"))
+	opflag.BoolVar(&conf.NoTest, "no-test", conf.NoTest, tr.Value("args.no-test"))
 	opflag.StringP("", "C", "", tr.Value("args.conffile"))
 	opflag.BoolVarP(&conf.Nvidia, "nvidia", "", conf.Nvidia, "Enable NVidia GPU support")
+	opflag.BoolVarP(&conf.NoNvidia, "no-nvidia", "", conf.NoNvidia, "Disable NVidia GPU support")
 	list := opflag.String("list", "", tr.Value("args.list"))
 	wc := opflag.Bool("write-config", false, tr.Value("args.write"))
 	opflag.SortFlags = false
@@ -161,6 +167,26 @@ func parseArgs() error {
 		fmt.Println(tr.Value("help.written", path))
 		os.Exit(0)
 	}
+
+	if conf.NoStatusbar {
+		conf.Statusbar = false
+	}
+	if conf.NoPercpuLoad {
+		conf.PercpuLoad = false
+	}
+	if conf.NoAverageLoad {
+		conf.AverageLoad = false
+	}
+	if conf.NoMbps {
+		conf.Mbps = false
+	}
+	if conf.NoTest {
+		conf.Test = false
+	}
+	if conf.NoNvidia {
+		conf.Nvidia = false
+	}
+
 	return nil
 }
 
