@@ -1,0 +1,96 @@
+gotop shows system information in a terminal UI. It can be configured to have
+different layouts, color schemes, and widgets, and it is able to show
+information from other computers.
+
+Anything you change on the command line can be written to a config file
+using the `--write-config` argument, which can then be edited further.
+Just get your arguments the way you like, then run gotop again with the same
+arguments and the `--write-config` flag, and gotop will persist your
+options.
+
+Colorschemes are json files; put them in the config directory (usually
+~/.config/gotop/{name}.json) and load them with the `-c {name}` argument.
+The keys are:
+
+    Fg          -- int, foreground color
+    Bg          -- int, background color
+    BorderLabel -- int, color of widget text
+    BorderLine  -- int, color of borders
+    CPULines    -- array of ints for the colors of lines
+    BattLines   -- array of ints for the colors of lines
+    MemLines    -- array of ints for the colors of lines
+    ProcCursor  -- int, color of the cursor in the process widget
+    Sparkline   -- int, color of the graph bars
+    DiskBar     -- int, color of the disk bars
+    TempLow     -- int, color used for low temperatures
+    TempHigh    -- int, color used for high temperatures
+
+For example:
+
+    { "Fg": 7, "CPULines": [4, 3, 2, 1, 5, 6, 7, 8] }
+
+Colorschemes are referred to by their name minus the .json suffix. More 
+examples are here:
+
+    https://github.com/xxxserxxx/gotop/tree/master/colorschemes
+
+Layout files are plain text files, with widget names on rows roughly representing
+a grid. The format is ROWSPAN:WIDGETNAME/COLSPAN. COLSPAN is relative to the
+rest of the line, so a line saying "cpu mem/3" will give the CPU widget 25% of
+the width, and the memory widget 75% of the width. ROWSPAN is the height of
+the widget, so "2:cpu mem" will make the CPU widget 2 rows high, and the memory
+widget 1 row high. An example is:
+
+    2:cpu
+    disk/1      2:mem/2
+    temp
+    2:net       2:procs
+
+Save your layout under any file name either in the config directory or your current
+directory and reference the file name with the `-l` argument. More details about 
+the rules are here:
+
+    https://github.com/xxxserxxx/gotop/blob/master/docs/layouts.md
+
+and examples are here:
+
+    https://github.com/xxxserxxx/gotop/tree/master/layouts
+
+gotop can function as both a metrics exporter and viewer. As an exporter, it 
+exports Prometheus metrics, and it does not handle either encryption or 
+authentication, and so should be run behind a reverse proxy. When gotop is run
+with the `-x` argument, gotop will export metrics on the given port. To try it,
+run
+
+    gotop -x :8884
+
+and then from another shell, run:
+
+    curl http://localhost:8884/metrics
+
+To show these metrics in gotop, instead of curl run:
+
+    gotop --remote-url http://localhost:8884/metrics 
+
+You will see additional values in your widgets. To monitor remote machines,
+run gotop on them with the `-x` export flag behind a reverse proxy such as
+Caddy:
+
+    myserver.net {
+        basicauth / gtuser gtpass
+        reverse-proxy /metrics http://localhost:8884
+    }
+
+and then on your local gotop:
+
+    gotop --remote-url https://gtuser:gtpass@myserver.net/metrics
+
+Config files, layouts, and color schemes are searched for (in order):
+
+- In the current directory
+- In $XDG_CONFIG_DIR/gotop
+- In /etc/gotop (on Linux and MacOS)
+
+More information and detailed documentation can found at
+https://github.com/xxxserxxx/gotop`
+	

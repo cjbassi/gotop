@@ -1,5 +1,5 @@
 name: gotop
-arch: amd64
+arch: ${GOARCH}
 platform: linux
 version: v${VERSION}
 version_schema: semver
@@ -13,7 +13,7 @@ homepage: https://github.com/xxxserxxx/gotop
 license: The MIT License (Festival variant)
 contents:
   # The executable
-  - src: gotop
+  - src: ${EXECUTABLE}
     dst: /usr/bin/gotop
 
   # Default configuration
@@ -25,3 +25,7 @@ contents:
   - src: layouts/htop
     dst: /etc/gotop/htop
     type: config|noreplace
+
+  # Manpage
+  - src: ${MANPAGE}
+    dst: /usr/share/man8/gotop.8.gz
