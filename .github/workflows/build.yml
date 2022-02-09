@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Compile
-        uses: xxxserxxx/actions/golang-build@v2.2.0
+        uses: xxxserxxx/actions/golang-build@v2.2.1
         env:
             SRCPATH: ./cmd/gotop
         with:
