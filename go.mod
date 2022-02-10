@@ -23,4 +23,6 @@ require (
 	howett.net/plist v0.0.0-20200419221736-3b63eb3a43b5 // indirect
 )
 
+replace github.com/droundy/goopt => github.com/xxxserxxx/goopt v0.0.0-20220210150945-f4719cb0883e
+
 go 1.16

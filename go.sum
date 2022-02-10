@@ -71,6 +71,8 @@ github.com/valyala/fastrand v1.0.0 h1:LUKT9aKer2dVQNUi3waewTbKV+7H17kvWFNKs2Obdk
 github.com/valyala/fastrand v1.0.0/go.mod h1:HWqCzkrkg6QXT8V2EXWvXCoow7vLwOFN002oeRzjapQ=
 github.com/valyala/histogram v1.0.1 h1:FzA7n2Tz/wKRMejgu3PV1vw3htAklTjjuoI6z3d4KDg=
 github.com/valyala/histogram v1.0.1/go.mod h1:lQy0xA4wUz2+IUnf97SivorsJIp8FxsnRd6x25q7Mto=
+github.com/xxxserxxx/goopt v0.0.0-20220210150945-f4719cb0883e h1:5XgTxe0E4PhZ+FWvF7H4DIFWDdBl1k3FHstL7waF8sQ=
+github.com/xxxserxxx/goopt v0.0.0-20220210150945-f4719cb0883e/go.mod h1:ybXiXYU9w9/2lKDgxw4of1CqWxG34LUUjK50g+xocKA=
 github.com/xxxserxxx/lingo/v2 v2.0.1 h1:6uLLKzPqL0XpdFmNMmpSfu+uIzQk344ebfdpFWbGuxs=
 github.com/xxxserxxx/lingo/v2 v2.0.1/go.mod h1:Hr6LTxpwirwJ2Qe83MvgSQARPFDzZ4S6DKd6ciuED7A=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=

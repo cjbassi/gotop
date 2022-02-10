@@ -1,3 +1,4 @@
+//go:build freebsd
 // +build freebsd
 
 package devices
@@ -38,9 +39,8 @@ func update(temps map[string]int) map[string]error {
 			continue
 		}
 
-		s1 := strings.Replace(string(output), "C", "", 1)
-		s2 := strings.TrimSuffix(s1, "\n")
-		convertedOutput := utils.ConvertLocalizedString(s2)
+		s1 := strings.TrimSuffix(strings.Replace(string(output), "C", "", 1), "\n")
+		convertedOutput := utils.ConvertLocalizedString(s1)
 		value, err := strconv.ParseFloat(convertedOutput, 64)
 		if err != nil {
 			errors[v] = err
