@@ -13,6 +13,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
+## [4.1.3] 2022-02-14
+
+Several issues pushed back to 4.1.4 to allow this one to go out.
+
+### Added
+
+- htop layout
+- `no-X` options to disable flags (thanks @mjshariati98)
+- #158, adds a man page. This can be generated with `gotop --create-manpage`; it's installed in Arch, RPM, and DEB packages.
+
+### Changed
+
+- Replaced `opflag` (a fork of `ogier/pflag`) library with `droundy/goopt`. This *should* be backwards compatible, but it's possible there may be some differences. `goopt` has built-in support for generating man pages, and supports anti-flags -- both items that were in the todo list.
+
+### Fixed
+
+- More doc typo fixes (thanks @vabshere)
+- #200, colorschemes in config file were causing a crash
+
 ## [4.1.2] 2021-07-20
 
 ### Added
