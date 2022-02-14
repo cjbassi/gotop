@@ -23,7 +23,6 @@ var remoteLock sync.Mutex
 // TODO remote network & disk aren't reported
 // TODO network resiliency; I believe it currently crashes gotop when the network goes down
 // TODO Replace custom decoder with https://github.com/prometheus/common/blob/master/expfmt/decode.go
-// TODO MQTT / Stomp / MsgPack
 // FIXME high CPU use when remote goes offline
 // FIXME higher CPU use when using remote in general
 func init() {

@@ -28,4 +28,4 @@ contents:
 
   # Manpage
   - src: ${MANPAGE}
-    dst: /usr/share/man8/gotop.8.gz
+    dst: /usr/share/man/man8/gotop.8.gz

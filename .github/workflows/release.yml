@@ -14,14 +14,6 @@ jobs:
         run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF##*/})"
         id: tag_name
 
-      - name: Update Homebrew recipe
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          repository: xxxserxxx/homebrew-gotop
-          event-type: my-release
-          client-payload: '{"tag": "${{ steps.tag_name.outputs.tag }}"}'
-
       - name: Update and inform Homebrew
         uses: dawidd6/action-homebrew-bump-formula@v3
         with:
