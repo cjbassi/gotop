@@ -16,6 +16,8 @@ github.com/distatus/battery v0.10.0 h1:YbizvmV33mqqC1fPCAEaQGV3bBhfYOfM+2XmL+mvt
 github.com/distatus/battery v0.10.0/go.mod h1:STnSvFLX//eEpkaN7qWRxCWxrWOcssTDgnG4yqq9BRE=
 github.com/droundy/goopt v0.0.0-20170604162106-0b8effe182da h1:79H+mNJWOObWrQgbkSvvZ3t/D2lKWaTi9mu/v7fNRvg=
 github.com/droundy/goopt v0.0.0-20170604162106-0b8effe182da/go.mod h1:ytRJ64WkuW4kf6/tuYqBATBCRFUP8X9+LDtgcvE+koI=
+github.com/droundy/goopt v0.0.0-20220217183150-48d6390ad4d1 h1:6PKU05V7zJIJlTBq7AnEIrLVEUIYF4NjTU2a28Ho6ko=
+github.com/droundy/goopt v0.0.0-20220217183150-48d6390ad4d1/go.mod h1:ytRJ64WkuW4kf6/tuYqBATBCRFUP8X9+LDtgcvE+koI=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/fsnotify/fsnotify v1.4.9 h1:hsms1Qyu0jgnwNXIxa+/V/PDsU6CfLf6CNO8H7IWoS4=
 github.com/fsnotify/fsnotify v1.4.9/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=
