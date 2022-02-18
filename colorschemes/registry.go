@@ -29,6 +29,9 @@ func SetTr(tra lingo.Translations) {
 // directories for a scheme matching the name.  The search order
 // is the same as for config files.
 func FromName(confDir configdir.ConfigDir, c string) (Colorscheme, error) {
+	if c == "" {
+		c = "default"
+	}
 	if cs, ok := registry[c]; ok {
 		return cs, nil
 	}

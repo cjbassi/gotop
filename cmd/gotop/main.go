@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	_ "embed"
 	"flag"
 	"fmt"
 	"io"
@@ -21,10 +22,10 @@ import (
 
 	"github.com/VictoriaMetrics/metrics"
 	jj "github.com/cloudfoundry-attic/jibber_jabber"
+	"github.com/droundy/goopt"
 	ui "github.com/gizak/termui/v3"
 	"github.com/shibukawa/configdir"
 	"github.com/xxxserxxx/lingo/v2"
-	"github.com/xxxserxxx/opflag"
 
 	"github.com/xxxserxxx/gotop/v4"
 	"github.com/xxxserxxx/gotop/v4/colorschemes"
@@ -55,61 +56,77 @@ var (
 	tr           lingo.Translations
 )
 
+//go:embed "description.txt"
+var description string
+
 func parseArgs() error {
 	cds := conf.ConfigDir.QueryFolders(configdir.All)
 	cpaths := make([]string, len(cds))
 	for i, p := range cds {
 		cpaths[i] = p.Path
 	}
-	help := opflag.BoolP("help", "h", false, tr.Value("args.help"))
-	color := opflag.StringP("color", "c", conf.Colorscheme.Name, tr.Value("args.color"))
-	opflag.IntVarP(&conf.GraphHorizontalScale, "graphscale", "S", conf.GraphHorizontalScale, tr.Value("args.scale"))
-	version := opflag.BoolP("version", "v", false, tr.Value("args.version"))
-	versioN := opflag.BoolP("", "V", false, tr.Value("args.version"))
-	opflag.BoolVarP(&conf.PercpuLoad, "percpu", "p", conf.PercpuLoad, tr.Value("args.percpu"))
-	opflag.BoolVar(&conf.NoPercpuLoad, "no-percpu", conf.NoPercpuLoad, tr.Value("args.no-percpu"))
-	opflag.BoolVarP(&conf.AverageLoad, "averagecpu", "a", conf.AverageLoad, tr.Value("args.cpuavg"))
-	opflag.BoolVar(&conf.NoAverageLoad, "no-averagecpu", conf.NoAverageLoad, tr.Value("args.no-cpuavg"))
-	fahrenheit := opflag.BoolP("fahrenheit", "f", conf.TempScale == 'F', tr.Value("args.temp"))
-	opflag.BoolVarP(&conf.Statusbar, "statusbar", "s", conf.Statusbar, tr.Value("args.statusbar"))
-	opflag.BoolVar(&conf.NoStatusbar, "no-statusbar", conf.NoStatusbar, tr.Value("args.no-statusbar"))
-	opflag.DurationVarP(&conf.UpdateInterval, "rate", "r", conf.UpdateInterval, tr.Value("args.rate"))
-	opflag.StringVarP(&conf.Layout, "layout", "l", conf.Layout, tr.Value("args.layout"))
-	opflag.StringVarP(&conf.NetInterface, "interface", "i", "all", tr.Value("args.net"))
-	opflag.StringVarP(&conf.ExportPort, "export", "x", conf.ExportPort, tr.Value("args.export"))
-	opflag.BoolVarP(&conf.Mbps, "mbps", "", conf.Mbps, tr.Value("args.mbps"))
-	opflag.BoolVar(&conf.NoMbps, "no-mbps", conf.NoMbps, tr.Value("args.no-mbps"))
-	opflag.BoolVar(&conf.Test, "test", conf.Test, tr.Value("args.test"))
-	opflag.BoolVar(&conf.NoTest, "no-test", conf.NoTest, tr.Value("args.no-test"))
-	opflag.StringP("", "C", "", tr.Value("args.conffile"))
-	opflag.BoolVarP(&conf.Nvidia, "nvidia", "", conf.Nvidia, "Enable NVidia GPU support")
-	opflag.BoolVarP(&conf.NoNvidia, "no-nvidia", "", conf.NoNvidia, "Disable NVidia GPU support")
-	list := opflag.String("list", "", tr.Value("args.list"))
-	wc := opflag.Bool("write-config", false, tr.Value("args.write"))
-	opflag.SortFlags = false
-	opflag.Usage = func() {
-		fmt.Fprintf(os.Stderr, tr.Value("usage", os.Args[0]))
-		opflag.PrintDefaults()
-		fmt.Fprintf(os.Stderr, "Project home: https://github.com/xxxserxxx/gotop\n")
+	goopt.Summary = "A terminal based graphical activity monitor, inspired by gtop and vtop"
+	goopt.Version = Version
+	goopt.Description = func() string {
+		return description
 	}
-	opflag.Parse()
-	if *version || *versioN {
-		fmt.Printf("gotop %s (%s)\n", Version, BuildDate)
-		os.Exit(0)
+	color := goopt.String([]string{"--color", "-c"}, conf.Colorscheme.Name, tr.Value("args.color"))
+	graphhorizontalscale := goopt.Int([]string{"--graphscale", "-S"}, conf.GraphHorizontalScale, tr.Value("args.scale"))
+	version := goopt.Flag([]string{"-v", "-V", "--version"}, []string{}, tr.Value("args.version"), "")
+	percpuload := goopt.Flag([]string{"--percpu", "-p"}, []string{"--no-percpu"}, tr.Value("args.percpu"), tr.Value("args.no-percpu"))
+	averageload := goopt.Flag([]string{"--averagecpu", "-a"}, []string{"--no-averagecpu"}, tr.Value("args.cpuavg"), tr.Value("args.no-cpuavg"))
+	tempScale := goopt.Flag([]string{"--fahrenheit"}, []string{"--celsius"}, tr.Value("args.temp"), tr.Value("args.tempc"))
+	statusbar := goopt.Flag([]string{"--statusbar", "-s"}, []string{"--no-statusbar"}, tr.Value("args.statusbar"), tr.Value("args.no-statusbar"))
+	updateinterval := goopt.String([]string{"--rate", "-r"}, conf.UpdateInterval.String(), tr.Value("args.rate"))
+	layout := goopt.String([]string{"--layout", "-l"}, conf.Layout, tr.Value("args.layout"))
+	netinterface := goopt.String([]string{"--interface", "-i"}, "all", tr.Value("args.net"))
+	exportport := goopt.String([]string{"--export", "-x"}, conf.ExportPort, tr.Value("args.export"))
+	mbps := goopt.Flag([]string{"--mbps"}, []string{"--bytes"}, tr.Value("args.mbps"), tr.Value("args.no-mbps"))
+	test := goopt.Flag([]string{"--test"}, []string{"--no-test"}, tr.Value("args.test"), tr.Value("args.no-test"))
+	// This is so the flag package doesn't barf on an unrecognized flag; it's processed earlier
+	goopt.String([]string{"-C"}, "", tr.Value("args.conffile"))
+	nvidia := goopt.Flag([]string{"--nvidia"}, []string{"--no-nvidia"}, tr.Value("args.nvidia"), tr.Value("args.no-nvidia"))
+	list := goopt.String([]string{"--list"}, "", tr.Value("args.list"))
+	wc := goopt.Flag([]string{"--write-config"}, []string{}, tr.Value("args.write"), "")
+	goopt.Parse(nil)
+
+	conf.PercpuLoad = *percpuload
+	conf.GraphHorizontalScale = *graphhorizontalscale
+	conf.PercpuLoad = *percpuload
+	conf.AverageLoad = *averageload
+	conf.Statusbar = *statusbar
+	conf.Layout = *layout
+	conf.NetInterface = *netinterface
+	conf.ExportPort = *exportport
+	conf.Mbps = *mbps
+	conf.Nvidia = *nvidia
+	conf.AverageLoad = *averageload
+	conf.Test = *test
+	conf.Statusbar = *statusbar
+	conf.Mbps = *mbps
+	conf.Nvidia = *nvidia
+	if upInt, err := time.ParseDuration(*updateinterval); err == nil {
+		conf.UpdateInterval = upInt
+	} else {
+		fmt.Printf("Update interval must be a time interval such as '10s' or '1m'")
+		os.Exit(1)
 	}
-	if *help {
-		opflag.Usage()
-		os.Exit(0)
-	}
-	cs, err := colorschemes.FromName(conf.ConfigDir, *color)
-	if err != nil {
-		return err
-	}
-	conf.Colorscheme = cs
-	if *fahrenheit {
+	if *tempScale {
 		conf.TempScale = 'F'
 	} else {
 		conf.TempScale = 'C'
+	}
+
+	if *version {
+		fmt.Printf("gotop %s (%s)\n", Version, BuildDate)
+		os.Exit(0)
+	}
+	if *color != "" {
+		cs, err := colorschemes.FromName(conf.ConfigDir, *color)
+		if err != nil {
+			return err
+		}
+		conf.Colorscheme = cs
 	}
 	if *list != "" {
 		switch *list {
@@ -166,25 +183,6 @@ func parseArgs() error {
 		}
 		fmt.Println(tr.Value("help.written", path))
 		os.Exit(0)
-	}
-
-	if conf.NoStatusbar {
-		conf.Statusbar = false
-	}
-	if conf.NoPercpuLoad {
-		conf.PercpuLoad = false
-	}
-	if conf.NoAverageLoad {
-		conf.AverageLoad = false
-	}
-	if conf.NoMbps {
-		conf.Mbps = false
-	}
-	if conf.NoTest {
-		conf.Test = false
-	}
-	if conf.NoNvidia {
-		conf.Nvidia = false
 	}
 
 	return nil
@@ -379,6 +377,7 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 }
 
 // FIXME CPU use regression
+// TODO add CPU freq
 func main() {
 	// TODO: Make this an option, for performance testing
 	//go func() {

@@ -10,11 +10,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/xxxserxxx/opflag"
+	"github.com/droundy/goopt"
 )
 
-var name string
-var remote_url string
+var nameP *string
+var remoteUrlP *string
+var sleepP *string
 var sleep time.Duration
 var remoteLock sync.Mutex
 
@@ -26,9 +27,9 @@ var remoteLock sync.Mutex
 // FIXME high CPU use when remote goes offline
 // FIXME higher CPU use when using remote in general
 func init() {
-	opflag.StringVarP(&name, "remote-name", "", "", "Remote: name of remote gotop")
-	opflag.StringVarP(&remote_url, "remote-url", "", "", "Remote: URL of remote gotop")
-	opflag.DurationVarP(&sleep, "remote-refresh", "", 0, "Remote: Frequency to refresh data, in seconds")
+	nameP = goopt.String([]string{"--remote-name"}, "", "Remote: name of remote gotop")
+	remoteUrlP = goopt.String([]string{"--remote-url"}, "", "Remote: URL of remote gotop")
+	sleepP = goopt.String([]string{"--remote-refresh"}, "", "Remote: Frequency to refresh data, in seconds")
 
 	RegisterStartup(startup)
 }
@@ -47,27 +48,34 @@ func startup(vars map[string]string) error {
 
 	remoteLock = sync.Mutex{}
 	remotes := parseConfig(vars)
-	// Don't set anything up if there's nothing to do
-	if (name == "" || remote_url == "") && len(remotes) == 0 {
-		return nil
-	}
-	if remote_url != "" {
+
+	if remoteUrlP != nil && *remoteUrlP != "" {
+		var name string
 		r := Remote{
-			url:     remote_url,
-			refresh: 2 * time.Second,
+			url:     *remoteUrlP,
+			refresh: 5 * time.Second,
 		}
-		if name == "" {
+		if nameP == nil && *nameP != "" {
+			name = *nameP
+		} else {
 			name = "Remote"
 		}
-		if sleep != 0 {
-			r.refresh = sleep
+		if sleepP == nil && *sleepP != "" {
+			sleep, err := time.ParseDuration(*sleepP)
+			if err == nil {
+				r.refresh = sleep
+			} else {
+				log.Printf("invalid refresh duration %s for %s; using default", *sleepP, *remoteUrlP)
+			}
 		}
 		remotes[name] = r
 	}
+
 	if len(remotes) == 0 {
 		log.Println("Remote: no remote URL provided; disabling extension")
 		return nil
 	}
+
 	RegisterTemp(updateTemp)
 	RegisterMem(updateMem)
 	RegisterCPU(updateUsage)
@@ -83,7 +91,6 @@ func startup(vars map[string]string) error {
 	w := &sync.WaitGroup{}
 	for n, r := range remotes {
 		n = n + "-"
-		r.url = r.url
 		var u *url.URL
 		w.Add(1)
 		go func(name string, remote Remote, wg *sync.WaitGroup) {
@@ -232,7 +239,6 @@ func updateUsage(cpus map[string]int, _ bool) map[string]error {
 
 func parseConfig(vars map[string]string) map[string]Remote {
 	rv := make(map[string]Remote)
-	log.Printf("VARS = %s", vars)
 	for key, value := range vars {
 		if strings.HasPrefix(key, "remote-") {
 			parts := strings.Split(key, "-")
