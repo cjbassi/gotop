@@ -28,6 +28,7 @@ Process actions:
 
 Process sorting:
   - c: CPU
+  - n: Cmd
   - m: Mem
   - p: PID
 

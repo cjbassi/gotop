@@ -28,6 +28,7 @@ Action sur les processus:
 
 Tri des processus:
   - c: CPU
+  - n: Cmd
   - m: Mem
   - p: PID
 

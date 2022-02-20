@@ -28,6 +28,7 @@ Acciones de proceso :
 
 Ordenación de procesos:
   - c: CPU
+  - n: Cmd
   - m: Mem
   - p: PID
 

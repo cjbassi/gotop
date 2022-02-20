@@ -28,6 +28,7 @@ Proceza agoj:
 
 Proceza ordigoj:
   - c: CPU
+  - n: Cmd
   - m: Memoro
   - p: PID
 
