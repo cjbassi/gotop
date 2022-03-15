@@ -1,7 +1,7 @@
 name: gotop
 arch: ${GOARCH}
 platform: linux
-version: v${VERSION}
+version: ${VERSION}
 version_schema: semver
 version_metadata: git
 section: default
