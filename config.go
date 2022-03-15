@@ -241,7 +241,7 @@ func marshal(c *Config) []byte {
 	fmt.Fprintf(buff, "%s=%t\n", averagecpu, c.AverageLoad)
 	fmt.Fprintln(buff, "# If true, show load per CPU")
 	fmt.Fprintf(buff, "%s=%t\n", percpuload, c.PercpuLoad)
-	fmt.Fprintln(buff, "# Temperature units. C for Celcius, F for Fahrenheit")
+	fmt.Fprintln(buff, "# Temperature units. C for Celsius, F for Fahrenheit")
 	fmt.Fprintf(buff, "%s=%c\n", tempscale, c.TempScale)
 	fmt.Fprintln(buff, "# If true, display a status bar")
 	fmt.Fprintf(buff, "%s=%t\n", statusbar, c.Statusbar)
