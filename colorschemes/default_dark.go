@@ -16,7 +16,7 @@ func init() {
 
 		ProcCursor: 33,
 
-		Sparkline: 4,
+		Sparklines: [2]int{4, 5},
 
 		DiskBar: 252,
 

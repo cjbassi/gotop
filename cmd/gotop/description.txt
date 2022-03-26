@@ -20,7 +20,7 @@ The keys are:
     BattLines   -- array of ints for the colors of lines
     MemLines    -- array of ints for the colors of lines
     ProcCursor  -- int, color of the cursor in the process widget
-    Sparkline   -- int, color of the graph bars
+    Sparklines  -- array of ints for the colors of network usage
     DiskBar     -- int, color of the disk bars
     TempLow     -- int, color used for low temperatures
     TempHigh    -- int, color used for high temperatures
