@@ -52,8 +52,8 @@ type Colorscheme struct {
 	// ProcCursor is used as the color for the color bar in the process widget
 	ProcCursor int
 
-	// SparkLine determines the color of the data line in spark graphs
-	Sparkline int
+	// SparkLines define the colors used for the Network usage graphs
+	Sparklines [2]int
 
 	// DiskBar is the color of the disk gauge bars (currently unused,
 	// as there's no disk gauge widget)

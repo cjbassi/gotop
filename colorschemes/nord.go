@@ -29,7 +29,7 @@ func init() {
 
 		ProcCursor: 31, // blue (nord9)
 
-		Sparkline: 31,
+		Sparklines: [2]int{31, 96},
 
 		DiskBar: 254,
 

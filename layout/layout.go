@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/xxxserxxx/lingo/v2"
+
 	"github.com/xxxserxxx/gotop/v4"
 	"github.com/xxxserxxx/gotop/v4/widgets"
 
@@ -186,9 +187,9 @@ func makeWidget(c gotop.Config, widRule widgetRule) interface{} {
 		w = t
 	case "net":
 		n := widgets.NewNetWidget(c.NetInterface)
-		n.Lines[0].LineColor = ui.Color(c.Colorscheme.Sparkline)
+		n.Lines[0].LineColor = ui.Color(c.Colorscheme.Sparklines[0])
 		n.Lines[0].TitleColor = ui.Color(c.Colorscheme.BorderLabel)
-		n.Lines[1].LineColor = ui.Color(c.Colorscheme.Sparkline)
+		n.Lines[1].LineColor = ui.Color(c.Colorscheme.Sparklines[1])
 		n.Lines[1].TitleColor = ui.Color(c.Colorscheme.BorderLabel)
 		n.Mbps = c.Mbps
 		w = n
