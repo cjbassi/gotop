@@ -1,3 +1,4 @@
+//go:build linux || darwin
 // +build linux darwin
 
 package devices
@@ -15,7 +16,11 @@ func init() {
 func getTemps(temps map[string]int) map[string]error {
 	sensors, err := host.SensorsTemperatures()
 	if err != nil {
-		return map[string]error{"gopsutil host": err}
+		if _, ok := err.(*host.Warnings); ok {
+			// ignore warnings
+		} else {
+			return map[string]error{"gopsutil host": err}
+		}
 	}
 	for _, sensor := range sensors {
 		label := sensorMap[sensor.SensorKey]
