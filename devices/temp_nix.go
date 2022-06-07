@@ -4,8 +4,8 @@
 package devices
 
 import (
+	"fmt"
 	"log"
-	"regexp"
 
 	smart "github.com/anatol/smart.go"
 	"github.com/jaypipes/ghw"
@@ -40,28 +40,23 @@ func getTemps(temps map[string]int) map[string]error {
 		return nil
 	}
 
-	var sata = regexp.MustCompile(`sd.?`)
-	var nvme = regexp.MustCompile(`nvme*`)
 	for _, disk := range block.Disks {
-		switch t := disk.Name; {
-		case sata.MatchString(t):
-			dev, err := smart.OpenSata("/dev/" + disk.Name)
-			if err != nil {
-				break
-			}
-			sm, _ := dev.ReadSMARTData()
-			for _, attr := range sm.Attrs {
+		dev, err := smart.Open("/dev/" + disk.Name)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		switch sm := dev.(type) {
+		case *smart.SataDevice:
+			data, _ := sm.ReadSMARTData()
+			for _, attr := range data.Attrs {
 				if attr.Id == 194 {
 					temps[disk.Name+"_"+disk.Model] = int(attr.Value)
 				}
 			}
-		case nvme.MatchString(t):
-			dev, err := smart.OpenNVMe("/dev/" + disk.Name)
-			if err != nil {
-				break
-			}
-			sm, _ := dev.ReadSMART()
-			temps[disk.Name+"_"+disk.Model] = int(sm.Temperature)
+		case *smart.NVMeDevice:
+			data, _ := sm.ReadSMART()
+			temps[disk.Name+"_"+disk.Model] = int(data.Temperature)
 		default:
 		}
 	}
