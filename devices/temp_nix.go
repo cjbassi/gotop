@@ -4,7 +4,6 @@
 package devices
 
 import (
-	"fmt"
 	"log"
 
 	smart "github.com/anatol/smart.go"
@@ -43,7 +42,7 @@ func getTemps(temps map[string]int) map[string]error {
 	for _, disk := range block.Disks {
 		dev, err := smart.Open("/dev/" + disk.Name)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			continue
 		}
 		switch sm := dev.(type) {
