@@ -51,11 +51,13 @@ func getTemps(temps map[string]int) map[string]error {
 			for _, attr := range data.Attrs {
 				if attr.Id == 194 {
 					temps[disk.Name+"_"+disk.Model] = int(attr.Value)
+					sm.Close()
 				}
 			}
 		case *smart.NVMeDevice:
 			data, _ := sm.ReadSMART()
 			temps[disk.Name+"_"+disk.Model] = int(data.Temperature)
+			sm.Close()
 		default:
 		}
 	}
