@@ -45,19 +45,19 @@ func getTemps(temps map[string]int) map[string]error {
 			log.Println(err)
 			continue
 		}
+		defer dev.Close()
+
 		switch sm := dev.(type) {
 		case *smart.SataDevice:
 			data, _ := sm.ReadSMARTData()
 			for _, attr := range data.Attrs {
 				if attr.Id == 194 {
 					temps[disk.Name+"_"+disk.Model] = int(attr.Value)
-					sm.Close()
 				}
 			}
 		case *smart.NVMeDevice:
 			data, _ := sm.ReadSMART()
 			temps[disk.Name+"_"+disk.Model] = int(data.Temperature)
-			sm.Close()
 		default:
 		}
 	}
