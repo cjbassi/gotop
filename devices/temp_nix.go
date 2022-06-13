@@ -6,7 +6,7 @@ package devices
 import (
 	"log"
 
-	smart "github.com/anatol/smart.go"
+	"github.com/anatol/smart.go"
 	"github.com/jaypipes/ghw"
 	"github.com/shirou/gopsutil/host"
 )
@@ -42,7 +42,6 @@ func getTemps(temps map[string]int) map[string]error {
 	for _, disk := range block.Disks {
 		dev, err := smart.Open("/dev/" + disk.Name)
 		if err != nil {
-			log.Println(err)
 			continue
 		}
 		defer dev.Close()
@@ -50,13 +49,19 @@ func getTemps(temps map[string]int) map[string]error {
 		switch sm := dev.(type) {
 		case *smart.SataDevice:
 			data, _ := sm.ReadSMARTData()
-			for _, attr := range data.Attrs {
-				if attr.Id == 194 {
-					temps[disk.Name+"_"+disk.Model] = int(attr.Value)
-				}
+			if err != nil {
+				log.Print("error getting smart data")
+				return nil
+			}
+			if attr, ok := data.Attrs[194]; ok {
+				temps[disk.Name+"_"+disk.Model] = int(attr.Value)
 			}
 		case *smart.NVMeDevice:
 			data, _ := sm.ReadSMART()
+			if err != nil {
+				log.Print("error getting smart data")
+				return nil
+			}
 			temps[disk.Name+"_"+disk.Model] = int(data.Temperature)
 		default:
 		}
