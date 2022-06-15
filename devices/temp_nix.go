@@ -48,18 +48,23 @@ func getTemps(temps map[string]int) map[string]error {
 
 		switch sm := dev.(type) {
 		case *smart.SataDevice:
-			data, _ := sm.ReadSMARTData()
+			data, err := sm.ReadSMARTData()
 			if err != nil {
-				log.Print("error getting smart data")
+				log.Print("error getting smart data for " + disk.Name + "_" + disk.Model)
 				return nil
 			}
 			if attr, ok := data.Attrs[194]; ok {
-				temps[disk.Name+"_"+disk.Model] = int(attr.Value)
+				val, _, _, _, err := attr.ParseAsTemperature()
+				if err != nil {
+					log.Print("error parsing temperature smart data for " + disk.Name + "_" + disk.Model)
+					return nil
+				}
+				temps[disk.Name+"_"+disk.Model] = int(val)
 			}
 		case *smart.NVMeDevice:
-			data, _ := sm.ReadSMART()
+			data, err := sm.ReadSMART()
 			if err != nil {
-				log.Print("error getting smart data")
+				log.Print("error getting smart data for " + disk.Name + "_" + disk.Model)
 				return nil
 			}
 			temps[disk.Name+"_"+disk.Model] = int(data.Temperature)
