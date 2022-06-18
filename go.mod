@@ -4,7 +4,7 @@ require (
 	github.com/BurntSushi/toml v1.1.0 // indirect
 	github.com/VictoriaMetrics/metrics v1.18.1
 	github.com/VividCortex/ewma v1.2.0
-	github.com/anatol/smart.go v0.0.0-20220608000525-80bf85256c1c
+	github.com/anatol/smart.go v0.0.0-20220615232124-64dea241c3bb
 	github.com/cloudfoundry-attic/jibber_jabber v0.0.0-20151120183258-bcc4c8345a21
 	github.com/cloudfoundry/jibber_jabber v0.0.0-20151120183258-bcc4c8345a21 // indirect
 	github.com/distatus/battery v0.10.0

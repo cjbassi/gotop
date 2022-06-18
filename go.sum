@@ -18,6 +18,8 @@ github.com/anatol/smart.go v0.0.0-20220404164659-a19872369963 h1:ykzyuxgLmJHrAvZ
 github.com/anatol/smart.go v0.0.0-20220404164659-a19872369963/go.mod h1:ISc9r9BIEJLjO98+efehnn5Gx2N0wac0iIflYoaaGrw=
 github.com/anatol/smart.go v0.0.0-20220608000525-80bf85256c1c h1:+8vjVFVRMVHj7oWH0c0UK6SHl4hpAVQME1jW5R02dG4=
 github.com/anatol/smart.go v0.0.0-20220608000525-80bf85256c1c/go.mod h1:F486dIGdTbYMmAj8dtlVbjQasL8WS7lhnijBk4wJmKQ=
+github.com/anatol/smart.go v0.0.0-20220615232124-64dea241c3bb h1:cKi4b86dLoZulJet0/ubN9oFea1eBHZj7bNK8icQamM=
+github.com/anatol/smart.go v0.0.0-20220615232124-64dea241c3bb/go.mod h1:F486dIGdTbYMmAj8dtlVbjQasL8WS7lhnijBk4wJmKQ=
 github.com/anatol/vmtest v0.0.0-20211215032353-afd7b1dd38ef/go.mod h1:JiDFhD1zjgMx9ONsHhhucGwMvCLrJMl/yu/l5qP4XFw=
 github.com/anatol/vmtest v0.0.0-20220413190228-7a42f1f6d7b8/go.mod h1:oPm5wWoqTSkeoPe1Q3sPryTK8o24Jcbwh8dKOiiIobk=
 github.com/cloudfoundry-attic/jibber_jabber v0.0.0-20151120183258-bcc4c8345a21 h1:Yg2hDs4b13Evkpj42FU2idX2cVXVFqQSheXYKM86Qsk=
@@ -199,6 +201,7 @@ gopkg.in/yaml.v2 v2.4.0 h1:D8xgwECY7CYvx+Y2n4sBz93Jn9JRvxdiyyo8CTfuKaY=
 gopkg.in/yaml.v2 v2.4.0/go.mod h1:RDklbk79AGWmwhnvt/jBztapEOGDOx6ZbXqjP6csGnQ=
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
 gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
+gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
 gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
 howett.net/plist v0.0.0-20181124034731-591f970eefbb/go.mod h1:vMygbs4qMhSZSc4lCUl2OEE+rDiIIJAIdR4m7MiMcm0=
 howett.net/plist v0.0.0-20200419221736-3b63eb3a43b5 h1:AQkaJpH+/FmqRjmXZPELom5zIERYZfwTjnHpfoVMQEc=
