@@ -8,13 +8,46 @@ import (
 
 	"github.com/anatol/smart.go"
 	"github.com/jaypipes/ghw"
+	"github.com/jaypipes/ghw/pkg/block"
 	"github.com/shirou/gopsutil/host"
 )
 
+var disks []block.Disk
+var smDevices []smart.Device
+
 func init() {
 	devs() // Populate the sensorMap
+	RegisterStartup(startBlock)
 	RegisterTemp(getTemps)
 	RegisterDeviceList(Temperatures, devs, defs)
+	RegisterShutdown(endBlock)
+}
+
+func startBlock(vars map[string]string) error {
+	block, err := ghw.Block()
+	if err != nil {
+		log.Print("error getting block device info")
+		return err
+	}
+	for _, disk := range block.Disks {
+		dev, err := smart.Open("/dev/" + disk.Name)
+		if err == nil {
+			disks = append(disks, *disk)
+			smDevices = append(smDevices, dev)
+		}
+	}
+	return err
+}
+
+func endBlock() error {
+	for _, dev := range smDevices {
+		err := dev.Close()
+		if err != nil {
+			log.Print("error closing device")
+			return err
+		}
+	}
+	return nil
 }
 
 func getTemps(temps map[string]int) map[string]error {
@@ -33,41 +66,31 @@ func getTemps(temps map[string]int) map[string]error {
 		}
 	}
 
-	block, err := ghw.Block()
-	if err != nil {
-		log.Print("error getting block device info")
-		return nil
-	}
-
-	for _, disk := range block.Disks {
-		dev, err := smart.Open("/dev/" + disk.Name)
-		if err != nil {
-			continue
-		}
-		defer dev.Close()
-
+	for i, dev := range smDevices {
 		switch sm := dev.(type) {
 		case *smart.SataDevice:
 			data, err := sm.ReadSMARTData()
 			if err != nil {
-				log.Print("error getting smart data for " + disk.Name + "_" + disk.Model)
-				return nil
+				log.Print("error getting smart data for " + disks[i].Name + "_" + disks[i].Model)
+				log.Print(err)
+				break
 			}
 			if attr, ok := data.Attrs[194]; ok {
 				val, _, _, _, err := attr.ParseAsTemperature()
 				if err != nil {
-					log.Print("error parsing temperature smart data for " + disk.Name + "_" + disk.Model)
-					return nil
+					log.Print("error parsing temperature smart data for " + disks[i].Name + "_" + disks[i].Model)
+					log.Print(err)
+					break
 				}
-				temps[disk.Name+"_"+disk.Model] = int(val)
+				temps[disks[i].Name+"_"+disks[i].Model] = int(val)
 			}
 		case *smart.NVMeDevice:
 			data, err := sm.ReadSMART()
 			if err != nil {
-				log.Print("error getting smart data for " + disk.Name + "_" + disk.Model)
-				return nil
+				log.Print("error getting smart data for " + disks[i].Name + "_" + disks[i].Model)
+				break
 			}
-			temps[disk.Name+"_"+disk.Model] = int(data.Temperature)
+			temps[disks[i].Name+"_"+disks[i].Model] = int(data.Temperature)
 		default:
 		}
 	}
