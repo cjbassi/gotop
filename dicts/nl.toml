@@ -1,0 +1,192 @@
+configfile="Configuratiebestand"
+usage="Gebruik: {0} [opties]\n\nOpties:\n"
+total="Totaal"
+
+
+[help]
+paths="Kleurenschema's, indelingen en het configuratiebestand worden geladen uit (op volgorde):"
+log="Het logboek wordt opgeslagen in {0}"
+written="Het configuratiebestand wordt opgeslagen in {0}"
+help="""
+Afsluiten: q of <C-c>
+
+Procesnavigatie:
+  - k en <Up>: regel naar boven
+  - j en <Down>: regel naar onderen
+  - <C-u>: halve pagina omhoog
+  - <C-d>: halve pagina omlaag
+  - <C-b>: volledige pagina omhoog
+  - <C-f>: volledige pagina omlaag
+  - gg en <Home>: ga naar bovenkant
+  - G en <End>: ga naar onderkant
+
+Procesacties:
+  - <Tab>: procesgroepering aan/uit
+  - dd: beëindig geselecteerd(e) proces of groep met SIGTERM (15)
+  - d3: beëindig geselecteerd(e) proces of groep met SIGQUIT (3)
+  - d9: beëindig geselecteerd(e) proces of groep met SIGKILL (9)
+
+Processortering:
+  - c: Cpu
+  - m: Geh.
+  - p: PID
+
+Procesfiltering:
+  - /: bewerk het filter
+  - (tijdens bewerken):
+    - <Enter>: accepteer het filter
+    - <C-c> en <Escape>: wis het filter
+
+Cpu- en geheugengrafiek:
+  - h: zoom in
+  - l: zoom out
+
+Netwerk:
+  - b: schakel tussen mbps en bytes per seconde
+"""
+# TRANSLATORS: Please don't translate the layout **names**
+layouts = """Meegeleverde indelingen:
+   default
+   minimal
+   battery
+   kitchensink"""
+# TRANSLATORS: Please don't translate the colorcheme **names**
+colorschemes = """Meegeleverde kleurenschema's:
+   default
+   default-dark (witte achterground)
+   solarized
+   solarized16-dark
+   solarized16-light
+   monokai
+   vice
+   nord"""
+# TRANSLATORS: Please don't translate the widget **names**
+widgets = """Widgets die kunnen worden getoond in alle indelingen:
+   cpu   - Cpu-belastinggrafiek
+   mem   - Fysiek en wisselgeheugenbelastinggrafiek
+   temp  - Sensortemperaturen
+   disk  - Fysiek schijfpartitiegebruik
+   power - Acculading
+   net   - Netwerkbelasting
+   procs - Interactieve processenlijst"""
+
+
+[args]
+help="Toon dit scherm;"
+color="Stel een kleurenschema in;"
+scale="Grafiekomvangsfactor (>0);"
+version="Toon het versienummer en sluit af;"
+percpu="Toon individuele cpu's op de cpu-widget;"
+no-percpu="Toon alle cpu's gecombineerd op de cpu-widget;"
+cpuavg="Toon de gemiddelde cpu op de cpu-widget;"
+no-cpuavg="Verberg de gemiddelde cpu op de cpu-widget;"
+temp="Toon temperaturen in fahrenheit;"
+tempc="Toon temperaturen in celsius;"
+statusbar="Toon een statusbalk met daarop de tijd;"
+no-statusbar="Verberg de statusbalk."
+rate="De ververstussenpoos. De meeste tijdeenheden worden geaccepteerd.  ‘1m’ = ververs elke minuut;  ‘100ms’ = ververs elke 100ms."
+layout="Naam van het indelingsspecificatiebestand. Gebruik ‘-’ om door te sluizen."
+net="Selecteer de netwerkkaart. Geef meerdere kaarten tegelijk op door ze met een komma te scheiden. Negeer kaarten middels een ‘!’."
+export="Exporteer statistieken vanop de opgegeven poort;"
+mbps="Toon de netwerksnelheid in mbps;"
+bytes="Toon de netwerksnelheid in bytes;"
+test="Voer tests en beëindigingen uit met succes-/mislukkingscodes;"
+no-test="Schakel tests uit;"
+conffile="Het te gebruiken configuratiebestand in plaats van het standaardbestand (LET OP: DIT DIENT DE EERSTE OPDRACHTREGELOPTIE TE ZIJN!);"
+nvidia="Toon Nvidia-gpu-statistieken;"
+no-nvidia="Verberg Nvidia-gpu-statistieken;"
+nvidiarefresh="De ververstussenpoos. De meeste tijdeenheden worden geaccepteerd."
+# TRANSLATORS: Please don't translate the **labels** ("devices", "layouts") as they don't change in the code.
+list="""
+Lijst met <devices|layouts|colorschemes|paths|keys|langs>
+      devices: Toon apparaatnamen op filterbare widgets;
+      layouts: Toon meegeleverde indelingen;
+      colorschemes: Toon meelgeleverde kleurenschema's;
+      paths: Toon configuratiebestandlocaties;
+      widgets: Toon widgets die kunnen worden gebruikt in de indelingen;
+      keys: Toon de sneltoetsen;
+      langs: Toon ondersteunde vertalingen."""
+write="Sla op in een standaard configuratiebestand."
+
+
+[config.err]
+configsyntax="0| ongeldige configuratiebestandsyntaxis: KEY=WAARDE is vereist, maar is momenteel {0}"
+deprecation="1| regel {0}: ‘{1}’ is verouderd en genegeerd: {2}"
+line="2| regel #{0}: {1}"
+tempscale="3| ongeldige TempScale-waarde: {0}"
+
+
+[error]
+configparse="4| Het configuratiebestand kan niet worden uitgelezen: {0}"
+cliparse="5| De volgende cli-opties worden gebruikt: {0}"
+logsetup="6| Het logboek kan niet worden aangelegd: {0}"
+unknownopt="7| Onbekende optie ‘{0}’ - probeer layouts, colorschemes, keys, paths of devices\n"
+writefail="8| Het configuratiebestand kan niet worden opgeslagen: {0}"
+checklog="9| Er zijn fouten opgetreden vanaf {0}:"
+metricsetup="10| De statistieken van {0} kunnen niet worden bepaald: {1}"
+nometrics="11| Er zijn geen statistieken van {0} {1}"
+fatalfetch="12| Er is een kritieke fout opgetreden tijdens het ophalen van de informatie over {0}: {1}"
+recovfetch="13| Er is een herstelbare fout opgetreden tijdens het ophalen van de informatie over {0} - {0} wordt overgeslagen: {1}"
+nodevfound="14| Geen bruikbare {0} aangetroffen"
+setuperr="15| {0} kan niet worden ingesteld: {1}"
+colorschemefile="16| Het kleurenschemabestand ‘{0}’ is niet aangetroffen in ‘{1}’"
+colorschemeread="17| Het kleurenschemabestand ‘{0}’ kan niet worden uitgelezen: {1}"
+colorschemeparse="18| Het kleurenschemabestand kan niet worden verwerkt: {0}"
+findlayout="19| Het indelingsbestand ‘{0}’ is niet aangetroffen: {1}"
+logopen="20| Het logboek ‘{0}’ kan niet worden geopend: {1}"
+table="21| De tabelwidget TopRow-waarde is kleiner dan 0. TopRow: {0}"
+nohostname="22| De hostnaam kan niet worden vastgesteld: {0}"
+
+[layout.error]
+widget="23| Ongeldige widgetnaam: {0}. De naam dient eender welke van {1} te zijn."
+format="24| Indelingsfout op regel {0}: de opmaak dient {1} te zijn. {2} kan niet worden verwerkt als geheel getal. Het woord was {3}. Er wordt een regelafstand van 1 gebruikt."
+slashes="25| Indelingswaarschuwing op {0}: teveel schuine strepen (‘/’) in woord {1}. Het woord wordt genegeerd."
+
+[widget.label]
+disk=" Schijfgebruik "
+cpu=" Cpu-belasting "
+gauge=" Energieniveau "
+battery=" Accustatus "
+batt=" Accu "
+temp=" Temperaturen "
+net=" Netwerkverbruik "
+netint=" Netwerkverbruik: {0} "
+mem=" Geheugengebruik "
+
+
+[widget.net.err]
+netactivity="26| Er kan geen netwerkactiviteit uit gopsutil worden opgehaald: {0}"
+negvalrecv="27| Foutmelding: negatieve waarde in onlangs ontvangen netwerkgegevens van gopsutil. recentBytesRecv: {0}"
+negvalsent="28| Foutmelding: negatieve waarde in onlangs verstuurde netwerkgegevens van gopsutil. recentBytesSent: {0}"
+
+
+[widget.disk]
+disk="Schijf"
+mount="Aankoppelpunt"
+used="In gebruik"
+free="Vrije ruimte"
+rs="L/s"
+ws="S/s"
+
+
+[widget.proc]
+filter=" Filter: "
+label=" Processen "
+[widget.proc.header]
+count="Aantal"
+command="Opdracht"
+cpu="CPU%"
+mem="Mem%"
+pid="PID"
+[widget.proc.err]
+count="29| Het aantal cpu's kan niet worden opgehaald uit gopsutil: {0}"
+retrieve="30| De processen kunnen niet worden ontvangen: {0}"
+ps="31| ‘ps’ kan niet worden uitgevoerd: {0}"
+gopsutil="32| Er kunnen geen processen worden opgehaald uit gopsutil: {0}"
+pidconv="33| De PID kan niet worden omgezet naar een geheel getal: {0}. Regelnummer: {1}."
+cpuconv="34| De cpu-belasting kan niet worden omgezet naar zwevendekommagetal: {0}. Regelnummer: {1}."
+memconv="35| Het geheugengebruik kan niet worden omgezet naar zwevendekommagetal: {0}. Regelnummer: {1}."
+getcmd="36| De procesopdracht kan niet worden opgehaald uit gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+cpupercent="37| De cpu-belastingproces kan niet worden opgehaald uit gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+mempercent="38| Het geheugengebruikproces kan niet worden opgehaald uit gopsutil: {0}. psProc: {1}. i: {2}. pid: {3}"
+parse="39| Het resultaat kan niet worden verwerkt: {0}"
