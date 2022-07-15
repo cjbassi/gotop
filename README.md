@@ -53,6 +53,13 @@ curl -O -L https://raw.githubusercontent.com/xxxserxxx/gotop/master/fonts/Lat15-
 setfont Lat15-VGA16-braille.psf
 ```
 
+### Platform-specific features
+
+Sometimes libraries that gotop uses to introspect the hardware only support a subset of operating systems. Rather than cripple gotop to the LCD, I'm allowing features that may only work on some platforms. These will be listed here:
+
+- nvidia -- only available on systems with an nvidia GPU
+- SMART NVME hard drive temperatures -- Linux & Darwin
+
 ### Building
 
 This is the download & compile approach.

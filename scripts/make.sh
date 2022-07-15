@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export VERSION=$(go run ./cmd/gotop -V)
+export VERSION=$(go run ./cmd/gotop -V | grep -oP '\d+\.\d+\.\d+')
 
 rm -f build.log
 
