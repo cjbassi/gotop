@@ -56,7 +56,7 @@ The last argument is the git reference to a branch. If you're building master, j
 
 The first time you build, a bunch of containers will be downloaded and built. The script tries to be smart about reusing build containers, so subsequent runs should run faster.
 
-Artifacts will be in ` `
+Artifacts will be in `work/gotop/gotop/.release`.
 
 Erratta
 -------
