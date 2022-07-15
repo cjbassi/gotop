@@ -190,6 +190,12 @@ func load(in io.Reader, conf *Config) error {
 				return fmt.Errorf(conf.Tr.Value("config.err.line", ln, err.Error()))
 			}
 			conf.Nvidia = nv
+		case nvidiarefresh:
+			d, err := time.ParseDuration(kv[1])
+			if err != nil {
+				return fmt.Errorf(conf.Tr.Value("config.err.line", ln, err.Error()))
+			}
+			conf.NvidiaRefresh = d
 		}
 	}
 
@@ -286,4 +292,5 @@ const (
 	mbps                 = "mbps"
 	temperatures         = "temperatures"
 	nvidia               = "nvidia"
+	nvidiarefresh        = "nvidiarefresh"
 )
