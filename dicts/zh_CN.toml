@@ -15,8 +15,8 @@ help="""
   - j 或 <Down>: 下一行
   - <C-u>: 上半页
   - <C-d>: 下半页
-  - <C-b>: 上一页
-  - <C-f>: 下一页
+  - <C-b> 或 <PageUp>: 上一页
+  - <C-f> 或 <PageDown>: 下一页
   - gg 或 <Home>: 到顶部
   - G 或 <End>: 到底部
 

@@ -15,8 +15,8 @@ Process navigation:
   - j and <Down>: down
   - <C-u>: half page up
   - <C-d>: half page down
-  - <C-b>: full page up
-  - <C-f>: full page down
+  - <C-b> and <PageUp>: full page up
+  - <C-f> and <PageDown> : full page down
   - gg and <Home>: jump to top
   - G and <End>: jump to bottom
 

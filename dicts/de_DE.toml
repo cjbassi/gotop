@@ -15,8 +15,8 @@ Prozessnavigation:
   - j und <Down>: Zeile nach unten
   - <C-u>: halbe Seite nach oben
   - <C-d>: halbe Seite nach unten
-  - <C-b>: ganze Seite nach oben
-  - <C-f>: ganze Seite nach unten
+  - <C-b> und <PageUp>: ganze Seite nach oben
+  - <C-f> und <PageDown>: ganze Seite nach unten
   - gg und <Home>: an den Anfang springen
   - G und <End>: an das Ende springen
 

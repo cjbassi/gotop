@@ -15,8 +15,8 @@ Proceza navigadoj:
   - j kaj <Malsupren>: malsupren
   - <C-u>: duona paĝo supren
   - <C-d>: duona paĝo malsupren
-  - <C-b>: plena paĝo supren
-  - <C-f>: plena paĝo malsupren
+  - <C-b> kaj <PageUp>: plena paĝo supren
+  - <C-f> kaj <PageDown>: plena paĝo malsupren
   - gg kaj <Hejmo>: salti al supron
   - G kaj <Fino>: salti al malsupron
 

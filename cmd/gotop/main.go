@@ -320,12 +320,12 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 						grid.Proc.ScrollHalfPageUp()
 						ui.Render(grid.Proc)
 					}
-				case "<C-f>":
+				case "<C-f>", "<PageDown>":
 					if grid.Proc != nil {
 						grid.Proc.ScrollPageDown()
 						ui.Render(grid.Proc)
 					}
-				case "<C-b>":
+				case "<C-b>", "<PageUp>":
 					if grid.Proc != nil {
 						grid.Proc.ScrollPageUp()
 						ui.Render(grid.Proc)
