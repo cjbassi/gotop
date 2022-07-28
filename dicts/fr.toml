@@ -15,8 +15,8 @@ Navigation dans les processus:
   - j et <Down>: vers le bas
   - <C-u>: une demi-page vers le haut
   - <C-d>: une demi-page vers le bas
-  - <C-b>: une page entière vers le haut
-  - <C-f>: une page entière vers le bas
+  - <C-b> et <PageUp>: une page entière vers le haut
+  - <C-f> et <PageDown>: une page entière vers le bas
   - gg et <Home>: saut au début
   - G et <End>: saut à la fin
 

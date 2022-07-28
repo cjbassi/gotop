@@ -15,8 +15,8 @@ Navegación de procesos:
   - j y <Down>: abajo
   - <C-u>: media página arriba
   - <C-d>: media página abajo
-  - <C-b>: página completa arriba
-  - <C-f>: página completa abajo
+  - <C-b> y <PageUp>: página completa arriba
+  - <C-f> y <PageDown>: página completa abajo
   - gg y <Home>: saltar al principio
   - G y <End>: saltar al final
 
