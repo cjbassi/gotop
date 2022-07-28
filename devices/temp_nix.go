@@ -11,6 +11,9 @@ import (
 	"github.com/shirou/gopsutil/host"
 )
 
+// offset for converting temperature from Kelvins to Celsius (273.15)
+const kelvinOffset = 273
+
 var smDevices map[string]smart.Device
 
 func init() {
@@ -88,7 +91,8 @@ func getTemps(temps map[string]int) map[string]error {
 				log.Printf("error getting smart data for %s: %s", name, err)
 				continue
 			}
-			temps[name] = int(data.Temperature)
+			// nvme reports the temperature in Kelvins
+			temps[name] = int(data.Temperature) - kelvinOffset
 		default:
 		}
 	}
