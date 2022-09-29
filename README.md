@@ -33,6 +33,7 @@ If you install gotop by hand, or you download or create new layouts or colorsche
     sudo layman -a guru
     sudo emerge gotop
     ```
+- **Nix**: you can run `gotop` with `nix-shell -p gotop --run gotop` or add the package `gotop` to your environment
 - **OSX**: gotop is in *homebrew-core*.  `brew install gotop`.  Make sure to uninstall and untap any previous installations or taps.
 - **Windows**: gotop is in the [Main](https://github.com/ScoopInstaller/Main) bucket. `scoop install gotop`.
 - **Prebuilt binaries**: Binaries for most systems can be downloaded from [the github releases page](https://github.com/xxxserxxx/gotop/releases). RPM and DEB packages are also provided.
