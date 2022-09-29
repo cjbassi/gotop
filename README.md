@@ -12,16 +12,17 @@ Join us in [\#gotop:matrix.org](https://app.element.io/#/room/#gotop:matrix.org)
 
 > Badges? We don't need no stinking badges!
 
+<div align="center">
+
 ![](https://github.com/xxxserxxx/gotop/workflows/Build%20Go%20binaries/badge.svg)
+![](https://img.shields.io/librariesio/github/xxxserxxx/gotop)
+[![](https://img.shields.io/badge/go%20report-A-green.svg?style=flat)](https://goreportcard.com/report/github.com/xxxserxxx/gotop/v4)
+
 ![](https://img.shields.io/github/v/release/xxxserxxx/gotop)
 ![](https://img.shields.io/github/release-date/xxxserxxx/gotop)
 ![](https://img.shields.io/github/downloads/xxxserxxx/gotop/total?sort=semver)
-![](https://img.shields.io/librariesio/github/xxxserxxx/gotop)
-![](https://img.shields.io/github/commit-activity/m/xxxserxxx/gotop)
-![](https://img.shields.io/github/license/xxxserxxx/gotop)
-![](https://img.shields.io/github/contributors/xxxserxxx/gotop)
-![](https://img.shields.io/aur/last-modified/gotop)
-[![](https://img.shields.io/badge/go%20report-A-green.svg?style=flat)](https://goreportcard.com/report/github.com/xxxserxxx/gotop/v4)
+
+</div>
 
 See the [mini-blog](https://github.com/xxxserxxx/gotop/wiki/Micro-Blog) for updates on the build status, and the [change log](/CHANGELOG.md) for release updates.
 
@@ -35,7 +36,7 @@ Working and tested on Linux, FreeBSD and MacOS. Windows binaries are provided, b
 
 If you install gotop by hand, or you download or create new layouts or colorschemes, you will need to put the layout files where gotop can find them.  To see the list of directories gotop looks for files, run `gotop -h`.  The first directory is always the directory from which gotop is run.
 
--  **Arch**: Install from AUR, e.g. `yay -S gotop-bin`. There is also `gotop` and `gotop-git`
+-  **Arch**: ![](https://img.shields.io/aur/last-modified/gotop) Install from AUR, e.g. `yay -S gotop-bin`. There is also `gotop` and `gotop-git`
 -  **Gentoo**: gotop is available on [guru](https://gitweb.gentoo.org/repo/proj/guru.git) overlay. 
     ```shell
     sudo layman -a guru
@@ -145,7 +146,7 @@ document.
 
 ## Contributors
 
-Many people have contributed code to gotop. Most of the work was by the original author, Caleb Bassi, who was seduced by the dark side (Rust) and had to be thrown into a volcano. Thanks to [everyone who's submitted a PR](https://github.com/xxxserxxx/gotop/CONTRIBUTORS.md), or otherwise contributed to the project! 
+Many people ![](https://img.shields.io/github/contributors/xxxserxxx/gotop) have contributed code to gotop. Most of the work was by the original author, Caleb Bassi, who was seduced by the dark side (Rust) and had to be thrown into a volcano. Thanks to [everyone who's submitted a PR](https://github.com/xxxserxxx/gotop/CONTRIBUTORS.md), or otherwise contributed to the project! 
 
 
 ## Built With
