@@ -25,6 +25,7 @@ const (
 	ProcSortCPU ProcSortMethod = "c"
 	ProcSortMem                = "m"
 	ProcSortPid                = "p"
+	ProcSortCmd                = "n"
 )
 
 type Proc struct {
@@ -188,6 +189,9 @@ func (proc *ProcWidget) sortProcs() {
 	case ProcSortMem:
 		sort.Sort(sort.Reverse(SortProcsByMem(*procs)))
 		proc.Header[3] += _downArrow
+	case ProcSortCmd:
+		sort.Sort(sort.Reverse(SortProcsByCmd(*procs)))
+		proc.Header[1] += _downArrow
 	}
 }
 
@@ -335,4 +339,21 @@ func (procs SortProcsByMem) Swap(i, j int) {
 // Less implements Sort interface
 func (procs SortProcsByMem) Less(i, j int) bool {
 	return procs[i].Mem < procs[j].Mem
+}
+
+type SortProcsByCmd []Proc
+
+// Len implements Sort interface
+func (procs SortProcsByCmd) Len() int {
+	return len(procs)
+}
+
+// Swap implements Sort interface
+func (procs SortProcsByCmd) Swap(i, j int) {
+	procs[i], procs[j] = procs[j], procs[i]
+}
+
+// Less implements Sort interface
+func (procs SortProcsByCmd) Less(i, j int) bool {
+	return strings.ToLower(procs[j].CommandName) < strings.ToLower(procs[i].CommandName)
 }

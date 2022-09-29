@@ -353,7 +353,7 @@ func eventLoop(c gotop.Config, grid *layout.MyGrid) {
 						grid.Proc.ToggleShowingGroupedProcs()
 						ui.Render(grid.Proc)
 					}
-				case "m", "c", "p":
+				case "m", "c", "n", "p":
 					if grid.Proc != nil {
 						grid.Proc.ChangeProcSortMethod(w.ProcSortMethod(e.ID))
 						ui.Render(grid.Proc)
