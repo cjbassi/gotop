@@ -13,6 +13,71 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > - **Fixed**: for any bug fixes.
 > - **Security**: in case of vulnerabilities.
 
+## [4.2.0] 2022-09-29
+
+This release has entirely been made possible by contributors! A huge thank-you to:
+
+- Solène Rapenne (@rapenne-s), who added gotop to Nix
+- Anatol Pomozov (@anatol) for:
+  - simplifying and improving the *nix `getTemps()` logic.
+    - LOC: 9075 -> 9056
+    - ABC: 4367 -> 4359
+  - Fixing the nvme temps for Kelvins to Celsius
+- Stanisław Pitucha (@viraptor), for noticing that a gopsutil introduced a build
+  issue on OSX and needed another bump.
+- sitiom, for noticing that gotop is available via scoop, on Windows
+- Heimen Stoffels (@vistaus) for the Dutch (nl) translation
+- Clayton Townsend II (@ctII) for the page-up/page-down process scrolling patch
+- @kqzz, for adding sort-by-command, and especially for being so patient for the
+  merge.
+
+Because of the UI control changes, it gets a minor version bump.
+
+### Added
+
+- Packages for gotop are available in Nix and scoop ()
+- Dutch (nl) translation
+- page-up/page-down for process scrolling
+- sort-by-command in the processes (hotkey: n)
+
+### Changes
+
+- Code improvements to `getTemps()`
+
+### Fixes
+
+- A gopsutil bump had affected Darwin builds
+- nvme temps were (incorrectly) displayed
+- Sorting of labels had been broken at some point; in the process of fixing
+  this, I re-wrote the `Less()` logic, which is now a solid 10% faster.
+
+
+## [4.1.4] 2022-07-15
+
+Lots of push requests (relatively, for gotop) in this release! The contributions are appreciated.
+
+### Added
+
+- Metrics from SMART subsystems have been added for Linux and Darwin; it's temperatures right now, but the opportunity to report other metrics is now more easily added. Note that there may be issues with this, as it's a new source of metrics, and there may be bugs in (e.g.) the temperature scale, or some devices not being identified. Thanks a bunch to @rare-magma and @anatol for working on the contribution. 
+- The network widget now shows different colors for the upload and download lines (#174, thanks @quantonganh!)
+- A `PACKAGERS.md` document has been added that explains how to simulate the github cross-compiling build process locally -- without having to push changes upstream. This helps with finding compile-time cross-compile issues.
+
+### Changed
+
+- @droundy accepted a patch for the parseargs library, so removed the dependency on my fork
+- Some `gopsutils` warnings that provided no value were being reported; they've been silenced (thanks @ars.xda!)
+
+### Fixed
+
+- zh-CN updated (#205, thanks @tigerfyj!)
+- Put the manpage in a more appropriate place
+- When the RPM and DEB builds were re-enabled, the version format was giving the packages indigestion; in particular, the dpkgs would not install. This resulted in several tickets -- all of which should be fixed. (#212, #206, #209)
+- I misspelled "Celsius" yet again. It really upsets people when I do this. (#207)
+- Unit tests were not running on Darwin
+- Trying to use the `@latest` keyword was causing problems in github actions
+- ru_RU text fixes (thanks @ivanignatenko28!)
+- The nvidia and nvidiarefresh parameters were not being loaded from the config file (#217)
+
 ## [4.1.3] 2022-02-14
 
 Several issues pushed back to 4.1.4 to allow this one to go out.

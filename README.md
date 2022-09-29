@@ -1,19 +1,25 @@
 <div align="center">
 
-<a href="./assets/logo">
-    <img src="./assets/logo/logo.png" width="20%" />
-</a>
+<img src="./assets/logo/logo.png" width="20%" />
+![](https://img.shields.io/github/v/release/xxxserxxx/gotop?display_name=tag&sort=semver)
 <br><br>
 
 Another terminal based graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!
 
 Join us in [\#gotop:matrix.org](https://app.element.io/#/room/#gotop:matrix.org) ![](https://img.shields.io/matrix/gotop:matrix.org) ([matrix clients](https://matrix.to/#/#gotop:matrix.org)).
 
+> Badges? We don't need no stinking badges!
+
 ![](https://github.com/xxxserxxx/gotop/workflows/Build%20Go%20binaries/badge.svg)
 ![](https://img.shields.io/github/v/release/xxxserxxx/gotop)
 ![](https://img.shields.io/github/release-date/xxxserxxx/gotop)
+![](https://img.shields.io/github/downloads/xxxserxxx/gotop/total?sort=semver)
 ![](https://img.shields.io/librariesio/github/xxxserxxx/gotop)
 ![](https://img.shields.io/github/commit-activity/m/xxxserxxx/gotop)
+![](https://img.shields.io/github/license/xxxserxxx/gotop)
+![](https://img.shields.io/github/contributors/xxxserxxx/gotop)
+![](https://img.shields.io/aur/last-modified/gotop)
+[![](https://img.shields.io/badge/go%20report-A-green.svg?style=flat)](https://goreportcard.com/report/github.com/xxxserxxx/gotop/v4)
 
 See the [mini-blog](https://github.com/xxxserxxx/gotop/wiki/Micro-Blog) for updates on the build status, and the [change log](/CHANGELOG.md) for release updates.
 
@@ -134,6 +140,12 @@ document.
 #### Custom (layouts/procs)
 <img src="./assets/screenshots/procs.png" />
 
+
+## Contributors
+
+Many people have contributed code to gotop. Most of the work was by the original author, Caleb Bassi, who was seduced by the dark side (Rust) and had to be thrown into a volcano. Thanks to [everyone who's submitted a PR](https://github.com/xxxserxxx/gotop/CONTRIBUTORS.md), or otherwise contributed to the project! 
+
+
 ## Built With
 
 - [gizak/termui](https://github.com/gizak/termui)
@@ -175,7 +187,6 @@ In a chat room I heard someone refer to gotop as "another one of those fancy lan
 
 Diversity is good. Don't knock the free stuff.
 
+## Star History
 
-## Stargazers over time
-
-[![Stargazers over time](https://starcharts.herokuapp.com/xxxserxxx/gotop.svg)](https://starcharts.herokuapp.com/xxxserxxx/gotop)
+[![Star History Chart](https://api.star-history.com/svg?repos=xxxserxxx/gotop&type=Date)](https://star-history.com/#xxxserxxx/gotop&Date)

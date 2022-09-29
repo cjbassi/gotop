@@ -28,6 +28,7 @@ Procesacties:
 
 Processortering:
   - c: Cpu
+  - n: Bev.
   - m: Geh.
   - p: PID
 
