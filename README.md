@@ -24,7 +24,7 @@ Join us in [\#gotop:matrix.org](https://app.element.io/#/room/#gotop:matrix.org)
 
 </div>
 
-See the [mini-blog](https://github.com/xxxserxxx/gotop/wiki/Micro-Blog) for updates on the build status, and the [change log](/CHANGELOG.md) for release updates.
+See the [change log](/CHANGELOG.md) for release updates.
 
 <img src="./assets/screenshots/demo.gif" />
 
