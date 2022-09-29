@@ -1,7 +1,9 @@
 <div align="center">
-
 <img src="./assets/logo/logo.png" width="20%" />
+
 ![](https://img.shields.io/github/v/release/xxxserxxx/gotop?display_name=tag&sort=semver)
+
+</div>
 <br><br>
 
 Another terminal based graphical activity monitor, inspired by [gtop](https://github.com/aksakalli/gtop) and [vtop](https://github.com/MrRio/vtop), this time written in [Go](https://golang.org/)!
