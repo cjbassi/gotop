@@ -1,7 +1,10 @@
 package termui
 
-import "testing"
-import "sort"
+import (
+	"github.com/stretchr/testify/assert"
+	"sort"
+	"testing"
+)
 
 func TestLess(t *testing.T) {
 	tests := []struct {
@@ -16,6 +19,10 @@ func TestLess(t *testing.T) {
 		{a: "a2", b: "2", e: false},
 		{a: "a2", b: "a10", e: true},
 		{a: "a20", b: "a2", e: false},
+		{a: "abc", b: "abc20", e: true},
+		{a: "a1", b: "abc", e: true},
+		{a: "a20", b: "abc", e: true},
+		{a: "abc20", b: "abc", e: false},
 		{a: "abc20", b: "def2", e: true},
 		{a: "abc20", b: "abc2", e: false},
 		{a: "abc20", b: "abc20", e: true},
@@ -29,9 +36,7 @@ func TestLess(t *testing.T) {
 	for _, k := range tests {
 		n := numbered([]string{k.a, k.b})
 		g := n.Less(0, 1)
-		if g != k.e {
-			t.Errorf("%s < %s: expected %v, got %v", k.a, k.b, k.e, g)
-		}
+		assert.Equal(t, k.e, g, "%s < %s %t", k.a, k.b, g)
 	}
 }
 
@@ -40,7 +45,7 @@ func TestSort(t *testing.T) {
 		in, ex numbered
 	}{
 		{
-			in: numbered{"abc", "def", "abc", "abc", "def", "abc", "1", "10", "1", "2", "a2", "2", "a2", "a10", "a20", "a2", "abc20", "def2", "abc20", "abc2", "abc20", "abc20", "abc30", "abc20", "abc20a", "abc20", "abc20", "abc20a", "abc20", "abc2a"},
+			in: numbered{"abc", "def", "abc", "def", "abc", "1", "10", "1", "2", "a2", "2", "a2", "a10", "a20", "a2", "abc20", "def2", "abc20", "abc2", "abc20", "abc20", "abc30", "abc20", "abc20a", "abc20", "abc20", "abc20a", "abc20", "abc2a", "abc"},
 			ex: numbered{"1", "1", "2", "2", "10", "a2", "a2", "a2", "a10", "a20", "abc", "abc", "abc", "abc", "abc2", "abc2a", "abc20", "abc20", "abc20", "abc20", "abc20", "abc20", "abc20", "abc20", "abc20a", "abc20a", "abc30", "def", "def", "def2"},
 		},
 		{
@@ -51,10 +56,37 @@ func TestSort(t *testing.T) {
 
 	for _, k := range tests {
 		sort.Sort(k.in)
-		for i, v := range k.in {
-			if v != k.ex[i] {
-				t.Errorf("failed to properly sort\n\texpected: %v\n\tgot:      %v", k.ex, k.in)
-			}
+		assert.Equal(t, k.ex, k.in)
+	}
+}
+
+func BenchmarkLess(b *testing.B) {
+	tests := []numbered{
+		numbered([]string{"abc", "def"}),
+		numbered([]string{"abc", "abc"}),
+		numbered([]string{"def", "abc"}),
+		numbered([]string{"1", "10"}),
+		numbered([]string{"1", "2"}),
+		numbered([]string{"a2", "2"}),
+		numbered([]string{"a2", "a10"}),
+		numbered([]string{"a20", "a2"}),
+		numbered([]string{"abc", "abc20"}),
+		numbered([]string{"a1", "abc"}),
+		numbered([]string{"a20", "abc"}),
+		numbered([]string{"abc20", "abc"}),
+		numbered([]string{"abc20", "def2"}),
+		numbered([]string{"abc20", "abc2"}),
+		numbered([]string{"abc20", "abc20"}),
+		numbered([]string{"abc30", "abc20"}),
+		numbered([]string{"abc20a", "abc20"}),
+		numbered([]string{"abc20", "abc20a"}),
+		numbered([]string{"abc20", "abc2a"}),
+		numbered([]string{"abc20", "abc3a"}),
+		numbered([]string{"abc20", "abc2abc"}),
+	}
+	for i := 0; i < b.N; i++ {
+		for _, t := range tests {
+			t.Less(0, 1)
 		}
 	}
 }

@@ -171,57 +171,63 @@ type numbered []string
 
 func (n numbered) Len() int      { return len(n) }
 func (n numbered) Swap(i, j int) { n[i], n[j] = n[j], n[i] }
+
 func (n numbered) Less(i, j int) bool {
-	a := n[i]
-	b := n[j]
-	for i := 0; i < len(a); i++ {
-		ac := a[i]
-		if unicode.IsDigit(rune(ac)) {
-			j := i + 1
-			for ; j < len(a); j++ {
-				if !unicode.IsDigit(rune(a[j])) {
-					break
-				}
-				if j >= len(b) {
-					return false
-				}
-				if !unicode.IsDigit(rune(b[j])) {
-					return false
-				}
+	ars := n[i]
+	brs := n[j]
+	// iterate over the runes in string A
+	var ai int
+	for ai = 0; ai < len(ars); ai++ {
+		ar := ars[ai]
+		// if brs has been equal to ars so far, but is shorter, than brs is less
+		if ai >= len(brs) {
+			return false
+		}
+		br := brs[ai]
+		// handle numbers if we find them
+		if unicode.IsDigit(rune(ar)) {
+			// if ar is a digit and br isn't, then ars is less
+			if !unicode.IsDigit(rune(brs[ai])) {
+				return true
 			}
-			an, err := strconv.Atoi(a[i:j])
+			// now get the range for the full numbers, which is the sequence of consecutive digits from each
+			ae := ai + 1
+			be := ae
+			for ; ae < len(ars) && unicode.IsDigit(rune(ars[ae])); ae++ {
+			}
+			for ; be < len(brs) && unicode.IsDigit(rune(brs[be])); be++ {
+			}
+			if be < ae {
+				return false
+			}
+			adigs, err := strconv.Atoi(string(ars[ai:ae]))
 			if err != nil {
 				return true
 			}
-			if j > len(b) {
-				return false
-			}
-			for ; j < len(b); j++ {
-				if !unicode.IsDigit(rune(b[j])) {
-					break
-				}
-			}
-			bn, err := strconv.Atoi(b[i:j])
+			bdigs, err := strconv.Atoi(string(brs[ai:be]))
 			if err != nil {
 				return true
 			}
-			if an < bn {
-				return true
-			} else if bn < an {
-				return false
+			// The numbers are equal; continue with the rest of the string
+			if adigs == bdigs {
+				ai = ae - 1
+				continue
 			}
-			i = j
-		}
-		if i >= len(a) {
-			return true
-		} else if i >= len(b) {
+			return adigs < bdigs
+		} else if unicode.IsDigit(rune(br)) {
 			return false
 		}
-		if ac < b[i] {
-			return true
-		} else if b[i] < ac {
-			return false
+		if ar == br {
+			continue
 		}
+		// No digits, so compare letters
+		if ar < br {
+			return true
+		}
+		return false
 	}
-	return true
+	if ai <= len(brs) {
+		return true
+	}
+	return false
 }
