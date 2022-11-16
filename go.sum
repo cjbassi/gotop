@@ -9,6 +9,8 @@ github.com/VividCortex/ewma v1.2.0 h1:f58SaIzcDXrSy3kWaHNvuJgJ3Nmz59Zji6XoJR/q1o
 github.com/VividCortex/ewma v1.2.0/go.mod h1:nz4BbCtbLyFDeC9SUHbtcT5644juEuWfUAUnGx7j5l4=
 github.com/anatol/smart.go v0.0.0-20220917195147-c0b00d90f8cc h1:UH+K+oojIu7jWqJrmPXCb33A/ZIfCLBIorj3KQGJxgs=
 github.com/anatol/smart.go v0.0.0-20220917195147-c0b00d90f8cc/go.mod h1:H/rz4ePNwdNiEdxv+NRWuqONKHe2N5n7rCQftsmStNE=
+github.com/anatol/smart.go v0.0.0-20220929205047-336d113af2c1 h1:MFiXaZf1khVM2sdNeIin3cDTMthrmysd5eBuqlwIfhA=
+github.com/anatol/smart.go v0.0.0-20220929205047-336d113af2c1/go.mod h1:H/rz4ePNwdNiEdxv+NRWuqONKHe2N5n7rCQftsmStNE=
 github.com/anatol/vmtest v0.0.0-20220413190228-7a42f1f6d7b8 h1:t4JGeY9oaF5LB4Rdx9e2wARRRPAYt8Ow4eCf5SwO3fA=
 github.com/anatol/vmtest v0.0.0-20220413190228-7a42f1f6d7b8/go.mod h1:oPm5wWoqTSkeoPe1Q3sPryTK8o24Jcbwh8dKOiiIobk=
 github.com/cloudfoundry-attic/jibber_jabber v0.0.0-20151120183258-bcc4c8345a21 h1:Yg2hDs4b13Evkpj42FU2idX2cVXVFqQSheXYKM86Qsk=
