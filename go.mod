@@ -13,7 +13,7 @@ require (
 	github.com/jaypipes/ghw v0.9.0
 	github.com/mattn/go-runewidth v0.0.13
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
-	github.com/nsf/termbox-go v1.1.1 // indirect
+	github.com/nsf/termbox-go v0.0.0-20200418040025-38ba6e5628f1 // indirect
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/onsi/gomega v1.10.4 // indirect
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
