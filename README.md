@@ -52,7 +52,7 @@ If you install gotop by hand, or you download or create new layouts or colorsche
 
 Extensions have proven problematic; go plugins are not usable in real-world cases, and the solution I had running for a while was hacky, at best. Consequently, extensions have been moved into the main code base for now.
 
--  nvidia support: use the `--nvidia` flag to enable. You must have the `nvidia- smi` package installed, and gotop must be able to find the `nvidia-smi` executable, for this to work.
+-  nvidia support: use the `--nvidia` flag to enable. You must have the `nvidia-smi` package installed, and gotop must be able to find the `nvidia-smi` executable, for this to work.
 -  remote: allows gotop to pull sensor data from applications exporting Prometheus metrics, including remote gotop instances themselves.
 
 ### Console Users
